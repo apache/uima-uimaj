@@ -36,7 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandler {
 
   /** The m open frames. */
-  private Stack mOpenFrames;
+  private Stack<AFrame> mOpenFrames;
 
   /** The m current frame name. */
   private String mCurrentFrameName;
@@ -55,7 +55,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    *          the parent frame
    */
   public void setParentFrame(AFrame aParentFrame) {
-    mOpenFrames = new Stack();
+    mOpenFrames = new Stack<AFrame>();
     mOpenFrames.push(aParentFrame);
   }
 
@@ -219,9 +219,10 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @return s1 if it isn't empty, else s2.
    */
   protected String getName(String s1, String s2) {
-    if (s1 == null || "".equals(s1))
+    if (s1 == null || "".equals(s1)) {
       return s2;
-    else
+    } else {
       return s1;
+    }
   }
 }

@@ -202,7 +202,7 @@ public class InstallationController {
      * @return the message
      */
     public String getMessage() {
-      return this.message;
+      return message;
     }
 
     /**
@@ -217,7 +217,7 @@ public class InstallationController {
      * @return the retCode
      */
     public int getRetCode() {
-      return this.retCode;
+      return retCode;
     }
 
     /**
@@ -1676,9 +1676,9 @@ public class InstallationController {
       if (componentRootPath == null) {
         // install next separate delegate component
         InstallationController dlgController = new InstallationController(componentId,
-                _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
+                _installationDirPath, false, _msgRouter, _defaultMsgListener,
                 _cleanInstallDir);
-        dlgController.setPackageSelector(this._packageSelector);
+        dlgController.setPackageSelector(_packageSelector);
         InstallationDescriptor dlgInsdObject = dlgController.installComponent();
         if (dlgInsdObject == null) {
           getErrMsgWriter().println(
@@ -1716,9 +1716,9 @@ public class InstallationController {
       String componentId = dlgList.nextElement();
       // install XML descriptors of the next delegate component
       InstallationController dlgController = new InstallationController(componentId,
-              _installationDirPath, false, this._msgRouter, this._defaultMsgListener,
+              _installationDirPath, false, _msgRouter, _defaultMsgListener,
               _cleanInstallDir);
-      dlgController.setPackageSelector(this._packageSelector);
+      dlgController.setPackageSelector(_packageSelector);
       InstallationDescriptor dlgInsdObject = dlgController.installComponentDescriptors();
       if (dlgInsdObject == null) {
         getErrMsgWriter().println("[InstallationController]: "
@@ -1960,7 +1960,7 @@ public class InstallationController {
         _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_IN_PROGRESS);
 
       // create PackageBrowser object for the installed PEAR
-      PackageBrowser installedPear = new PackageBrowser(this._mainComponentRoot);
+      PackageBrowser installedPear = new PackageBrowser(_mainComponentRoot);
       TestStatus status = verifyComponentInstallation(installedPear);
       if (status.getRetCode() == TestStatus.TEST_SUCCESSFUL) {
         // verification successful

@@ -70,7 +70,7 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
    */
   public Obj2IntIdentityHashMap(int initialCapacity, Class<T> clazz, T removedMarker) {
     super(initialCapacity);
-    this.componentType = clazz;
+    componentType = clazz;
     this.removedMarker = removedMarker;
     newTable(this.initialCapacity);
   }
@@ -420,8 +420,8 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
     private final int firstPosition;
 
     private Obj2IntIdentityHashMapIterator() {
-      this.curPosition = moveToNextFilled(0);
-      this.firstPosition = this.curPosition;
+      curPosition = moveToNextFilled(0);
+      firstPosition = curPosition;
     }
 
     @Override
@@ -471,12 +471,12 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
 
     @Override
     public void moveToStart() {
-      this.curPosition = firstPosition;
+      curPosition = firstPosition;
     }
 
     @Override
     public void moveToEnd() {
-      this.curPosition = moveToPreviousFilled(getCapacity() - 1);
+      curPosition = moveToPreviousFilled(getCapacity() - 1);
     }
   }
 

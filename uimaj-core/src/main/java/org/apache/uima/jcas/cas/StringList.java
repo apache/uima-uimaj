@@ -69,17 +69,17 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   @Override
   public NonEmptyStringList createNonEmptyNode() {
     NonEmptyStringList node = new NonEmptyStringList(
-            this._casView.getTypeSystemImpl().stringNeListType, this._casView);
+            _casView.getTypeSystemImpl().stringNeListType, _casView);
     return node;
   }
 
   public NonEmptyStringList push(String item) {
-    return new NonEmptyStringList(this._casView.getJCasImpl(), item, this);
+    return new NonEmptyStringList(_casView.getJCasImpl(), item, this);
   }
 
   @Override
   public EmptyStringList emptyList() {
-    return this._casView.emptyStringList();
+    return _casView.emptyStringList();
   }
 
   /**

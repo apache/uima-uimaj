@@ -44,7 +44,7 @@ public class GraphNode {
    * @return The object contained in the node.
    */
   public Object getElement() {
-    return this.element;
+    return element;
   }
 
   /**
@@ -63,7 +63,7 @@ public class GraphNode {
    * @return The number of successor nodes.
    */
   public int getNbrSucc() {
-    return this.successors.size();
+    return successors.size();
   }
 
   /**
@@ -74,8 +74,8 @@ public class GraphNode {
    * @return The successor node.
    */
   public GraphNode getSuccessor(int i) {
-    if (i >= 0 && i < this.successors.size()) {
-      return this.successors.get(i);
+    if (i >= 0 && i < successors.size()) {
+      return successors.get(i);
     }
     throw new UtilError(UtilError.ILLEGAL_SUCCESSOR_INDEX);
   }
@@ -87,7 +87,7 @@ public class GraphNode {
    *          The node to be added.
    */
   public void addSuccessor(GraphNode succ) {
-    this.successors.add(succ);
+    successors.add(succ);
   }
 
   /**
@@ -96,7 +96,7 @@ public class GraphNode {
    * @return The number of predecessor nodes.
    */
   public int getNbrPred() {
-    return this.predecessors.size();
+    return predecessors.size();
   }
 
   /**
@@ -107,8 +107,8 @@ public class GraphNode {
    * @return The predecessor node.
    */
   public GraphNode getPredecessor(int i) {
-    if (i >= 0 && i < this.predecessors.size()) {
-      return this.predecessors.get(i);
+    if (i >= 0 && i < predecessors.size()) {
+      return predecessors.get(i);
     }
     throw new UtilError(UtilError.ILLEGAL_PREDECESSOR_INDEX);
   }
@@ -120,7 +120,7 @@ public class GraphNode {
    *          The node to be added.
    */
   public void addPredecessor(GraphNode pred) {
-    this.predecessors.add(pred);
+    predecessors.add(pred);
   }
 
   /**
@@ -130,7 +130,7 @@ public class GraphNode {
    *          The node to be connected to.
    */
   public void connect(GraphNode node) {
-    this.addSuccessor(node);
+    addSuccessor(node);
     node.addPredecessor(this);
   }
 

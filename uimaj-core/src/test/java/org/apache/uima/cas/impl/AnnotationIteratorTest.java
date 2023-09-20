@@ -112,39 +112,39 @@ public class AnnotationIteratorTest {
     // make a cas with various types, fairly complex -- see CASTestSetup class
     cas = CASInitializer.initCas(new CASTestSetup(), null);
     assertTrue(cas != null);
-    this.ts = cas.getTypeSystem();
-    assertTrue(this.ts != null);
+    ts = cas.getTypeSystem();
+    assertTrue(ts != null);
 
-    this.stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
-    assertTrue(this.stringType != null);
-    this.tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(this.stringType != null);
-    this.intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(this.intType != null);
-    this.tokenTypeType = this.ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    assertTrue(this.tokenTypeType != null);
-    this.wordType = this.ts.getType(CASTestSetup.WORD_TYPE);
-    assertTrue(this.wordType != null);
-    this.sepType = this.ts.getType(CASTestSetup.SEP_TYPE);
-    assertTrue(this.sepType != null);
-    this.eosType = this.ts.getType(CASTestSetup.EOS_TYPE);
-    assertTrue(this.eosType != null);
-    this.tokenTypeFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
-    assertTrue(this.tokenTypeFeat != null);
-    this.lemmaFeat = this.ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
-    assertTrue(this.lemmaFeat != null);
-    this.sentLenFeat = this.ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
-    assertTrue(this.sentLenFeat != null);
-    this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
-    assertTrue(this.tokenFloatFeat != null);
-    this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    assertTrue(this.startFeature != null);
-    this.endFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
-    assertTrue(this.endFeature != null);
-    this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
-    assertTrue(this.sentenceType != null);
-    this.phraseType = this.ts.getType(CASTestSetup.PHRASE_TYPE);
-    assertTrue(this.phraseType != null);
+    stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    assertTrue(stringType != null);
+    tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    assertTrue(stringType != null);
+    intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    assertTrue(intType != null);
+    tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    assertTrue(tokenTypeType != null);
+    wordType = ts.getType(CASTestSetup.WORD_TYPE);
+    assertTrue(wordType != null);
+    sepType = ts.getType(CASTestSetup.SEP_TYPE);
+    assertTrue(sepType != null);
+    eosType = ts.getType(CASTestSetup.EOS_TYPE);
+    assertTrue(eosType != null);
+    tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    assertTrue(tokenTypeFeat != null);
+    lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    assertTrue(lemmaFeat != null);
+    sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    assertTrue(sentLenFeat != null);
+    tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    assertTrue(tokenFloatFeat != null);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    assertTrue(startFeature != null);
+    endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
+    assertTrue(endFeature != null);
+    sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
+    assertTrue(sentenceType != null);
+    phraseType = ts.getType(CASTestSetup.PHRASE_TYPE);
+    assertTrue(phraseType != null);
     types[0] = sentenceType;
     types[1] = phraseType;
     types[2] = tokenType;
@@ -153,20 +153,20 @@ public class AnnotationIteratorTest {
   @AfterEach
   public void tearDown() {
     cas = null;
-    this.ts = null;
-    this.tokenType = null;
-    this.intType = null;
-    this.tokenTypeType = null;
-    this.wordType = null;
-    this.sepType = null;
-    this.eosType = null;
-    this.tokenTypeFeat = null;
-    this.lemmaFeat = null;
-    this.sentLenFeat = null;
-    this.tokenFloatFeat = null;
-    this.startFeature = null;
-    this.endFeature = null;
-    this.sentenceType = null;
+    ts = null;
+    tokenType = null;
+    intType = null;
+    tokenTypeType = null;
+    wordType = null;
+    sepType = null;
+    eosType = null;
+    tokenTypeFeat = null;
+    lemmaFeat = null;
+    sentLenFeat = null;
+    tokenFloatFeat = null;
+    startFeature = null;
+    endFeature = null;
+    sentenceType = null;
   }
 
   // //debug
@@ -209,11 +209,11 @@ public class AnnotationIteratorTest {
     fss.clear();
     isSave = true;
 
-    AnnotationFS a1 = cas.createAnnotation(this.tokenType, 1, 6);
+    AnnotationFS a1 = cas.createAnnotation(tokenType, 1, 6);
     a1.setStringValue(lemmaFeat, "lemma1");
     indexRepository.addFS(a1);
 
-    AnnotationFS a2 = cas.createAnnotation(this.tokenType, 1, 6);
+    AnnotationFS a2 = cas.createAnnotation(tokenType, 1, 6);
     a2.setStringValue(lemmaFeat, "lemma2");
     indexRepository.addFS(a2);
 
@@ -249,7 +249,7 @@ public class AnnotationIteratorTest {
   // called twice, the 2nd time should be with flattened indexes (List afss non empty the 2nd time)
   private void iterateOverAnnotations(final int annotCount, List<Annotation> afss)
           throws Exception {
-    this.fss = afss;
+    fss = afss;
     isSave = fss.size() == 0; // on first call is 0, so save on first call
 
     JCas jcas = cas.getJCas();
@@ -312,7 +312,7 @@ public class AnnotationIteratorTest {
     assertCount("Unambigous select sentence iterator (type priorities)", 5,
             sentIndex.select().typePriority().nonOverlapping());
 
-    AnnotationFS bigBound = cas.createAnnotation(this.sentenceType, 10, 41);
+    AnnotationFS bigBound = cas.createAnnotation(sentenceType, 10, 41);
     // ambiguous, and strict
     assertThat(annotIndex.subiterator(bigBound, true, true)).toIterable().hasSize(38);
     assertCount("Subiterator over annot with big bound, strict", 38,
@@ -433,7 +433,7 @@ public class AnnotationIteratorTest {
             annotIndex.select().typePriority().nonOverlapping().coveredBy(bigBound)
                     .includeAnnotationsWithEndBeyondBounds(true));
 
-    AnnotationFS sent = cas.getAnnotationIndex(this.sentenceType).iterator().get();
+    AnnotationFS sent = cas.getAnnotationIndex(sentenceType).iterator().get();
     assertThat(annotIndex.subiterator(sent, false, true)).toIterable()
             .as("Subiterator over annot unambiguous strict")
             .extracting(a -> a.getType(), a -> a.getBegin(), a -> a.getEnd()).containsExactly( //
@@ -453,7 +453,7 @@ public class AnnotationIteratorTest {
             annotIndex.select().typePriority().nonOverlapping().coveredBy(sent));
 
     // strict skips first item
-    bigBound = cas.createAnnotation(this.sentenceType, 11, 30);
+    bigBound = cas.createAnnotation(sentenceType, 11, 30);
     assertCount("Subiteratover over sent ambiguous strict", 4,
             sentIndex.subiterator(bigBound, true, true));
     assertCount("Subiteratover over sent ambiguous", 9,
@@ -684,7 +684,7 @@ public class AnnotationIteratorTest {
   public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
     try {
-      cas.getAnnotationIndex(this.stringType);
+      cas.getAnnotationIndex(stringType);
     } catch (CASRuntimeException e) {
       // e.printStackTrace();
       caughtException = true;
@@ -699,7 +699,7 @@ public class AnnotationIteratorTest {
     }
     assertTrue(caughtException);
     try {
-      cas.getAnnotationIndex(this.tokenType);
+      cas.getAnnotationIndex(tokenType);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
@@ -726,13 +726,13 @@ public class AnnotationIteratorTest {
     }
     AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
 
-    cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 0, 25));
-    cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 26, 52));
-    cas.addFsToIndexes(cas.createAnnotation(this.tokenType, 48, 51));
-    AnnotationIndex<Annotation> tokenIdx = cas.getAnnotationIndex(this.tokenType);
+    cas.addFsToIndexes(cas.createAnnotation(sentenceType, 0, 25));
+    cas.addFsToIndexes(cas.createAnnotation(sentenceType, 26, 52));
+    cas.addFsToIndexes(cas.createAnnotation(tokenType, 48, 51));
+    AnnotationIndex<Annotation> tokenIdx = cas.getAnnotationIndex(tokenType);
 
     // AnnotationIndex<AnnotationFS> si = cas.getAnnotationIndex(this.sentenceType);
-    for (Annotation sa : ai.select(this.sentenceType)) {
+    for (Annotation sa : ai.select(sentenceType)) {
       FSIterator<Annotation> ti2 = tokenIdx.subiterator(sa, false, false);
 
       while (ti2.hasNext()) {
@@ -742,7 +742,7 @@ public class AnnotationIteratorTest {
       }
     }
 
-    SelectFSs<Annotation> ssi = ai.select(this.sentenceType);
+    SelectFSs<Annotation> ssi = ai.select(sentenceType);
 
     for (AnnotationFS sa : ssi) {
       FSIterator<Annotation> ti2 = tokenIdx.select().coveredBy(sa)
@@ -922,7 +922,7 @@ public class AnnotationIteratorTest {
     AnnotationFS fs;
     for (int i = 0; i < text.length() - 5; i++) {
       ++annotCount;
-      ir.addFS(fs = cas.createAnnotation(this.tokenType, i, i + 5));
+      ir.addFS(fs = cas.createAnnotation(tokenType, i, i + 5));
       annotationList.add(fs);
       if (showFSs) {
         System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(),
@@ -939,7 +939,7 @@ public class AnnotationIteratorTest {
     // non-overlapping: 0-10, 10-20, etc.
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
-      ir.addFS(fs = cas.createAnnotation(this.sentenceType, i, i + 10));
+      ir.addFS(fs = cas.createAnnotation(sentenceType, i, i + 10));
       annotationList.add(fs);
       if (showFSs) {
         System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(),
@@ -954,7 +954,7 @@ public class AnnotationIteratorTest {
     int beginAlt = 0, endAlt = 0;
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
-      ir.addFS(fs = cas.createAnnotation(this.phraseType, i + beginAlt, i + 5 + endAlt));
+      ir.addFS(fs = cas.createAnnotation(phraseType, i + beginAlt, i + 5 + endAlt));
       annotationList.add(fs);
       beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1; // sequence: start @ 0, then 1, -1, 0, 1, ...
       endAlt = (endAlt == -1) ? 1 : endAlt - 1; // sequence: start At 0, then -1, 1, 0, -1, ...
@@ -965,7 +965,7 @@ public class AnnotationIteratorTest {
     }
 
     ++annotCount;
-    ir.addFS(fs = cas.createAnnotation(this.sentenceType, 12, 31));
+    ir.addFS(fs = cas.createAnnotation(sentenceType, 12, 31));
     annotationList.add(fs);
     if (showFSs) {
       System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(),

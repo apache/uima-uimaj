@@ -35,7 +35,7 @@ public class AnnotationTreeImpl<T extends AnnotationFS> implements AnnotationTre
 
   @Override
   public AnnotationTreeNode<T> getRoot() {
-    return this.root;
+    return root;
   }
 
   void setRoot(AnnotationTreeNodeImpl<T> root) {

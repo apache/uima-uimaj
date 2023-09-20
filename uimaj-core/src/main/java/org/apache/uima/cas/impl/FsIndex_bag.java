@@ -58,7 +58,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType,
           FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
-    this.index = new ObjHashSet<>(initialSize, TOP.class, TOP._singleton);
+    index = new ObjHashSet<>(initialSize, TOP.class, TOP._singleton);
   }
 
   /**
@@ -150,7 +150,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public boolean contains(FeatureStructure fs) {
-    return this.index.contains(fs);
+    return index.contains(fs);
   }
 
   boolean ll_contains(int fsAddr) {
@@ -166,7 +166,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public T find(FeatureStructure fs) {
-    final int resultAddr = this.index.find((TOP) fs);
+    final int resultAddr = index.find((TOP) fs);
     if (resultAddr >= 0) {
       return (T) fs;
     }
@@ -179,7 +179,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public int size() {
-    return this.index.size();
+    return index.size();
   }
 
   /**
@@ -190,7 +190,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   public boolean deleteFS(T fs) {
     assertFsTypeMatchesIndexType(fs, "deleteFS");
     maybeCopy();
-    return this.index.remove(fs);
+    return index.remove(fs);
   }
 
   // @Override
@@ -205,7 +205,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   protected void bulkAddTo(List<T> fss) {
-    fss.addAll((Collection<? extends T>) this.index);
+    fss.addAll((Collection<? extends T>) index);
   }
 
   /*
@@ -224,7 +224,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   @Override
   protected CopyOnWriteIndexPart<T> createCopyOnWriteIndexPart() {
     if (CASImpl.traceCow) {
-      this.casImpl.traceCowCopy(this);
+      casImpl.traceCowCopy(this);
     }
     return new CopyOnWriteObjHashSet(index);
   }

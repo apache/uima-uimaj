@@ -39,8 +39,8 @@ public class Language {
   private String territoryPart = null;
 
   public Language(String language) {
-    this.lang = normalize(language);
-    this.parseLanguage();
+    lang = normalize(language);
+    parseLanguage();
   }
 
   public static final String normalize(String lang) {
@@ -53,35 +53,35 @@ public class Language {
   }
 
   public String getLanguagePart() {
-    return this.langPart;
+    return langPart;
   }
 
   public String getTerritoryPart() {
-    return this.territoryPart;
+    return territoryPart;
   }
 
   public String getFullLanguage() {
-    return this.lang;
+    return lang;
   }
 
   private final void parseLanguage() {
-    int pos = this.lang.indexOf(CANONICAL_LANG_SEPARATOR);
+    int pos = lang.indexOf(CANONICAL_LANG_SEPARATOR);
     if (pos >= 0) {
-      this.langPart = this.lang.substring(0, pos);
+      langPart = lang.substring(0, pos);
     } else {
-      this.langPart = this.lang;
+      langPart = lang;
       return;
     }
     ++pos;
-    if (pos < this.lang.length()) {
-      this.territoryPart = this.lang.substring(pos);
+    if (pos < lang.length()) {
+      territoryPart = lang.substring(pos);
     }
   }
 
   @Override
   public String toString() {
-    return "Full language string: " + this.getFullLanguage() + ", language part: "
-            + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
+    return "Full language string: " + getFullLanguage() + ", language part: "
+            + getLanguagePart() + ", territory part: " + getTerritoryPart();
   }
 
   public static void main(String[] args) {

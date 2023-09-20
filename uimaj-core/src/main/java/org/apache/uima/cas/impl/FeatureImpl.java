@@ -82,38 +82,38 @@ public class FeatureImpl implements Feature {
    * used to make singleton which is used for "missing feature"
    */
   private FeatureImpl() {
-    this.featureCode = 0;
-    this.isInInt = false;
-    this.rangeType = null;
-    this.isMultipleRefsAllowed = false;
-    this.isAnnotBaseSofaRef = false;
-    this.shortName = null;
-    this.slotKind = null;
-    this.rangeTypeClass = 0;
-    this.isLongOrDouble = false;
-    this.highestDefiningType = null;
-    this.hashCodeLong = computeHashCodeLong();
+    featureCode = 0;
+    isInInt = false;
+    rangeType = null;
+    isMultipleRefsAllowed = false;
+    isAnnotBaseSofaRef = false;
+    shortName = null;
+    slotKind = null;
+    rangeTypeClass = 0;
+    isLongOrDouble = false;
+    highestDefiningType = null;
+    hashCodeLong = computeHashCodeLong();
   }
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi,
           boolean isMultipleRefsAllowed, SlotKind slotKind) {
     // this.code = code;
-    this.highestDefiningType = typeImpl;
+    highestDefiningType = typeImpl;
     List<FeatureImpl> feats = (tsi == null) ? null : tsi.features;
-    this.featureCode = (feats == null) ? -1 : feats.size();
+    featureCode = (feats == null) ? -1 : feats.size();
 
     this.rangeType = rangeType;
-    this.isLongOrDouble = (rangeType == null) ? false : rangeType.isLongOrDouble;
+    isLongOrDouble = (rangeType == null) ? false : rangeType.isLongOrDouble;
     this.slotKind = slotKind;
     this.shortName = shortName;
     this.isMultipleRefsAllowed = isMultipleRefsAllowed;
-    this.isAnnotBaseSofaRef = (highestDefiningType == null) ? false
+    isAnnotBaseSofaRef = (highestDefiningType == null) ? false
             : ((highestDefiningType.getCode() == TypeSystemConstants.annotBaseTypeCode)
                     && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA));
-    this.isInInt = (rangeType == null) ? false : (rangeType.getTypeSystem().isInInt(rangeType));
-    this.rangeTypeClass = (rangeType == null) ? CASImpl.TYPE_CLASS_FS
+    isInInt = (rangeType == null) ? false : (rangeType.getTypeSystem().isInInt(rangeType));
+    rangeTypeClass = (rangeType == null) ? CASImpl.TYPE_CLASS_FS
             : CasSerializerSupport.classifyType(rangeType);
-    this.hashCodeLong = computeHashCodeLong();
+    hashCodeLong = computeHashCodeLong();
     if (typeImpl != null) {
       // if typeImpl is null, this is a "jcas only" defined feature, not a real feature
       typeImpl.addFeature(this); // might throw if existing feature with different range
@@ -125,7 +125,7 @@ public class FeatureImpl implements Feature {
    * @return the internal code of this feature. Necessary when using low-level APIs.
    */
   public int getCode() {
-    return this.featureCode;
+    return featureCode;
   }
 
   /**
@@ -135,7 +135,7 @@ public class FeatureImpl implements Feature {
    */
   @Override
   public Type getDomain() {
-    return this.highestDefiningType;
+    return highestDefiningType;
   }
 
   /**
@@ -144,15 +144,15 @@ public class FeatureImpl implements Feature {
    */
   @Override
   public Type getRange() {
-    return this.rangeType;
+    return rangeType;
   }
 
   public TypeImpl getRangeImpl() {
-    return this.rangeType;
+    return rangeType;
   }
 
   public SlotKind getSlotKind() {
-    return this.slotKind;
+    return slotKind;
   }
 
   /**
@@ -168,7 +168,7 @@ public class FeatureImpl implements Feature {
 
   @Override
   public String getShortName() {
-    return this.shortName;
+    return shortName;
   }
 
   @Override
@@ -186,7 +186,7 @@ public class FeatureImpl implements Feature {
 
   @Override
   public boolean isMultipleReferencesAllowed() {
-    return this.isMultipleRefsAllowed;
+    return isMultipleRefsAllowed;
   }
 
   /**
@@ -307,13 +307,13 @@ public class FeatureImpl implements Feature {
     // to preserve the compare contract, can't use hash for miscompare
 
     int c;
-    c = this.shortName.compareTo(other.shortName);
+    c = shortName.compareTo(other.shortName);
     if (c != 0)
       return c;
     c = highestDefiningType.getName().compareTo(other.highestDefiningType.getName());
     if (c != 0)
       return c;
-    c = Boolean.compare(this.isMultipleRefsAllowed, other.isMultipleRefsAllowed);
+    c = Boolean.compare(isMultipleRefsAllowed, other.isMultipleRefsAllowed);
     if (c != 0)
       return c;
     c = rangeType.getName().compareTo(other.rangeType.getName());
@@ -327,9 +327,7 @@ public class FeatureImpl implements Feature {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
-      return false;
-    if (!(obj instanceof FeatureImpl))
+    if ((obj == null) || !(obj instanceof FeatureImpl))
       return false;
 
     FeatureImpl other = (FeatureImpl) obj;

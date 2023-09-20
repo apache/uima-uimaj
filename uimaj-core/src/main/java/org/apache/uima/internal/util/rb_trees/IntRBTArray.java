@@ -84,7 +84,7 @@ public class IntRBTArray {
    *          The array containing the search tree.
    */
   public IntRBTArray(int[] array, int start) {
-    this.offset = start;
+    offset = start;
     this.array = array;
   }
 
@@ -104,7 +104,7 @@ public class IntRBTArray {
    * @return The internal array.
    */
   public int[] toArray() {
-    return this.array;
+    return array;
   }
 
   /**
@@ -114,7 +114,7 @@ public class IntRBTArray {
    *          the address.
    */
   public void setRootAddress(int start) {
-    this.offset = start;
+    offset = start;
   }
 
   /**
@@ -129,7 +129,7 @@ public class IntRBTArray {
   public int get(int i) throws NoSuchElementException {
     int pos = getPosition(i);
     if (pos >= 0) {
-      return this.array[pos];
+      return array[pos];
     }
     throw new NoSuchElementException();
   }
@@ -148,15 +148,15 @@ public class IntRBTArray {
   public int getPosition(int i) throws NoSuchElementException {
     // See the comments about the memory layout of the array at the
     // top of the file.
-    int current = this.offset;
-    if (this.array == null || this.array.length < (current + 3)) {
+    int current = offset;
+    if (array == null || array.length < (current + 3)) {
       return -1;
     }
     int key;
     int dtrCode;
-    while (current >= 0 && this.array.length >= (current + 3)) {
-      key = this.array[current];
-      dtrCode = this.array[current + 2];
+    while (current >= 0 && array.length >= (current + 3)) {
+      key = array[current];
+      dtrCode = array[current + 2];
       if (key > i) {
         switch (dtrCode) {
           case TERMINAL:
@@ -180,10 +180,10 @@ public class IntRBTArray {
             current += 3;
             break;
           case TWODTRS:
-            if ((current + 3) > this.array.length) {
+            if ((current + 3) > array.length) {
               return -1;
             }
-            current = this.array[current + 3];
+            current = array[current + 3];
             break;
         }
       } else { // key == i

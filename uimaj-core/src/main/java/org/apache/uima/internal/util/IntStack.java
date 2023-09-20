@@ -65,7 +65,7 @@ public class IntStack extends IntVector {
    */
   public int push(int i) {
     this.add(i);
-    return this.pos - 1;
+    return pos - 1;
   }
 
   /**
@@ -74,8 +74,8 @@ public class IntStack extends IntVector {
    * @return The popped element.
    */
   public int pop() {
-    --this.pos;
-    return get(this.pos); // this.array[this.pos];
+    --pos;
+    return get(pos); // this.array[this.pos];
   }
 
   /**
@@ -84,7 +84,7 @@ public class IntStack extends IntVector {
    * @return The top element.
    */
   public int peek() {
-    return get(this.pos - 1); // this.array[this.pos - 1];
+    return get(pos - 1); // this.array[this.pos - 1];
   }
 
   /**
@@ -93,14 +93,14 @@ public class IntStack extends IntVector {
    * @return <code>true</code>, if stack is empty; <code>false</code>, else.
    */
   public boolean empty() {
-    return (this.pos == 0);
+    return (pos == 0);
   }
 
   /**
    * Clears the stack. The amount of space reserved for this stack remains unchanged.
    */
   public void clear() {
-    this.pos = 0;
+    pos = 0;
   }
 
 }

@@ -44,7 +44,7 @@ public class SequencerCapabilityLanguageTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    this.testBaseDir = JUnitExtension.getFile("SequencerTest");
+    testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
   public void runTest(String desc, String language, String refFile, boolean doResultSpec)
@@ -52,7 +52,7 @@ public class SequencerCapabilityLanguageTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
 

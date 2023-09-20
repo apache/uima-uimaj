@@ -129,7 +129,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     String location, name;
     if ((location = getLocation()) != null) {
       try {
-        URL url = new URL(this.getRelativePathBase(), location);
+        URL url = new URL(getRelativePathBase(), location);
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
                 "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
                 new Object[] { "location", url });

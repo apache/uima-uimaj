@@ -271,10 +271,7 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       Key other = (Key) obj;

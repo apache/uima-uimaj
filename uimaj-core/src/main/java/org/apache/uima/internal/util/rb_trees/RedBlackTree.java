@@ -73,7 +73,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return The number of key/value pairs in the tree.
    */
   public final int size() {
-    return this.size;
+    return size;
   }
 
   // //////////////////////////////////////////////////////////////////
@@ -84,8 +84,8 @@ public class RedBlackTree<T> implements Iterable<T> {
    * Remove all elements from the tree.
    */
   public final void clear() {
-    this.root = null;
-    this.size = 0;
+    root = null;
+    size = 0;
   }
 
   /**
@@ -96,7 +96,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return <code>true</code>, if key is defined; <code>false</code>, else.
    */
   public final boolean containsKey(int key) {
-    return (RBTNode.find(this.root, key) == null) ? false : true;
+    return (RBTNode.find(root, key) == null) ? false : true;
   }
 
   /**
@@ -129,7 +129,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    */
   public final boolean put(int key, T el) {
     if (put(new RBTNode<>(key, el))) {
-      this.size++;
+      size++;
       return true;
     }
     return false;
@@ -143,11 +143,11 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return -
    */
   public final T remove(int key) {
-    RBTNode<T> node = RBTNode.find(this.root, key);
+    RBTNode<T> node = RBTNode.find(root, key);
     T ret = null;
     if (node != null) {
       ret = node.element;
-      this.size--;
+      size--;
       RBTNode.delete(this, node);
     }
     return ret;
@@ -164,10 +164,10 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return The corresponding element, or <code>null</code> if key is not defined.
    */
   public final T get(int key) {
-    if (this.root == null) {
+    if (root == null) {
       return null;
     }
-    RBTNode<T> node = RBTNode.find(this.root, key);
+    RBTNode<T> node = RBTNode.find(root, key);
     if (node == null) {
       return null;
     }
@@ -180,7 +180,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return <code>true</code> if map is empty; <code>false</code>, else.
    */
   public final boolean isEmpty() {
-    return (this.root == null);
+    return (root == null);
   }
 
   /**
@@ -189,9 +189,9 @@ public class RedBlackTree<T> implements Iterable<T> {
    * @return A sorted array of the keys.
    */
   public final int[] keySet() {
-    int[] set = new int[this.size];
-    if (this.root != null) {
-      this.root.keys(0, set);
+    int[] set = new int[size];
+    if (root != null) {
+      root.keys(0, set);
     }
     return set;
   }
@@ -209,10 +209,10 @@ public class RedBlackTree<T> implements Iterable<T> {
   }
 
   private final RBTNode<T> getFirstNode() {
-    if (this.root == null) {
+    if (root == null) {
       return null;
     }
-    RBTNode<T> x = this.root;
+    RBTNode<T> x = root;
     while (x.left != null) {
       x = x.left;
     }
@@ -234,21 +234,21 @@ public class RedBlackTree<T> implements Iterable<T> {
     RBTNode<T> current;
 
     RBTIterator(RedBlackTree<T> tree) {
-      this.current = tree.getFirstNode();
+      current = tree.getFirstNode();
     }
 
     @Override
     public boolean hasNext() {
-      return (this.current != null);
+      return (current != null);
     }
 
     @Override
     public T next() {
-      if (this.current == null) {
+      if (current == null) {
         throw new java.util.NoSuchElementException();
       }
-      T ret = this.current.element;
-      this.current = this.current.successor();
+      T ret = current.element;
+      current = current.successor();
       return ret;
     }
 
@@ -263,11 +263,11 @@ public class RedBlackTree<T> implements Iterable<T> {
    *         (RBTKeyValuePair).
    */
   public BinaryTree getBinaryTree() {
-    if (this.root == null) {
+    if (root == null) {
       return null;
     }
     BinaryTree tree = new BinaryTree();
-    this.root.getBinaryTree(tree);
+    root.getBinaryTree(tree);
     return tree;
   }
 
@@ -281,10 +281,10 @@ public class RedBlackTree<T> implements Iterable<T> {
 
   /** Debugging aid. */
   public void printKeys() {
-    if (this.root != null) {
-      this.root.printKeys(0);
+    if (root != null) {
+      root.printKeys(0);
     }
-    System.out.println("Size: " + this.size);
+    System.out.println("Size: " + size);
   }
 
   public static void main(String[] args) {

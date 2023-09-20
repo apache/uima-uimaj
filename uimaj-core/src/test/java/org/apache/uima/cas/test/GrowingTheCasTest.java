@@ -69,10 +69,10 @@ public class GrowingTheCasTest {
       XMLParser parser = UIMAFramework.getXMLParser();
       AnalysisEngineDescription spec = (AnalysisEngineDescription) parser
               .parse(new XMLInputSource(descriptorFile));
-      this.ae = UIMAFramework.produceAnalysisEngine(spec);
+      ae = UIMAFramework.produceAnalysisEngine(spec);
       Properties props = new Properties();
       props.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "0");
-      this.smallHeapCas = CasCreationUtils.createCas(spec, props).getJCas();
+      smallHeapCas = CasCreationUtils.createCas(spec, props).getJCas();
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -91,9 +91,9 @@ public class GrowingTheCasTest {
 
   @AfterEach
   public void tearDown() {
-    if (this.ae != null) {
-      this.ae.destroy();
-      this.ae = null;
+    if (ae != null) {
+      ae.destroy();
+      ae = null;
     }
   }
 
@@ -120,7 +120,7 @@ public class GrowingTheCasTest {
     }
     jcas = null;
     try {
-      jcas = this.ae.newJCas();
+      jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -131,7 +131,7 @@ public class GrowingTheCasTest {
     int numberOfTokens = 0;
     try {
       // long time = System.currentTimeMillis();
-      this.ae.process(jcas);
+      ae.process(jcas);
       // time = System.currentTimeMillis() - time;
       // System.out.println("Time for large CAS: " + new TimeSpan(time));
       numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
@@ -153,7 +153,7 @@ public class GrowingTheCasTest {
     // create a destination CAS
     CAS destCas;
     try {
-      destCas = this.ae.newCAS();
+      destCas = ae.newCAS();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -207,7 +207,7 @@ public class GrowingTheCasTest {
     }
     jcas = null;
     try {
-      jcas = this.ae.newJCas();
+      jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -218,7 +218,7 @@ public class GrowingTheCasTest {
     int numberOfTokens = 0;
     try {
       // long time = System.currentTimeMillis();
-      this.ae.process(jcas);
+      ae.process(jcas);
       // time = System.currentTimeMillis() - time;
       // System.out.println("Time for large CAS: " + new TimeSpan(time));
       numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
@@ -240,7 +240,7 @@ public class GrowingTheCasTest {
     // create a destination CAS
     CAS destCas;
     try {
-      destCas = this.ae.newCAS();
+      destCas = ae.newCAS();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -307,7 +307,7 @@ public class GrowingTheCasTest {
     }
     JCas jcas = null;
     try {
-      jcas = this.ae.newJCas();
+      jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -321,7 +321,7 @@ public class GrowingTheCasTest {
         numberOfSentences = 0;
         numberOfTokens = 0;
         // long time = System.currentTimeMillis();
-        this.ae.process(jcas);
+        ae.process(jcas);
         // time = System.currentTimeMillis() - time;
         // System.out.println("Time for large CAS: " + new TimeSpan(time));
         numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
@@ -337,16 +337,16 @@ public class GrowingTheCasTest {
     }
     jcas = null;
 
-    this.smallHeapCas.setDocumentText(text);
+    smallHeapCas.setDocumentText(text);
     try {
       // long time = System.currentTimeMillis();
-      this.ae.process(this.smallHeapCas);
+      ae.process(smallHeapCas);
       // time = System.currentTimeMillis() - time;
       // System.out.println("Time for small CAS: " + new TimeSpan(time));
       assertTrue(this.getClass().toString() + ": number of sentences does not match",
-              numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
+              numberOfSentences == smallHeapCas.getAnnotationIndex(Sentence.type).size());
       assertTrue(this.getClass().toString() + ": number of tokens does not match",
-              numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
+              numberOfTokens == smallHeapCas.getAnnotationIndex(Token.type).size());
       // try { // uncomment for memory use profiling
       // Thread.sleep(10000000);
       // } catch (InterruptedException e) {

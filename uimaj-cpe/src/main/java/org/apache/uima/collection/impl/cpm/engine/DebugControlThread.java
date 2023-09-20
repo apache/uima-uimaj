@@ -134,7 +134,7 @@ public class DebugControlThread implements Runnable {
         }
       }
       String command = doCheckpoint();
-      if (NOTFOUND.equals(command) == false) {
+      if (!NOTFOUND.equals(command)) {
         interpretAndExecuteCommand(command);
       }
       try {

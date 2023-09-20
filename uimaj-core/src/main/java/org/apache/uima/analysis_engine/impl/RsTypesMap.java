@@ -258,10 +258,7 @@ public class RsTypesMap implements Iterable<RsType> {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     RsTypesMap other = (RsTypesMap) obj;

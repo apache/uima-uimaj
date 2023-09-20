@@ -316,7 +316,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace)
           throws SAXException {
     if ("settingsForGroups".equals(aPropInfo.propertyName)) {
-      this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
+      writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
               aNamespace);
     } else {
       super.writePropertyAsElement(aPropInfo, aNamespace);

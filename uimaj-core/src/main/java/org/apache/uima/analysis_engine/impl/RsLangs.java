@@ -271,7 +271,7 @@ public class RsLangs {
       return null;
     }
 
-    if (null == this.languages) { // means x-unspecified, so return the other
+    if (null == languages) { // means x-unspecified, so return the other
       return other;
     }
     if (null == other.languages) { // means x-unspecified, so return the first
@@ -281,7 +281,7 @@ public class RsLangs {
     RsLangs r = new RsLangs();
     r.languages = new ArrayList<>(0); // creates an empty, not null arraylist
 
-    for (String lang : this.languages) {
+    for (String lang : languages) {
       if (subsumesCanonical(other, lang)) {
         r = add(r, lang); // add langs in other that are subsumed by this
       }
@@ -322,10 +322,7 @@ public class RsLangs {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     RsLangs other = (RsLangs) obj;

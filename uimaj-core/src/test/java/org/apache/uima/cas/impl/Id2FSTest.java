@@ -38,9 +38,9 @@ public class Id2FSTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
-      this.jcas = cas.getJCas();
-      this.ts = this.cas.getTypeSystem();
+      cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
+      jcas = cas.getJCas();
+      ts = cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
     }

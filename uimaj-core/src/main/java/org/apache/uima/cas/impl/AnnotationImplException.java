@@ -96,7 +96,7 @@ public class AnnotationImplException extends Exception {
    *         file. Unfortunately, the error parameters get lost that way.
    */
   public int getError() {
-    return this.error;
+    return error;
   }
 
   /**
@@ -104,18 +104,18 @@ public class AnnotationImplException extends Exception {
    */
   @Override
   public String getMessage() {
-    if (this.resource == null) {
+    if (resource == null) {
       try {
-        this.resource = ResourceBundle.getBundle(resource_file);
+        resource = ResourceBundle.getBundle(resource_file);
       } catch (MissingResourceException e) {
-        this.error = MESSAGES_NOT_FOUND;
+        error = MESSAGES_NOT_FOUND;
         return missing_resource_error;
       }
     }
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
-    return (new MessageFormat(this.resource.getString(identifiers[this.error])))
-            .format(this.arguments);
+    return (new MessageFormat(resource.getString(identifiers[error])))
+            .format(arguments);
   }
 
   /**
@@ -123,7 +123,7 @@ public class AnnotationImplException extends Exception {
    */
   @Override
   public String toString() {
-    return this.getClass().getSimpleName() + ": " + this.getMessage();
+    return this.getClass().getSimpleName() + ": " + getMessage();
   }
 
   /**
@@ -140,9 +140,9 @@ public class AnnotationImplException extends Exception {
    */
   public boolean addArgument(String s) {
     int i = 0;
-    while (i < this.arguments.length) {
-      if (this.arguments[i] == null) {
-        this.arguments[i] = s;
+    while (i < arguments.length) {
+      if (arguments[i] == null) {
+        arguments[i] = s;
         return true;
       }
       i++;
@@ -156,7 +156,7 @@ public class AnnotationImplException extends Exception {
    * @return The internal message key.
    */
   public String getMessageCode() {
-    return identifiers[this.error];
+    return identifiers[error];
   }
 
   /**
@@ -165,7 +165,7 @@ public class AnnotationImplException extends Exception {
    * @return The arguments to the exception.
    */
   public String[] getArguments() {
-    return this.arguments;
+    return arguments;
   }
 
   /**

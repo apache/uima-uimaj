@@ -42,7 +42,7 @@ public class MarkerImpl implements Marker {
   MarkerImpl(int nextFSId, CASImpl cas) {
     this.nextFSId = nextFSId;
     this.cas = cas;
-    this.isValid = true;
+    isValid = true;
   }
 
   @Override
@@ -60,7 +60,7 @@ public class MarkerImpl implements Marker {
     if (isNew(fs)) {
       return false; // new fs's are not modified ones
     }
-    return this.cas.isInModifiedPreexisting((TOP) fs);
+    return cas.isInModifiedPreexisting((TOP) fs);
   }
 
   boolean isNew(int id) {

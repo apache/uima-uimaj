@@ -192,7 +192,7 @@ public class XMLParser_implTest {
   public void testParsePearSpecifier() throws Exception {
     XMLInputSource in = new XMLInputSource(
             JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
-    PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);
+    PearSpecifier pearSpec = mXmlParser.parsePearSpecifier(in);
     assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
 
     assertThat(pearSpec.getParameters()).extracting(Parameter::getName, Parameter::getValue)

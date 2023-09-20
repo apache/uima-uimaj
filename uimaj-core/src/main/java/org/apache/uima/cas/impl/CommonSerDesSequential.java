@@ -102,7 +102,7 @@ public class CommonSerDesSequential {
   private int heapEnd; // == the last addr + length of that
 
   public CommonSerDesSequential(CASImpl cas) {
-    this.baseCas = cas.getBaseCAS();
+    baseCas = cas.getBaseCAS();
   }
 
   public boolean isEmpty() {

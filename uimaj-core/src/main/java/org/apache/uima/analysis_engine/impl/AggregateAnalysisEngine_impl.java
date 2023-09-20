@@ -299,7 +299,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     super.reconfigure();
 
     // call this method recursively on each component
-    Map<String, AnalysisEngine> components = this._getASB().getComponentAnalysisEngines();
+    Map<String, AnalysisEngine> components = _getASB().getComponentAnalysisEngines();
     Iterator<AnalysisEngine> it = components.values().iterator();
     while (it.hasNext()) {
       ConfigurableResource component = it.next();
@@ -315,7 +315,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     enterBatchProcessComplete();
     try {
       // pass call down to components, which might be (or contain) CAS Consumers
-      Iterator<AnalysisEngine> iter = this._getASB().getComponentAnalysisEngines().values()
+      Iterator<AnalysisEngine> iter = _getASB().getComponentAnalysisEngines().values()
               .iterator();
       while (iter.hasNext()) {
         iter.next().batchProcessComplete();
@@ -335,7 +335,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // (a custom FlowController must be in use), the entire order is arbitrary.
       String[] orderedNodes = null;
       Map<String, AnalysisEngine> components = new HashMap<>(
-              this._getASB().getComponentAnalysisEngines());
+              _getASB().getComponentAnalysisEngines());
       FlowConstraints flow = getAnalysisEngineMetaData().getFlowConstraints();
       if (flow != null) {
         if (flow instanceof FixedFlow) {
@@ -414,7 +414,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
     Map<String, Object> asbParams = new HashMap<>(aAdditionalParams);
-    asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName()); // not
+    asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, getMetaData().getName()); // not
                                                                                            // used
                                                                                            // 9/2013
                                                                                            // scan
@@ -506,7 +506,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
             getResourceManager());
 
     // assign results of merge to this aggregate AE's metadata
-    AnalysisEngineMetaData aggregateMD = this.getAnalysisEngineMetaData();
+    AnalysisEngineMetaData aggregateMD = getAnalysisEngineMetaData();
     aggregateMD.setTypeSystem(aggTypeDesc);
     aggregateMD.setTypePriorities(aggTypePriorities);
     aggregateMD.setFsIndexCollection(aggIndexColl);

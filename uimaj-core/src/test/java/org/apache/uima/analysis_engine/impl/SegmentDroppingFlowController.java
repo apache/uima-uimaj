@@ -89,12 +89,9 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
         return new FinalStep(true);
       }
 
-      if (currentStep >= mSequence.length) {
-        return new FinalStep(); // this CAS has finished the sequence
-      }
       // If CAS was segmented, do not continue with flow. The individual segments
       // are processed further but the original CAS is not.
-      if (wasSegmented) {
+      if ((currentStep >= mSequence.length) || wasSegmented) {
         return new FinalStep();
       }
 

@@ -29,8 +29,8 @@ public class IntEntry<T> {
   private T value;
 
   public IntEntry(int i, T v) {
-    this.key = i;
-    this.value = v;
+    key = i;
+    value = v;
   }
 
   /**
@@ -72,9 +72,7 @@ public class IntEntry<T> {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
+    if ((obj == null) || (getClass() != obj.getClass()))
       return false;
     IntEntry other = (IntEntry) obj;
     if (key != other.key)

@@ -115,8 +115,8 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support
 
   public Int2ObjHashMap(Class<T> clazz, int initialSizeBeforeExpanding) {
     super(initialSizeBeforeExpanding);
-    this.componentType = clazz;
-    newTable(this.initialCapacity);
+    componentType = clazz;
+    newTable(initialCapacity);
   }
 
   /**
@@ -127,9 +127,9 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support
    */
   private Int2ObjHashMap(Int2ObjHashMap orig) {
     super(orig);
-    this.componentType = orig.componentType;
-    this.keys = Arrays.copyOf(orig.keys, keys.length);
-    this.values = (T[]) Arrays.copyOf(orig.values, values.length);
+    componentType = orig.componentType;
+    keys = Arrays.copyOf(orig.keys, keys.length);
+    values = (T[]) Arrays.copyOf(orig.values, values.length);
   }
 
   // private void newTableKeepSize(int capacity) {

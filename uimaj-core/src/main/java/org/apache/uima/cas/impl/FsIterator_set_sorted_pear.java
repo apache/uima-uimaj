@@ -48,7 +48,7 @@ class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_
   @Override
   public FsIterator_set_sorted_pear<T> copy() {
     FsIterator_set_sorted_pear<T> r = new FsIterator_set_sorted_pear<>(ll_index, ofsa,
-            this.comparatorMaybeNoTypeWithoutID);
+            comparatorMaybeNoTypeWithoutID);
     copyCommonSetup(r);
     return r;
   }

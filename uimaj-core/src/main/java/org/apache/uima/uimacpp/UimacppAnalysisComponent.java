@@ -83,10 +83,10 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     // because the index definitions are transmitted with the serialized CAS. So we can
     // just null it out.
     // BUT do this in a clone, so we don't affect Java!
-    this.resourceDescription = (ResourceCreationSpecifier) aeDescription.clone();
-    ((ProcessingResourceMetaData) this.resourceDescription.getMetaData())
+    resourceDescription = (ResourceCreationSpecifier) aeDescription.clone();
+    ((ProcessingResourceMetaData) resourceDescription.getMetaData())
             .setFsIndexCollection(null);
-    this.tsReinit = true;
+    tsReinit = true;
     // System.out.println("Data path: " + dataPath);
   }
 
@@ -100,7 +100,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
     try {
-      this.uimaContext = context;
+      uimaContext = context;
       // update the sofa mappings in the AE descriptor with the mappings
       // specified in the context if the AE descriptor is for an aggregate
       // Ae and contains sofa mappings
@@ -118,7 +118,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
           }
         }
       }
-      this.log = context.getLogger();
+      log = context.getLogger();
 
       /*
        * set the configuration parameters into the parsed resourceDescription
@@ -193,7 +193,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   public void typeSystemInit(TypeSystem ts)
           throws AnnotatorConfigurationException, AnnotatorInitializationException {
     // set flag to update TAF type system on next call to process
-    this.tsReinit = true;
+    tsReinit = true;
   }
 
   /**
@@ -230,10 +230,10 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         resourceDescription.toXML(strWriter);
         strWriter.close();
         engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
-        this.tsReinit = true;
+        tsReinit = true;
       }
-      if (this.tsReinit) {
-        this.tsReinit = false;
+      if (tsReinit) {
+        tsReinit = false;
         CASMgrSerializer serializer = Serialization.serializeCASMgr((CASMgr) cas);
         engine.typeSystemInit(serializer);
       }

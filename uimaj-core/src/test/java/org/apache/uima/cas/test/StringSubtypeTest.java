@@ -76,19 +76,19 @@ public class StringSubtypeTest {
     File specifierFile = JUnitExtension.getFile(specifier);
     XMLInputSource in = new XMLInputSource(specifierFile);
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-    this.ae = UIMAFramework.produceAnalysisEngine(resourceSpecifier);
-    this.jcas = this.ae.newJCas();
+    ae = UIMAFramework.produceAnalysisEngine(resourceSpecifier);
+    jcas = ae.newJCas();
   }
 
   @AfterEach
   public void tearDown() throws Exception {
-    this.ae.destroy();
-    this.jcas = null;
+    ae.destroy();
+    jcas = null;
   }
 
   @Test
   public void testJcas() {
-    StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
+    StringSubtypeAnnotation annot = new StringSubtypeAnnotation(jcas);
     annot.setStringSetFeature(definedValue1);
     annot.setStringSetFeature(definedValue2);
     annot.setStringSetFeature(definedValue3);
@@ -103,7 +103,7 @@ public class StringSubtypeTest {
 
   @Test
   public void testLowLevelCas() {
-    LowLevelCAS cas = this.jcas.getLowLevelCas();
+    LowLevelCAS cas = jcas.getLowLevelCas();
     LowLevelTypeSystem ts = cas.ll_getTypeSystem();
     final int annotType = ts.ll_getCodeForTypeName(annotationTypeName);
     final int addr = cas.ll_createFS(annotType);
@@ -125,7 +125,7 @@ public class StringSubtypeTest {
 
   @Test
   public void testCas() {
-    CAS cas = this.jcas.getCas();
+    CAS cas = jcas.getCas();
     TypeSystem ts = cas.getTypeSystem();
     Type annotType = ts.getType(annotationTypeName);
     FeatureStructure fs = cas.createFS(annotType);

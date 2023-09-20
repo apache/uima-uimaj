@@ -41,7 +41,7 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
    */
   @Override
   public void eq(boolean cond) {
-    this.condition = cond;
+    condition = cond;
   }
 
   /*
@@ -51,7 +51,7 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
    */
   @Override
   public boolean match(boolean cond) {
-    return (this.condition == cond);
+    return (condition == cond);
   }
 
   @Override
@@ -59,7 +59,7 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
     // need to escape quotes and backslashes
     StringBuffer buf = new StringBuffer();
     buf.append("= \"");
-    buf.append(this.condition);
+    buf.append(condition);
     buf.append('"');
     return buf.toString();
   }

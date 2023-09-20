@@ -204,19 +204,19 @@ public class NonThreadedProcessingUnit {
    * Null out fields of this object. Call this only when this object is no longer needed.
    */
   public void cleanup() {
-    this.casPool = null;
-    this.cpm = null;
-    this.workQueue = null;
-    this.outputQueue = null;
-    this.mConverter = null;
-    this.processingUnitProcessTrace = null;
-    this.processContainers.clear();
-    this.processContainers = null;
-    this.casList = null;
-    this.conversionCas = null;
-    this.artifact = null;
-    this.statusCbL = null;
-    this.conversionCasArray = null;
+    casPool = null;
+    cpm = null;
+    workQueue = null;
+    outputQueue = null;
+    mConverter = null;
+    processingUnitProcessTrace = null;
+    processContainers.clear();
+    processContainers = null;
+    casList = null;
+    conversionCas = null;
+    artifact = null;
+    statusCbL = null;
+    conversionCasArray = null;
   }
 
   /**
@@ -539,7 +539,7 @@ public class NonThreadedProcessingUnit {
             return false; // Dont pass the CAS to the CasConsumer. CAS has been dropped
           }
         } finally {
-          if (retry == false) {
+          if (!retry) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -655,8 +655,8 @@ public class NonThreadedProcessingUnit {
         }
       }
       // enqueue CASes. If the CPM is in shutdown mode due to hard kill dont allow enqueue of CASes
-      if (outputQueue != null && (cpm.isRunning() == true
-              || (cpm.isRunning() == false && cpm.isHardKilled() == false))) {
+      if (outputQueue != null && (cpm.isRunning()
+              || (!cpm.isRunning() && !cpm.isHardKilled()))) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_add_cas_to_queue__FINEST",
@@ -982,7 +982,7 @@ public class NonThreadedProcessingUnit {
         }
         break;
       }
-      if (isCasObject == false) {
+      if (!isCasObject) {
         convertCasDataToCasObject(casIndex, container.getName(), aCasObjectList);
       } else {
         casList[casIndex] = (CAS) aCasObjectList[casIndex];
@@ -1111,7 +1111,7 @@ public class NonThreadedProcessingUnit {
     }
     pTrTemp.startEvent(container.getName(), "Process", "");
     // Check if the CasObject to CasData conversion is necessary
-    if (isCasObject == true) {
+    if (isCasObject) {
       CasData[] casDataObjects = new CasData[aCasObjectList.length];
       for (int casIndex = 0; casIndex < aCasObjectList.length; casIndex++) {
         casDataObjects[casIndex] = mConverter.casContainerToCasData((CAS) aCasObjectList[casIndex]);
@@ -1296,7 +1296,7 @@ public class NonThreadedProcessingUnit {
       // Based on type of listener do appropriate conversions of Cas if necessary
       if (statCL instanceof CasDataStatusCallbackListener) {
         // The Cas is of type CAS, need to convert it to CasData
-        if (isCasObject == true) {
+        if (isCasObject) {
           // Convert CAS to CasData object
           casObjectCopy = mConverter.casContainerToCasData((CAS) casObjectCopy);
         }
@@ -1306,7 +1306,7 @@ public class NonThreadedProcessingUnit {
       } else if (statCL instanceof StatusCallbackListener) {
         boolean casFromPool = false;
         // The cas is of type CasData, need to convert it to CAS
-        if (isCasObject == false) {
+        if (!isCasObject) {
           conversionCas = null;
           if (casCache != null && casCache[0] != null) {
             conversionCas = casCache[0];
@@ -1693,7 +1693,7 @@ public class NonThreadedProcessingUnit {
         } finally {
           pTrTemp.endEvent(container.getName(), "End of Batch", "");
           if (processingUnitProcessTrace != null) {
-            this.processingUnitProcessTrace.aggregate(pTrTemp);
+            processingUnitProcessTrace.aggregate(pTrTemp);
           }
         }
       }

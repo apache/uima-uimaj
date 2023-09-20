@@ -153,7 +153,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
       totalTime += (pEnd - pStart);
     } catch (ServiceException e) {
       // check if the proxy is connected to the service
-      if (textAnalysisProxy.isConnected() == false) {
+      if (!textAnalysisProxy.isConnected()) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
@@ -282,7 +282,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     }
     try {
       // check if the proxy is connected to the service
-      if (textAnalysisProxy.isConnected() == false) {
+      if (!textAnalysisProxy.isConnected()) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",

@@ -20,13 +20,12 @@ package org.apache.uima.util;
 
 import static org.apache.uima.cas.impl.Serialization.serializeCAS;
 import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
+import static org.apache.uima.internal.util.SerializationUtils.deserializeCASSerializerOrCASCompleteSerializer;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -51,6 +50,7 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.internal.util.SerializationUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -236,13 +236,10 @@ public class CasIOUtils {
    */
   public static SerialFormat load(URL casUrl, URL tsiUrl, CAS aCAS, CasLoadMode casLoadMode)
           throws IOException {
-    InputStream casIS = new BufferedInputStream(casUrl.openStream());
-    InputStream tsIS = (tsiUrl == null) ? null : new BufferedInputStream(tsiUrl.openStream());
-    try {
+
+    try (var casIS = new BufferedInputStream(casUrl.openStream());
+            var tsIS = (tsiUrl == null) ? null : new BufferedInputStream(tsiUrl.openStream());) {
       return load(casIS, tsIS, aCAS, casLoadMode);
-    } finally {
-      closeQuitely(casIS);
-      closeQuitely(tsIS);
     }
   }
 
@@ -299,12 +296,12 @@ public class CasIOUtils {
    * The CasLoadMode is DEFAULT.
    * 
    * @param casInputStream
-   *          -
+   *          The input stream containing the CAS. Caller should buffer this appropriately.
    * @param tsiInputStream
    *          -
    * @param aCAS
-   *          -
-   * @return -
+   *          The CAS that should be filled
+   * @return the SerialFormat of the loaded CAS
    * @throws IOException
    *           -
    */
@@ -321,23 +318,24 @@ public class CasIOUtils {
    * is passed for tsiInputStream.
    * 
    * If TSI information is available, the CAS's type system and indexes definition are replaced,
-   * except for SerialFormats COMPRESSED_FILTERED, COMPRESSED_FILTERED_TS, and
-   * COMPRESSED_FILTERED_TSI.
+   * except for SerialFormats {@link SerialFormat#COMPRESSED_FILTERED},
+   * {@link SerialFormat#COMPRESSED_FILTERED_TS}, and {@link SerialFormat#COMPRESSED_FILTERED_TSI}.
    *
-   * The CasLoadMode is set to LENIENT if the leniently flag is true; otherwise it is set to
-   * DEFAULT.
+   * The CasLoadMode is set to {@link CasLoadMode#LENIENT} if the leniently flag is true; otherwise
+   * it is set to {@link CasLoadMode#DEFAULT}.
    * 
    * @param casInputStream
-   *          -
+   *          the stream to load the CAS from
    * @param tsiInputStream
-   *          -
+   *          an optional stream to read the type system and index information from
    * @param aCAS
-   *          -
+   *          the target CAS
    * @param leniently
-   *          -
-   * @return -
+   *          if true, missing types in the target CAS will be ignored instead of leading to an
+   *          exception
+   * @return the format that was detected in the CAS input stream
    * @throws IOException
-   *           -
+   *           if the data could not be loaded
    */
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
           boolean leniently) throws IOException {
@@ -355,8 +353,8 @@ public class CasIOUtils {
    * read from that source.
    * 
    * If TSI information is available, the CAS's type system and indexes definition are replaced,
-   * except for SerialFormats COMPRESSED_FILTERED, COMPRESSED_FILTERED_TS, and
-   * COMPRESSED_FILTERED_TSI.
+   * except for SerialFormats {@link SerialFormat#COMPRESSED_FILTERED},
+   * {@link SerialFormat#COMPRESSED_FILTERED_TS}, and {@link SerialFormat#COMPRESSED_FILTERED_TSI}.
    * 
    * If the CasLoadMode == REINIT, then the TSI information is also used for these 3 formats to
    * replace the CAS's definitions.
@@ -374,7 +372,7 @@ public class CasIOUtils {
    *          specifies loading alternative like lenient and reinit, see CasLoadMode.
    * @return the SerialFormat of the loaded CAS
    * @throws IOException
-   *           - Problem loading from given InputStream
+   *           if the data could not be loaded
    */
 //@formatter:on
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
@@ -394,12 +392,12 @@ public class CasIOUtils {
    * For COMPRESSED_FILTERED_xxx formats, if the typeSystem is not null, the typeSystem is used for
    * decoding.
    * 
-   * If embedded TSI information is available, the CAS's type system and indexes definition are
-   * replaced, except for SerialFormats COMPRESSED_FILTERED, COMPRESSED_FILTERED_TS, and
-   * COMPRESSED_FILTERED_TSI.
+   * If TSI information is available, the CAS's type system and indexes definition are replaced,
+   * except for SerialFormats {@link SerialFormat#COMPRESSED_FILTERED},
+   * {@link SerialFormat#COMPRESSED_FILTERED_TS}, and {@link SerialFormat#COMPRESSED_FILTERED_TSI}.
    * 
    * To replace the CAS's type system and indexes definition for these, use a load form which has
-   * the CasLoadMode argument, and set this to REINIT.
+   * the CasLoadMode argument, and set this to {@link CasLoadMode#REINIT}.
    * 
    * @param casInputStream
    *          The input stream containing the CAS, appropriately buffered.
@@ -461,9 +459,8 @@ public class CasIOUtils {
       /******************************
        * Java Object loading
        ******************************/
-      ObjectInputStream ois = new ObjectInputStream(casInputStream);
       try {
-        Object o = ois.readObject();
+        Object o = deserializeCASSerializerOrCASCompleteSerializer(casInputStream);
         if (o instanceof CASSerializer) {
           bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
           bcsd.reinit((CASSerializer) o); // deserialize from object
@@ -476,7 +473,7 @@ public class CasIOUtils {
           /** Unrecognized serialized CAS format */
           throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT);
         }
-      } catch (ClassNotFoundException e) {
+      } catch (IOException e) {
         /** Unrecognized serialized CAS format */
         throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT);
       }
@@ -593,15 +590,10 @@ public class CasIOUtils {
   }
 
   private static CASMgrSerializer readCasManager(InputStream tsiInputStream) throws IOException {
-    try {
-      if (null == tsiInputStream) {
-        return null;
-      }
-      ObjectInputStream is = new ObjectInputStream(tsiInputStream);
-      return (CASMgrSerializer) is.readObject();
-    } catch (ClassNotFoundException e) {
-      throw new IOException(e);
+    if (null == tsiInputStream) {
+      return null;
     }
+    return SerializationUtils.deserializeCASMgrSerializer(tsiInputStream);
   }
 
   private static void writeJavaObject(Object o, OutputStream aOS) throws IOException {
@@ -614,15 +606,5 @@ public class CasIOUtils {
           throws IOException {
     writeJavaObject(includeIndexDefs ? Serialization.serializeCASMgr((CASImpl) aCas)
             : Serialization.serializeCASMgrTypeSystemOnly((CASImpl) aCas), aOS);
-  }
-
-  private static void closeQuitely(Closeable closeable) {
-    if (closeable != null) {
-      try {
-        closeable.close();
-      } catch (IOException e) {
-        // do nothing
-      }
-    }
   }
 }

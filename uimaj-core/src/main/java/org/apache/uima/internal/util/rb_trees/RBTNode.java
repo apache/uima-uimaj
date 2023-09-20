@@ -199,41 +199,41 @@ class RBTNode<T> {
 
   /** Left rotation, used to keep the tree balanced. See CLR. */
   private final void leftRotate(RedBlackTree<T> tree) {
-    RBTNode<T> y = this.right;
-    this.right = y.left;
+    RBTNode<T> y = right;
+    right = y.left;
     if (y.left != null) {
       y.left.parent = this;
     }
-    y.parent = this.parent;
-    if (this.parent == null) {
+    y.parent = parent;
+    if (parent == null) {
       tree.root = y;
-    } else if (this == this.parent.left) {
-      this.parent.left = y;
+    } else if (this == parent.left) {
+      parent.left = y;
     } else {
-      this.parent.right = y;
+      parent.right = y;
     }
     y.left = this;
-    this.parent = y;
+    parent = y;
     return;
   }
 
   /** Right rotation, used to keep the tree balanced. See CLR. */
   private final void rightRotate(RedBlackTree<T> tree) {
-    RBTNode<T> y = this.left;
-    this.left = y.right;
+    RBTNode<T> y = left;
+    left = y.right;
     if (y.right != null) {
       y.right.parent = this;
     }
-    y.parent = this.parent;
-    if (this.parent == null) {
+    y.parent = parent;
+    if (parent == null) {
       tree.root = y;
-    } else if (this == this.parent.right) {
-      this.parent.right = y;
+    } else if (this == parent.right) {
+      parent.right = y;
     } else {
-      this.parent.left = y;
+      parent.left = y;
     }
     y.right = this;
-    this.parent = y;
+    parent = y;
     return;
   }
 
@@ -467,13 +467,13 @@ class RBTNode<T> {
    */
   int keys(int pos, int[] keys) {
     int cur = pos;
-    if (this.left != null) {
-      cur = this.left.keys(cur, keys);
+    if (left != null) {
+      cur = left.keys(cur, keys);
     }
-    keys[cur] = this.key;
+    keys[cur] = key;
     ++cur;
-    if (this.right != null) {
-      cur = this.right.keys(cur, keys);
+    if (right != null) {
+      cur = right.keys(cur, keys);
     }
     return cur;
   }
@@ -508,19 +508,19 @@ class RBTNode<T> {
     for (int i = 0; i < indent; i++) {
       System.out.print(' ');
     }
-    System.out.print(this.key);
+    System.out.print(key);
     System.out.print(':');
-    if (this.color == RED) {
+    if (color == RED) {
       System.out.println("red");
     } else {
       System.out.println("black");
     }
     indent += indentInc;
-    if (this.left != null) {
-      this.left.printKeys(indent);
+    if (left != null) {
+      left.printKeys(indent);
     }
-    if (this.right != null) {
-      this.right.printKeys(indent);
+    if (right != null) {
+      right.printKeys(indent);
     }
     return;
   }
@@ -530,26 +530,26 @@ class RBTNode<T> {
     for (int i = 0; i < indent; i++) {
       System.out.print(' ');
     }
-    System.out.println(this.element.toString());
+    System.out.println(element.toString());
     indent += indentInc;
-    if (this.left != null) {
-      this.left.printElements(indent);
+    if (left != null) {
+      left.printElements(indent);
     }
-    if (this.right != null) {
-      this.right.printElements(indent);
+    if (right != null) {
+      right.printElements(indent);
     }
     return;
   }
 
   void getBinaryTree(BinaryTree tree) {
-    tree.setValue(new RBTKeyValuePair(this.key, this.element));
-    if (this.left != null) {
+    tree.setValue(new RBTKeyValuePair(key, element));
+    if (left != null) {
       BinaryTree newLeft = tree.newLeftDtr();
-      this.left.getBinaryTree(newLeft);
+      left.getBinaryTree(newLeft);
     }
-    if (this.right != null) {
+    if (right != null) {
       BinaryTree newRight = tree.newRightDtr();
-      this.right.getBinaryTree(newRight);
+      right.getBinaryTree(newRight);
     }
   }
 

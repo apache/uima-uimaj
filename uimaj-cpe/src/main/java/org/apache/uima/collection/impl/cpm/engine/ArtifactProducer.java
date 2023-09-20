@@ -194,16 +194,16 @@ public class ArtifactProducer implements Runnable {
    * Null out fields of this object. Call this only when this object is no longer needed.
    */
   public void cleanup() {
-    this.casPool = null;
-    this.workQueue = null;
-    this.collectionReader = null;
-    this.casList = null;
-    this.cpm = null;
-    if (this.cpmStatTable != null) {
-      this.cpmStatTable.clear();
-      this.cpmStatTable = null;
+    casPool = null;
+    workQueue = null;
+    collectionReader = null;
+    casList = null;
+    cpm = null;
+    if (cpmStatTable != null) {
+      cpmStatTable.clear();
+      cpmStatTable = null;
     }
-    this.lastDocId = null;
+    lastDocId = null;
   }
 
   /**
@@ -427,7 +427,7 @@ public class ArtifactProducer implements Runnable {
                   "UIMA_CPM_cr_check_cas_for_null__FINEST", new Object[] {
                       Thread.currentThread().getName(), String.valueOf((casList[i] == null)) });
         }
-        if (cpm.isRunning() == false) {
+        if (!cpm.isRunning()) {
           // CPM is in shutdown stage. No need to enqueue additional
           // documents/CAS'es. Just release
           // those that have been aquired so far back to the pool and
@@ -771,8 +771,8 @@ public class ArtifactProducer implements Runnable {
             // while the CPM is in normal shutdown state.
             // (Moved this code inside if (casObjectList != null)
             // block to avoid NullPointerException. -Adam
-            if (cpm.isRunning() == true
-                    || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
+            if (cpm.isRunning()
+                    || (!cpm.isRunning() && !cpm.isHardKilled())) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
               // synchronized (workQueue) { // redundant, enqueue does this

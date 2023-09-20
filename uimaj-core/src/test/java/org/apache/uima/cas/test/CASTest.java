@@ -46,8 +46,8 @@ public class CASTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-      this.ts = this.cas.getTypeSystem();
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
+      ts = cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
     }
@@ -55,23 +55,23 @@ public class CASTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
+    cas = null;
+    ts = null;
   }
 
   @Test
   public void testGetTypeSystem() {
-    assertTrue(this.cas.getTypeSystem() != null);
+    assertTrue(cas.getTypeSystem() != null);
   }
 
   @Test
   public void testGetAnnotationIndex() {
-    AnnotationIndex index = this.cas.getAnnotationIndex();
+    AnnotationIndex index = cas.getAnnotationIndex();
     assertNotNull(index);
     assertTrue(index.iterator() != null);
     boolean caughtException = false;
     try {
-      this.cas.getAnnotationIndex(this.cas.getTypeSystem().getType(CAS.TYPE_NAME_TOP));
+      cas.getAnnotationIndex(cas.getTypeSystem().getType(CAS.TYPE_NAME_TOP));
     } catch (CASRuntimeException e) {
       caughtException = true;
     }
@@ -81,11 +81,11 @@ public class CASTest {
   @Test
   public void testCreateFS() {
     // Can create FS of type "Top"
-    assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
+    assertTrue(cas.createFS(ts.getType(CAS.TYPE_NAME_TOP)) != null);
     boolean caughtExc = false;
     // Can't create int FS.
     try {
-      this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_INTEGER));
+      cas.createFS(ts.getType(CAS.TYPE_NAME_INTEGER));
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
@@ -94,7 +94,7 @@ public class CASTest {
     caughtExc = false;
     // Can't create array with CAS.createFS().
     try {
-      this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+      cas.createFS(ts.getType(CAS.TYPE_NAME_FS_ARRAY));
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
@@ -110,7 +110,7 @@ public class CASTest {
     // assertTrue(arraySize > Heap.DEFAULT_SIZE);
     IntArrayFS array = null;
     try {
-      array = this.cas.createIntArrayFS(arraySize);
+      array = cas.createIntArrayFS(arraySize);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }

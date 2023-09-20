@@ -19,7 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -565,7 +565,7 @@ public class ResultSpecification_implTest {
       // System.out.println(rsXml);
 
       // parse object back from XML
-      InputStream is = new ByteArrayInputStream(rsXml.getBytes(encoding));
+      InputStream is = new ByteArrayInputStream(rsXml.getBytes(UTF_8));
       ResultSpecification newRS = UIMAFramework.getXMLParser()
               .parseResultSpecification(new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();

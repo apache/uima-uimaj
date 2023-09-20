@@ -366,7 +366,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
       // set property
       String[] overridesArray = new String[valueList.size()];
       valueList.toArray(overridesArray);
-      this.setOverrides(overridesArray);
+      setOverrides(overridesArray);
     } else {
       super.readArrayPropertyValueFromXMLElement(aPropXmlInfo, aPropClass, aElement, aParser,
               aOptions);

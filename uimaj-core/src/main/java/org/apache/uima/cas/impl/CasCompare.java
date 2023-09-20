@@ -334,10 +334,7 @@ public class CasCompare {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       ScsKey other = (ScsKey) obj;
@@ -1476,11 +1473,7 @@ public class CasCompare {
   private int compareFeature(TOP fs1, TOP fs2, TypeImpl ti1, FeatureImpl fi1) {
     int r = 0;
     if (inSortContext && isTypeMapping) {
-      if (isSrcCas && typeMapper.getTgtFeature(ti1, fi1) == null) {
-        return 0; // skip tests for features not in target type system
-                  // so when comparing CASs, the src value won't cause a miscompare
-      }
-      if (!isSrcCas && typeMapper.getSrcFeature(ti1, fi1) == null) {
+      if ((isSrcCas && typeMapper.getTgtFeature(ti1, fi1) == null) || (!isSrcCas && typeMapper.getSrcFeature(ti1, fi1) == null)) {
         return 0; // types/features belong to target in this case
       }
     }
@@ -1516,14 +1509,9 @@ public class CasCompare {
 
       if (isTypeMapping) {
 
-        if (isSrcCas && typeMapper.getTgtFeature(ti, fi) == null) {
-          continue; // skip for features not in target type system
-                    // so when comparing CASs, the src value won't cause a miscompare
-        }
-
         // probably not executed, since types discovered on first sort
         // except for a type that exists only the the target
-        if (!isSrcCas && typeMapper.getSrcFeature(ti, fi) == null) {
+        if ((isSrcCas && typeMapper.getTgtFeature(ti, fi) == null) || (!isSrcCas && typeMapper.getSrcFeature(ti, fi) == null)) {
           continue; // types/features belong to target in this case
         }
 
@@ -1932,13 +1920,7 @@ public class CasCompare {
   private int compareRefResult(TOP rfs1, TOP rfs2) {
 
     // exception: treat canonical empty lists
-    if (!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList) {
-      // if (prev1.size() <= 0 || prev2.size() <= 0) {
-      return 0;
-      // }
-    }
-
-    if (prev1.size() <= 0) {
+    if ((!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList) || (prev1.size() <= 0)) {
       return 0; // no recursion case
     }
 

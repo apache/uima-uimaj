@@ -37,20 +37,20 @@ class FSStringConstraintImpl implements FSStringConstraint {
    * Constructor is package private.
    */
   FSStringConstraintImpl() {
-    this.string = "";
+    string = "";
   }
 
   @Override
   public void equals(String s) {
-    this.string = s;
+    string = s;
   }
 
   @Override
   public boolean match(String s) {
-    if (this.string == null) {
+    if (string == null) {
       return (s == null);
     }
-    return (this.string.equals(s));
+    return (string.equals(s));
   }
 
   @Override
@@ -58,8 +58,8 @@ class FSStringConstraintImpl implements FSStringConstraint {
     // need to escape quotes and backslashes
     StringBuffer buf = new StringBuffer();
     buf.append("= \"");
-    for (int i = 0; i < this.string.length(); i++) {
-      char c = this.string.charAt(i);
+    for (int i = 0; i < string.length(); i++) {
+      char c = string.charAt(i);
       switch (c) {
         case '"':
           buf.append("\\\"");

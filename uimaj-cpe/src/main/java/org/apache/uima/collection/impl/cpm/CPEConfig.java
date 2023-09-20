@@ -24,10 +24,7 @@ import org.apache.uima.util.UimaTimer;
 
 /**
  * Object containing global cpe configuration.
- * 
- * 
  */
-
 public class CPEConfig {
   private CheckpointConfig chConfig = null;
 

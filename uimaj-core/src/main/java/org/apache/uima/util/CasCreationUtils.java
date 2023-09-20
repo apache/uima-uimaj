@@ -1813,9 +1813,9 @@ public class CasCreationUtils {
 
     MetaDataCacheKey(ResourceSpecifier resourceSpecifier, ResourceManager resourceManager) {
       this.resourceSpecifier = resourceSpecifier;
-      this.rmClassLoader = (null == resourceManager) ? null
+      rmClassLoader = (null == resourceManager) ? null
               : resourceManager.getExtensionClassLoader(); // can be null
-      this.rmDataPath = (null == resourceManager) ? null : resourceManager.getDataPath();
+      rmDataPath = (null == resourceManager) ? null : resourceManager.getDataPath();
     }
 
     @Override

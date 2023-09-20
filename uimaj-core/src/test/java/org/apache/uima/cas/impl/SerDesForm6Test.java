@@ -208,7 +208,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     public TTypeSystem(TypeSystemMgr tsm, TypeSystems kind) {
       this.tsm = tsm;
       this.kind = kind;
-      this.ts = (TypeSystemImpl) tsm;
+      ts = (TypeSystemImpl) tsm;
     }
 
     /** add existing type by short name to the map, e.g. Aint -> array of int */

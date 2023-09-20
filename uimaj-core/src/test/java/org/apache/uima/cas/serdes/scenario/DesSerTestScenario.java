@@ -43,12 +43,12 @@ public class DesSerTestScenario implements Runnable {
   private final FailableBiConsumer<Path, Path, ?> assertion;
 
   private DesSerTestScenario(Builder builder) {
-    this.title = builder.title;
-    this.sourceCasFile = builder.sourceCasFile;
-    this.referenceCasFile = builder.referenceCasFile;
-    this.targetBasePath = builder.targetBasePath;
-    this.cycle = builder.cycle;
-    this.assertion = builder.assertion;
+    title = builder.title;
+    sourceCasFile = builder.sourceCasFile;
+    referenceCasFile = builder.referenceCasFile;
+    targetBasePath = builder.targetBasePath;
+    cycle = builder.cycle;
+    assertion = builder.assertion;
   }
 
   public Path getSourceCasFile() {
@@ -150,7 +150,7 @@ public class DesSerTestScenario implements Runnable {
 
     public Builder withCasFile(Path sourceCasFile) {
       this.sourceCasFile = sourceCasFile;
-      this.referenceCasFile = sourceCasFile;
+      referenceCasFile = sourceCasFile;
       return this;
     }
 
@@ -175,7 +175,7 @@ public class DesSerTestScenario implements Runnable {
     }
 
     public Builder withAssertion(FailableBiConsumer<Path, Path, ?> aAssertion) {
-      this.assertion = aAssertion;
+      assertion = aAssertion;
       return this;
     }
 

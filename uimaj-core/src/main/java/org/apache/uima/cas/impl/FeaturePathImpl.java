@@ -92,21 +92,21 @@ class FeaturePathImpl implements FeaturePath {
   public void addFeature(Feature feat) {
 
     // check if currently feature path ends with a built-in function
-    if (this.builtInFunction > 0) {
+    if (builtInFunction > 0) {
       throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_SYNTAX_ADD",
               new Object[] { getFeaturePathString(), feat.getShortName() });
     }
 
     // add feature to feature path
-    this.featurePathElementNames.add(feat.getShortName());
-    this.boundFeatures.add((FeatureImpl) feat);
+    featurePathElementNames.add(feat.getShortName());
+    boundFeatures.add((FeatureImpl) feat);
 
     // if current featurePath was already initialized we cannot guarantee that
     // the path is still ever valid so we have to evaluate the path on the
     // fly.
-    if (this.boundBaseType != null && PathValid.NEVER == TypeSystemUtils
-            .isPathValid(this.boundBaseType, this.featurePathElementNames)) {
-      this.boundBaseType = null; // can't be used for this path
+    if (boundBaseType != null && PathValid.NEVER == TypeSystemUtils
+            .isPathValid(boundBaseType, featurePathElementNames)) {
+      boundBaseType = null; // can't be used for this path
     }
   }
 
@@ -117,7 +117,7 @@ class FeaturePathImpl implements FeaturePath {
    */
   @Override
   public FeatureImpl getFeature(int i) {
-    return (this.size() == this.boundFeatures.size()) ? this.boundFeatures.get(i) : null;
+    return (size() == boundFeatures.size()) ? boundFeatures.get(i) : null;
   }
 
   /*
@@ -127,7 +127,7 @@ class FeaturePathImpl implements FeaturePath {
    */
   @Override
   public int size() {
-    return this.featurePathElementNames.size();
+    return featurePathElementNames.size();
   }
 
   /*
@@ -138,8 +138,8 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public void initialize(String featurePath) throws CASException {
 
-    this.builtInFunction = NO_BUILT_IN_FUNCTION;
-    this.originalBuiltInName = null;
+    builtInFunction = NO_BUILT_IN_FUNCTION;
+    originalBuiltInName = null;
 
     // throw exception if featurePath is null
     if (featurePath == null) {
@@ -157,7 +157,7 @@ class FeaturePathImpl implements FeaturePath {
               new Object[] { featurePath, "//" });
     }
 
-    this.featurePathElementNames.clear();
+    featurePathElementNames.clear();
     // parse feature path into path elements
     StringTokenizer tokenizer = new StringTokenizer(featurePath, FEATURE_PATH_SEPARATOR);
     while (tokenizer.hasMoreTokens()) {
@@ -165,30 +165,30 @@ class FeaturePathImpl implements FeaturePath {
       // check if there are more tokens available, if we are at the last
       // token we have to check for built-in functions
       if (tokenizer.hasMoreTokens()) {
-        this.featurePathElementNames.add(token);
+        featurePathElementNames.add(token);
       } else {
         // we have the last token, check for built-in functions
         int index = -1;
         if ((index = token.indexOf(BUILT_IN_FUNCTION_SEPARATOR)) != -1) {
           if (index > 0) {
             // we have a built-in function that is separated with a ":"
-            this.featurePathElementNames.add(token.substring(0, index));
+            featurePathElementNames.add(token.substring(0, index));
           }
           // get built-in function
           originalBuiltInName = token.substring(index + 1);
           String builtInFunctionName = originalBuiltInName.toLowerCase();
           if (builtInFunctionName.equals(FUNCTION_NAME_COVERED_TEXT)) {
-            this.builtInFunction = FUNCTION_COVERED_TEXT;
+            builtInFunction = FUNCTION_COVERED_TEXT;
           } else if (builtInFunctionName.equals(FUNCTION_NAME_ID)) {
-            this.builtInFunction = FUNCTION_ID;
+            builtInFunction = FUNCTION_ID;
           } else if (builtInFunctionName.equals(FUNCTION_NAME_TYPE_NAME)) {
-            this.builtInFunction = FUNCTION_TYPE_NAME;
+            builtInFunction = FUNCTION_TYPE_NAME;
           } else {
             throw new CASException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_SYNTAX",
                     new Object[] { featurePath, builtInFunctionName });
           }
         } else {
-          this.featurePathElementNames.add(token);
+          featurePathElementNames.add(token);
         }
       }
     }
@@ -202,20 +202,20 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public void typeInit(Type typeAtStartOfFeaturePath) throws CASException {
 
-    this.boundBaseType = (TypeImpl) typeAtStartOfFeaturePath;
+    boundBaseType = (TypeImpl) typeAtStartOfFeaturePath;
 
     // do feature path type initialization only if a featurePath is available
-    if (this.featurePathElementNames.size() > 0) {
+    if (featurePathElementNames.size() > 0) {
 
       // LowLevelTypeSystem llTypeSystem = ((TypeImpl) featurePathType)
       // .getTypeSystem().getLowLevelTypeSystem();
 
       // store featurePathType
-      this.boundBaseType = (TypeImpl) typeAtStartOfFeaturePath;
+      boundBaseType = (TypeImpl) typeAtStartOfFeaturePath;
 
       // validate featurePath for given type
       if (PathValid.NEVER == TypeSystemUtils.isPathValid(typeAtStartOfFeaturePath,
-              this.featurePathElementNames)) {
+              featurePathElementNames)) {
         // invalid featurePath - throw an configuration exception
         throw new CASException(MESSAGE_DIGEST, "ERROR_VALIDATE_FEATURE_PATH",
                 new Object[] { getFeaturePathString(), typeAtStartOfFeaturePath.getName() });
@@ -226,15 +226,15 @@ class FeaturePathImpl implements FeaturePath {
         // available in
         // one or more subtypes.
 
-        this.boundFeatures.clear(); // reset
+        boundFeatures.clear(); // reset
         // object
         TypeImpl currentType = (TypeImpl) typeAtStartOfFeaturePath;
         // iterate over all featurePathNames and store the resolved CAS
         // feature in the boundFeatures list, until one not found
-        for (String featName : this.featurePathElementNames) {
+        for (String featName : featurePathElementNames) {
           FeatureImpl fi = currentType.getFeatureByBaseName(featName);
           if (fi != null) {
-            this.boundFeatures.add(fi);
+            boundFeatures.add(fi);
             currentType = fi.getRangeImpl();
           } else {
             break;
@@ -422,11 +422,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public String getValueAsString(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs);
-    if (tgtFs == FEATURE_PATH_FAILED) {
-      return null;
-    }
-
-    if (targetType == null) {
+    if ((tgtFs == FEATURE_PATH_FAILED) || (targetType == null)) {
       return null;
     }
     switch (TypeSystemImpl.getTypeClass(targetType)) {
@@ -453,7 +449,7 @@ class FeaturePathImpl implements FeaturePath {
       case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
       case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
       case LowLevelCAS.TYPE_CLASS_FSARRAY:
-        if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
+        if (builtInFunction > NO_BUILT_IN_FUNCTION) {
           return evaluateBuiltInFunction(tgtFs);
         }
         return ((CommonArrayFS) tgtFs).getValuesAsCommaSeparatedString();
@@ -462,7 +458,7 @@ class FeaturePathImpl implements FeaturePath {
         if (tgtFs == null) {
           return null;
         }
-        if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
+        if (builtInFunction > NO_BUILT_IN_FUNCTION) {
           return evaluateBuiltInFunction(tgtFs);
         }
         return tgtFs.toString();
@@ -479,11 +475,11 @@ class FeaturePathImpl implements FeaturePath {
   private void throwBuiltInFunctionException(String typeName) {
     // get built-in function name
     String functionName = null;
-    if (this.builtInFunction == FUNCTION_COVERED_TEXT) {
+    if (builtInFunction == FUNCTION_COVERED_TEXT) {
       functionName = FUNCTION_NAME_COVERED_TEXT;
-    } else if (this.builtInFunction == FUNCTION_ID) {
+    } else if (builtInFunction == FUNCTION_ID) {
       functionName = FUNCTION_NAME_ID;
-    } else if (this.builtInFunction == FUNCTION_TYPE_NAME) {
+    } else if (builtInFunction == FUNCTION_TYPE_NAME) {
       functionName = FUNCTION_NAME_TYPE_NAME;
     }
     // throw runtime exception
@@ -500,17 +496,17 @@ class FeaturePathImpl implements FeaturePath {
    * @return Returns the built-in function value for the given FS.
    */
   private String evaluateBuiltInFunction(TOP returnFS) {
-    if (this.builtInFunction == FUNCTION_COVERED_TEXT) {
+    if (builtInFunction == FUNCTION_COVERED_TEXT) {
       if (returnFS instanceof AnnotationFS) {
         return ((AnnotationFS) returnFS).getCoveredText();
       } else {
         throw new CASRuntimeException(MESSAGE_DIGEST, "BUILT_IN_FUNCTION_NOT_SUPPORTED",
                 new Object[] { FUNCTION_NAME_COVERED_TEXT, returnFS.getType().getName() });
       }
-    } else if (this.builtInFunction == FUNCTION_ID) {
+    } else if (builtInFunction == FUNCTION_ID) {
       return Integer.toString(returnFS._id);
 
-    } else if (this.builtInFunction == FUNCTION_TYPE_NAME) {
+    } else if (builtInFunction == FUNCTION_TYPE_NAME) {
       return returnFS.getType().getName();
     }
     return null;
@@ -544,7 +540,7 @@ class FeaturePathImpl implements FeaturePath {
       return FEATURE_PATH_FAILED;
     }
 
-    if (this.featurePathElementNames.size() == 0) {
+    if (featurePathElementNames.size() == 0) {
       targetType = fs._getTypeImpl();
       return fs;
     }
@@ -563,13 +559,13 @@ class FeaturePathImpl implements FeaturePath {
     int rangeTypeClass = -1;
 
     // resolve feature path value
-    for (int i = 0; i < this.featurePathElementNames.size(); i++) {
+    for (int i = 0; i < featurePathElementNames.size(); i++) {
       if (currentFs == null) {
         return FEATURE_PATH_FAILED;
       }
 
-      if (i < this.boundFeatures.size()) {
-        targetFeature = this.boundFeatures.get(i);
+      if (i < boundFeatures.size()) {
+        targetFeature = boundFeatures.get(i);
         /*
          * It is possible that the previously bound feature isn't valid for this FS. This can happen
          * if a type hierarchy defines 2 different features for two different subtypes of type Tt
@@ -615,7 +611,7 @@ class FeaturePathImpl implements FeaturePath {
         case LowLevelCAS.TYPE_CLASS_FS:
           currentFs = currentFs.getFeatureValue(targetFeature);
           if (currentFs == null) {
-            if (i == (this.featurePathElementNames.size() - 1)) {
+            if (i == (featurePathElementNames.size() - 1)) {
               // at the last element, keep targetType == to the range type
             } else {
               //@formatter:off
@@ -626,8 +622,8 @@ class FeaturePathImpl implements FeaturePath {
              *   - the PathValid is ALWAYS 
              */
               //@formatter:on
-              PathValid pathValid = TypeSystemUtils.isPathValid(this.boundBaseType,
-                      this.featurePathElementNames);
+              PathValid pathValid = TypeSystemUtils.isPathValid(boundBaseType,
+                      featurePathElementNames);
               if (pathValid == PathValid.POSSIBLE) {
                 targetType = null; // following v2 design here
               }
@@ -648,13 +644,13 @@ class FeaturePathImpl implements FeaturePath {
     if (targetFeature == null) {
       throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED",
               new Object[] { getFeaturePathString(), currentFs._getTypeImpl().getName(),
-                  this.featurePathElementNames.get(i) });
+                  featurePathElementNames.get(i) });
     }
     boundFeatures.add(targetFeature); // cache for future use
   }
 
   private void verifyNoBuiltInFunction() {
-    if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
+    if (builtInFunction > NO_BUILT_IN_FUNCTION) {
       throwBuiltInFunctionException(targetFeature.getRangeImpl().getName());
     }
   }
@@ -675,7 +671,7 @@ class FeaturePathImpl implements FeaturePath {
   }
 
   private void appendBuiltInFunction(StringBuilder sb) {
-    if (this.builtInFunction > 0) {
+    if (builtInFunction > 0) {
       sb.append(':').append(originalBuiltInName); // because capitalization could be different
     }
   }

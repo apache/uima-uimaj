@@ -94,10 +94,10 @@ public class CasDataToXCasTest {
     @Override
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
             throws SAXException {
-      this.inElement = arg1;
-      this.buf = new StringBuffer();
+      inElement = arg1;
+      buf = new StringBuffer();
 
-      if (this.testElementName.equals(arg1)) {
+      if (testElementName.equals(arg1)) {
         foundTestElement = true;
         assertThat(arg3.getValue("myFeature")).isEqualTo("myValue");
       }
@@ -121,7 +121,7 @@ public class CasDataToXCasTest {
      */
     @Override
     public void endElement(String arg0, String arg1, String arg2) throws SAXException {
-      if (this.testElementName.equals(arg1)) {
+      if (testElementName.equals(arg1)) {
         assertThat(buf.toString()).isEqualTo("this should show up in XML content");
       }
     }

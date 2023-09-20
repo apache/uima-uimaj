@@ -72,6 +72,7 @@ public class EncodedPrintStream extends PrintStream {
     "test".getBytes(encoding);
   }
 
+  @Override
   public final void writeBytes(byte[] bytes) {
     super.write(bytes, 0, bytes.length);
   }

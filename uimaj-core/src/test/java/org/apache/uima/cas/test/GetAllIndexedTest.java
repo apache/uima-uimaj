@@ -99,8 +99,8 @@ public class GetAllIndexedTest {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      this.cas = ae.newCAS();
-      assertTrue(this.cas != null);
+      cas = ae.newCAS();
+      assertTrue(cas != null);
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -112,34 +112,34 @@ public class GetAllIndexedTest {
       assertTrue(false);
     }
 
-    TypeSystem ts = this.cas.getTypeSystem();
+    TypeSystem ts = cas.getTypeSystem();
     // assert(wordType != null);
     // this.tokenType = ts.getType(TOKEN_TYPE);
     // this.sentenceType = ts.getType(SENT_TYPE);
-    this.annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(this.annotationType != null);
-    this.otherAnnotationType = ts.getType(OTHER_ANNOT_TYPE);
-    assertTrue(this.otherAnnotationType != null);
-    this.annotationBaseType = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    assertTrue(this.annotationBaseType != null);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    assertTrue(annotationType != null);
+    otherAnnotationType = ts.getType(OTHER_ANNOT_TYPE);
+    assertTrue(otherAnnotationType != null);
+    annotationBaseType = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
+    assertTrue(annotationBaseType != null);
   }
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
+    cas = null;
     // this.tokenType = null;
     // this.sentenceType = null;
-    this.annotationType = null;
-    this.annotationBaseType = null;
-    this.otherAnnotationType = null;
+    annotationType = null;
+    annotationBaseType = null;
+    otherAnnotationType = null;
   }
 
   private final FSIterator<FeatureStructure> getAllIndexed() {
-    return getAllIndexed(this.cas.getTypeSystem().getTopType());
+    return getAllIndexed(cas.getTypeSystem().getTopType());
   }
 
   private final FSIterator<FeatureStructure> getAllIndexed(Type type) {
-    return this.cas.getIndexRepository().getAllIndexedFS(type);
+    return cas.getIndexRepository().getAllIndexedFS(type);
   }
 
   private final int getIteratorSize(FSIterator<? extends FeatureStructure> it) {
@@ -151,18 +151,18 @@ public class GetAllIndexedTest {
   }
 
   private final void addFS(FeatureStructure fs) {
-    this.cas.getIndexRepository().addFS(fs);
-    ++this.fsCount;
-    assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
+    cas.getIndexRepository().addFS(fs);
+    ++fsCount;
+    assertTrue(getIteratorSize(getAllIndexed()) == fsCount);
   }
 
   private final FeatureStructure createAnnot(int from, int to) {
-    return this.cas.createAnnotation(this.annotationType, from, to);
+    return cas.createAnnotation(annotationType, from, to);
   }
 
   private final void initTest() {
-    this.cas.reset();
-    this.fsCount = 0;
+    cas.reset();
+    fsCount = 0;
   }
 
   /**
@@ -171,18 +171,18 @@ public class GetAllIndexedTest {
   @Test
   public void testGetAllIndexed() throws Exception {
     initTest();
-    FeatureStructure docAnnotation = this.cas.getDocumentAnnotation();
+    FeatureStructure docAnnotation = cas.getDocumentAnnotation();
     assertNotNull(docAnnotation);
-    ++this.fsCount;
-    assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
-    final FeatureStructure otherAnnotationFS = this.cas.createFS(this.otherAnnotationType);
-    FeatureStructure annotationFS = this.cas.createFS(this.annotationType);
-    final FeatureStructure annotationBaseFS = this.cas.createFS(this.annotationBaseType);
+    ++fsCount;
+    assertTrue(getIteratorSize(getAllIndexed()) == fsCount);
+    final FeatureStructure otherAnnotationFS = cas.createFS(otherAnnotationType);
+    FeatureStructure annotationFS = cas.createFS(annotationType);
+    final FeatureStructure annotationBaseFS = cas.createFS(annotationBaseType);
     addFS(annotationFS);
     addFS(otherAnnotationFS);
     addFS(annotationBaseFS);
-    addFS(this.cas.createFS(this.cas.getTypeSystem().getTopType()));
-    assertTrue(getIteratorSize(this.cas.getAnnotationIndex().iterator()) == 2);
+    addFS(cas.createFS(cas.getTypeSystem().getTopType()));
+    assertTrue(getIteratorSize(cas.getAnnotationIndex().iterator()) == 2);
     addFS(createAnnot(0, 1));
     addFS(createAnnot(1, 2));
     addFS(createAnnot(2, 3));
@@ -190,7 +190,7 @@ public class GetAllIndexedTest {
 
     // Iterate backwards, check only that it returns correct number of FSs
     FSIterator<FeatureStructure> it = getAllIndexed();
-    int down = this.fsCount;
+    int down = fsCount;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       --down;
     }
@@ -217,12 +217,12 @@ public class GetAllIndexedTest {
     assertFalse(copy.isValid());
 
     // test getAllIndexed(Type)
-    Type tokenType = this.cas.getTypeSystem().getType(TOKEN_TYPE);
+    Type tokenType = cas.getTypeSystem().getType(TOKEN_TYPE);
     assertNotNull(tokenType);
-    FSIterator<FeatureStructure> tokenIter = this.cas.getIndexRepository()
+    FSIterator<FeatureStructure> tokenIter = cas.getIndexRepository()
             .getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
-    Iterator<TOP> tokenIter2 = this.cas.getIndexedFSs(tokenType).iterator();
+    Iterator<TOP> tokenIter2 = cas.getIndexedFSs(tokenType).iterator();
     assertFalse(tokenIter2.hasNext());
   }
 }

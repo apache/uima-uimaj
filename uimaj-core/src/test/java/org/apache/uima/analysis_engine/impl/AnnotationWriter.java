@@ -63,10 +63,10 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   public void initialize() throws ResourceInitializationException {
 
     File testBaseDir = JUnitExtension.getFile("TextAnalysisEngineImplTest").getParentFile();
-    this.outFile = new File(testBaseDir, "CpmOutput.txt");
+    outFile = new File(testBaseDir, "CpmOutput.txt");
 
     try {
-      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
+      fileWriter = new OutputStreamWriter(new FileOutputStream(outFile, false),
               StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
@@ -106,11 +106,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();
 
-        this.fileWriter.write(annot.getCoveredText());
-        this.fileWriter.write(System.getProperty("line.separator"));
-        this.fileWriter.write(annot.toString());
+        fileWriter.write(annot.getCoveredText());
+        fileWriter.write(System.getProperty("line.separator"));
+        fileWriter.write(annot.toString());
       }
-      this.fileWriter.flush();
+      fileWriter.flush();
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -149,8 +149,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   @Override
   public void collectionProcessComplete(ProcessTrace aTrace)
           throws ResourceProcessException, IOException {
-    if (this.fileWriter != null) {
-      this.fileWriter.close();
+    if (fileWriter != null) {
+      fileWriter.close();
     }
   }
 
@@ -176,9 +176,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    */
   @Override
   public void destroy() {
-    if (this.fileWriter != null) {
+    if (fileWriter != null) {
       try {
-        this.fileWriter.close();
+        fileWriter.close();
       } catch (IOException e) {
         // ignore IOException on destroy
       }

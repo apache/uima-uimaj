@@ -264,7 +264,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
 
         if (resourceSpecifier instanceof AnalysisEngineDescription) {
           casProcessor = UIMAFramework.produceAnalysisEngine(resourceSpecifier,
-                  this.cpeFactory.getResourceManager(), null);
+                  cpeFactory.getResourceManager(), null);
           // casProcessor.
         } else if (resourceSpecifier instanceof CasConsumerDescription) {
           if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier,
@@ -276,7 +276,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
                       new Object[] { Thread.currentThread().getName() });
             }
             casProcessor = UIMAFramework.produceCasConsumer(resourceSpecifier,
-                    this.cpeFactory.getResourceManager(), null);
+                    cpeFactory.getResourceManager(), null);
           } else if (cpeFactory.isDefinitionInstanceOf(CasProcessor.class, resourceSpecifier,
                   aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {

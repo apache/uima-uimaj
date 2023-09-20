@@ -419,8 +419,8 @@ public class PackageBrowser {
       return null;
     } else {
       // get pear descriptor file and return it as file path
-      File pearDescFile = new File(this._rootDir,
-              this.getInstallationDescriptor().getMainComponentId()
+      File pearDescFile = new File(_rootDir,
+              getInstallationDescriptor().getMainComponentId()
                       + InstallationController.PEAR_DESC_FILE_POSTFIX);
       return pearDescFile.getAbsolutePath();
     }
@@ -441,7 +441,7 @@ public class PackageBrowser {
 
     // get all environment variables that are specified for the current pear file
     Properties pearEnvProps = InstallationController
-            .buildTableOfEnvVars(this.getInstallationDescriptor());
+            .buildTableOfEnvVars(getInstallationDescriptor());
 
     // return the uima datapath setting if available. If not return null
     return (String) pearEnvProps.get(RelativePathResolver.UIMA_DATAPATH_PROP);
@@ -460,7 +460,7 @@ public class PackageBrowser {
   public Properties getComponentEnvVars() throws IOException {
     // get all environment variables that are specified for the current pear file
     Properties pearEnvProps = InstallationController
-            .buildTableOfEnvVars(this.getInstallationDescriptor());
+            .buildTableOfEnvVars(getInstallationDescriptor());
 
     // removes the UIMA datapath setting if available since it is already returned with the
     // getComponentDataPath() method.

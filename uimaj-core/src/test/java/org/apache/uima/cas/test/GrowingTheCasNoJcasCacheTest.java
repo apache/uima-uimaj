@@ -79,8 +79,8 @@ public class GrowingTheCasNoJcasCacheTest {
       // Create the analysis engine with the parameters.
       // The second, unused argument here is a custom
       // resource manager.
-      this.ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
-      this.smallHeapCas = this.ae.newJCas();
+      ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
+      smallHeapCas = ae.newJCas();
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -96,9 +96,9 @@ public class GrowingTheCasNoJcasCacheTest {
 
   @AfterEach
   public void tearDown() {
-    if (this.ae != null) {
-      this.ae.destroy();
-      this.ae = null;
+    if (ae != null) {
+      ae.destroy();
+      ae = null;
     }
   }
 
@@ -118,7 +118,7 @@ public class GrowingTheCasNoJcasCacheTest {
     }
     JCas jcas = null;
     try {
-      jcas = this.ae.newJCas();
+      jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -129,13 +129,13 @@ public class GrowingTheCasNoJcasCacheTest {
     int numberOfTokens = 0;
     for (int i = 0; i < REPETITIONS; i++) {
       jcas.reset();
-      this.smallHeapCas.reset();
+      smallHeapCas.reset();
       jcas.setDocumentText(text);
       numberOfSentences = 0;
       numberOfTokens = 0;
       try {
         // long time = System.currentTimeMillis();
-        this.ae.process(jcas);
+        ae.process(jcas);
         // time = System.currentTimeMillis() - time;
         // System.out.println("Time for large CAS: " + new TimeSpan(time));
         numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
@@ -146,16 +146,16 @@ public class GrowingTheCasNoJcasCacheTest {
         e.printStackTrace();
         assertTrue(false);
       }
-      this.smallHeapCas.setDocumentText(text);
+      smallHeapCas.setDocumentText(text);
       try {
         // long time = System.currentTimeMillis();
-        this.ae.process(this.smallHeapCas);
+        ae.process(smallHeapCas);
         // time = System.currentTimeMillis() - time;
         // System.out.println("Time for small CAS: " + new TimeSpan(time));
         assertTrue(this.getClass().toString() + ": number of sentences does not match",
-                numberOfSentences == this.smallHeapCas.getAnnotationIndex(Sentence.type).size());
+                numberOfSentences == smallHeapCas.getAnnotationIndex(Sentence.type).size());
         assertTrue(this.getClass().toString() + ": number of tokens does not match",
-                numberOfTokens == this.smallHeapCas.getAnnotationIndex(Token.type).size());
+                numberOfTokens == smallHeapCas.getAnnotationIndex(Token.type).size());
       } catch (AnalysisEngineProcessException e) {
         e.printStackTrace();
         assertTrue(false);

@@ -73,7 +73,7 @@ final class LongSet {
   }
 
   int getSize() {
-    return this.longs.size();
+    return longs.size();
   }
 
 }

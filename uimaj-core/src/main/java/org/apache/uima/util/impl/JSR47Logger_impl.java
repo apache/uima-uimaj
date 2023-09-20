@@ -62,7 +62,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   private JSR47Logger_impl(JSR47Logger_impl l, int limit) {
     super(l, limit);
-    this.logger = l.logger;
+    logger = l.logger;
   }
 
   /**
@@ -95,7 +95,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public JSR47Logger_impl getLimitedLogger(int limit) {
-    if (limit == Integer.MAX_VALUE || limit == this.limit_common) {
+    if (limit == Integer.MAX_VALUE || limit == limit_common) {
       return this;
     }
     return new JSR47Logger_impl(this, limit);

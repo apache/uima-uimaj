@@ -40,15 +40,15 @@ abstract class PathConstraint implements FSMatchConstraint {
 
   @Override
   public String toString() {
-    if (this.featNames == null) {
+    if (featNames == null) {
       return "";
     }
     StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < this.featNames.size(); i++) {
+    for (int i = 0; i < featNames.size(); i++) {
       if (i > 0) {
         buf.append('.');
       }
-      buf.append(this.featNames.get(i));
+      buf.append(featNames.get(i));
     }
     return buf.toString();
   }

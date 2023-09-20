@@ -74,8 +74,8 @@ public class Logger_impl extends Logger_common_impl {
 
   private Logger_impl(Logger_impl l, int limit) {
     super(l, limit);
-    this.mOut = l.mOut;
-    this.loggerName = l.loggerName;
+    mOut = l.mOut;
+    loggerName = l.loggerName;
   }
 
   /**
@@ -101,7 +101,7 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public Logger_impl getLimitedLogger(int aLimit) {
-    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
+    if (aLimit == Integer.MAX_VALUE || aLimit == limit_common) {
       return this;
     }
     return new Logger_impl(this, aLimit);

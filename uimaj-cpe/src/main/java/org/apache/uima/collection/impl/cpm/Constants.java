@@ -21,10 +21,7 @@ package org.apache.uima.collection.impl.cpm;
 
 /**
  * CPE Constants
- * 
- * 
  */
-
 public class Constants {
 
   public static final String LONG_COLON_TERM = "_colon_";

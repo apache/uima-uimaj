@@ -51,10 +51,10 @@ public class CasDefinition {
   public CasDefinition(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
           Properties aPerformanceTuningSettings) {
-    this.typeSystemDescription = aTypeSystem;
-    this.typePriorities = aTypePriorities;
-    this.fsIndexDescriptions = aFsIndexes;
-    this.resourceManager = aResourceManager;
+    typeSystemDescription = aTypeSystem;
+    typePriorities = aTypePriorities;
+    fsIndexDescriptions = aFsIndexes;
+    resourceManager = aResourceManager;
   }
 
   public CasDefinition(Collection<? extends ProcessingResourceMetaData> aMetaDataToMerge,
@@ -81,10 +81,10 @@ public class CasDefinition {
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
             aResourceManager);
 
-    this.typeSystemDescription = aggTypeDesc;
-    this.typePriorities = aggTypePriorities;
-    this.fsIndexDescriptions = aggIndexColl.getFsIndexes();
-    this.resourceManager = aResourceManager;
+    typeSystemDescription = aggTypeDesc;
+    typePriorities = aggTypePriorities;
+    fsIndexDescriptions = aggIndexColl.getFsIndexes();
+    resourceManager = aResourceManager;
   }
 
   /**
@@ -153,8 +153,8 @@ public class CasDefinition {
    * @return this CAS Definition's CasManager
    */
   public CasManager getCasManager() {
-    if (this.resourceManager != null) {
-      return this.resourceManager.getCasManager();
+    if (resourceManager != null) {
+      return resourceManager.getCasManager();
     } else {
       return null;
     }

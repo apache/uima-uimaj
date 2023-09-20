@@ -20,8 +20,6 @@
 package org.apache.uima.collection.impl.cpm.container;
 
 /**
- * 
- * 
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
@@ -29,9 +27,8 @@ public class CPEContext {
   private String cpeDescriptorPath = null;
 
   /**
-   * 
    * @param aDescriptorPath
-   *          -
+   *          the path to the descriptor
    */
   public CPEContext(String aDescriptorPath) {
     cpeDescriptorPath = aDescriptorPath;

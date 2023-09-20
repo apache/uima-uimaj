@@ -96,7 +96,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
             .append(System.identityHashCode(this));
     sb.append(" over Type: ").append(type.getName()).append(":").append(ti.getCode());
     sb.append(", index size (may not match current index size): ")
-            .append(this.ll_indexSizeMaybeNotCurrent());
+            .append(ll_indexSizeMaybeNotCurrent());
     return sb.toString();
   }
 

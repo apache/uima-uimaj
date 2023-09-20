@@ -46,7 +46,7 @@ public class FsIndex_snapshot<T extends FeatureStructure> extends AbstractCollec
           Comparator<TOP> comparatorTypeWithoutId) {
     this.wrapped = wrapped;
     this.comparatorWithoutId = comparatorWithoutId;
-    this.comparatorNoTypeWithoutId = comparatorTypeWithoutId;
+    comparatorNoTypeWithoutId = comparatorTypeWithoutId;
   }
 
   /*

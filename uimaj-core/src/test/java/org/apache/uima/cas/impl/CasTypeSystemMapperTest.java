@@ -495,9 +495,9 @@ public class CasTypeSystemMapperTest {
      * @param feats2
      */
     CASTestSetup(int types, int feats1, int feats2) {
-      this.typesToGenerate = types;
-      this.featsToInclude1 = feats1;
-      this.featsToInclude2 = feats2;
+      typesToGenerate = types;
+      featsToInclude1 = feats1;
+      featsToInclude2 = feats2;
       ttgb = new boolean[2];
       ttgb[0] = (1 == (typesToGenerate & 1));
       ttgb[1] = (2 == (typesToGenerate & 2));

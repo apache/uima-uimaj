@@ -47,41 +47,41 @@ class FSIntConstraintImpl implements FSIntConstraint {
   private IntVector values;
 
   FSIntConstraintImpl() {
-    this.codes = new IntVector();
-    this.values = new IntVector();
+    codes = new IntVector();
+    values = new IntVector();
   }
 
   @Override
   public boolean match(int j) {
-    final int max = this.codes.size();
+    final int max = codes.size();
     for (int i = 0; i < max; i++) {
-      switch (this.codes.get(i)) {
+      switch (codes.get(i)) {
         case LT: {
-          if (j >= this.values.get(i)) {
+          if (j >= values.get(i)) {
             return false;
           }
           break;
         }
         case LEQ: {
-          if (j > this.values.get(i)) {
+          if (j > values.get(i)) {
             return false;
           }
           break;
         }
         case EQ: {
-          if (j != this.values.get(i)) {
+          if (j != values.get(i)) {
             return false;
           }
           break;
         }
         case GEQ: {
-          if (j < this.values.get(i)) {
+          if (j < values.get(i)) {
             return false;
           }
           break;
         }
         case GT: {
-          if (j <= this.values.get(i)) {
+          if (j <= values.get(i)) {
             return false;
           }
           break;
@@ -103,8 +103,8 @@ class FSIntConstraintImpl implements FSIntConstraint {
    */
   @Override
   public void eq(int i) {
-    this.codes.add(EQ);
-    this.values.add(i);
+    codes.add(EQ);
+    values.add(i);
   }
 
   /**
@@ -115,8 +115,8 @@ class FSIntConstraintImpl implements FSIntConstraint {
    */
   @Override
   public void lt(int i) {
-    this.codes.add(LT);
-    this.values.add(i);
+    codes.add(LT);
+    values.add(i);
   }
 
   /**
@@ -127,8 +127,8 @@ class FSIntConstraintImpl implements FSIntConstraint {
    */
   @Override
   public void leq(int i) {
-    this.codes.add(LEQ);
-    this.values.add(i);
+    codes.add(LEQ);
+    values.add(i);
   }
 
   /**
@@ -139,8 +139,8 @@ class FSIntConstraintImpl implements FSIntConstraint {
    */
   @Override
   public void gt(int i) {
-    this.codes.add(GT);
-    this.values.add(i);
+    codes.add(GT);
+    values.add(i);
   }
 
   /**
@@ -151,22 +151,22 @@ class FSIntConstraintImpl implements FSIntConstraint {
    */
   @Override
   public void geq(int i) {
-    this.codes.add(GEQ);
-    this.values.add(i);
+    codes.add(GEQ);
+    values.add(i);
   }
 
   @Override
   public String toString() {
-    if (this.codes.size() == 1) {
-      return FSFloatConstraintImpl.toString(this.codes.get(0)) + " "
-              + Integer.toString(this.values.get(0));
+    if (codes.size() == 1) {
+      return FSFloatConstraintImpl.toString(codes.get(0)) + " "
+              + Integer.toString(values.get(0));
     }
     StringBuffer buf = new StringBuffer();
     buf.append("( ");
-    for (int i = 0; i < this.codes.size(); i++) {
-      buf.append(FSFloatConstraintImpl.toString(this.codes.get(i)));
+    for (int i = 0; i < codes.size(); i++) {
+      buf.append(FSFloatConstraintImpl.toString(codes.get(i)));
       buf.append(' ');
-      buf.append(Integer.toString(this.values.get(i)));
+      buf.append(Integer.toString(values.get(i)));
       buf.append(' ');
     }
     buf.append(')');

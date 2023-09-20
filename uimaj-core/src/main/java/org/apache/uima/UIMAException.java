@@ -128,10 +128,10 @@ public class UIMAException extends Exception implements I18nExceptionI {
   public UIMAException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
           Throwable aCause) {
     super(aCause);
-    this.mResourceBundleName = aResourceBundleName;
-    this.mMessageKey = aMessageKey;
-    this.mArguments = aArguments;
-    this.mCause = aCause;
+    mResourceBundleName = aResourceBundleName;
+    mMessageKey = aMessageKey;
+    mArguments = aArguments;
+    mCause = aCause;
   }
 
   /**

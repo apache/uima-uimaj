@@ -194,18 +194,18 @@ public class IntArrayRBTcommon {
   protected void setupArrays() {
     // Init the arrays.
     klrp = new int[initialSize << 2];
-    this.color = new boolean[initialSize];
+    color = new boolean[initialSize];
     setLeft(NIL, NIL);
     setRight(NIL, NIL);
     setParent(NIL, NIL);
-    this.color[NIL] = black;
+    color[NIL] = black;
   }
 
   protected void initVars() {
-    this.root = NIL;
-    this.greatestNode = NIL;
-    this.next = 1;
-    this.size = 0;
+    root = NIL;
+    greatestNode = NIL;
+    next = 1;
+    size = 0;
   }
 
   public void flush() {
@@ -218,7 +218,7 @@ public class IntArrayRBTcommon {
   }
 
   public final int size() {
-    return this.size;
+    return size;
   }
 
 //@formatter:off
@@ -324,28 +324,28 @@ public class IntArrayRBTcommon {
         }
       }
     }
-    if (this.next >= lenKlrp) {
-      ensureCapacityKlrp(this.next + 1);
+    if (next >= lenKlrp) {
+      ensureCapacityKlrp(next + 1);
     }
 
-    if (this.next >= this.color.length) {
-      this.color = ensureBooleanArraySize(this.color, this.next + 1);
+    if (next >= color.length) {
+      color = ensureBooleanArraySize(color, next + 1);
     }
 
     // assert(key.length > next);
-    final int z = this.next;
-    ++this.next;
-    ++this.size;
+    final int z = next;
+    ++next;
+    ++size;
     setKey(z, k);
     setLeft(z, NIL);
     setRight(z, NIL);
-    this.color[z] = red;
+    color[z] = red;
     return z;
   }
 
   protected final void setAsRoot(int x) {
-    this.root = x;
-    setParent(this.root, NIL);
+    root = x;
+    setParent(root, NIL);
   }
 
   /**
@@ -360,13 +360,13 @@ public class IntArrayRBTcommon {
     if (debug) {
       System.out.format("expanding array from to %,d to %,d%n", array.length, newSize);
     }
-    return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);
+    return IntArrayUtils.ensure_size(array, newSize, growth_factor, multiplication_limit);
   }
 
   // times 32 to have the same tuning for expanding that int arrays do, for booleans
   private final boolean[] ensureBooleanArraySize(boolean[] array, int newSize) {
-    return IntArrayUtils.ensure_size(array, newSize, this.growth_factor,
-            this.multiplication_limit * 32);
+    return IntArrayUtils.ensure_size(array, newSize, growth_factor,
+            multiplication_limit * 32);
   }
 
   protected final void leftRotate(final int x) {
@@ -377,7 +377,7 @@ public class IntArrayRBTcommon {
       setParent(left_of_y, x);
     }
     setParent(y, getParent(x));
-    if (this.root == x) {
+    if (root == x) {
       setAsRoot(y);
     } else {
       final int parent_x = getParent(x);
@@ -400,7 +400,7 @@ public class IntArrayRBTcommon {
     }
     final int parent_x = getParent(x);
     setParent(y, parent_x);
-    if (this.root == x) {
+    if (root == x) {
       setAsRoot(y);
     } else {
       if (x == getRight(parent_x)) {
@@ -419,7 +419,7 @@ public class IntArrayRBTcommon {
    * @return the first node such that k = key[node].
    */
   public int findKey(final int k) {
-    return findKeyDown(k, this.root);
+    return findKeyDown(k, root);
   }
 
   protected int findKeyDown(final int k, int node) {
@@ -458,7 +458,7 @@ public class IntArrayRBTcommon {
   }
 
   public int findInsertionPointCmn(final int k, boolean moveToLeftmost) {
-    int node = this.root;
+    int node = root;
     int found = node;
     int cr = 0;
 
@@ -500,10 +500,10 @@ public class IntArrayRBTcommon {
 
   // internal use, public to access by internal routine in another package
   public final int getFirstNode() {
-    if (this.root == NIL) {
+    if (root == NIL) {
       return NIL;
     }
-    int node = this.root;
+    int node = root;
     while (true) {
       final int left_node = getLeft(node);
       if (left_node == NIL) {
@@ -540,7 +540,7 @@ public class IntArrayRBTcommon {
     }
 
     while (true) {
-      if (node == this.root) { // if initial node is the root, can't go up.
+      if (node == root) { // if initial node is the root, can't go up.
         return NIL;
       }
       final int parentNode = getParent(node); // guaranteed parentNode not NIL because it's tested
@@ -549,7 +549,7 @@ public class IntArrayRBTcommon {
       if (node != nextNode) {
         return parentNode;
       }
-      if (parentNode == this.root) {
+      if (parentNode == root) {
         return NIL;
       }
       node = parentNode;
@@ -585,7 +585,7 @@ public class IntArrayRBTcommon {
     // this means the parent node's right child is this previous node.
 
     while (true) {
-      if (node == this.root) { // if initial node is the root, can't go up.
+      if (node == root) { // if initial node is the root, can't go up.
         return NIL;
       }
       final int parentNode = getParent(node); // guaranteed parentNode not NIL because it's tested
@@ -621,11 +621,11 @@ public class IntArrayRBTcommon {
 
     final int y = ((getLeft(z) == NIL) || (getRight(z) == NIL)) ? z : nextNode(z);
 
-    if (y == this.greatestNode) {
+    if (y == greatestNode) {
       if (y == z) {
-        this.greatestNode = previousNode(z);
+        greatestNode = previousNode(z);
       } else {
-        this.greatestNode = z;
+        greatestNode = z;
       }
     }
 
@@ -654,66 +654,66 @@ public class IntArrayRBTcommon {
     if (y != z) {
       setKey(z, getKey(y));
     }
-    if (this.color[y] == black) {
+    if (color[y] == black) {
       deleteFixup(x);
     }
   }
 
   protected void deleteFixup(int x) {
     int w;
-    while ((x != this.root) && (this.color[x] == black)) {
+    while ((x != root) && (color[x] == black)) {
       final int parent_x = getParent(x);
       if (x == getLeft(parent_x)) {
         w = getRight(parent_x);
-        if (this.color[w] == red) {
-          this.color[w] = black;
-          this.color[parent_x] = red;
+        if (color[w] == red) {
+          color[w] = black;
+          color[parent_x] = red;
           leftRotate(parent_x);
           w = getRight(parent_x);
         }
-        if ((this.color[getLeft(w)] == black) && (this.color[getRight(w)] == black)) {
-          this.color[w] = red;
+        if ((color[getLeft(w)] == black) && (color[getRight(w)] == black)) {
+          color[w] = red;
           x = parent_x;
         } else {
-          if (this.color[getRight(w)] == black) {
-            this.color[getLeft(w)] = black;
-            this.color[w] = red;
+          if (color[getRight(w)] == black) {
+            color[getLeft(w)] = black;
+            color[w] = red;
             rightRotate(w);
             w = getRight(parent_x);
           }
-          this.color[w] = this.color[parent_x];
-          this.color[parent_x] = black;
-          this.color[getRight(w)] = black;
+          color[w] = color[parent_x];
+          color[parent_x] = black;
+          color[getRight(w)] = black;
           leftRotate(parent_x);
-          x = this.root;
+          x = root;
         }
       } else {
         w = getLeft(parent_x);
-        if (this.color[w] == red) {
-          this.color[w] = black;
-          this.color[parent_x] = red;
+        if (color[w] == red) {
+          color[w] = black;
+          color[parent_x] = red;
           rightRotate(parent_x);
           w = getLeft(parent_x);
         }
-        if ((this.color[getLeft(w)] == black) && (this.color[getRight(w)] == black)) {
-          this.color[w] = red;
+        if ((color[getLeft(w)] == black) && (color[getRight(w)] == black)) {
+          color[w] = red;
           x = getParent(x);
         } else {
-          if (this.color[getLeft(w)] == black) {
-            this.color[getRight(w)] = black;
-            this.color[w] = red;
+          if (color[getLeft(w)] == black) {
+            color[getRight(w)] = black;
+            color[w] = red;
             leftRotate(w);
             w = getLeft(getParent(x));
           }
-          this.color[w] = this.color[parent_x];
-          this.color[parent_x] = black;
-          this.color[getLeft(w)] = black;
+          color[w] = color[parent_x];
+          color[parent_x] = black;
+          color[getLeft(w)] = black;
           rightRotate(parent_x);
-          x = this.root;
+          x = root;
         }
       }
     }
-    this.color[x] = black;
+    color[x] = black;
   }
 
   protected int compare(int v1, int v2) {
@@ -725,23 +725,23 @@ public class IntArrayRBTcommon {
 
   public boolean satisfiesRedBlackProperties() {
     // Compute depth of black nodes.
-    int node = this.root;
+    int node = root;
     int blackDepth = 0;
     while (node != NIL) {
-      if (this.color[node] == black) {
+      if (color[node] == black) {
         ++blackDepth;
       }
       node = getLeft(node);
     }
-    return satisfiesRBProps(this.root, blackDepth, 0);
+    return satisfiesRBProps(root, blackDepth, 0);
   }
 
   protected boolean satisfiesRBProps(int node, final int blackDepth, int currentBlack) {
     if (node == NIL) {
       return (currentBlack == blackDepth);
     }
-    if (this.color[node] == red) {
-      if (this.color[getLeft(node)] == red || this.color[getRight(node)] == red) {
+    if (color[node] == red) {
+      if (color[getLeft(node)] == red || color[getRight(node)] == red) {
         return false;
       }
     } else {
@@ -752,15 +752,15 @@ public class IntArrayRBTcommon {
   }
 
   public int maxDepth() {
-    return maxDepth(this.root, 0);
+    return maxDepth(root, 0);
   }
 
   public int minDepth() {
-    return minDepth(this.root, 0);
+    return minDepth(root, 0);
   }
 
   public int nodeDepth(int k) {
-    return nodeDepth(this.root, 1, k);
+    return nodeDepth(root, 1, k);
   }
 
   protected int nodeDepth(int node, int depth, int k) {
@@ -795,12 +795,12 @@ public class IntArrayRBTcommon {
   }
 
   public final void printKeys() {
-    if (this.size() == 0) {
+    if (size() == 0) {
       System.out.println("Tree is empty.");
       return;
     }
     StringBuilder buf = new StringBuilder();
-    printKeys(this.root, 0, buf);
+    printKeys(root, 0, buf);
     System.out.println(buf);
   }
 
@@ -812,7 +812,7 @@ public class IntArrayRBTcommon {
     }
     StringUtils.printSpaces(offset, buf);
     buf.append(Integer.toString(getKey(node)));
-    if (this.color[node] == black) {
+    if (color[node] == black) {
       buf.append(" BLACK");
     }
     buf.append('\n');

@@ -38,11 +38,11 @@ public class RBTKeyValuePair {
   }
 
   public int getKey() {
-    return this.key;
+    return key;
   }
 
   public Object getValue() {
-    return this.value;
+    return value;
   }
 
 }

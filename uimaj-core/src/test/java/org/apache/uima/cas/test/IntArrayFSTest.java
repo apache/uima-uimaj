@@ -35,7 +35,7 @@ public class IntArrayFSTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
       assertTrue(false);
     }
@@ -43,12 +43,12 @@ public class IntArrayFSTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
+    cas = null;
   }
 
   @Test
   public void testSet() {
-    IntArrayFS array = this.cas.createIntArrayFS(0);
+    IntArrayFS array = cas.createIntArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
     boolean exceptionCaught = false;
@@ -58,7 +58,7 @@ public class IntArrayFSTest {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
-    array = this.cas.createIntArrayFS(3);
+    array = cas.createIntArrayFS(3);
     try {
       array.set(0, 1);
       array.set(1, 2);
@@ -100,7 +100,7 @@ public class IntArrayFSTest {
     // Check that we can't create arrays smaller than 0.
     exceptionCaught = false;
     try {
-      array = this.cas.createIntArrayFS(-1);
+      array = cas.createIntArrayFS(-1);
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
       assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
@@ -111,7 +111,7 @@ public class IntArrayFSTest {
   @Test
   public void testToArray() {
     // From CAS array to Java array.
-    IntArrayFS array = this.cas.createIntArrayFS(3);
+    IntArrayFS array = cas.createIntArrayFS(3);
     int[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
       assertTrue(fsArray[i] == 0);
@@ -126,7 +126,7 @@ public class IntArrayFSTest {
     assertTrue(fsArray[2] == 3);
 
     // From Java array to CAS array.
-    array = this.cas.createIntArrayFS(3);
+    array = cas.createIntArrayFS(3);
     assertTrue(array.get(0) == 0);
     assertTrue(array.get(1) == 0);
     assertTrue(array.get(2) == 0);

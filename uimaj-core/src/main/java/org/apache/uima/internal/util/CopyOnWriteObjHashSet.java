@@ -37,9 +37,9 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
   private final int original_size;
 
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
-    this.ohs = original;
+    ohs = original;
     this.original = original;
-    this.original_size = original.size();
+    original_size = original.size();
   }
 
   /**

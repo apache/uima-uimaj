@@ -157,7 +157,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
     if (descriptor == null) {
       CpeComponentDescriptor comp_desc = CpeDescriptorFactory
               .produceComponentDescriptor(aDescriptorPath);
-      this.setCpeComponentDescriptor(comp_desc);
+      setCpeComponentDescriptor(comp_desc);
     } else {
       descriptor.getInclude().set(aDescriptorPath);
     }

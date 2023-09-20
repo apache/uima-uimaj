@@ -59,14 +59,14 @@ public class ArrayIndexTest implements TextAnnotator {
             JUnitExtension.getFile("CASTests/desc/ArrayIndexTest.xml"));
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
             .parseAnalysisEngineDescription(input);
-    this.ae = UIMAFramework.produceAnalysisEngine(desc);
+    ae = UIMAFramework.produceAnalysisEngine(desc);
 
   }
 
   @Test
   public void testArrayIndex() {
     try {
-      CAS cas = this.ae.newCAS();
+      CAS cas = ae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
       TypeSystem ts = cas.getTypeSystem();
       Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
@@ -95,7 +95,7 @@ public class ArrayIndexTest implements TextAnnotator {
 
   @AfterEach
   public void tearDown() throws Exception {
-    this.ae.destroy();
+    ae.destroy();
   }
 
   @Override

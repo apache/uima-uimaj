@@ -40,7 +40,7 @@ public class CheckpointConfig {
   private boolean minutes = false;
 
   /**
-   * Initilizes instance with a file where the checkpoint will be stored and checkpoint frequency.
+   * Initializes instance with a file where the checkpoint will be stored and checkpoint frequency.
    * 
    * @param aChpFile
    *          - path to the checkpoint file
@@ -54,8 +54,6 @@ public class CheckpointConfig {
 
   /**
    * Parses the frequency String
-   * 
-   * @param aFrequency
    */
   private void determineFrequency(String aFrequency) {
     try {

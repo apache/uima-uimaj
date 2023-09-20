@@ -87,8 +87,18 @@ public class XMLInputSource {
    * 
    * @param aInputStream
    *          input stream from which to read
+   */
+  public XMLInputSource(InputStream aInputStream) {
+    this(aInputStream, null);
+  }
+
+  /**
+   * Creates an XMLInputSource from an existing InputStream.
+   * 
+   * @param aInputStream
+   *          input stream from which to read
    * @param aRelativePathBase
-   *          base for resolving relative paths. This must be a directory.
+   *          (optional) base for resolving relative paths. This must be a directory.
    */
   public XMLInputSource(InputStream aInputStream, File aRelativePathBase) {
     mInputStream = aInputStream;

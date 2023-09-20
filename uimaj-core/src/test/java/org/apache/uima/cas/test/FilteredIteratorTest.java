@@ -83,62 +83,62 @@ public class FilteredIteratorTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(cas != null);
-      this.ts = this.cas.getTypeSystem();
+      ts = cas.getTypeSystem();
       assertTrue(ts != null);
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
-    this.stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    stringType = ts.getType(CAS.TYPE_NAME_STRING);
     assertTrue(stringType != null);
-    this.tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(stringType != null);
-    this.intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    intType = ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(intType != null);
-    this.tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
     assertTrue(tokenTypeType != null);
-    this.wordType = ts.getType(CASTestSetup.WORD_TYPE);
+    wordType = ts.getType(CASTestSetup.WORD_TYPE);
     assertTrue(wordType != null);
-    this.sepType = ts.getType(CASTestSetup.SEP_TYPE);
+    sepType = ts.getType(CASTestSetup.SEP_TYPE);
     assertTrue(sepType != null);
-    this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
+    eosType = ts.getType(CASTestSetup.EOS_TYPE);
     assertTrue(eosType != null);
-    this.tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
     assertTrue(tokenTypeFeat != null);
-    this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
     assertTrue(lemmaFeat != null);
-    this.sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
     assertTrue(sentLenFeat != null);
-    this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
-    this.startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
-    this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
+    sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(sentenceType != null);
-    this.annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annotationType != null);
   }
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
-    this.ts = null;
-    this.stringType = null;
-    this.tokenType = null;
-    this.intType = null;
-    this.tokenTypeType = null;
-    this.wordType = null;
-    this.sepType = null;
-    this.eosType = null;
-    this.tokenTypeFeat = null;
-    this.lemmaFeat = null;
-    this.sentLenFeat = null;
-    this.tokenFloatFeat = null;
-    this.startFeature = null;
-    this.sentenceType = null;
-    this.annotationType = null;
+    cas = null;
+    ts = null;
+    stringType = null;
+    tokenType = null;
+    intType = null;
+    tokenTypeType = null;
+    wordType = null;
+    sepType = null;
+    eosType = null;
+    tokenTypeFeat = null;
+    lemmaFeat = null;
+    sentLenFeat = null;
+    tokenFloatFeat = null;
+    startFeature = null;
+    sentenceType = null;
+    annotationType = null;
   }
 
   @Test
@@ -466,9 +466,9 @@ public class FilteredIteratorTest {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
 
-      FeatureStructure wordFS = this.cas.createFS(wordType);
-      FeatureStructure sepFS = this.cas.createFS(sepType);
-      FeatureStructure eosFS = this.cas.createFS(eosType);
+      FeatureStructure wordFS = cas.createFS(wordType);
+      FeatureStructure sepFS = cas.createFS(sepType);
+      FeatureStructure eosFS = cas.createFS(eosType);
 
       // create token and sentence annotations
       String type1 = "type1";
@@ -513,14 +513,14 @@ public class FilteredIteratorTest {
   private void iterAndCount2b() {
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
 
-    ConstraintFactory cf = this.cas.getConstraintFactory();
+    ConstraintFactory cf = cas.getConstraintFactory();
     FSTypeConstraint tc = cf.createTypeConstraint();
     tc.add(sepType);
     tc.add(eosType.getName());
     ArrayList<String> path = new ArrayList<>();
     path.add(tokenTypeFeat.getShortName());
     FSMatchConstraint cons = cf.embedConstraint(path, tc);
-    it = this.cas.createFilteredIterator(it, cons);
+    it = cas.createFilteredIterator(it, cons);
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++count;

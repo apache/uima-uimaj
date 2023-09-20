@@ -276,7 +276,7 @@ public class JCasHashMapTest {
               try {
                 while (true) {
                   try {
-                    if (okToProceed.get() == true) {
+                    if (okToProceed.get()) {
                       break;
                     }
                     Thread.sleep(5); // 5 milli

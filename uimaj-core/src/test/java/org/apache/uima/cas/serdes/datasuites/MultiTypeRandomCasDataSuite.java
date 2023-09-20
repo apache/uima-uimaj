@@ -96,17 +96,17 @@ public class MultiTypeRandomCasDataSuite extends AbstractCollection<CasSourceTar
     }
 
     public Builder withSizeFactor(int aSizeFactor) {
-      this.sizeFactor = aSizeFactor;
+      sizeFactor = aSizeFactor;
       return this;
     }
 
     public Builder withMinimumAnnotationLength(int aMinimumAnnotationLength) {
-      this.minimumAnnotationLength = aMinimumAnnotationLength;
+      minimumAnnotationLength = aMinimumAnnotationLength;
       return this;
     }
 
     public Builder withRandomSeed(long aRandomSeed) {
-      this.randomSeed = aRandomSeed;
+      randomSeed = aRandomSeed;
       return this;
     }
 

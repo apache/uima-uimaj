@@ -206,7 +206,7 @@ public class CasDataToXCas {
 
   private void _generate(FeatureStructure aFS, DocTextHolder aDocTextHolder) throws SAXException {
     // document text is special case
-    if (aFS.getType().equals(this.getDocumentTextTypeName())) {
+    if (aFS.getType().equals(getDocumentTextTypeName())) {
       _generateDocFS(aFS, aDocTextHolder);
     } else {
       // generate attributes for features (except "value" feature, which is represented in element
@@ -311,7 +311,7 @@ public class CasDataToXCas {
   private void _generateDocFS(FeatureStructure aFS, DocTextHolder aDocTextHolder)
           throws SAXException {
     AttributesImpl attrs = new AttributesImpl();
-    String textFeature = this.getDocumentTextFeatureName();
+    String textFeature = getDocumentTextFeatureName();
     FeatureValue docTextValue = aFS.getFeatureValue(textFeature);
     if (docTextValue != null) {
       String text = docTextValue.toString();

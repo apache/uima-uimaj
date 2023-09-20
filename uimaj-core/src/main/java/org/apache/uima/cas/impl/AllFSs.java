@@ -82,10 +82,10 @@ class AllFSs {
    */
   AllFSs(CASImpl cas) {
     this.cas = cas;
-    this.mark = null;
+    mark = null;
     foundFSsBelowMark = null;
-    this.includeFilter = null;
-    this.typeMapper = null;
+    includeFilter = null;
+    typeMapper = null;
   }
 
   private AllFSs getAllFSsAllViews_sofas() {

@@ -194,7 +194,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private boolean isSetUpFromBaseCAS = false;
 
     SharedIndexInfo(TypeSystemImpl typeSystem) {
-      this.tsi = typeSystem;
+      tsi = typeSystem;
     }
   }
 
@@ -228,7 +228,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final ArrayList<FsIndex_iicp<TOP>> indexesForType = new ArrayList<>(0);
 
     IndexesForType(TypeImpl ti) {
-      this.typename = ti.getName();
+      typename = ti.getName();
     }
 
     <T extends TOP> FsIndex_iicp<T> getNonSetIndex() {
@@ -329,7 +329,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   IndexesForType getIndexesForUsedType(int i) {
-    return indexArray[this.usedIndexes.get(i)];
+    return indexArray[usedIndexes.get(i)];
   }
 
   // moved from here into individual indexes over each type, for better locality of reference
@@ -431,16 +431,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   @SuppressWarnings("unused")
   private FSIndexRepositoryImpl() {
-    this.cas = null; // because it's final
-    this.sii = null;
-    this.name2indexMap = null;
-    this.indexArray = null;
+    cas = null; // because it's final
+    sii = null;
+    name2indexMap = null;
+    indexArray = null;
     // this.detectIllegalIndexUpdates = null;
     // this.flattenedIndexValid = null;
-    this.indexUpdates = null;
-    this.indexUpdateOperation = null;
-    this.usedIndexes = null;
-    this.isUsed = null;
+    indexUpdates = null;
+    indexUpdateOperation = null;
+    usedIndexes = null;
+    isUsed = null;
     // this.isUsedChanged = true;
     // this.iicps4allFSs = null;
   }
@@ -452,20 +452,20 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   FSIndexRepositoryImpl(CASImpl cas) {
     this.cas = cas;
-    this.sii = new SharedIndexInfo(cas.getTypeSystemImpl());
+    sii = new SharedIndexInfo(cas.getTypeSystemImpl());
 
-    final TypeSystemImpl ts = this.sii.tsi;
+    final TypeSystemImpl ts = sii.tsi;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
     // this.detectIllegalIndexUpdates = new int[numTypes];
     // this.flattenedIndexValid = new ConcurrentBits(numTypes);
-    this.name2indexMap = new HashMap<>();
-    this.indexUpdates = new ArrayList<>();
-    this.indexUpdateOperation = new BitSet();
-    this.logProcessed = false;
-    this.indexArray = new IndexesForType[this.sii.tsi.getNumberOfTypes() + 1];
-    this.usedIndexes = new IntVector();
-    this.isUsed = new BitSet(numTypes);
+    name2indexMap = new HashMap<>();
+    indexUpdates = new ArrayList<>();
+    indexUpdateOperation = new BitSet();
+    logProcessed = false;
+    indexArray = new IndexesForType[sii.tsi.getNumberOfTypes() + 1];
+    usedIndexes = new IntVector();
+    isUsed = new BitSet(numTypes);
     // this.isUsedChanged = true;
     // this.iicps4allFSs = new ArrayList<>();
     init();
@@ -480,22 +480,22 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   FSIndexRepositoryImpl(CASImpl cas, FSIndexRepositoryImpl baseIndexRepo) {
 
     this.cas = cas;
-    this.sii = baseIndexRepo.sii;
+    sii = baseIndexRepo.sii;
     sii.isSetUpFromBaseCAS = true; // bypasses initialization already done
 
-    final TypeSystemImpl ts = this.sii.tsi;
+    final TypeSystemImpl ts = sii.tsi;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
     // this.detectIllegalIndexUpdates = new int[numTypes];
     // this.flattenedIndexValid = new ConcurrentBits(numTypes);
 
-    this.name2indexMap = new HashMap<>();
-    this.indexUpdates = new ArrayList<>();
-    this.indexUpdateOperation = new BitSet();
-    this.logProcessed = false;
-    this.indexArray = new IndexesForType[numTypes];
-    this.usedIndexes = new IntVector();
-    this.isUsed = new BitSet(numTypes);
+    name2indexMap = new HashMap<>();
+    indexUpdates = new ArrayList<>();
+    indexUpdateOperation = new BitSet();
+    logProcessed = false;
+    indexArray = new IndexesForType[numTypes];
+    usedIndexes = new IntVector();
+    isUsed = new BitSet(numTypes);
     // this.isUsedChanged = true;
     // this.iicps4allFSs = new ArrayList<>();
     init();
@@ -509,7 +509,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * Initialize data. Common initialization called from the constructors.
    */
   private void init() {
-    final TypeSystemImpl ts = this.sii.tsi;
+    final TypeSystemImpl ts = sii.tsi;
 
     // **********************************************
     // for each type in the TypeSystem,
@@ -519,7 +519,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1; // Type counting starts at 1.
     // Can't instantiate arrays of generic types, but this is ok for ArrayList.
     for (int i = 1; i < numTypes; i++) {
-      this.indexArray[i] = new IndexesForType(ts.types.get(i));
+      indexArray[i] = new IndexesForType(ts.types.get(i));
     }
 
     // Arrays.fill(detectIllegalIndexUpdates, Integer.MIN_VALUE);
@@ -552,7 +552,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   @Override
   public boolean createIndex(FSIndexComparator comp, String label, int indexType)
           throws CASAdminException {
-    if (this.locked) {
+    if (locked) {
       throw new CASAdminException(CASAdminException.REPOSITORY_LOCKED);
     }
     return createIndexNoQuestionsAsked(comp, label, indexType);
@@ -575,11 +575,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public <T extends FeatureStructure> boolean createIndexNoQuestionsAsked(
           final FSIndexComparator comp, String label, int indexType) {
 
-    FsIndex_iicp<TOP> cp = this.name2indexMap.get(label);
+    FsIndex_iicp<TOP> cp = name2indexMap.get(label);
 
     if (cp == null) {
       // Create new index
-      cp = this.addNewIndexRecursive(comp, indexType);
+      cp = addNewIndexRecursive(comp, indexType);
 
       // create a set of feature codes that are in one or more index definitions,
       // only once for all cas views
@@ -592,7 +592,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         }
       }
 
-      this.name2indexMap.put(label, cp);
+      name2indexMap.put(label, cp);
       return true;
     }
 
@@ -636,7 +636,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
 //@formatter:on
   public void removeIndex(String label) {
-    FsIndex_iicp<TOP> cp = this.name2indexMap.get(label);
+    FsIndex_iicp<TOP> cp = name2indexMap.get(label);
     if (cp == null) {
       return;
     }
@@ -658,15 +658,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * Reset all indexes, in one view.
    */
   public void flush() {
-    if (!this.locked) {
-      return;
-    }
-
     // if (DEBUG) {
     // System.out.println("Index Flush Top");
     // }
     // Do nothing really fast!
-    if (this.usedIndexes.size() == 0) {
+    if (!locked || (usedIndexes.size() == 0)) {
       return;
     }
 
@@ -675,7 +671,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // isUsedChanged = true;
     // iicps4allFSs.clear();
     for (int i = 0; i < usedIndexes.size(); i++) {
-      int used = this.usedIndexes.get(i);
+      int used = usedIndexes.get(i);
       for (FsIndex_iicp<?> iicp : indexArray[used].indexesForType) {
         iicp.fsIndex_singletype.flush();
       }
@@ -686,14 +682,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // reset the index update trackers
     // resetDetectIllegalIndexUpdates();
 
-    this.indexUpdates.clear();
-    this.indexUpdateOperation.clear();
+    indexUpdates.clear();
+    indexUpdateOperation.clear();
     mPii = new ProcessedIndexInfo();
     // this.fsAddedToIndex = new IntSet();
     // this.fsDeletedFromIndex = new IntSet();
     // this.fsReindexed = new PositiveIntSet_impl();
-    this.logProcessed = false;
-    this.usedIndexes.removeAllElements();
+    logProcessed = false;
+    usedIndexes.removeAllElements();
   }
 
   // // for now, with flattened index optimization disabled, this should be a no-op
@@ -785,7 +781,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     switch (indexingStrategy) {
 
       case FSIndex.SET_INDEX:
-        ind = new FsIndex_set_sorted<>(this.cas, type, indexingStrategy, comparatorForIndexSpecs); // false
+        ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs); // false
                                                                                                    // =
                                                                                                    // is
                                                                                                    // set
@@ -797,14 +793,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       case FSIndex.BAG_INDEX:
       case FSIndex.DEFAULT_BAG_INDEX:
-        ind = new FsIndex_bag<>(this.cas, type, initialSize, indexingStrategy,
+        ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy,
                 comparatorForIndexSpecs);
         break;
 
       default:
         // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just
         // create a sorted index.
-        ind = new FsIndex_set_sorted<>(this.cas, type, FSIndex.SORTED_INDEX,
+        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX,
                 comparatorForIndexSpecs); // true = is sorted
         break;
 
@@ -901,36 +897,36 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public void commit() {
     // Will create the default type order if it doesn't exist at this point.
     getDefaultTypeOrder();
-    this.locked = true;
+    locked = true;
   }
 
   @Override
   public LinearTypeOrder getDefaultTypeOrder() {
-    if (this.sii.defaultTypeOrder == null) {
-      if (this.sii.defaultOrderBuilder == null) {
-        this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
+    if (sii.defaultTypeOrder == null) {
+      if (sii.defaultOrderBuilder == null) {
+        sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(sii.tsi);
       }
       try {
-        this.sii.defaultTypeOrder = this.sii.defaultOrderBuilder.getOrder();
+        sii.defaultTypeOrder = sii.defaultOrderBuilder.getOrder();
       } catch (final CASException e) {
         // Since we're doing this on an existing type names, we can't
         // get here.
         throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR, new Object[0], e);
       }
     }
-    return this.sii.defaultTypeOrder;
+    return sii.defaultTypeOrder;
   }
 
   @Override
   public LinearTypeOrderBuilder getDefaultOrderBuilder() {
-    if (this.sii.defaultOrderBuilder == null) {
-      this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
+    if (sii.defaultOrderBuilder == null) {
+      sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(sii.tsi);
     }
-    return this.sii.defaultOrderBuilder;
+    return sii.defaultOrderBuilder;
   }
 
   void setDefaultTypeOrder(LinearTypeOrder order) {
-    this.sii.defaultTypeOrder = order;
+    sii.defaultTypeOrder = order;
   }
 
   /**
@@ -997,7 +993,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   @Override
   public Iterator<String> getLabels() {
-    return this.name2indexMap.keySet().iterator();
+    return name2indexMap.keySet().iterator();
   }
 
   /**
@@ -1015,7 +1011,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     String label;
     while (it.hasNext()) {
       label = it.next();
-      if (this.name2indexMap.get(label).fsIndex_singletype.getComparatorImplForIndexSpecs()
+      if (name2indexMap.get(label).fsIndex_singletype.getComparatorImplForIndexSpecs()
               .equals(comp)) {
         labels.add(label);
       }
@@ -1039,7 +1035,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) {
 
     // iicp is for the type the index was defined for
-    final FsIndex_iicp<TOP> iicp = this.name2indexMap.get(label);
+    final FsIndex_iicp<TOP> iicp = name2indexMap.get(label);
     if (iicp == null) {
       return null;
     }
@@ -1073,7 +1069,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   @Override
   @SuppressWarnings("unchecked")
   public <T extends FeatureStructure> LowLevelIndex<T> getIndex(String label) {
-    return (LowLevelIndex<T>) this.name2indexMap.get(label);
+    return (LowLevelIndex<T>) name2indexMap.get(label);
   }
 
   /**
@@ -1104,7 +1100,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   @Override
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
-    List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
+    List<Type> subtypes = sii.tsi.getDirectSubtypes(type);
     for (Type subtype : subtypes) {
       removeAllIncludingSubtypes(subtype);
     }
@@ -1123,7 +1119,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   @Override
   public boolean isCommitted() {
-    return this.locked;
+    return locked;
   }
 
   /**
@@ -1176,7 +1172,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    *          the action to do on each FS
    */
   public void walkIndexedFSs(Consumer<TOP> action) {
-    for (int i = 0; i < this.usedIndexes.size(); i++) {
+    for (int i = 0; i < usedIndexes.size(); i++) {
       for (TOP fs : getNonSetSingleIndexForUsedType(i)) {
         action.accept(fs);
       }
@@ -1191,7 +1187,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void walkSortedIndexedFSs(Consumer<TOP> action) {
     List<TOP> fss = new ArrayList<>();
-    for (int i = 0; i < this.usedIndexes.size(); i++) {
+    for (int i = 0; i < usedIndexes.size(); i++) {
       for (TOP fs : getNonSetSingleIndexForUsedType(i)) {
         fss.add(fs);
       }
@@ -1309,9 +1305,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //@formatter:on
   @Override
   public LinearTypeOrderBuilder createTypeSortOrder() {
-    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
-    if (this.sii.defaultOrderBuilder == null) {
-      this.sii.defaultOrderBuilder = orderBuilder;
+    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(sii.tsi);
+    if (sii.defaultOrderBuilder == null) {
+      sii.defaultOrderBuilder = orderBuilder;
     }
     return orderBuilder;
   }
@@ -1323,8 +1319,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   @Override
   public <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName, int typeCode) {
-    final TypeSystemImpl tsi = this.sii.tsi;
-    if (!tsi.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
+    final TypeSystemImpl tsi = sii.tsi;
+    if (!tsi.isType(typeCode) || !cas.ll_isRefType(typeCode)) {
       throw new LowLevelException(LowLevelException.INVALID_INDEX_TYPE, Integer.toString(typeCode));
     }
     return (LowLevelIndex<T>) getIndex(indexName, tsi.ll_getTypeForCode(typeCode));
@@ -1401,13 +1397,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
 
       // remember if we get any set or sorted index by turning this true
-      if (setOrSorted == false && indexingStrategy != FSIndex.BAG_INDEX) {
+      if (!setOrSorted && indexingStrategy != FSIndex.BAG_INDEX) {
         setOrSorted = true;
       }
     }
 
     // log even if added back, because remove logs remove, and might want to know it was "reindexed"
-    if (this.cas.getCurrentMark() != null) {
+    if (cas.getCurrentMark() != null) {
       logIndexOperation(fs, true);
     }
 
@@ -1422,7 +1418,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // https://issues.apache.org/jira/browse/UIMA-4111
     if (noIndexOrOnlySetindexes) {
       // lazily create a default bag index for this type
-      final Type type = this.sii.tsi.ll_getTypeForCode(typeCode);
+      final Type type = sii.tsi.ll_getTypeForCode(typeCode);
       final String defIndexName = getAutoIndexNameForType(type);
       final FSIndexComparator comparator = createComparator(); // empty comparator
       comparator.setType(type);
@@ -1433,11 +1429,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       ((FsIndex_singletype<T>) (indexes.get(indexes.size() - 1)).fsIndex_singletype).insert(fs);
     }
 
-    if (!this.isUsed.get(typeCode)) {
+    if (!isUsed.get(typeCode)) {
       // mark this type as being in some indexes
-      this.isUsed.set(typeCode);
+      isUsed.set(typeCode);
       // this.isUsedChanged = true;
-      this.usedIndexes.add(typeCode);
+      usedIndexes.add(typeCode);
     }
   }
 
@@ -1477,10 +1473,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   //@formatter:on
     if (i4t.aSortedIndex < 0) {
       int bi = i4t.aBagIndex; // >= 0 if there is a bag index
-      if (bi < 0 && !i4t.hasSetIndex) {
-        return false; // no indexes defined for this type
-      }
-      if (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
+      if ((bi < 0 && !i4t.hasSetIndex) || (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs))) {
         return false; // not in defined bag index
       }
     }
@@ -1504,7 +1497,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     if (wasRemoved) {
       // incrementIllegalIndexUpdateDetector(typeCode);
-      if (this.cas.getCurrentMark() != null) {
+      if (cas.getCurrentMark() != null) {
         logIndexOperation(fs, ITEM_REMOVED_FROM_INDEX);
       }
 
@@ -1516,7 +1509,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // }
     }
     if (CASImpl.traceCow) {
-      this.cas.traceIndexMod(false, fs, skipBagIndexes);
+      cas.traceIndexMod(false, fs, skipBagIndexes);
     }
     return wasRemoved;
   }
@@ -1611,7 +1604,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   @Override
   public Collection<TOP> getIndexedFSs() {
     final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>();
-    for (int i = 0; i < this.usedIndexes.size(); i++) {
+    for (int i = 0; i < usedIndexes.size(); i++) {
       FsIndex_singletype<TOP> idx = getNonSetSingleIndexForUsedType(i);
       if (idx.size() > 0) {
         indexes.add(idx.getNonNullCow());
@@ -1939,11 +1932,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   private <T extends TOP> void logIndexOperation(T fs, boolean added) {
-    this.indexUpdates.add(fs);
+    indexUpdates.add(fs);
     if (added) {
-      this.indexUpdateOperation.set(this.indexUpdates.size() - 1, added); // operation was "add"
+      indexUpdateOperation.set(indexUpdates.size() - 1, added); // operation was "add"
     }
-    this.logProcessed = false;
+    logProcessed = false;
   }
 
   // Delta Serialization support
@@ -1973,10 +1966,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     final ProcessedIndexInfo pii = mPii;
 
-    final int len = this.indexUpdates.size();
+    final int len = indexUpdates.size();
     for (int i = 0; i < len; i++) {
-      final TOP fs = this.indexUpdates.get(i);
-      final boolean added = this.indexUpdateOperation.get(i);
+      final TOP fs = indexUpdates.get(i);
+      final boolean added = indexUpdateOperation.get(i);
       if (added) {
         boolean wasRemoved = pii.fsDeletedFromIndex.remove(fs);
         if (wasRemoved) {
@@ -1995,13 +1988,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         }
       }
     }
-    this.logProcessed = true;
-    this.indexUpdates.clear();
-    this.indexUpdateOperation.clear();
+    logProcessed = true;
+    indexUpdates.clear();
+    indexUpdateOperation.clear();
   }
 
   public Set<TOP> getUpdatedFSs(Set<TOP> items) {
-    if (!this.logProcessed) {
+    if (!logProcessed) {
       processIndexUpdates();
     }
     return items;
@@ -2020,7 +2013,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public boolean isModified() {
-    if (!this.logProcessed) {
+    if (!logProcessed) {
       processIndexUpdates();
     }
     final ProcessedIndexInfo pii = mPii;
@@ -2077,7 +2070,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public Comparator<TOP> getAnnotationFsComparatorWithoutId() {
-    Comparator<TOP> r = this.sii.annotationFsComparatorWithoutId;
+    Comparator<TOP> r = sii.annotationFsComparatorWithoutId;
     // lazy creation
     if (null != r) {
       return r;
@@ -2086,7 +2079,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   Comparator<TOP> getAnnotationFsComparatorWithId() {
-    Comparator<TOP> r = this.sii.annotationFsComparatorWithId;
+    Comparator<TOP> r = sii.annotationFsComparatorWithId;
     // lazy creation
     if (null != r) {
       return r;
@@ -2098,7 +2091,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final LinearTypeOrder lto = getDefaultTypeOrder(); // used as constant in comparator
 
     if (!V2_ANNOTATION_COMPARE_TYPE_ORDER && lto.isEmptyTypeOrder()) {
-      return this.sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
+      return sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2)
           return 0;
         Annotation fs1 = (Annotation) fsx1;
@@ -2107,7 +2100,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       };
 
     } else {
-      return this.sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
+      return sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2)
           return 0;
         Annotation fs1 = (Annotation) fsx1;
@@ -2128,7 +2121,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final LinearTypeOrder lto = getDefaultTypeOrder(); // used as constant in comparator
 
     if (!V2_ANNOTATION_COMPARE_TYPE_ORDER && lto.isEmptyTypeOrder()) {
-      this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
+      sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2)
           return 0;
         final Annotation fs1 = (Annotation) fsx1;
@@ -2137,7 +2130,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       };
 
     } else {
-      this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
+      sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2)
           return 0;
         final Annotation fs1 = (Annotation) fsx1;
@@ -2145,7 +2138,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         return fs1.compareAnnotationWithId(fs2, lto);
       };
     }
-    return this.sii.annotationFsComparatorWithId;
+    return sii.annotationFsComparatorWithId;
   }
 
   /**
@@ -2181,15 +2174,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private Comparator<TOP> getCachedComparator(FSComparators withId, FSComparators withTypeOrder) {
     if (withId == FSComparators.WITH_ID) {
       if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
-        return this.sii.annotationFsComparatorWithId;
+        return sii.annotationFsComparatorWithId;
       } else {
-        return this.sii.annotationFsComparatorNoTypeWithId;
+        return sii.annotationFsComparatorNoTypeWithId;
       }
     } else {
       if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
-        return this.sii.annotationFsComparatorWithoutId;
+        return sii.annotationFsComparatorWithoutId;
       } else {
-        return this.sii.annotationFsComparatorNoTypeWithoutId;
+        return sii.annotationFsComparatorNoTypeWithoutId;
       }
     }
   }
@@ -2198,15 +2191,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           Comparator<TOP> c) {
     if (withId == FSComparators.WITH_ID) {
       if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
-        this.sii.annotationFsComparatorWithId = c;
+        sii.annotationFsComparatorWithId = c;
       } else {
-        this.sii.annotationFsComparatorNoTypeWithId = c;
+        sii.annotationFsComparatorNoTypeWithId = c;
       }
     } else {
       if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
-        this.sii.annotationFsComparatorWithoutId = c;
+        sii.annotationFsComparatorWithoutId = c;
       } else {
-        this.sii.annotationFsComparatorNoTypeWithoutId = c;
+        sii.annotationFsComparatorNoTypeWithoutId = c;
       }
     }
   }

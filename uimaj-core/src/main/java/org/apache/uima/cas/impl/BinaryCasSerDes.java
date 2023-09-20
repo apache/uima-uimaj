@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +44,7 @@ import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
+import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.internal.util.function.Consumer_T_int_withIOException;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -209,7 +209,7 @@ public class BinaryCasSerDes {
   boolean isBeforeV3 = false;
 
   public BinaryCasSerDes(CASImpl baseCAS) {
-    this.baseCas = baseCAS;
+    baseCas = baseCAS;
   }
 
   // *********************************
@@ -251,11 +251,12 @@ public class BinaryCasSerDes {
    */
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
           byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
-    CommonSerDesSequential csds = new CommonSerDesSequential(baseCas); // for non Delta case, not
-                                                                       // held on to
-    // compare with compress form 4, which does cas.getCsds() or cas.newCsds() which saves it in
-    // cas.svd
+
+    // for non Delta case, not held on to compare with compress form 4, which does cas.getCsds() or
+    // cas.newCsds() which saves it in cas.svd
+    CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);
     csds.setup(null, 1);
+
     heap = new Heap();
     byteHeap = new ByteHeap();
     shortHeap = new ShortHeap();
@@ -283,7 +284,6 @@ public class BinaryCasSerDes {
   public CASImpl setupCasFromCasMgrSerializer(CASMgrSerializer casMgrSerializer) {
 
     if (null != casMgrSerializer) {
-
       TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
       baseCas.svd.clear(); // does all clearing except index repositories which will be wiped out
       baseCas.installTypeSystemInAllViews(ts);
@@ -307,6 +307,7 @@ public class BinaryCasSerDes {
       baseCas.svd.setViewForSofaNbr(1, initialView);
       baseCas.svd.viewCount = 1;
     }
+
     return baseCas;
   }
 
@@ -378,9 +379,6 @@ public class BinaryCasSerDes {
     /**
      * if not an array (array values can't be keys) remove if the feature being updated is in an
      * index key
-     * 
-     * @param heapAddr
-     *          -
      */
     private void maybeRemove(int heapAddr) {
       TypeImpl type = fs._getTypeImpl();
@@ -397,8 +395,6 @@ public class BinaryCasSerDes {
      * for Deserialization of Delta, when updating existing FSs, If the heap addr is for the next
      * FS, re-add the previous one to those indexes where it was removed, and then maybe remove the
      * new one (and remember which views to re-add to).
-     * 
-     * @param heapAddr
      */
     private void maybeAddBackAndRemoveFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr == -1) {
@@ -421,11 +417,6 @@ public class BinaryCasSerDes {
      * things in the bds. Special cases: if the addr is in the middle of an already setup FS, just
      * return The search is done using a binary search, with an exception to check the next item
      * (optimization)
-     * 
-     * @param heapAddr
-     *          - the heap addr
-     * @param bds
-     *          -
      */
     private void findCorrespondingFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr < heapAddr && heapAddr < fsEndAddr) {
@@ -617,9 +608,8 @@ public class BinaryCasSerDes {
   static CASMgrSerializer maybeReadEmbeddedTSI(Header h, DataInputStream dis) {
     if (h.isTypeSystemIncluded() || h.isTypeSystemIndexDefIncluded()) { // Load TS from CAS stream
       try {
-        ObjectInputStream ois = new ObjectInputStream(dis);
-        return (CASMgrSerializer) ois.readObject();
-      } catch (ClassNotFoundException | IOException e) {
+        return SerializationUtils.deserializeCASMgrSerializer(dis);
+      } catch (IOException e) {
         /** Unrecognized serialized CAS format */
         throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT, null,
                 e);
@@ -1027,9 +1017,6 @@ public class BinaryCasSerDes {
   /**
    * Called 3 times to process non-compressed binary deserialization of aux array modifications -
    * once for byte/boolean, short, and long/double
-   * 
-   * @return heapsz (used by caller to do word alignment)
-   * @throws IOException
    */
   int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP, TOP> auxAddr2fsa,
           Consumer_T_int_withIOException<TOP> setter) throws IOException {
@@ -1223,9 +1210,9 @@ public class BinaryCasSerDes {
    * 
    * @param ir
    *          index repository
-   * @param fss
+   * @param fsindexes
    *          the list having the fss
-   * @param fsIdx
+   * @param idx
    *          the starting index
    * @param length
    *          the length
@@ -1449,7 +1436,6 @@ public class BinaryCasSerDes {
    * 
    * The results must be retained for the use case of subsequently receiving back a delta cas.
    * 
-   * @param cs the CASSerializer instance used to record the results of the scan
    * @param mark null or the mark to use for separating the new from from the previously existing 
    *        used by delta cas.
    * @return null or for delta, all the found FSs
@@ -1517,7 +1503,7 @@ public class BinaryCasSerDes {
     if (type.isArray()) {
 
       // next slot is the length
-      final int length = ((CommonArrayFS) fs).size();
+      final int length = ((CommonArrayFS<?>) fs).size();
       heap.heap[pos + arrayLengthFeatOffset] = length;
       // next slot are the values
       int i = pos + arrayContentOffset;
@@ -1584,7 +1570,7 @@ public class BinaryCasSerDes {
           break;
         }
         case Slot_HeapRef:
-          for (TOP fsitem : ((FSArray) fs)._getTheArray()) {
+          for (TOP fsitem : ((FSArray<?>) fs)._getTheArray()) {
             heap.heap[i++] = fs2addr.get(fsitem);
           }
           break;
@@ -1680,7 +1666,7 @@ public class BinaryCasSerDes {
     List<Runnable> fixups4UimaSerialization = new ArrayList<>();
 
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
-      int typecode = heap.heap[heapIndex];
+      // int typecode = heap.heap[heapIndex];
       // if (isBeforeV3 && typecode > TypeSystemConstants.lastBuiltinV2TypeCode) {
       // typecode = typecode + TypeSystemConstants.numberOfNewBuiltInsSinceV2;
       // }
@@ -1750,7 +1736,7 @@ public class BinaryCasSerDes {
             }
 
             case Slot_HeapRef: {
-              TOP[] fsa = ((FSArray) fs)._getTheArray();
+              TOP[] fsa = ((FSArray<?>) fs)._getTheArray();
               for (int ai = 0; ai < len; ai++) {
                 int a = heap.heap[hhi + ai];
                 if (a == 0) {
@@ -1978,14 +1964,12 @@ public class BinaryCasSerDes {
         case Slot_Float:
           ((FloatArray) fs).set(hsai, CASImpl.int2float(slotValue));
           break;
-
         case Slot_StrRef:
           ((StringArray) fs).set(hsai, stringHeap.getStringForCode(slotValue));
           break;
         case Slot_HeapRef:
           ((FSArray) fs).set(hsai, addr2fs.get(slotValue));
           break;
-
         default:
           Misc.internalError();
       } // end of switch for component type of arrays
@@ -2028,11 +2012,6 @@ public class BinaryCasSerDes {
   }
 
   /**
-   * 
-   * @param fs
-   * @param feat
-   * @param s
-   * @param fixups4forwardFsRefs
    * @return true if caller needs to do an appropriate fs._setStringValue...
    */
   private boolean updateStringFeature(TOP fs, FeatureImpl feat, String s,

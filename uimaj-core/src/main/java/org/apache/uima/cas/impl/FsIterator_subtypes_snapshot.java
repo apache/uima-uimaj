@@ -48,11 +48,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure>
 
   public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex,
           Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
-    this.indexForComparator = flatIndex;
-    this.snapshot = (T[]) flatIndex.getFlatArray();
-    this.is_unordered = flatIndex.getIndexingStrategy() != FSIndex.SORTED_INDEX;
+    indexForComparator = flatIndex;
+    snapshot = (T[]) flatIndex.getFlatArray();
+    is_unordered = flatIndex.getIndexingStrategy() != FSIndex.SORTED_INDEX;
     this.comparatorMaybeNoTypeWithoutId = comparatorMaybeNoTypeWithoutId;
-    this.isNotUimaIndexSource = false;
+    isNotUimaIndexSource = false;
   }
 
   /**
@@ -72,11 +72,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure>
    */
   public FsIterator_subtypes_snapshot(T[] snapshot, LowLevelIndex<T> index, boolean is_unordered,
           Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
-    this.indexForComparator = index;
+    indexForComparator = index;
     this.snapshot = snapshot;
     this.is_unordered = is_unordered;
     this.comparatorMaybeNoTypeWithoutId = comparatorMaybeNoTypeWithoutId;
-    this.isNotUimaIndexSource = true;
+    isNotUimaIndexSource = true;
   }
 
   /*
@@ -225,8 +225,8 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure>
    */
   @Override
   public FSIterator<T> copy() {
-    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(this.snapshot,
-            this.indexForComparator, this.is_unordered, this.comparatorMaybeNoTypeWithoutId);
+    FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<>(snapshot,
+            indexForComparator, is_unordered, comparatorMaybeNoTypeWithoutId);
     it.pos = pos;
     return it;
   }

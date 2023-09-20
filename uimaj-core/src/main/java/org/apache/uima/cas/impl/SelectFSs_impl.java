@@ -152,8 +152,8 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    ************************************************/
 //@formatter:on
   public SelectFSs_impl(CAS cas) {
-    this.view = (CASImpl) cas.getLowLevelCAS();
-    this.jcas = (JCasImpl) view.getJCas();
+    view = (CASImpl) cas.getLowLevelCAS();
+    jcas = (JCasImpl) view.getJCas();
   }
 
   public SelectFSs_impl(FSArray source) {
@@ -185,12 +185,12 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    * @return -
    */
   public SelectFSs_impl<T> index(String indexName) {
-    this.index = view.indexRepository.getIndex(indexName);
+    index = view.indexRepository.getIndex(indexName);
     return this;
   }
 
   public SelectFSs_impl<T> index(FSIndex<T> aIndex) {
-    this.index = (LowLevelIndex<T>) aIndex;
+    index = (LowLevelIndex<T>) aIndex;
     return this;
   }
 
@@ -198,7 +198,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    * Select the index's uppermost type.
    */
   public <N extends T> SelectFSs_impl<N> anyType() {
-    this.ti = (TypeImpl) null;
+    ti = (TypeImpl) null;
     return (SelectFSs_impl<N>) this;
   }
 
@@ -214,7 +214,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
       }
     }
 
-    this.ti = (TypeImpl) uimaType;
+    ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
 
@@ -228,12 +228,12 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
       throw new IllegalArgumentException("Undefined type: [" + fullyQualifiedTypeName + "]");
     }
 
-    this.ti = type;
+    ti = type;
     return (SelectFSs_impl<N>) this;
   }
 
   public <N extends T> SelectFSs_impl<N> type(int jcasClass_dot_type) {
-    this.ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
+    ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
     return (SelectFSs_impl<N>) this;
   }
 
@@ -241,7 +241,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     if (jcasClass_dot_class == null) {
       throw new IllegalArgumentException("Must specify a type");
     }
-    this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
+    ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
   }
 
@@ -252,7 +252,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    */
   @Override
   public SelectFSs<T> typePriority() {
-    this.isTypePriority = true;
+    isTypePriority = true;
     return this;
   }
 
@@ -263,7 +263,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    */
   @Override
   public SelectFSs<T> typePriority(boolean aTypePriority) {
-    this.isTypePriority = aTypePriority;
+    isTypePriority = aTypePriority;
     return this;
   }
 
@@ -302,7 +302,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    */
   @Override
   public SelectFSs<T> skipWhenSameBeginEndType() {
-    this.isSkipSameBeginEndType = true;
+    isSkipSameBeginEndType = true;
     return this;
   }
 
@@ -313,7 +313,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
    */
   @Override
   public SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals) {
-    this.isSkipSameBeginEndType = useAnnotationEquals;
+    isSkipSameBeginEndType = useAnnotationEquals;
     return this;
   }
 
@@ -323,13 +323,13 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public SelectFSs_impl<T> nonOverlapping() { // AI known as unambiguous
-    this.isNonOverlapping = true;
+    isNonOverlapping = true;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> nonOverlapping(boolean bNonOverlapping) { // AI
-    this.isNonOverlapping = bNonOverlapping;
+    isNonOverlapping = bNonOverlapping;
     return this;
   }
 
@@ -359,49 +359,49 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public SelectFSs_impl<T> allViews() {
-    this.isAllViews = true;
+    isAllViews = true;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> allViews(boolean bAllViews) {
-    this.isAllViews = bAllViews;
+    isAllViews = bAllViews;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> nullOK() { // applies to get() and single()
-    this.isNullOK = true;
+    isNullOK = true;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> nullOK(boolean bNullOk) { // applies to get() and single()
-    this.isNullOK = bNullOk;
+    isNullOK = bNullOk;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> orderNotNeeded() { // ignored if not ordered index
-    this.isUnordered = true;
+    isUnordered = true;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> orderNotNeeded(boolean bUnordered) { // ignored if not ordered index
-    this.isUnordered = bUnordered;
+    isUnordered = bUnordered;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> backwards() { // ignored if not ordered index
-    this.isBackwards = true;
+    isBackwards = true;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> backwards(boolean bBackwards) { // ignored if not ordered index
-    this.isBackwards = bBackwards;
+    isBackwards = bBackwards;
     return this;
   }
 
@@ -418,19 +418,19 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public SelectFSs_impl<T> shifted(int shiftAmount) {
-    this.shift = shiftAmount;
+    shift = shiftAmount;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(FeatureStructure fs) {
-    this.startingFs = (TOP) fs;
+    startingFs = (TOP) fs;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(TOP fs) { // Ordered
-    this.startingFs = fs;
+    startingFs = fs;
     return this;
   }
   // @Override
@@ -444,35 +444,35 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public SelectFSs_impl<T> startAt(int begin) {
-    this.isTypePriority = false;
-    this.startingFs = makePosAnnot(begin, Integer.MAX_VALUE);
+    isTypePriority = false;
+    startingFs = makePosAnnot(begin, Integer.MAX_VALUE);
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end) { // AI
-    this.startingFs = makePosAnnot(begin, end);
+    startingFs = makePosAnnot(begin, end);
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(TOP fs, int offset) { // Ordered
-    this.startingFs = fs;
-    this.shift = offset;
+    startingFs = fs;
+    shift = offset;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(FeatureStructure fs, int offset) { // Ordered
-    this.startingFs = (TOP) fs;
-    this.shift = offset;
+    startingFs = (TOP) fs;
+    shift = offset;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end, int offset) { // AI
-    this.startingFs = makePosAnnot(begin, end);
-    this.shift = offset;
+    startingFs = makePosAnnot(begin, end);
+    shift = offset;
     return this;
   }
 
@@ -481,7 +481,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
     if (alimit < 0) {
       throw new IllegalArgumentException("limit argument must be >= 0, but was " + alimit);
     }
-    this.limit = alimit;
+    limit = alimit;
     return this;
   }
 
@@ -491,7 +491,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   @Override
   public SelectFSs_impl<T> coveredBy(AnnotationFS fs) { // AI
     boundsUse = BoundsUse.coveredBy;
-    this.boundingFs = fs;
+    boundingFs = fs;
     // this.isIncludeAnnotWithEndBeyondBounds = false; //default
     return this;
   }
@@ -499,7 +499,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   @Override
   public SelectFSs_impl<T> coveredBy(int begin, int end) { // AI
     boundsUse = BoundsUse.coveredBy;
-    this.boundingFs = makePosAnnot(begin, end);
+    boundingFs = makePosAnnot(begin, end);
     // this.isIncludeAnnotWithEndBeyondBounds = true; //default
     return this;
   }
@@ -507,14 +507,14 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   @Override
   public SelectFSs_impl<T> covering(AnnotationFS fs) { // AI
     boundsUse = BoundsUse.covering;
-    this.boundingFs = fs;
+    boundingFs = fs;
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> covering(int begin, int end) { // AI
     boundsUse = BoundsUse.covering;
-    this.boundingFs = makePosAnnot(begin, end);
+    boundingFs = makePosAnnot(begin, end);
     return this;
   }
 
@@ -1192,19 +1192,19 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public T get(int offset) {
-    this.shift = offset;
+    shift = offset;
     return getNullChk();
   }
 
   @Override
   public T single(int offset) {
-    this.shift = offset;
+    shift = offset;
     return single();
   }
 
   @Override
   public T singleOrNull(int offset) {
-    this.shift = offset;
+    shift = offset;
     return singleOrNull();
   }
 
@@ -1523,16 +1523,16 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   // }
 
   private SelectFSs<T> commonFollowing(Annotation annotation, int offset) {
-    this.startingFs = annotation;
-    this.shift = offset;
+    startingFs = annotation;
+    shift = offset;
     isFollowing = true;
     return this;
   }
 
   private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
     // validateSinglePosition(fs, offset);
-    this.startingFs = annotation;
-    this.shift = offset;
+    startingFs = annotation;
+    shift = offset;
     isPreceding = true;
     return this;
   }
@@ -1753,7 +1753,7 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
   @Override
   public boolean isEmpty() {
-    if (this.limit == 0) {
+    if (limit == 0) {
       return true;
     }
     return fsIterator().size() == 0;

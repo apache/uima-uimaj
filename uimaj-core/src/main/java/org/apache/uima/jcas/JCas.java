@@ -291,7 +291,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   default StringArray getStringArray0L() {
-    return this.getCas().emptyStringArray();
+    return getCas().emptyStringArray();
   }
 
   /**
@@ -303,7 +303,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a StringArray
    */
   default StringArray emptyStringArray() {
-    return this.getCas().emptyStringArray();
+    return getCas().emptyStringArray();
   }
 
   /**
@@ -317,7 +317,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   default IntegerArray getIntegerArray0L() {
-    return this.getCas().emptyIntegerArray();
+    return getCas().emptyIntegerArray();
   }
 
   /**
@@ -329,7 +329,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of an IntegerArray
    */
   default IntegerArray emptyIntegerArray() {
-    return this.getCas().emptyIntegerArray();
+    return getCas().emptyIntegerArray();
   }
 
   /**
@@ -343,7 +343,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   default FloatArray getFloatArray0L() {
-    return this.getCas().emptyFloatArray();
+    return getCas().emptyFloatArray();
   }
 
   /**
@@ -355,7 +355,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a FloatArray
    */
   default FloatArray emptyFloatArray() {
-    return this.getCas().emptyFloatArray();
+    return getCas().emptyFloatArray();
   }
 
   /**
@@ -371,7 +371,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   default FSArray getFSArray0L() {
-    return this.getCas().emptyFSArray();
+    return getCas().emptyFSArray();
   }
 
   /**
@@ -385,7 +385,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a FSArray
    */
   default FSArray emptyFSArray() {
-    return this.getCas().emptyFSArray();
+    return getCas().emptyFSArray();
   }
 
   /**
@@ -403,7 +403,7 @@ public interface JCas extends AbstractCas {
    *          the particular FeatureStructure type
    */
   default <T extends TOP> FSArray<T> emptyFSArray(Class<T> clazz) {
-    return this.getCas().emptyFSArray(((JCasImpl) this).getCasType(clazz));
+    return getCas().emptyFSArray(((JCasImpl) this).getCasType(clazz));
   }
 
   /**
@@ -415,7 +415,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a ByteArray
    */
   default ByteArray emptyByteArray() {
-    return this.getCas().emptyByteArray();
+    return getCas().emptyByteArray();
   }
 
   /**
@@ -427,7 +427,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a ShortArray
    */
   default ShortArray emptyShortArray() {
-    return this.getCas().emptyShortArray();
+    return getCas().emptyShortArray();
   }
 
   /**
@@ -439,7 +439,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a LongArray
    */
   default LongArray emptyLongArray() {
-    return this.getCas().emptyLongArray();
+    return getCas().emptyLongArray();
   }
 
   /**
@@ -451,7 +451,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a DoubleArray
    */
   default DoubleArray emptyDoubleArray() {
-    return this.getCas().emptyDoubleArray();
+    return getCas().emptyDoubleArray();
   }
 
   /**
@@ -463,7 +463,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a DoubleArray
    */
   default BooleanArray emptyBooleanArray() {
-    return this.getCas().emptyBooleanArray();
+    return getCas().emptyBooleanArray();
   }
 
   /**
@@ -920,7 +920,7 @@ public interface JCas extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default <T extends TOP> Collection<T> getIndexedFSs(Type type) {
-    return this.getIndexRepository().getIndexedFSs(type);
+    return getIndexRepository().getIndexedFSs(type);
   }
 
   /**
@@ -935,7 +935,7 @@ public interface JCas extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
-    return this.getIndexRepository().getIndexedFSs(clazz);
+    return getIndexRepository().getIndexedFSs(clazz);
   }
 
   /**
@@ -946,7 +946,7 @@ public interface JCas extends AbstractCas {
    *         of the specified type (including subtypes)
    */
   default Collection<TOP> getIndexedFSs() {
-    return this.getIndexRepository().getIndexedFSs();
+    return getIndexRepository().getIndexedFSs();
   }
 
   /**
@@ -1097,7 +1097,7 @@ public interface JCas extends AbstractCas {
    * @return - the shared (in this CAS) instance of the empty list (immutable)
    */
   default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
-    return this.getCasImpl().emptyListFromTypeCode(((TypeImpl) getCasType(clazz)).getCode());
+    return getCasImpl().emptyListFromTypeCode(((TypeImpl) getCasType(clazz)).getCode());
   }
 
   /**
@@ -1138,6 +1138,6 @@ public interface JCas extends AbstractCas {
    * @return a shared (in this CAS) instance of the empty array (immutable)
    */
   default <T extends TOP> CommonArrayFS emptyArray(Class<T> clazz) {
-    return this.getCasImpl().emptyArray(getCasType(clazz));
+    return getCasImpl().emptyArray(getCasType(clazz));
   }
 }

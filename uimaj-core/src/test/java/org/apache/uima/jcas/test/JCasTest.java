@@ -96,9 +96,9 @@ public class JCasTest {
   public void setUp() throws Exception {
     try {
       try {
-        this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+        cas = CASInitializer.initCas(new CASTestSetup(), null);
         // this.ts = this.cas.getTypeSystem();
-        this.jcas = cas.getJCas();
+        jcas = cas.getJCas();
         endOfSentenceInstance = new EndOfSentence(jcas);
       } catch (Exception e1) {
         checkOkMissingImport(e1);
@@ -143,10 +143,10 @@ public class JCasTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
+    cas = null;
     // this.ts = null;
-    this.jcas = null;
-    this.endOfSentenceInstance = null;
+    jcas = null;
+    endOfSentenceInstance = null;
   }
 
   @Test
@@ -257,11 +257,11 @@ public class JCasTest {
         System.out.println(e2);
       }
       CAS localCas = jcas.getCas();
-      assertTrue(localCas == this.cas);
+      assertTrue(localCas == cas);
       LowLevelCAS ll_cas = jcas.getLowLevelCas();
-      assertTrue(ll_cas == this.cas);
+      assertTrue(ll_cas == cas);
       CASImpl casImpl = jcas.getCasImpl();
-      assertTrue(casImpl == this.cas);
+      assertTrue(casImpl == cas);
 
       /* Annotation a1 = */ new Annotation(jcas, 4, 5);
     } catch (Exception e) {

@@ -68,13 +68,13 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
           FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
 
-    this.indexedFSs = new OrderedFsSet_array<>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
+    indexedFSs = new OrderedFsSet_array<>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
   }
 
   @Override
   public void flush() {
     super.flush();
-    this.indexedFSs.clear();
+    indexedFSs.clear();
   }
 
   /**
@@ -131,8 +131,8 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   // @formatter:on
   @Override
   public T find(FeatureStructure templateKey) {
-    int pos = this.indexedFSs.findWithoutID((TOP) templateKey);
-    return (pos >= 0) ? this.indexedFSs.getAtPos(pos) : null;
+    int pos = indexedFSs.findWithoutID((TOP) templateKey);
+    return (pos >= 0) ? indexedFSs.getAtPos(pos) : null;
   }
 
   // @Override
@@ -196,7 +196,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public int size() {
-    return this.indexedFSs.size()/* + itemsToBeAdded.size() */;
+    return indexedFSs.size()/* + itemsToBeAdded.size() */;
   }
 
   /**
@@ -216,7 +216,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     assertFsTypeMatchesIndexType(fs, "deleteFS");
     // maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     maybeCopy();
-    return this.indexedFSs.remove(fs);
+    return indexedFSs.remove(fs);
   }
 
   @Override
@@ -272,7 +272,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     if (CASImpl.traceCow) {
-      this.casImpl.traceCowCopy(this);
+      casImpl.traceCowCopy(this);
     }
     return new CopyOnWriteOrderedFsSet_array(indexedFSs);
   }

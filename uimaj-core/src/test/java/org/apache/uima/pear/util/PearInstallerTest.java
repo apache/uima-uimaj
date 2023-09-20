@@ -58,7 +58,7 @@ public class PearInstallerTest {
     if (tempFile.delete()) {
       File tempDir = tempFile;
       if (tempDir.mkdirs()) {
-        this.tempInstallDir = tempDir;
+        tempInstallDir = tempDir;
       }
     }
   }
@@ -68,8 +68,8 @@ public class PearInstallerTest {
    */
   @AfterEach
   public void tearDown() throws Exception {
-    if (this.tempInstallDir != null) {
-      FileUtil.deleteDirectory(this.tempInstallDir);
+    if (tempInstallDir != null) {
+      FileUtil.deleteDirectory(tempInstallDir);
     }
   }
 
@@ -77,7 +77,7 @@ public class PearInstallerTest {
   public void testPearInstall() throws Exception {
 
     // check temporary working directory
-    if (this.tempInstallDir == null) {
+    if (tempInstallDir == null) {
       throw new FileNotFoundException("temp directory not found");
       // check sample PEAR files
     }
@@ -87,7 +87,7 @@ public class PearInstallerTest {
     assertThat(pearFile).isNotNull();
 
     // Install PEAR package
-    PackageBrowser instPear = PackageInstaller.installPackage(this.tempInstallDir, pearFile, true);
+    PackageBrowser instPear = PackageInstaller.installPackage(tempInstallDir, pearFile, true);
 
     // check pear PackageBrowser object
     assertThat(instPear).isNotNull();
@@ -98,7 +98,7 @@ public class PearInstallerTest {
 
     // check PEAR datapath setting
     // pear file contains (uima.datapath = $main_root/my/test/data/path)
-    File datapath = new File(this.tempInstallDir,
+    File datapath = new File(tempInstallDir,
             "uima.example.DateTimeAnnotator/my/test/data/path");
     File pearDatapath = new File(instPear.getComponentDataPath());
     assertThat(pearDatapath).isEqualTo(datapath);

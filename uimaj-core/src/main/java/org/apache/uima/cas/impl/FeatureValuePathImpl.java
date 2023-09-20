@@ -207,24 +207,24 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
     }
 
-    this.childPath = child;
-    this.typeNameInSnippet = getTypeInSnippet(pathSnippet);
-    this.featureName = getFeatureInSnippet(pathSnippet);
-    this.isArrayOrList = false;
-    this.isArrayType = false;
+    childPath = child;
+    typeNameInSnippet = getTypeInSnippet(pathSnippet);
+    featureName = getFeatureInSnippet(pathSnippet);
+    isArrayOrList = false;
+    isArrayType = false;
     determineArray();
-    this.isListType = false;
+    isListType = false;
 
-    this.isCoveredTextFeature = COVERED_TEXT.equals(this.featureName);
-    this.isFsIdFeature = FS_ID.equals(this.featureName);
-    this.isTypeNameFeature = TYPE_NAME.equals(this.featureName);
-    this.isUniqueIdFeature = UNIQUE_ID.equals(this.featureName);
-    this.isBracketsOnly = (this.isArrayOrList && this.featureName.length() == 0);
+    isCoveredTextFeature = COVERED_TEXT.equals(featureName);
+    isFsIdFeature = FS_ID.equals(featureName);
+    isTypeNameFeature = TYPE_NAME.equals(featureName);
+    isUniqueIdFeature = UNIQUE_ID.equals(featureName);
+    isBracketsOnly = (isArrayOrList && featureName.length() == 0);
 
     // coveredText() asf. is only valid as the last snippet in a feature
     // path
-    if ((this.isCoveredTextFeature || this.isFsIdFeature || this.isUniqueIdFeature
-            || this.isTypeNameFeature) && child != null) {
+    if ((isCoveredTextFeature || isFsIdFeature || isUniqueIdFeature
+            || isTypeNameFeature) && child != null) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
     }
 
@@ -255,47 +255,47 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     if (currentFS == 0) {
       return null;
     }
-    if (this.isArrayType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isArrayType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
 
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
           int position = getArrayIndex(arraySize);
           return cas.ll_getFloatArrayValue(arrayFS, position, false);
         case LowLevelCAS.TYPE_CLASS_FSARRAY:
           int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-          return this.childPath.evaluateAsFloat(childFS, cas);
+          return childPath.evaluateAsFloat(childFS, cas);
         default:
           throw new IllegalStateException("feature path snippet is neither float nor fs array");
       }
     }
 
-    if (this.isListType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isListType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      switch (this.listType) {
+      switch (listType) {
         case TYPE_CLASS_FLOATLIST:
           return (Float) getValueAtListIndex(cas, listFS);
         case TYPE_CLASS_FSLIST:
           int childFs = getFsAtListIndex(cas, listFS);
           if (childFs != 0) {
-            return this.childPath.evaluateAsFloat(childFs, cas);
+            return childPath.evaluateAsFloat(childFs, cas);
           }
           return null;
         default:
@@ -303,17 +303,17 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
     }
 
-    if (this.childPath != null) {
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsFloat(childFS, cas);
-    } else if (this.isCoveredTextFeature || this.isUniqueIdFeature || this.isFsIdFeature
-            || this.isTypeNameFeature) {
+    if (childPath != null) {
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsFloat(childFS, cas);
+    } else if (isCoveredTextFeature || isUniqueIdFeature || isFsIdFeature
+            || isTypeNameFeature) {
       throw new IllegalStateException("feature path does not denote a float");
     } else {
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_FLOAT:
-          return cas.ll_getFloatValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
+          return cas.ll_getFloatValue(currentFS, featureCode, CAS_TYPE_CHECKS);
         default:
           throw new IllegalStateException("feature path does not denote a float");
       }
@@ -329,33 +329,33 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       return null;
     }
 
-    if (this.isArrayType) {
+    if (isArrayType) {
 
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         // we currently assume that there can only be one [] in the path
         // hence, it's safe to say that we can collect floats here
         Float[] result = new Float[arraySize];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSArray
           // iterate through the snippets, which will return floats
           for (int i = 0; i < arraySize; i++) {
             int childFS = cas.ll_getRefArrayValue(arrayFS, i, CAS_TYPE_CHECKS);
-            result[i] = this.childPath.evaluateAsFloat(childFS, cas);
+            result[i] = childPath.evaluateAsFloat(childFS, cas);
           }
         } else {
           // this snippet denotes a float array, just collect it
@@ -367,15 +367,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
       // resume evaluation at the correct array entry
       int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-      return this.childPath.evaluateAsFloatArray(childFS, cas);
-    } else if (this.isListType) {
+      return childPath.evaluateAsFloatArray(childFS, cas);
+    } else if (isListType) {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
 
         if (resultList == null) {
@@ -386,12 +386,12 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         // hence, it's safe to say that we can collect floats here
         Float[] result = new Float[resultList.size()];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSList
           // iterate through the results , which will return floats
           for (int i = 0; i < resultList.size(); i++) {
             int childFS = (Integer) resultList.get(i);
-            result[i] = this.childPath.evaluateAsFloat(childFS, cas);
+            result[i] = childPath.evaluateAsFloat(childFS, cas);
           }
         } else {
           // this snippet denotes a float list, just collect it
@@ -401,11 +401,11 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
       // resume evaluation at the correct list entry
       int childFS = getFsAtListIndex(cas, listFS);
-      return this.childPath.evaluateAsFloatArray(childFS, cas);
+      return childPath.evaluateAsFloatArray(childFS, cas);
     } else {
       // resume evaulation with the next snippet
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsFloatArray(childFS, cas);
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsFloatArray(childFS, cas);
     }
   }
 
@@ -415,46 +415,46 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       return null;
     }
 
-    if (this.isArrayType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isArrayType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_INTARRAY:
           int position = getArrayIndex(arraySize);
           return cas.ll_getIntArrayValue(arrayFS, position, false);
         case LowLevelCAS.TYPE_CLASS_FSARRAY:
           int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-          return this.childPath.evaluateAsInt(childFS, cas);
+          return childPath.evaluateAsInt(childFS, cas);
         default:
           throw new IllegalStateException("feature path snippet is neither int nor fs array");
       }
     }
 
-    if (this.isListType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isListType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      switch (this.listType) {
+      switch (listType) {
         case TYPE_CLASS_INTEGERLIST:
           return (Integer) getValueAtListIndex(cas, listFS);
         case TYPE_CLASS_FSLIST:
           int childFs = getFsAtListIndex(cas, listFS);
           if (childFs != 0) {
-            return this.childPath.evaluateAsInt(childFs, cas);
+            return childPath.evaluateAsInt(childFs, cas);
           }
           return null;
         default:
@@ -462,20 +462,20 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
     }
 
-    if (this.childPath != null) {
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsInt(childFS, cas);
-    } else if (this.isCoveredTextFeature || this.isTypeNameFeature) {
+    if (childPath != null) {
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsInt(childFS, cas);
+    } else if (isCoveredTextFeature || isTypeNameFeature) {
       throw new IllegalStateException("feature path does not denote an int");
-    } else if (this.isFsIdFeature) {
+    } else if (isFsIdFeature) {
       return currentFS;
-    } else if (this.isUniqueIdFeature) {
+    } else if (isUniqueIdFeature) {
       return currentFS; // TODO: return currentFs + chunkId
     } else {
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_INT:
-          return cas.ll_getIntValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
+          return cas.ll_getIntValue(currentFS, featureCode, CAS_TYPE_CHECKS);
         default:
           throw new IllegalStateException("feature path does not denote an int");
       }
@@ -491,33 +491,33 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       return null;
     }
 
-    if (this.isArrayType) {
+    if (isArrayType) {
 
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         // we currently assume that there can only be one [] in the path
         // hence, it's safe to say that we can collect integers here
         Integer[] result = new Integer[arraySize];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSArray
           // iterate through the snippets, which will return integers
           for (int i = 0; i < arraySize; i++) {
             int childFS = cas.ll_getRefArrayValue(arrayFS, i, CAS_TYPE_CHECKS);
-            result[i] = this.childPath.evaluateAsInt(childFS, cas);
+            result[i] = childPath.evaluateAsInt(childFS, cas);
           }
         } else {
           // this snippet denotes an int array, just collect it
@@ -529,15 +529,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
       // resume evaluation at the correct array entry
       int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-      return this.childPath.evaluateAsIntArray(childFS, cas);
-    } else if (this.isListType) {
+      return childPath.evaluateAsIntArray(childFS, cas);
+    } else if (isListType) {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
 
         if (resultList == null) {
@@ -548,12 +548,12 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         // hence, it's safe to say that we can collect floats here
         Integer[] result = new Integer[resultList.size()];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSList
           // iterate through the results , which will return floats
           for (int i = 0; i < resultList.size(); i++) {
             int childFS = (Integer) resultList.get(i);
-            result[i] = this.childPath.evaluateAsInt(childFS, cas);
+            result[i] = childPath.evaluateAsInt(childFS, cas);
           }
         } else {
           // this snippet denotes a float list, just collect it
@@ -563,11 +563,11 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
       // resume evaluation at the correct list entry
       int childFS = getFsAtListIndex(cas, listFS);
-      return this.childPath.evaluateAsIntArray(childFS, cas);
+      return childPath.evaluateAsIntArray(childFS, cas);
     } else {
       // resume evaulation with the next snippet
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsIntArray(childFS, cas);
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsIntArray(childFS, cas);
     }
   }
 
@@ -588,46 +588,46 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       return null;
     }
 
-    if (this.isArrayType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isArrayType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
           int position = getArrayIndex(arraySize);
           return cas.ll_getStringArrayValue(arrayFS, position, false);
         case LowLevelCAS.TYPE_CLASS_FSARRAY:
           int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-          return this.childPath.evaluateAsString(childFS, cas);
+          return childPath.evaluateAsString(childFS, cas);
         default:
           throw new IllegalStateException("feature path snippet is neither string nor fs array");
       }
     }
 
-    if (this.isListType) {
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+    if (isListType) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      switch (this.listType) {
+      switch (listType) {
         case TYPE_CLASS_STRINGLIST:
           return (String) getValueAtListIndex(cas, listFS);
         case TYPE_CLASS_FSLIST:
           int childFs = getFsAtListIndex(cas, listFS);
           if (childFs != 0) {
-            return this.childPath.evaluateAsString(childFs, cas);
+            return childPath.evaluateAsString(childFs, cas);
           }
           return null;
         default:
@@ -635,24 +635,24 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
     }
 
-    if (this.childPath != null) {
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsString(childFS, cas);
-    } else if (this.isCoveredTextFeature) {
+    if (childPath != null) {
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsString(childFS, cas);
+    } else if (isCoveredTextFeature) {
       AnnotationFS annotation = (AnnotationFS) cas.ll_getFSForRef(currentFS);
       return annotation.getCoveredText();
-    } else if (this.isTypeNameFeature) {
+    } else if (isTypeNameFeature) {
       Type type = cas.ll_getTypeSystem().ll_getTypeForCode(cas.ll_getFSRefType(currentFS));
       return type.getName();
-    } else if (this.isFsIdFeature) {
+    } else if (isFsIdFeature) {
       throw new IllegalStateException("feature path denotes fsId()");
-    } else if (this.isUniqueIdFeature) {
+    } else if (isUniqueIdFeature) {
       throw new IllegalStateException("feature path denotes uniqueId()");
     } else {
-      int typeClass = cas.ll_getTypeClass(this.featureRangeType);
+      int typeClass = cas.ll_getTypeClass(featureRangeType);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_STRING:
-          return cas.ll_getStringValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
+          return cas.ll_getStringValue(currentFS, featureCode, CAS_TYPE_CHECKS);
         case LowLevelCAS.TYPE_CLASS_FLOAT:
           throw new IllegalStateException("feature path denotes a float");
         case LowLevelCAS.TYPE_CLASS_INT:
@@ -672,27 +672,27 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       return null;
     }
 
-    if (this.isArrayType) {
+    if (isArrayType) {
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
       // if the user specified name[1000], but the array has only 5
       // entries for name...
-      if (this.arrayIndex >= arraySize) {
+      if (arrayIndex >= arraySize) {
         return null;
       }
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         // we currently assume that there can only be one [] in the path
         // hence, it's safe to say that we can collect strings here
         String[] result = new String[arraySize];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSArray
           // iterate through the snippets, which will return Strings
           // example author[]/name: author points to an FSArray of
@@ -700,7 +700,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
           // the loop below collects their names as strings
           for (int i = 0; i < arraySize; i++) {
             int childFS = cas.ll_getRefArrayValue(arrayFS, i, CAS_TYPE_CHECKS);
-            result[i] = this.childPath.evaluateAsString(childFS, cas);
+            result[i] = childPath.evaluateAsString(childFS, cas);
           }
         } else {
           // arrayFS itself denotes a String array, just collect it
@@ -713,15 +713,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the snippet is like ...[1] or ...[last]
       // resume evaluation at the correct array entry
       int childFS = getFsAtIndex(arrayFS, cas, arraySize);
-      return this.childPath.evaluateAsStringArray(childFS, cas);
-    } else if (this.isListType) {
+      return childPath.evaluateAsStringArray(childFS, cas);
+    } else if (isListType) {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (this.isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, this.featureCode));
+      int listFS = (isBracketsOnly ? currentFS
+              : cas.ll_getRefValue(currentFS, featureCode));
 
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
+      if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
 
         if (resultList == null) {
@@ -732,12 +732,12 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         // hence, it's safe to say that we can collect floats here
         String[] result = new String[resultList.size()];
 
-        if (this.childPath != null) { // this snippet denotes an
+        if (childPath != null) { // this snippet denotes an
           // FSList
           // iterate through the results , which will return floats
           for (int i = 0; i < resultList.size(); i++) {
             int childFS = (Integer) resultList.get(i);
-            result[i] = this.childPath.evaluateAsString(childFS, cas);
+            result[i] = childPath.evaluateAsString(childFS, cas);
           }
         } else {
           // this snippet denotes a float list, just collect it
@@ -747,13 +747,13 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       }
       // resume evaluation at the correct list entry
       int childFS = getFsAtListIndex(cas, listFS);
-      return this.childPath.evaluateAsStringArray(childFS, cas);
+      return childPath.evaluateAsStringArray(childFS, cas);
     } else {
       // this is just an intermediate feature (like "metadata" in
       // metadata/author[]/name)
       // resume evaulation with the next snippet
-      int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
-      return this.childPath.evaluateAsStringArray(childFS, cas);
+      int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
+      return childPath.evaluateAsStringArray(childFS, cas);
     }
   }
 
@@ -773,10 +773,10 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
   @Override
   public int getFSType() {
-    if (this.isSimpleRangeType) {
-      return this.typeCode;
+    if (isSimpleRangeType) {
+      return typeCode;
     }
-    return this.childPath.getFSType();
+    return childPath.getFSType();
   }
 
   /**
@@ -795,66 +795,66 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    */
   @Override
   public String getValueType() {
-    if (this.valueTypeName == null) {
-      this.valueTypeName = this.childPath.getValueType();
-      if (this.arrayIndex == USE_ALL_ENTRIES) {
-        if (CAS.TYPE_NAME_STRING.equals(this.valueTypeName)) {
-          this.valueTypeName = CAS.TYPE_NAME_STRING_ARRAY;
-        } else if (CAS.TYPE_NAME_INTEGER.equals(this.valueTypeName)) {
-          this.valueTypeName = CAS.TYPE_NAME_INTEGER_ARRAY;
-        } else if (CAS.TYPE_NAME_FLOAT.equals(this.valueTypeName)) {
-          this.valueTypeName = CAS.TYPE_NAME_FLOAT_ARRAY;
+    if (valueTypeName == null) {
+      valueTypeName = childPath.getValueType();
+      if (arrayIndex == USE_ALL_ENTRIES) {
+        if (CAS.TYPE_NAME_STRING.equals(valueTypeName)) {
+          valueTypeName = CAS.TYPE_NAME_STRING_ARRAY;
+        } else if (CAS.TYPE_NAME_INTEGER.equals(valueTypeName)) {
+          valueTypeName = CAS.TYPE_NAME_INTEGER_ARRAY;
+        } else if (CAS.TYPE_NAME_FLOAT.equals(valueTypeName)) {
+          valueTypeName = CAS.TYPE_NAME_FLOAT_ARRAY;
         }
       }
     }
-    return this.valueTypeName;
+    return valueTypeName;
   }
 
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
-    if (this.typeNameInSnippet != null) {
-      result.append(this.typeNameInSnippet);
+    if (typeNameInSnippet != null) {
+      result.append(typeNameInSnippet);
       result.append(TypeSystem.FEATURE_SEPARATOR);
     }
-    result.append(this.featureName);
-    if (this.isArrayOrList) {
+    result.append(featureName);
+    if (isArrayOrList) {
       result.append('[');
-      if (!this.isBracketsOnly && this.arrayIndex >= 0) {
-        result.append(this.arrayIndex);
+      if (!isBracketsOnly && arrayIndex >= 0) {
+        result.append(arrayIndex);
       }
-      if (this.arrayIndex == LAST_ARRAY_ENTRY) {
+      if (arrayIndex == LAST_ARRAY_ENTRY) {
         result.append(LAST_ARRAY_ENTRY_MARKER);
       }
       result.append(']');
     }
-    if (this.childPath != null) {
+    if (childPath != null) {
       result.append('/');
-      result.append(this.childPath.toString());
+      result.append(childPath.toString());
     }
     return result.toString();
   }
 
   @Override
   public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException {
-    if (this.typeNameInSnippet != null) { // if the feature path snippet
+    if (typeNameInSnippet != null) { // if the feature path snippet
       // defines
       // its own
       // type,
       // we use that one instead of the one that's passed in
-      fsType = ts.ll_getCodeForTypeName(this.typeNameInSnippet);
+      fsType = ts.ll_getCodeForTypeName(typeNameInSnippet);
     }
 
     if (fsType == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH,
-              this.typeNameInSnippet);
+              typeNameInSnippet);
     }
 
     // the range type denotes what type of FSes (or
     // built-in type) is contained in this feature
     int rangeTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-    if (!(isBuiltInFeature() || this.isBracketsOnly)) {
+    if (!(isBuiltInFeature() || isBracketsOnly)) {
       // find the feature in fsType that corresponds to this path snippet
       int[] features = ts.ll_getAppropriateFeatures(fsType);
       boolean found = false;
@@ -862,79 +862,79 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       int i = 0;
       for (; i < features.length && (!found); i++) {
         Feature feature = ts.ll_getFeatureForCode(features[i]);
-        found = feature.getShortName().equals(this.featureName);
+        found = feature.getShortName().equals(featureName);
       }
 
       if (found) {
         // store the feature code that corresponds to this path snippet
-        this.featureCode = features[i - 1];
-        rangeTypeCode = ts.ll_getRangeType(this.featureCode);
+        featureCode = features[i - 1];
+        rangeTypeCode = ts.ll_getRangeType(featureCode);
       } else {
         Type type = ts.ll_getTypeForCode(fsType);
-        throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, this.featureName,
+        throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, featureName,
                 type.getName());
       }
     }
 
-    if (this.isBracketsOnly) {
+    if (isBracketsOnly) {
       rangeTypeCode = fsType;
     }
 
-    this.typeCode = fsType;
+    typeCode = fsType;
 
     // TODO: check mismatch between isArray and the actual rangeTypeCode
 
     // find out whether the type is a "simple" type that may only be used in
     // the last snippet of a path
     Type type = ts.ll_getTypeForCode(rangeTypeCode);
-    this.featureRangeType = rangeTypeCode;
+    featureRangeType = rangeTypeCode;
 
     if (isBuiltInFeature()) {
-      this.isSimpleRangeType = true;
+      isSimpleRangeType = true;
     } else {
-      this.isSimpleRangeType = Arrays.binarySearch(SIMPLE_VAL_TYPES, type.getName()) >= 0;
+      isSimpleRangeType = Arrays.binarySearch(SIMPLE_VAL_TYPES, type.getName()) >= 0;
     }
 
-    if (this.isArrayOrList) {
+    if (isArrayOrList) {
       int arrayType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
-      this.isArrayType = ((TypeSystemImpl) ts).subsumes(arrayType, rangeTypeCode);
-      if (!this.isArrayType) {
+      isArrayType = ((TypeSystemImpl) ts).subsumes(arrayType, rangeTypeCode);
+      if (!isArrayType) {
         // check whether the feature points to a list
-        for (int i = 0; i < LIST_TYPE_NAMES.length && !this.isListType; i++) {
+        for (int i = 0; i < LIST_TYPE_NAMES.length && !isListType; i++) {
           int candidateType = ts.ll_getCodeForTypeName(LIST_TYPE_NAMES[i]);
-          this.isListType = ((TypeSystemImpl) ts).subsumes(candidateType, rangeTypeCode);
-          if (this.isListType) {
+          isListType = ((TypeSystemImpl) ts).subsumes(candidateType, rangeTypeCode);
+          if (isListType) {
             // determine the type class of the list
-            this.listType = i;
+            listType = i;
           }
         }
 
         // determine the right head and tail feature, depending on the
         // list type
-        switch (this.listType) {
+        switch (listType) {
           case TYPE_CLASS_FSLIST:
-            this.headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_HEAD);
-            this.tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
+            headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_HEAD);
+            tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
             break;
           case TYPE_CLASS_STRINGLIST:
-            this.headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_HEAD);
-            this.tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
+            headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_HEAD);
+            tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
             break;
           case TYPE_CLASS_INTEGERLIST:
-            this.headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_HEAD);
-            this.tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_TAIL);
+            headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_HEAD);
+            tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_TAIL);
             break;
           case TYPE_CLASS_FLOATLIST:
-            this.headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_HEAD);
-            this.tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_TAIL);
+            headFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_HEAD);
+            tailFeature = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_TAIL);
             break;
           default:
             break;
         }
 
-        this.emptyListTypes = new Type[EMPTY_LIST_TYPE_NAMES.length];
+        emptyListTypes = new Type[EMPTY_LIST_TYPE_NAMES.length];
         for (int i = 0; i < EMPTY_LIST_TYPE_NAMES.length; i++) {
-          this.emptyListTypes[i] = ts
+          emptyListTypes[i] = ts
                   .ll_getTypeForCode(ts.ll_getCodeForTypeName(EMPTY_LIST_TYPE_NAMES[i]));
         }
 
@@ -942,61 +942,61 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
     }
 
-    if (this.childPath != null) {
+    if (childPath != null) {
       // for simple range types, only [] and fsId() are allowed as child
       // path
-      if (this.isSimpleRangeType
-              && !(this.childPath.isBracketsOnly() || this.childPath.isFsIdFeature)) {
-        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
+      if (isSimpleRangeType
+              && !(childPath.isBracketsOnly() || childPath.isFsIdFeature)) {
+        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, featureName);
       }
 
       // continue with the child path
-      this.childPath.typeSystemInit(rangeTypeCode, ts);
-    } else if (this.isCoveredTextFeature) {
+      childPath.typeSystemInit(rangeTypeCode, ts);
+    } else if (isCoveredTextFeature) {
       // make sure that the type is a subtype of annotation
       int annotationType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
       if (!((TypeSystemImpl) ts).subsumes(annotationType, fsType)) {
-        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
+        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, featureName);
       }
 
-      this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_STRING)];
-    } else if (this.isFsIdFeature) {
-      this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+    } else if (isFsIdFeature) {
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_INTEGER)];
-    } else if (this.isUniqueIdFeature) {
-      this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+    } else if (isUniqueIdFeature) {
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_INTEGER)];
-    } else if (this.isTypeNameFeature) {
-      this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+    } else if (isTypeNameFeature) {
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_STRING)];
     } else {
-      if (!this.isSimpleRangeType) {
+      if (!isSimpleRangeType) {
         CASRuntimeException exception = new CASRuntimeException(
                 CASRuntimeException.NO_PRIMITIVE_TAIL);
         throw exception;
       }
 
-      if (this.isArrayOrList && (this.arrayIndex != USE_ALL_ENTRIES)) {
+      if (isArrayOrList && (arrayIndex != USE_ALL_ENTRIES)) {
         // in the case of, say, authornames[0], the feature is of type
         // string array, but it will evaluate to a string.
-        this.valueTypeName = CONTAINER_TO_ELEMENTYPE_MAP.get(type.getName());
-      } else if (this.isListType) { // here, we can assume that
+        valueTypeName = CONTAINER_TO_ELEMENTYPE_MAP.get(type.getName());
+      } else if (isListType) { // here, we can assume that
         // arrayIndex =
         // USE_ALL_ENTRIES
         // we don't return lists, but arrays, so we need to map the type
         // accordingly
-        this.valueTypeName = LIST_TO_ARRAYTYPE_MAP.get(type.getName());
+        valueTypeName = LIST_TO_ARRAYTYPE_MAP.get(type.getName());
       } else {
-        this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
+        valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
                 type.getName())];
       }
     }
   }
 
   private boolean isBuiltInFeature() {
-    return this.isFsIdFeature || this.isUniqueIdFeature || this.isCoveredTextFeature
-            || this.isTypeNameFeature;
+    return isFsIdFeature || isUniqueIdFeature || isCoveredTextFeature
+            || isTypeNameFeature;
   }
 
   /**
@@ -1008,41 +1008,41 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    *           If the closing ] is missing, or the number is not an integer
    */
   private final void determineArray() throws CASRuntimeException {
-    int startIndex = this.featureName.indexOf('[');
+    int startIndex = featureName.indexOf('[');
     if (startIndex == -1) {
       return;
     }
-    int endIndex = this.featureName.indexOf(']');
+    int endIndex = featureName.indexOf(']');
     if (endIndex == -1) { // we're missing the ending bracket
-      throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
+      throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, toString());
     }
 
-    this.isArrayOrList = true;
+    isArrayOrList = true;
 
-    String arrayIndexString = this.featureName.substring(startIndex + 1, endIndex);
+    String arrayIndexString = featureName.substring(startIndex + 1, endIndex);
     // cut off the array markers from the actual feature name
-    this.featureName = this.featureName.substring(0, startIndex);
+    featureName = featureName.substring(0, startIndex);
 
     // determine the array index to use
 
     if (arrayIndexString.equals("")) { // empty brackets, denotes "all
       // elements"
-      this.arrayIndex = USE_ALL_ENTRIES;
+      arrayIndex = USE_ALL_ENTRIES;
     } else if (LAST_ARRAY_ENTRY_MARKER.equalsIgnoreCase(arrayIndexString)) {
       // [last],denotes "take the last array element"
-      this.arrayIndex = LAST_ARRAY_ENTRY;
+      arrayIndex = LAST_ARRAY_ENTRY;
     } else {
       try {
-        this.arrayIndex = Integer.parseInt(arrayIndexString);
+        arrayIndex = Integer.parseInt(arrayIndexString);
       } catch (NumberFormatException e) {
-        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
+        throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, toString());
       }
     }
 
   }
 
   private int getArrayIndex(int arraySize) {
-    return (LAST_ARRAY_ENTRY != this.arrayIndex ? this.arrayIndex : arraySize - 1);
+    return (LAST_ARRAY_ENTRY != arrayIndex ? arrayIndex : arraySize - 1);
   }
 
   private final String getFeatureInSnippet(String pathSnippet) {
@@ -1054,7 +1054,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
   }
 
   private int getFsAtIndex(int currentFS, LowLevelCAS cas, int arraySize) {
-    if (!this.isArrayType) {
+    if (!isArrayType) {
       throw new IllegalStateException("FeaturePath is not an array");
     }
 
@@ -1080,7 +1080,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    *         contain an entry for that index.
    */
   private int getFsAtListIndex(LowLevelCAS cas, int listFS) {
-    if (this.arrayIndex == USE_ALL_ENTRIES || this.listType != TYPE_CLASS_FSLIST) {
+    if (arrayIndex == USE_ALL_ENTRIES || listType != TYPE_CLASS_FSLIST) {
       throw new IllegalStateException(
               "feature does not denote an fs list, or does not denote a singel array entry");
     }
@@ -1095,15 +1095,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     if (listFS == 0) {
       return null;
     }
-    switch (this.listType) {
+    switch (listType) {
       case TYPE_CLASS_STRINGLIST:
-        return cas.ll_getStringValue(listFS, this.headFeature);
+        return cas.ll_getStringValue(listFS, headFeature);
       case TYPE_CLASS_INTEGERLIST:
-        return cas.ll_getIntValue(listFS, this.headFeature);
+        return cas.ll_getIntValue(listFS, headFeature);
       case TYPE_CLASS_FLOATLIST:
-        return cas.ll_getFloatValue(listFS, this.headFeature);
+        return cas.ll_getFloatValue(listFS, headFeature);
       case TYPE_CLASS_FSLIST:
-        return cas.ll_getRefValue(listFS, this.headFeature);
+        return cas.ll_getRefValue(listFS, headFeature);
       default:
         return null;
     }
@@ -1128,8 +1128,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     if (isEmptyList(cas, type)) {
       return null;
     }
-    int listTail = cas.ll_getRefValue(listFS, this.tailFeature);
-    switch (this.arrayIndex) {
+    int listTail = cas.ll_getRefValue(listFS, tailFeature);
+    switch (arrayIndex) {
       case USE_ALL_ENTRIES:
         list.add(getHeadValue(cas, listFS));
         return getValueAtIndexRec(cas, listTail, list, ++count);
@@ -1140,7 +1140,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         }
         return getHeadValue(cas, listFS);
       default:
-        if (count == this.arrayIndex) {
+        if (count == arrayIndex) {
           return getHeadValue(cas, listFS);
         }
         return getValueAtIndexRec(cas, listTail, list, ++count);
@@ -1166,15 +1166,15 @@ public class FeatureValuePathImpl implements FeatureValuePath {
   }
 
   private boolean isBracketsOnly() {
-    return this.isBracketsOnly;
+    return isBracketsOnly;
   }
 
   private boolean isEmptyList(LowLevelCAS cas, int type) {
     Type candidateType = cas.ll_getTypeSystem().ll_getTypeForCode(type);
     TypeSystem typeSystem = ((CASImpl) cas).getTypeSystem();
     boolean isEmpty = false;
-    for (int i = 0; i < this.emptyListTypes.length && (!isEmpty); i++) {
-      isEmpty = typeSystem.subsumes(this.emptyListTypes[i], candidateType);
+    for (int i = 0; i < emptyListTypes.length && (!isEmpty); i++) {
+      isEmpty = typeSystem.subsumes(emptyListTypes[i], candidateType);
     }
     return isEmpty;
   }

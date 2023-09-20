@@ -390,7 +390,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     try {
       if (casProcessorConfig.runInSeparateProcess()) {
         // redeploy = true IF the service failed and intent is to re-launch it
-        if (redeploy == false) {
+        if (!redeploy) {
           // Get number of instances of the Cas Processors to launch. This is defined in the CPE
           // descriptor by
           // attribute processingThreadCount in the <casProcessors> element.
@@ -681,7 +681,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       }
 
       int serviceCount = attachToServices(redeploy, serviceUri, howMany, aProcessingContainer);
-      if (redeploy == false && exclusiveAccess && serviceCount < concurrentThreadCount) {
+      if (!redeploy && exclusiveAccess && serviceCount < concurrentThreadCount) {
         ServiceProxyPool pool = aProcessingContainer.getPool();
         int poolSize = pool.getSize();
         for (int i = 0; i < poolSize; i++) {
@@ -793,7 +793,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       // Retrieve a new service list from the VNS
       serviceList = getNewServiceList(aServiceUri, casProcessorConfig);
 
-      if (serviceList == null || serviceList.size() == 0 && redeploy == false) {
+      if (serviceList == null || serviceList.size() == 0 && !redeploy) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_no_service_in_vns__FINEST",
                 new Object[] { Thread.currentThread().getName(), aServiceUri,
@@ -850,7 +850,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (exclusiveAccess) {
             serviceInfo = getNextAvailable(serviceList);
             if (serviceInfo == null) {
-              if (redeploy == false) {
+              if (!redeploy) {
                 // No more services available. Report how many services we attached to so far
                 return succesfullConnections;
               }

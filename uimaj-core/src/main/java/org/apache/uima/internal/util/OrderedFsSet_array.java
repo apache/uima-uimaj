@@ -110,14 +110,14 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
 
     // Iterators have refs into this, so don't change the start offset
     // No issue with truncating though - these are read-only
-    this.a = new TOP[set.a.length];
-    System.arraycopy(set.a, 0, this.a, 0, set.a_nextFreeslot);
-    this.a_firstUsedslot = set.a_firstUsedslot;
-    this.a_nextFreeslot = set.a_nextFreeslot;
-    this.comparatorNoTypeWithID = set.comparatorNoTypeWithID;
-    this.comparatorNoTypeWithoutID = set.comparatorNoTypeWithoutID;
+    a = new TOP[set.a.length];
+    System.arraycopy(set.a, 0, a, 0, set.a_nextFreeslot);
+    a_firstUsedslot = set.a_firstUsedslot;
+    a_nextFreeslot = set.a_nextFreeslot;
+    comparatorNoTypeWithID = set.comparatorNoTypeWithID;
+    comparatorNoTypeWithoutID = set.comparatorNoTypeWithoutID;
 
-    this.maxSize = set.maxSize;
+    maxSize = set.maxSize;
     // this.modificationCount = set.modificationCount;
   }
 

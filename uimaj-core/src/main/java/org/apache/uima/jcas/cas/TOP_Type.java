@@ -154,14 +154,14 @@ public class TOP_Type {
   // constructor execution order: 1: super, 2: instance expr, 3: body
   protected TOP_Type(JCas jcas, Type casType, boolean installGenerator) {
     this.jcas = jcas;
-    this.casImpl = jcas.getCasImpl();
-    this.ll_cas = this.casImpl;
+    casImpl = jcas.getCasImpl();
+    ll_cas = casImpl;
     this.casType = casType;
-    this.instanceOf_Type = this;
-    this.casTypeCode = ((TypeImpl) this.casType).getCode();
-    this.lowLevelTypeChecks = false;
-    this.lowLevelArrayBoundChecks = false;
-    this.useExistingInstance = true;
+    instanceOf_Type = this;
+    casTypeCode = ((TypeImpl) this.casType).getCode();
+    lowLevelTypeChecks = false;
+    lowLevelArrayBoundChecks = false;
+    useExistingInstance = true;
 
     // Add generator to CASImpl for this type
     // NOTE Getter used for FSGenerator to get the subtype instance value

@@ -907,7 +907,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (typeName.endsWith(ARRAY_TYPE_SUFFIX)) {
       checkTypeSyntax(typeName.substring(0, typeName.length() - 2));
     } else {
-      if (this.locked) {
+      if (locked) {
         throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
       }
 
@@ -919,7 +919,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   void newTypeCheckNoInheritanceFinalCheck(String typeName, Type superType) {
-    if (this.locked) {
+    if (locked) {
       throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
     }
     checkTypeSyntax(typeName);
@@ -990,7 +990,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public Feature addFeature(String shortFeatName, Type domainType, Type rangeType,
           boolean multipleReferencesAllowed) throws CASAdminException {
 
-    if (this.locked) {
+    if (locked) {
       throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
     }
 
@@ -1070,11 +1070,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public TypeImpl getTopType() {
-    return this.topType;
+    return topType;
   }
 
   public TypeImpl getTopTypeImpl() {
-    return this.topType;
+    return topType;
   }
 
   /**
@@ -1205,11 +1205,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
                                                                         // committed
     }
 
-    if (subType == fsArrayType) {
-      return superType == topType || superType == arrayBaseType;
-    }
-
-    if (subType.isArray()) {
+    if ((subType == fsArrayType) || subType.isArray()) {
       // If the subtype is an array, and the supertype is not, then the
       // supertype must be top, or the abstract array base.
       return ((superType == topType) || (superType == arrayBaseType));
@@ -1355,7 +1351,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return true if first argument subsumes the second
    */
   public boolean subsumes(int superType, int type) {
-    return this.ll_subsumes(superType, type);
+    return ll_subsumes(superType, type);
   }
 
   // private void updateSubsumption(int type, int superType) {
@@ -1419,7 +1415,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public TypeSystemImpl commit(ClassLoader cl) {
     synchronized (this) {
-      if (this.locked) {
+      if (locked) {
         // is a no-op if already loaded for this Class Loader
         // otherwise, need to load and set up generators for this class loader
         getGeneratorsForClassLoader(cl, false); // false - is not pear
@@ -1454,7 +1450,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (IS_TRACE_JCAS_EXPAND) {
         if (this == maybeConsolidatedTypesystem) {
           System.out.format("debug type system impl commited new type system and loaded JCas %d%n",
-                  this.hashCode());
+                  hashCode());
           System.out.println(Misc.getCallers(1, 50).toString());
         } else {
           System.out.format(
@@ -1496,7 +1492,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // fsClassRegistry = new FSClassRegistry(this, true);
     // FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
 
-    this.locked = true;
+    locked = true;
 
     return this;
   }
@@ -1626,7 +1622,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     String superClassName = superClass.getName();
     String uimaSuperTypeName = Misc.javaClassName2UimaTypeName(superClassName);
-    if (this.getType(uimaSuperTypeName) != null) {
+    if (getType(uimaSuperTypeName) != null) {
 
       // ****************************
       // STOP if get to UIMA type *
@@ -1636,7 +1632,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // then return to recursively process other jcas class levels.
       String className = clazz.getName();
       String uimaTypeName = Misc.javaClassName2UimaTypeName(className);
-      TypeImpl ti = this.getType(uimaTypeName);
+      TypeImpl ti = getType(uimaTypeName);
       if (ti != null) {
         maybeAddJCasOffsets(ti, tempIntFis, tempRefFis, tempNsrFis);
       }
@@ -1790,7 +1786,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public boolean isCommitted() {
-    return this.locked;
+    return locked;
   }
 
   /**
@@ -1884,7 +1880,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public Type addStringSubtype(String typeName, String[] stringList) throws CASAdminException {
     Set<String> allowedValues = new HashSet<>(Arrays.asList(stringList));
-    TypeImpl supertype = this.stringType;
+    TypeImpl supertype = stringType;
     // Check type name syntax.
     checkTypeSyntax(typeName);
 
@@ -1934,7 +1930,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     TypeImpl supertype = computeArrayParentFromComponentType(componentType);
     TypeImpl_array ti = new TypeImpl_array(arrayTypeName, (TypeImpl) componentType, this, supertype,
             slotKind, isHeapStoredArray, javaClass);
-    this.arrayComponentTypeToArrayType.put(componentType, ti);
+    arrayComponentTypeToArrayType.put(componentType, ti);
     // the reverse - going from array type to component type is done via the getComponentType method
     // of TypeImplArray
     return ti;
@@ -2294,7 +2290,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   public TypeImpl getTypeForCode(int typeCode) {
     if (isType(typeCode)) {
-      return this.types.get(typeCode);
+      return types.get(typeCode);
     }
     return null;
   }
@@ -2332,7 +2328,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   private final int getLargestFeatureCode() {
-    return this.features.size();
+    return features.size();
   }
 
   final boolean isFeature(int featureCode) {
@@ -2342,13 +2338,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public Feature ll_getFeatureForCode(int featureCode) {
     if (isFeature(featureCode)) {
-      return this.features.get(featureCode);
+      return features.get(featureCode);
     }
     return null;
   }
 
   FeatureImpl getFeatureForCode(int featureCode) {
-    return this.features.get(featureCode);
+    return features.get(featureCode);
   }
 
   FeatureImpl getFeatureForCode_checked(int featureCode) {
@@ -2541,7 +2537,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   @Override
   public Iterator<Feature> getFeatures() {
-    List<Feature> lf = Collections.unmodifiableList(this.features);
+    List<Feature> lf = Collections.unmodifiableList(features);
     Iterator<Feature> it = lf.iterator();
     // The first element is null, so skip it.
     it.next();
@@ -2559,7 +2555,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the domain type for a feature.
    */
   public int intro(int feat) {
-    return ((TypeImpl) (this.features.get(feat).getDomain())).getCode();
+    return ((TypeImpl) (features.get(feat).getDomain())).getCode();
   }
 
   /**
@@ -2570,7 +2566,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return -
    */
   public int range(int feat) {
-    return ((TypeImpl) (this.features.get(feat).getRange())).getCode();
+    return ((TypeImpl) (features.get(feat).getRange())).getCode();
   }
 
 //@formatter:off
@@ -2913,10 +2909,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     TypeSystemImpl other = (TypeSystemImpl) obj;
@@ -3142,7 +3135,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public void set_skip_loading_user_jcas(boolean v) {
-    this.skip_loading_user_jcas = v;
+    skip_loading_user_jcas = v;
   }
 
   // private static boolean isBuiltIn(Class<? extends TOP> clazz) {
