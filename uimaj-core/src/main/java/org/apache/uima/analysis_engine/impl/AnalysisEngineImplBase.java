@@ -398,7 +398,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   public synchronized String[] getFeatureNamesForType(String aTypeName) {
     // build CAS and populate mFirstTypeSystem
     CASImpl cas = (CASImpl) getCasManager()
-            .getCas(this.getUimaContextAdmin().getQualifiedContextName());
+            .getCas(getUimaContextAdmin().getQualifiedContextName());
     TypeSystemImpl ts = cas.getTypeSystemImpl();
     getCasManager().releaseCas(cas);
 
@@ -465,7 +465,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
   public void resetResultSpecificationToDefault() {
     ResultSpecification resultSpec = new ResultSpecification_impl();
-    resultSpec.addCapabilities(this.getAnalysisEngineMetaData().getCapabilities());
+    resultSpec.addCapabilities(getAnalysisEngineMetaData().getCapabilities());
     setResultSpecification(resultSpec);
   }
 

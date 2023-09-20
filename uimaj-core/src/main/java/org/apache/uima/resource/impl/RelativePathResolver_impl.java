@@ -192,17 +192,17 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     URL absURL = null;
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
-    } 
-    
+    }
+
     // fallback on TCCL
     if (absURL == null) {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        absURL = tccl.getResource(f);
+      ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+      absURL = tccl.getResource(f);
     }
 
     // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
     if (absURL == null && mClassLoader == null) {
-        absURL = ClassLoader.getSystemClassLoader().getResource(f);
+      absURL = ClassLoader.getSystemClassLoader().getResource(f);
     }
 
     return absURL;

@@ -38,17 +38,17 @@ final class LongHeap extends CommonAuxHeap {
 
   @Override
   void initMemory() {
-    this.heap = new long[this.heapBaseSize];
+    heap = new long[heapBaseSize];
   }
 
   @Override
   void initMemory(int size) {
-    this.heap = new long[size];
+    heap = new long[size];
   }
 
   @Override
   int getCapacity() {
-    return this.heap.length;
+    return heap.length;
   }
 
   @Override
@@ -64,12 +64,12 @@ final class LongHeap extends CommonAuxHeap {
 
   @Override
   void resetToZeros() {
-    Arrays.fill(this.heap, 0, this.heapPos, NULL);
+    Arrays.fill(heap, 0, heapPos, NULL);
   }
 
   // Getters
   long getHeapValue(int offset) {
-    return this.heap[offset];
+    return heap[offset];
   }
 
   // setters
@@ -104,7 +104,7 @@ final class LongHeap extends CommonAuxHeap {
       heap = new long[argLength];
 
     System.arraycopy(longHeap, 0, heap, 0, argLength);
-    this.heapPos = argLength;
+    heapPos = argLength;
   }
 
   public long[] toArray() {

@@ -333,7 +333,8 @@ public class AnnotatorContext_implTest {
       assertThat(mAC3.getResourceURL("Unknown")).isNull();
 
       // passthrough to class loader
-      assertThat(mAC3.getResourceURL("org/apache/uima/analysis_engine/impl/testDataFile3.dat")).isNotNull();
+      assertThat(mAC3.getResourceURL("org/apache/uima/analysis_engine/impl/testDataFile3.dat"))
+              .isNotNull();
 
       // passthrough to data path
       assertThat(mAC1.getResourceURL("testDataFile.dat")).isNotNull();
@@ -382,7 +383,8 @@ public class AnnotatorContext_implTest {
       assertThat(mAC3.getResourceURI("Unknown")).isNull();
 
       // passthrough to class loader
-      assertThat(mAC3.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat")).isNotNull();
+      assertThat(mAC3.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat"))
+              .isNotNull();
 
       // passthrough to data path
       assertThat(mAC1.getResourceURI("testDataFile.dat")).isNotNull();

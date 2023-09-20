@@ -19,8 +19,13 @@
 package org.apache.uima.util;
 
 import static java.util.Arrays.asList;
+import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.cas.SerialFormat.COMPRESSED_FILTERED_TSI;
+import static org.apache.uima.util.CasCreationUtils.createCas;
+import static org.apache.uima.util.CasLoadMode.DEFAULT;
+import static org.apache.uima.util.CasLoadMode.LENIENT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -28,7 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectOutput;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +41,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -45,15 +49,14 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class CasIOUtilsTest {
 
@@ -66,158 +69,151 @@ public class CasIOUtilsTest {
   private CAS cas2;
 
   @BeforeEach
-  public void setUp() throws Exception {
-    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
-    FsIndexDescription[] indexes = UIMAFramework.getXMLParser()
-            .parseFsIndexCollection(new XMLInputSource(indexesFile)).getFsIndexes();
+  void setUp() throws Exception {
 
-    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
-            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+    var indexes = getXMLParser()
+            .parseFsIndexCollection(
+                    new XMLInputSource(getClass().getResource("/ExampleCas/testIndexes.xml")))
+            .getFsIndexes();
 
-    cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    var typeSystem = getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(getClass().getResource("/ExampleCas/testTypeSystem.xml")));
+
+    cas = createCas(typeSystem, new TypePriorities_impl(), indexes);
 
     try (FileInputStream casInputStream = new FileInputStream(
             JUnitExtension.getFile("ExampleCas/simpleCas.xmi"))) {
       CasIOUtils.load(casInputStream, cas);
     }
 
-    File typeSystemFile2 = JUnitExtension.getFile("ExampleCas/testTypeSystem_variation.xml");
-    TypeSystemDescription typeSystem2 = UIMAFramework.getXMLParser()
-            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile2));
-    cas2 = CasCreationUtils.createCas(typeSystem2, new TypePriorities_impl(), indexes);
+    var typeSystem2 = getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(getClass().getResource("/ExampleCas/testTypeSystem_variation.xml")));
+    cas2 = createCas(typeSystem2, new TypePriorities_impl(), indexes);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    cas.release();
   }
 
   @Test
-  public void testXMI() throws Exception {
+  void testXMI() throws Exception {
     testXMI(false);
   }
 
   @Test
-  public void testXMILenient() throws Exception {
+  void testXMILenient() throws Exception {
     testXMI(true);
   }
 
-  public void testXMI(boolean leniently) throws Exception {
-    File casFile = new File("target/temp-test-output/simpleCas.xmi");
+  void testXMI(boolean leniently) throws Exception {
+    var casFile = new File("target/temp-test-output/simpleCas.xmi");
     casFile.getParentFile().mkdirs();
-    FileOutputStream docOS = new FileOutputStream(casFile);
-    CasIOUtils.save(cas, docOS, SerialFormat.XMI);
-    docOS.close();
+    try (var docOS = new FileOutputStream(casFile)) {
+      CasIOUtils.save(cas, docOS, SerialFormat.XMI);
+    }
     // NOTE - when Saxon saves the cas it omits the prefixes.
     // e.g. produces: <NULL id="0"/> instead of: <cas:NULL xmi:id="0"/>
     // This causes JUnit test failure "unknown type NULL"
 
     // Use a CAS initialized with the "correct" type system or with a different type system?
-    CAS casToUse = leniently ? cas2 : cas;
+    var casToUse = leniently ? cas2 : cas;
 
     casToUse.reset();
-    try (FileInputStream casInputStream = new FileInputStream(casFile)) {
-      CasIOUtils.load(casInputStream, null, casToUse,
-              leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
+    try (var is = new FileInputStream(casFile)) {
+      CasIOUtils.load(is, null, casToUse, leniently ? LENIENT : DEFAULT);
     }
     assertCorrectlyLoaded(casToUse, leniently);
 
     casToUse.reset();
-    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse,
-            leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
+    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently ? LENIENT : DEFAULT);
     assertCorrectlyLoaded(casToUse, leniently);
   }
 
-  @Test
-  public void testXCAS() throws Exception {
-    testXCAS(false);
-  }
-
-  @Test
-  public void testXCASLenient() throws Exception {
-    testXCAS(true);
-  }
-
-  public void testXCAS(boolean leniently) throws Exception {
-    File casFile = new File("target/temp-test-output/simpleCas.xcas");
+  @ValueSource(booleans = { true, false })
+  @ParameterizedTest
+  void testXCAS(boolean leniently) throws Exception {
+    var casFile = new File("target/temp-test-output/simpleCas.xcas");
     casFile.getParentFile().mkdirs();
-    try (FileOutputStream docOS = new FileOutputStream(casFile)) {
-      CasIOUtils.save(cas, docOS, SerialFormat.XCAS);
+    try (var os = new FileOutputStream(casFile)) {
+      CasIOUtils.save(cas, os, SerialFormat.XCAS);
     }
 
     // Use a CAS initialized with the "correct" type system or with a different type system?
-    CAS casToUse = leniently ? cas2 : cas;
+    var casToUse = leniently ? cas2 : cas;
 
     casToUse.reset();
-    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse,
-            leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
+    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently ? LENIENT : DEFAULT);
     assertCorrectlyLoaded(casToUse, leniently);
   }
 
   @Test
-  public void testS() throws Exception {
+  void testS() throws Exception {
     testFormat(SerialFormat.SERIALIZED, "bins", false);
   }
 
   @Test
-  public void testSp() throws Exception {
+  void testSp() throws Exception {
     testFormat(SerialFormat.SERIALIZED_TSI, "binsp", false);
   }
 
   @Test
-  public void testS6p() throws Exception {
+  void testS6p() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6p", false);
   }
 
   @Test
-  public void testS6pTs() throws Exception {
+  void testS6pTs() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TS, "bins6pTs", false);
   }
 
   @Test
-  public void testS6pLenient() throws Exception {
+  void testS6pLenient() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6", true);
   }
 
   @Test
-  public void testS0() throws Exception {
+  void testS0() throws Exception {
     testFormat(SerialFormat.BINARY, "bins0", false);
   }
 
   @Test
-  public void testS0tsi() throws Exception {
+  void testS0tsi() throws Exception {
     testFormat(SerialFormat.BINARY_TSI, "bins0", false);
   }
 
   @Test
-  public void testS4() throws Exception {
+  void testS4() throws Exception {
     testFormat(SerialFormat.COMPRESSED, "bins4", false);
   }
 
   @Test
-  public void testS4tsi() throws Exception {
+  void testS4tsi() throws Exception {
     testFormat(SerialFormat.COMPRESSED_TSI, "bins4", false);
   }
 
   @Test
-  public void testS6() throws Exception {
+  void testS6() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED, "bins6", false);
   }
 
   private void testFormat(SerialFormat format, String fileEnding, boolean leniently)
           throws Exception {
-    File casFile = new File("target/temp-test-output/simpleCas." + fileEnding);
+    var casFile = new File("target/temp-test-output/simpleCas." + fileEnding);
     casFile.getParentFile().mkdirs();
-    FileOutputStream docOS = new FileOutputStream(casFile);
-    CasIOUtils.save(cas, docOS, format);
-    docOS.close();
+    try (var os = new FileOutputStream(casFile)) {
+      CasIOUtils.save(cas, os, format);
+    }
 
     // Use a CAS initialized with the "correct" type system or with a different type system?
     CAS casToUse = leniently ? cas2 : cas;
     casToUse.reset();
 
-    FileInputStream casInputStream = new FileInputStream(casFile);
-    SerialFormat loadedFormat = CasIOUtils.load(casInputStream, null, casToUse,
-            leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
-    casInputStream.close();
-    assertThat(loadedFormat).isEqualTo(format);
-    assertCorrectlyLoaded(casToUse, leniently);
+    try (var is = new FileInputStream(casFile)) {
+      var loadedFormat = CasIOUtils.load(is, null, casToUse, leniently ? LENIENT : DEFAULT);
+      assertThat(loadedFormat).isEqualTo(format);
+      assertCorrectlyLoaded(casToUse, leniently);
+    }
   }
 
   private static void assertCorrectlyLoaded(CAS cas, boolean leniently) throws Exception {
@@ -259,56 +255,53 @@ public class CasIOUtilsTest {
   }
 
   @Test
-  public void testWrongInputStream() throws Exception {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    ObjectOutput out = null;
+  void testWrongInputStream() throws Exception {
+    byte[] casBytes;
+    try (var bos = new ByteArrayOutputStream(); var os = new ObjectOutputStream(bos)) {
+      os.writeObject(new String("WRONG OBJECT"));
+      casBytes = bos.toByteArray();
+    }
 
-    out = new ObjectOutputStream(byteArrayOutputStream);
-    out.writeObject(new String("WRONG OBJECT"));
-
-    byte[] casBytes = byteArrayOutputStream.toByteArray();
-    out.close();
-    ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes);
-    try {
+    try (ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes)) {
       CasIOUtils.load(casInputStream, cas);
     } catch (Exception e) {
       assertThat(e instanceof CASRuntimeException).isTrue();
       assertThat(((CASRuntimeException) e).getMessageKey()
               .equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT")).isTrue();
-      casInputStream.close();
       return;
     }
+
     fail("An exception should have been thrown for wrong input.");
   }
 
   @Test
-  public void testWrongFormat() throws Exception {
-    File casFile = new File("target/temp-test-output/simpleCas.wrong");
-    try {
-      CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.UNKNOWN);
-    } catch (Exception e) {
-      // assertThat(e instanceof IllegalArgumentException).isTrue();
-      return;
-    }
-    fail("An exception should have been thrown for wrong format.");
+  void testWrongFormat() throws Exception {
+    ThrowingCallable testFunc = () -> {
+      try (var os = new ByteArrayOutputStream()) {
+        CasIOUtils.save(cas, os, SerialFormat.UNKNOWN);
+      }
+    };
+
+    assertThatExceptionOfType(IOException.class) //
+            .isThrownBy(testFunc) //
+            .withRootCauseInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void testDocumentAnnotationIsNotResurrected() throws Exception {
-    String refererAnnoTypeName = "org.apache.uima.testing.Referer";
-    String customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
+  void testDocumentAnnotationIsNotResurrected() throws Exception {
+    var refererAnnoTypeName = "org.apache.uima.testing.Referer";
+    var customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
 
-    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
-            .createTypeSystemDescription();
+    var tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType(customDocAnnoTypeName, "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-    TypeDescription refererType = tsd.addType(refererAnnoTypeName, "", CAS.TYPE_NAME_TOP);
+    var refererType = tsd.addType(refererAnnoTypeName, "", CAS.TYPE_NAME_TOP);
     refererType.addFeature("ref", "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
-    CAS cas = CasCreationUtils.createCas(tsd, null, null);
+    CAS cas = createCas(tsd, null, null);
 
     // Initialize the default document annotation
     // ... then immediately remove it from the indexes.
-    FeatureStructure da = cas.getDocumentAnnotation();
+    var da = cas.getDocumentAnnotation();
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
             .extracting(fs -> fs.getType().getName())
@@ -316,68 +309,69 @@ public class CasIOUtilsTest {
 
     // Add a feature structure that references the original document annotation before we remove
     // it from the indexes
-    FeatureStructure referer = cas.createFS(cas.getTypeSystem().getType(refererAnnoTypeName));
+    var referer = cas.createFS(cas.getTypeSystem().getType(refererAnnoTypeName));
     referer.setFeatureValue(referer.getType().getFeatureByBaseName("ref"), da);
     cas.addFsToIndexes(referer);
 
     cas.removeFsFromIndexes(da);
 
     // Now add a new document annotation of our custom type
-    FeatureStructure cda = cas.createFS(cas.getTypeSystem().getType(customDocAnnoTypeName));
+    var cda = cas.createFS(cas.getTypeSystem().getType(customDocAnnoTypeName));
     cas.addFsToIndexes(cda);
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
             .extracting(fs -> fs.getType().getName()).containsExactly(customDocAnnoTypeName);
 
     // Serialize to a buffer
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    CasIOUtils.save(cas, bos, SerialFormat.SERIALIZED_TSI);
+    byte[] data;
+    try (var bos = new ByteArrayOutputStream()) {
+      CasIOUtils.save(cas, bos, SerialFormat.SERIALIZED_TSI);
+      data = bos.toByteArray();
+    }
 
     // Deserialize from the buffer
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    CasIOUtils.load(bis, cas);
+    try (var bis = new ByteArrayInputStream(data)) {
+      CasIOUtils.load(bis, cas);
+    }
 
     assertThat(cas.select(cas.getTypeSystem().getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION)).asList())
-            .extracting(fs -> fs.getType().getName()).containsExactly(customDocAnnoTypeName);
+            .extracting(fs -> fs.getType().getName()) //
+            .containsExactly(customDocAnnoTypeName);
   }
 
   @Test
   public void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
-    CASImpl cas = (CASImpl) CasCreationUtils.createCas();
+    CASImpl cas = (CASImpl) createCas();
     byte[] buf;
-    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs(true)) {
-      Annotation ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
+    try (var ctx = cas.ll_enableV2IdRefs(true)) {
+      var ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
       ann.addToIndexes();
       ann.removeFromIndexes();
 
-      Set<FeatureStructure> allFSes = new LinkedHashSet<>();
+      var allFSes = new LinkedHashSet<FeatureStructure>();
       cas.walkReachablePlusFSsSorted(allFSes::add, null, null, null);
 
       assertThat(allFSes) //
               .as("The annotation that was added and then removed before serialization should be found") //
               .containsExactly(cas.getSofa(), ann);
 
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
-      buf = bos.toByteArray();
+      try (var bos = new ByteArrayOutputStream()) {
+        CasIOUtils.save(cas, bos, COMPRESSED_FILTERED_TSI);
+        buf = bos.toByteArray();
+      }
     }
 
     cas.reset();
 
-    try (AutoCloseableNoException a = cas.ll_enableV2IdRefs(true)) {
+    try (var ctx = cas.ll_enableV2IdRefs(true)) {
       CasIOUtils.load(new ByteArrayInputStream(buf), cas);
 
-      Set<FeatureStructure> allFSes = new LinkedHashSet<>();
+      var allFSes = new LinkedHashSet<FeatureStructure>();
       cas.walkReachablePlusFSsSorted(allFSes::add, null, null, null);
 
       assertThat(allFSes) //
               .as("The annotation that was added and then removed before serialization should not be found") //
               .containsExactly(cas.getSofa());
     }
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    cas.release();
   }
 }

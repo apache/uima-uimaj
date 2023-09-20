@@ -113,7 +113,7 @@ public class Filter {
       } else if ("and".equalsIgnoreCase(token) || "or".equalsIgnoreCase(token)) {
         evaluate(token);
       } else {
-        if (leftPartInStack == true) {
+        if (leftPartInStack) {
           stack.push(new RightPart(token));
           leftPartInStack = false;
         } else {

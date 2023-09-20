@@ -75,7 +75,7 @@ final class StringSet {
   }
 
   int getSize() {
-    return this.strings.size();
+    return strings.size();
   }
 
 }

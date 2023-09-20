@@ -47,7 +47,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
     final FeatureStructureImplC fsi = (FeatureStructureImplC) fs;
     compile(fsi.getCAS().getTypeSystem());
     final int typeCode = fsi._getTypeCode();
-    TypeSystemImpl tsi = (TypeSystemImpl) this.ts;
+    TypeSystemImpl tsi = (TypeSystemImpl) ts;
     for (int i = 0; i < typeSet.size(); i++) {
       if (tsi.subsumes(typeSet.get(i), typeCode)) {
         return true;
@@ -74,7 +74,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 
   @Override
   public void add(Type type) {
-    this.ts = null; // This will force a recompile.
+    ts = null; // This will force a recompile.
     nameSet.add(type.getName());
   }
 

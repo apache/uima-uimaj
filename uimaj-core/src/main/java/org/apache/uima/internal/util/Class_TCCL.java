@@ -58,42 +58,39 @@ public class Class_TCCL {
           throws ClassNotFoundException {
     List<ClassLoader> clsTried = new ArrayList<>();
     List<ClassNotFoundException> suppressedExceptions = new ArrayList<>();
-    
+
     // Try extension classloader
     if (rm != null) {
       ClassLoader excl = rm.getExtensionClassLoader();
-      
+
       if (excl != null) {
         try {
           return (Class<T>) Class.forName(className, resolve, excl);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
           clsTried.add(excl);
           suppressedExceptions.add(e);
         }
       }
     }
-    
+
     // Try TCCL
     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
     if (tccl != null) {
       try {
         return (Class<T>) Class.forName(className, resolve, tccl);
-      }
-      catch (ClassNotFoundException e) {
+      } catch (ClassNotFoundException e) {
         clsTried.add(tccl);
         suppressedExceptions.add(e);
       }
     }
-    
+
     try {
       return (Class<T>) Class.forName(className, resolve, Class_TCCL.class.getClassLoader());
-    }
-    catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException e) {
       clsTried.add(tccl);
       suppressedExceptions.add(e);
     }
-    
+
     ClassNotFoundException e = new ClassNotFoundException(
             "Class [" + className + "] not found in any of the accessible classloaders "
                     + clsTried.stream().map(Objects::toString).collect(Collectors.joining(", ")));
@@ -125,7 +122,7 @@ public class Class_TCCL {
   }
 
   /**
-   * @deprecated Method should not be used and will be removed in a future version. 
+   * @deprecated Method should not be used and will be removed in a future version.
    */
   @Deprecated
   static public ClassLoader get_parent_cl() {

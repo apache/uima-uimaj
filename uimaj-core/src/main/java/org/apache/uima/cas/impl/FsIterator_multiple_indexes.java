@@ -74,7 +74,7 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
   public FsIterator_multiple_indexes(LowLevelIndex<T> main_idx, LowLevelIterator<T>[] iterators,
           // boolean ignoreType_moveToLeftmost) {
           Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
-    this.allIterators = iterators;
+    allIterators = iterators;
     this.main_idx = main_idx;
     this.comparatorMaybeNoTypeWithoutId = comparatorMaybeNoTypeWithoutId;
     separate_into_empty_indexes_and_non_empty_iterators();
@@ -88,8 +88,8 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
    */
   public FsIterator_multiple_indexes(FsIterator_multiple_indexes<T> v) {
     allIterators = v.allIterators.clone();
-    this.main_idx = v.main_idx;
-    this.comparatorMaybeNoTypeWithoutId = v.comparatorMaybeNoTypeWithoutId;
+    main_idx = v.main_idx;
+    comparatorMaybeNoTypeWithoutId = v.comparatorMaybeNoTypeWithoutId;
     int i = 0;
     for (LowLevelIterator<T> it : allIterators) {
       allIterators[i++] = (LowLevelIterator<T>) it.copy();

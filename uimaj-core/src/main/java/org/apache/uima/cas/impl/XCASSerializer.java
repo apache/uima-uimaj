@@ -140,7 +140,7 @@ public class XCASSerializer {
     private XCASDocSerializer(ContentHandler ch, CASImpl cas) {
       this.ch = ch;
       this.cas = cas;
-      this.numDuplicates = 0;
+      numDuplicates = 0;
     }
 
     /**
@@ -230,7 +230,7 @@ public class XCASSerializer {
      *         with a different value.
      */
     private int isQueued(TOP fs, int value) {
-      Integer v = this.queued.get(fs);
+      Integer v = queued.get(fs);
       return (null == v) ? KEY_NOT_FOUND : (value == v) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
     }
 
@@ -809,7 +809,7 @@ public class XCASSerializer {
     this.ts = (TypeSystemImpl) ts;
     // Create feature name cache.
     final int featArraySize = this.ts.getNumberOfFeatures() + 1;
-    this.featureNames = new String[featArraySize];
+    featureNames = new String[featArraySize];
     FeatureImpl feat;
     String featName;
     Iterator<Feature> it = this.ts.getFeatures();
@@ -820,7 +820,7 @@ public class XCASSerializer {
       } else {
         featName = REF_PREFIX + feat.getShortName();
       }
-      this.featureNames[feat.getCode()] = featName;
+      featureNames[feat.getCode()] = featName;
     }
   }
 

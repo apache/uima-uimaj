@@ -50,7 +50,7 @@ public class CompIntArrayRBT extends IntArrayRBT {
 
   @Override
   protected int compare(int v1, int v2) {
-    return this.comp.compare(v1, v2);
+    return comp.compare(v1, v2);
   }
 
 }

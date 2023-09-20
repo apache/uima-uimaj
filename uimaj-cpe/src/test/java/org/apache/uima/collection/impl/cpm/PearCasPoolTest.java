@@ -86,7 +86,7 @@ public class PearCasPoolTest {
     ResourceManager rm = UIMAFramework.newDefaultResourceManager();
 
     // check temporary working directory
-    if (this.pearInstallDir == null)
+    if (pearInstallDir == null)
       throw new FileNotFoundException("PEAR install directory not found");
 
     // get pear files to install
@@ -95,7 +95,7 @@ public class PearCasPoolTest {
     Assert.assertNotNull(pearFile);
 
     // Install PEAR packages
-    installedPear = PackageInstaller.installPackage(this.pearInstallDir, pearFile, false);
+    installedPear = PackageInstaller.installPackage(pearInstallDir, pearFile, false);
     Assert.assertNotNull(installedPear);
 
     core(10, 2, 3, null);

@@ -99,8 +99,8 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
       keyList = new String[] { FUNC_PROCESS_KEY, FUNC_INITIALIZE_KEY, FUNC_RECONFIGURE_KEY };
 
       // check the config what to do
-      this.aTestAnnotator = safeGetConfigParameterValue(aContext, TEST_THIS_ANNOTATOR, true);
-      if (this.aTestAnnotator == true) {
+      aTestAnnotator = safeGetConfigParameterValue(aContext, TEST_THIS_ANNOTATOR, true);
+      if (aTestAnnotator) {
         String[] aGroups = aContext.getConfigurationGroupNames();
         // walk through all configured (error)groups - ignore all appearing errors
         for (int i = 0; i < aGroups.length; i++) {

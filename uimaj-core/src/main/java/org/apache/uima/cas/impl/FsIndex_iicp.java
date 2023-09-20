@@ -126,7 +126,7 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
     @SuppressWarnings("rawtypes")
     final FsIndex_iicp iicp = (FsIndex_iicp) o;
     return this.getIndexingStrategy() == iicp.getIndexingStrategy()
-            && this.fsIndex_singletype.getComparatorImplForIndexSpecs()
+            && fsIndex_singletype.getComparatorImplForIndexSpecs()
                     .equals(iicp.fsIndex_singletype.getComparatorImplForIndexSpecs());
   }
 
@@ -139,7 +139,7 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
     final int prime = 31;
     int result = 1;
     // next hashCode includes the type
-    result = prime * result + this.fsIndex_singletype.getComparatorImplForIndexSpecs().hashCode();
+    result = prime * result + fsIndex_singletype.getComparatorImplForIndexSpecs().hashCode();
     result = prime * result + this.getIndexingStrategy();
     return result;
   }
@@ -158,7 +158,7 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
         return;
       }
 
-      final TypeImpl rootType = (TypeImpl) this.fsIndex_singletype.getComparatorImplForIndexSpecs()
+      final TypeImpl rootType = (TypeImpl) fsIndex_singletype.getComparatorImplForIndexSpecs()
               .getType();
       final int indexKind = this.getIndexingStrategy();
       int size = (indexKind == FSIndex.DEFAULT_BAG_INDEX) ? 1
@@ -191,13 +191,13 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
       // }
       // tempSubIndexCache.add(singleIndex);});
 
-      this.cachedSubFsLeafIndexes = tempSubIndexCache
+      cachedSubFsLeafIndexes = tempSubIndexCache
               .toArray(new FsIndex_singletype[tempSubIndexCache.size()]);
       if (this.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
         Arrays.sort(sortedTypeCodes);
       }
       // assign to "volatile" at end, after all initialization is complete
-      this.isIteratorCacheSetup = true;
+      isIteratorCacheSetup = true;
     } // end of synchronized block
   }
 
@@ -240,14 +240,14 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
    */
   @Override
   public int compareTo(FsIndex_iicp<? extends FeatureStructure> cp) {
-    final int typeCode1 = ((TypeImpl) this.fsIndex_singletype.getType()).getCode();
+    final int typeCode1 = ((TypeImpl) fsIndex_singletype.getType()).getCode();
     final int typeCode2 = ((TypeImpl) cp.fsIndex_singletype.getType()).getCode();
     if (typeCode1 < typeCode2) {
       return -1;
     } else if (typeCode1 > typeCode2) {
       return 1;
     } else { // types are equal
-      return this.fsIndex_singletype.getComparatorImplForIndexSpecs()
+      return fsIndex_singletype.getComparatorImplForIndexSpecs()
               .compareTo(cp.fsIndex_singletype.getComparatorImplForIndexSpecs());
     }
   }
@@ -302,7 +302,7 @@ class FsIndex_iicp<T extends FeatureStructure> extends AbstractCollection<T>
    * @return a guess at the size, done quickly
    */
   int guessedSize() {
-    final FsIndex_singletype<TOP>[] localIc = this.cachedSubFsLeafIndexes;
+    final FsIndex_singletype<TOP>[] localIc = cachedSubFsLeafIndexes;
     final int len = localIc.length;
     final int lim = Math.min(3, len);
     int size = 0;

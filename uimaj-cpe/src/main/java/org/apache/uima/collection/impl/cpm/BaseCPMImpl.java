@@ -766,10 +766,10 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   @Override
   public BaseCollectionReader getCollectionReader() {
     try {
-      if (this.collectionReader == null) {
-        this.collectionReader = this.cpeFactory.getCollectionReader();
+      if (collectionReader == null) {
+        collectionReader = cpeFactory.getCollectionReader();
       }
-      return this.collectionReader;
+      return collectionReader;
     } catch (ResourceConfigurationException e) {
       throw new UIMARuntimeException(e);
     }

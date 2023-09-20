@@ -894,10 +894,7 @@ public class XmiCasSerializer {
      * XmiSerializationSharedData during the last deserialization.
      */
     private void serializeOutOfTypeSystemElements() throws SAXException {
-      if (cds.marker != null) {
-        return;
-      }
-      if (cds.sharedData == null) {
+      if ((cds.marker != null) || (cds.sharedData == null)) {
         return;
       }
       Iterator<OotsElementData> it = cds.sharedData.getOutOfTypeSystemElements().iterator();

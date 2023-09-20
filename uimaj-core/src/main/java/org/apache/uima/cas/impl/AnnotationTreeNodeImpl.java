@@ -36,23 +36,23 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
   private int pos;
 
   AnnotationTreeNodeImpl() {
-    this.dtrs = new ArrayList<>();
+    dtrs = new ArrayList<>();
   }
 
   @Override
   public AnnotationTreeNode<T> getParent() {
-    return this.parent;
+    return parent;
   }
 
   @Override
   public int getChildCount() {
-    return this.dtrs.size();
+    return dtrs.size();
   }
 
   @Override
   public AnnotationTreeNode<T> getChild(int i) throws CASRuntimeException {
     try {
-      return this.dtrs.get(i);
+      return dtrs.get(i);
     } catch (IndexOutOfBoundsException e) {
       throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB, null);
     }
@@ -60,11 +60,11 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
 
   @Override
   public AnnotationTreeNode<T> getNextSibling() {
-    if (this.parent == null) {
+    if (parent == null) {
       return null;
     }
     try {
-      return this.parent.getChild(this.pos + 1);
+      return parent.getChild(pos + 1);
     } catch (CASRuntimeException e) {
       return null;
     }
@@ -72,11 +72,11 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
 
   @Override
   public AnnotationTreeNode<T> getPreviousSibling() {
-    if (this.parent == null) {
+    if (parent == null) {
       return null;
     }
     try {
-      return this.parent.getChild(this.pos - 1);
+      return parent.getChild(pos - 1);
     } catch (CASRuntimeException e) {
       return null;
     }
@@ -89,7 +89,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
    */
   @Override
   public ArrayList<AnnotationTreeNode<T>> getChildren() {
-    return this.dtrs;
+    return dtrs;
   }
 
   /*
@@ -99,7 +99,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
    */
   @Override
   public T get() {
-    return this.annot;
+    return annot;
   }
 
   // ////////////////////////////////////////////////////////////////////////////
@@ -110,9 +110,9 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
   }
 
   void addChild(AnnotationTreeNodeImpl<T> child) {
-    child.pos = this.dtrs.size();
+    child.pos = dtrs.size();
     child.parent = this;
-    this.dtrs.add(child);
+    dtrs.add(child);
   }
 
 }

@@ -658,7 +658,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @return the FS or if it was a trampoline, the base FS
    */
   public <N extends TOP> N _maybeGetBaseForPearFs() {
-    return this._isPearTrampoline() ? _casView.getBaseFsFromTrampoline((N) this) : (N) this;
+    return _isPearTrampoline() ? _casView.getBaseFsFromTrampoline((N) this) : (N) this;
   }
 
   /**
@@ -991,11 +991,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    */
   @Override
   public CAS getCAS() {
-    return this._casView;
+    return _casView;
   }
 
   public CASImpl getCASImpl() { // was package private 9-03
-    return this._casView;
+    return _casView;
   }
 
 //@formatter:off
@@ -1062,7 +1062,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (obj instanceof FeatureStructureImplC) {
       FeatureStructureImplC c2 = (FeatureStructureImplC) obj;
 
-      if (c2._id != this._id) {
+      if (c2._id != _id) {
         return false;
       }
 
@@ -1107,7 +1107,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     private int count;
 
     private PrintReferences() {
-      this.count = 0;
+      count = 0;
     }
 
     /**
@@ -1122,24 +1122,24 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         return false;
       }
       if (v.equals("seen once")) {
-        tree.put(fs, refNamePrefix + Integer.toString(this.count++));
+        tree.put(fs, refNamePrefix + Integer.toString(count++));
       }
       return true;
     }
 
     String getLabel(FeatureStructure ref) {
-      return this.tree.get(ref);
+      return tree.get(ref);
     }
 
     int printInfo(FeatureStructure ref) {
-      String k = this.tree.get(ref);
+      String k = tree.get(ref);
       if (k == null || k.equals("seen once")) {
         return NO_LABEL;
       }
-      if (this.seen.contains(ref)) {
+      if (seen.contains(ref)) {
         return JUST_LABEL;
       }
-      this.seen.add(ref);
+      seen.add(ref);
       return WITH_LABEL;
     }
 
@@ -1517,7 +1517,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 80) + "\"";
       sb.append(stringVal); // caller adds nl
     } else {
-      sb.append(this.getFeatureValueAsString(fi));
+      sb.append(getFeatureValueAsString(fi));
     }
     return sb;
   }

@@ -57,50 +57,50 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
     // at an FS
     // that matches the constraint, or is not valid. Thus, for isValid(), we
     // can simply refer to the underlying iterator.
-    return this.it.isValid();
+    return it.isValid();
   }
 
   private void adjustForConstraintForward() {
     // If the iterator is valid, but doesn't match the constraint, advance.
-    while (this.it.isValid() && !this.cons.match(this.it.get())) {
-      this.it.moveToNext();
+    while (it.isValid() && !cons.match(it.get())) {
+      it.moveToNext();
     }
   }
 
   private void adjustForConstraintBackward() {
     // If the iterator is valid, but doesn't match the constraint, advance.
-    while (this.it.isValid() && !this.cons.match(this.it.get())) {
-      this.it.moveToPrevious();
+    while (it.isValid() && !cons.match(it.get())) {
+      it.moveToPrevious();
     }
   }
 
   @Override
   public void moveToFirstNoReinit() {
-    this.it.moveToFirstNoReinit();
+    it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
 
   @Override
   public void moveToLastNoReinit() {
-    this.it.moveToLast();
+    it.moveToLast();
     adjustForConstraintBackward();
   }
 
   @Override
   public void moveToNextNvc() {
-    this.it.moveToNextNvc();
+    it.moveToNextNvc();
     adjustForConstraintForward();
   }
 
   @Override
   public void moveToPreviousNvc() {
-    this.it.moveToPreviousNvc();
+    it.moveToPreviousNvc();
     adjustForConstraintBackward();
   }
 
   @Override
   public T getNvc() {
-    return this.it.getNvc();
+    return it.getNvc();
   }
 
   /**
@@ -108,7 +108,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
    */
   @Override
   public FilteredIterator<T> copy() {
-    return new FilteredIterator<>(this.it.copy(), this.cons);
+    return new FilteredIterator<>(it.copy(), cons);
   }
 
   /**
@@ -116,7 +116,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    this.it.moveToNoReinit(fs);
+    it.moveToNoReinit(fs);
     adjustForConstraintForward();
   }
 
@@ -148,7 +148,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
 
   @Override
   public boolean maybeReinitIterator() {
-    return this.it.maybeReinitIterator();
+    return it.maybeReinitIterator();
   }
 
   @Override

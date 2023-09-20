@@ -28,8 +28,6 @@ import org.apache.uima.util.ProcessTrace;
  * Serializable containing the checkpoint. The checkpoint contains both {@link ProcessTrace} and
  * {@link SynchPoint} objects. It is serialized to file system by {@link Checkpoint} thread at
  * predefined intervals.
- * 
- * 
  */
 public class CheckpointData implements Serializable {
   private static final long serialVersionUID = -3261502844386898304L;
@@ -95,5 +93,4 @@ public class CheckpointData implements Serializable {
   public void setSynchPoint(SynchPoint point) {
     synchPoint = point;
   }
-
 }

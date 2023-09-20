@@ -60,9 +60,9 @@ public class IndexRepositoryTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-    this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-    this.typeSystem = this.cas.getTypeSystem();
-    this.indexRep = this.cas.getIndexRepository();
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
+    typeSystem = cas.getTypeSystem();
+    indexRep = cas.getIndexRepository();
   }
 
   @AfterEach
@@ -91,26 +91,26 @@ public class IndexRepositoryTest {
   @Test
   public void testDefaultBagIndex() throws Exception {
     // create an instance of a non-annotation type
-    Type tokenTypeType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    FeatureStructure tokenTypeFs1 = this.cas.createFS(tokenTypeType);
+    Type tokenTypeType = typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    FeatureStructure tokenTypeFs1 = cas.createFS(tokenTypeType);
     assertFalse(tokenTypeFs1 instanceof AnnotationFS);
 
     // add to indexes
-    this.indexRep.addFS(tokenTypeFs1);
+    indexRep.addFS(tokenTypeFs1);
 
     // now try to retrieve
-    FSIterator<FeatureStructure> iter = this.indexRep.getAllIndexedFS(tokenTypeType);
+    FSIterator<FeatureStructure> iter = indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter.hasNext());
     assertEquals(tokenTypeFs1, iter.next());
     assertFalse(iter.hasNext());
 
     // add a second instance
-    FeatureStructure tokenTypeFs2 = this.cas.createFS(tokenTypeType);
+    FeatureStructure tokenTypeFs2 = cas.createFS(tokenTypeType);
     assertFalse(tokenTypeFs2 instanceof AnnotationFS);
-    this.indexRep.addFS(tokenTypeFs2);
+    indexRep.addFS(tokenTypeFs2);
 
     // now there should be two instances in the index
-    FSIterator<FeatureStructure> iter2 = this.indexRep.getAllIndexedFS(tokenTypeType);
+    FSIterator<FeatureStructure> iter2 = indexRep.getAllIndexedFS(tokenTypeType);
     assertTrue(iter2.hasNext());
     iter2.next();
     assertTrue(iter2.hasNext());
@@ -120,14 +120,14 @@ public class IndexRepositoryTest {
 
   @Test
   public void testSetIndex() throws Exception {
-    Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
+    Feature beginFeat = typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     // create an instance of an annotation type
-    Type tokenTypeType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
-    FeatureStructure tokenTypeFs1 = this.cas.createFS(tokenTypeType);
+    Type tokenTypeType = typeSystem.getType(CASTestSetup.TOKEN_TYPE);
+    FeatureStructure tokenTypeFs1 = cas.createFS(tokenTypeType);
     assertTrue(tokenTypeFs1 instanceof AnnotationFS);
     tokenTypeFs1.setIntValue(beginFeat, 17);
 
-    FeatureStructure tokenTypeFs2 = this.cas.createFS(tokenTypeType);
+    FeatureStructure tokenTypeFs2 = cas.createFS(tokenTypeType);
     assertTrue(tokenTypeFs2 instanceof AnnotationFS);
     tokenTypeFs2.setIntValue(beginFeat, 17);
 
@@ -143,12 +143,12 @@ public class IndexRepositoryTest {
 
     // Annotation is supertype of token
     // test if set observes implicit key of type
-    Type annotType = this.typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
-    Feature annotBeginFeat = this.typeSystem
+    Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
+    Feature annotBeginFeat = typeSystem
             .getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
     cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
 
-    FeatureStructure annotTypeFs3 = this.cas.createFS(annotType);
+    FeatureStructure annotTypeFs3 = cas.createFS(annotType);
     annotTypeFs3.setIntValue(annotBeginFeat, 17);
 
     cas.addFsToIndexes(tokenTypeFs1);
@@ -189,12 +189,12 @@ public class IndexRepositoryTest {
   @Test
   public void testRemovalSpeed() throws Exception {
     // create an instance of an annotation type
-    Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
-    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
+    Feature beginFeat = typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
+    Type fsType = typeSystem.getType(CASTestSetup.TOKEN_TYPE);
     FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
     // create 40000 tokens
     for (int i = 0; i < fsa.length; i++) {
-      fsa[i] = this.cas.createFS(fsType);
+      fsa[i] = cas.createFS(fsType);
       fsa[i].setIntValue(beginFeat, i);
     }
 
@@ -238,12 +238,12 @@ public class IndexRepositoryTest {
 
   private void runAddSpeed() {
     // create an instance of an annotation type
-    Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
-    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
+    Feature beginFeat = typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
+    Type fsType = typeSystem.getType(CASTestSetup.TOKEN_TYPE);
     FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
     // create 40000 tokens
     for (int i = 0; i < fsa.length; i++) {
-      fsa[i] = this.cas.createFS(fsType);
+      fsa[i] = cas.createFS(fsType);
       fsa[i].setIntValue(beginFeat, i);
     }
 
@@ -282,11 +282,11 @@ public class IndexRepositoryTest {
     ir.removeIndex(CAS.STD_ANNOTATION_INDEX);
 
     // create 40000 token-types
-    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    Type fsType = typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
     // Feature beginFeat = typeSystem.getFeatureByFullName("Token:begin");
     FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
     for (int i = 0; i < fsa.length; i++) {
-      fsa[i] = this.cas.createFS(fsType);
+      fsa[i] = cas.createFS(fsType);
       // fsa[i].setIntValue(beginFeat, i);
     }
 

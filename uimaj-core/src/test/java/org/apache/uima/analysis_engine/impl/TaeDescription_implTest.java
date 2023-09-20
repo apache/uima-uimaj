@@ -19,7 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +34,6 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.URISpecifier;
@@ -246,49 +245,15 @@ public class TaeDescription_implTest {
       // System.out.println(aggregateDescXml);
 
       // parse objects back from XML
-      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(encoding));
+      InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes(UTF_8));
       AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(is, null));
-      is = new ByteArrayInputStream(aggregateDescXml.getBytes(encoding));
+      is = new ByteArrayInputStream(aggregateDescXml.getBytes(UTF_8));
       AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(is, null));
 
       assertThat(newPrimitiveDesc).isEqualTo(primitiveDesc);
       assertThat(newAggregateDesc).isEqualTo(aggregateDesc);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
-
-  @Test
-  public void testSerialization() throws Exception {
-    try {
-      byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
-      AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
-              .deserialize(primitiveDescBytes);
-      assertThat(primitiveDesc2).isEqualTo(primitiveDesc);
-
-      byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
-      AnalysisEngineDescription_impl aggregateDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
-              .deserialize(aggregateDescBytes);
-      assertThat(aggregateDesc2).isEqualTo(aggregateDesc);
-
-      // make sure XMLization still works
-      StringWriter writer = new StringWriter();
-      primitiveDesc.toXML(writer);
-      String primitiveDescXml = writer.getBuffer().toString();
-      writer = new StringWriter();
-      primitiveDesc2.toXML(writer);
-      String primitiveDesc2xml = writer.getBuffer().toString();
-      assertThat(primitiveDesc2).isEqualTo(primitiveDesc);
-
-      writer = new StringWriter();
-      aggregateDesc.toXML(writer);
-      String aggregateDescXml = writer.getBuffer().toString();
-      writer = new StringWriter();
-      aggregateDesc2.toXML(writer);
-      String aggregateDesc2xml = writer.getBuffer().toString();
-      assertThat(aggregateDesc2).isEqualTo(aggregateDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

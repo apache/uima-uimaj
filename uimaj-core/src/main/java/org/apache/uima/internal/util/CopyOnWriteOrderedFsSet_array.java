@@ -41,14 +41,14 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
   public T[] a; // derived from "set" above
 
   public CopyOnWriteOrderedFsSet_array(OrderedFsSet_array<T> original) {
-    this.set = original;
+    set = original;
     this.original = original;
     // this.comparatorNoTypeWithoutID = original.comparatorNoTypeWithoutID;
     // this.comparatorNoTypeWithID = original.comparatorNoTypeWithID;
-    this.a_firstUsedslot = original.a_firstUsedslot;
-    this.a_nextFreeslot = original.a_nextFreeslot;
-    this.a = (T[]) original.a;
-    this.original_size = original.size();
+    a_firstUsedslot = original.a_firstUsedslot;
+    a_nextFreeslot = original.a_nextFreeslot;
+    a = (T[]) original.a;
+    original_size = original.size();
   }
 
   /**
@@ -57,8 +57,8 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
    */
   @Override
   public void makeReadOnlyCopy() {
-    this.set = new OrderedFsSet_array<>(set, true); // true = make read only copy
-    this.a = (T[]) set.a;
+    set = new OrderedFsSet_array<>(set, true); // true = make read only copy
+    a = (T[]) set.a;
   }
 
   /*

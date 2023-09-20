@@ -47,7 +47,7 @@ public class SequencerFixedTest {
   @BeforeEach
   public void setUp() throws Exception {
     // get test base path
-    this.testBaseDir = JUnitExtension.getFile("SequencerTest");
+    testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
   @Test
@@ -55,7 +55,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -100,7 +100,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -145,7 +145,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -190,7 +190,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -235,7 +235,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -280,7 +280,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM
@@ -325,7 +325,7 @@ public class SequencerFixedTest {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
-      File outputReferenceFile = new File(this.testBaseDir, "SequencerTest.txt");
+      File outputReferenceFile = new File(testBaseDir, "SequencerTest.txt");
       outputReferenceFile.delete(); // delete file if exist
       outputReferenceFile.createNewFile(); // create new file
       outputReferenceFile.deleteOnExit(); // delete file after closing VM

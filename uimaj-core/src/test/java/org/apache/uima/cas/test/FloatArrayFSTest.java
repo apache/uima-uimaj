@@ -35,7 +35,7 @@ public class FloatArrayFSTest {
   @BeforeEach
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
+      cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
       assertTrue(false);
     }
@@ -43,12 +43,12 @@ public class FloatArrayFSTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
+    cas = null;
   }
 
   @Test
   public void testSet() {
-    FloatArrayFS array = this.cas.createFloatArrayFS(0);
+    FloatArrayFS array = cas.createFloatArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
     boolean exceptionCaught = false;
@@ -58,7 +58,7 @@ public class FloatArrayFSTest {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
-    array = this.cas.createFloatArrayFS(3);
+    array = cas.createFloatArrayFS(3);
     try {
       array.set(0, 1.0f);
       array.set(1, 2.0f);
@@ -100,7 +100,7 @@ public class FloatArrayFSTest {
     // Check that we can't create arrays smaller than 0.
     exceptionCaught = false;
     try {
-      array = this.cas.createFloatArrayFS(-1);
+      array = cas.createFloatArrayFS(-1);
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
       assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
@@ -111,7 +111,7 @@ public class FloatArrayFSTest {
   @Test
   public void testToArray() {
     // From CAS array to Java array.
-    FloatArrayFS array = this.cas.createFloatArrayFS(3);
+    FloatArrayFS array = cas.createFloatArrayFS(3);
     float[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
       assertTrue(fsArray[i] == 0f);
@@ -126,7 +126,7 @@ public class FloatArrayFSTest {
     assertTrue(fsArray[2] == 3f);
 
     // From Java array to CAS array.
-    array = this.cas.createFloatArrayFS(3);
+    array = cas.createFloatArrayFS(3);
     assertTrue(array.get(0) == 0f);
     assertTrue(array.get(1) == 0f);
     assertTrue(array.get(2) == 0f);

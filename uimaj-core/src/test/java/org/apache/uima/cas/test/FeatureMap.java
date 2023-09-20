@@ -227,7 +227,7 @@ public class FeatureMap extends TOP implements UimaSerializableFSs {
     FSArray<FeatureRecord> records = null;
     int featureCount = _features.size();
     if(featureCount > 0) {
-      records = new FSArray(this.getJCas(), featureCount);
+      records = new FSArray(getJCas(), featureCount);
       int i = 0;
       for (FeatureRecord record : _features.values()) {
         records.set(i++, record);

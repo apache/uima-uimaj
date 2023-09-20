@@ -39,7 +39,7 @@ public class UIMAStreamHandler extends StreamHandler {
   public synchronized void publish(LogRecord record) {
     if (record != null) {
       super.publish(record);
-      this.flush();
+      flush();
     }
   }
 

@@ -73,7 +73,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
   @Override
   public NonEmptyIntegerList createNonEmptyNode() {
     NonEmptyIntegerList node = new NonEmptyIntegerList(
-            this._casView.getTypeSystemImpl().intNeListType, this._casView);
+            _casView.getTypeSystemImpl().intNeListType, _casView);
     return node;
   }
 
@@ -107,7 +107,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
 
   @Override
   public EmptyIntegerList emptyList() {
-    return this._casView.emptyIntegerList();
+    return _casView.emptyIntegerList();
   }
 
   /**

@@ -174,7 +174,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   /** @return The same as getMessage(), but prefixed with <code>"XCASParsingException: "</code>. */
   @Override
   public String toString() {
-    return "XCASParsingException: " + this.getMessage();
+    return "XCASParsingException: " + getMessage();
   }
 
   /**

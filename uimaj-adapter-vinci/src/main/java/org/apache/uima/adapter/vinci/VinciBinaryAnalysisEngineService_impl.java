@@ -206,8 +206,8 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
 
       // deserialize into CAS object
       byte[] casBytes = aRequestFrame.fgetTrueBinary("BinaryCAS");
-      CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
-              .deserialize(casBytes);
+      CASCompleteSerializer serializer = SerializationUtils
+              .deserializeCASCompleteSerializer(casBytes);
       Serialization.deserializeCASComplete(serializer, (CASMgr) cas);
 
       long annotStartTime = System.currentTimeMillis();
@@ -272,7 +272,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     UIMAFramework.getLogger().log(Level.FINEST, "Command::" + op);
     if (Constants.GETMETA.equals(op)) {
       try {
-        return this.getMetaData();
+        return getMetaData();
       } catch (Exception ex) {
         throw new ServiceException("getMetaData() threw exception: " + ex);
       }

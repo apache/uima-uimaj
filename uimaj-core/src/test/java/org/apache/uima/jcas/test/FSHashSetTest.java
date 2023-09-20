@@ -51,14 +51,14 @@ public class FSHashSetTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    this.cas = CASInitializer.initCas(new CASTestSetup(), null
+    cas = CASInitializer.initCas(new CASTestSetup(), null
     // (tsm -> {
     // Type fsat = tsm.addType("org.apache.uima.jcas.cas.FSHashSet", tsm.getTopType());
     // tsm.addFeature("fsArray", fsat, tsm.getType("uima.cas.FSArray"));
     // }
     // )
     );
-    this.jcas = cas.getJCas();
+    jcas = cas.getJCas();
   }
 
   private void basic(FSHashSet<Token> s) {

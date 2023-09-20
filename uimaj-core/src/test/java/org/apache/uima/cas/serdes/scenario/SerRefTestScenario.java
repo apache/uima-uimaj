@@ -54,12 +54,12 @@ public class SerRefTestScenario implements Runnable {
   private final FailableBiConsumer<Path, Path, ?> assertion;
 
   private SerRefTestScenario(Builder builder) {
-    this.title = builder.title;
-    this.sourceCasSupplier = builder.sourceCasSupplier;
-    this.referenceCasFile = builder.referenceCasFile;
-    this.targetCasFile = builder.targetCasFile;
-    this.serializer = builder.serializer;
-    this.assertion = builder.assertion;
+    title = builder.title;
+    sourceCasSupplier = builder.sourceCasSupplier;
+    referenceCasFile = builder.referenceCasFile;
+    targetCasFile = builder.targetCasFile;
+    serializer = builder.serializer;
+    assertion = builder.assertion;
   }
 
   public CAS createSourceCas() {
@@ -207,7 +207,7 @@ public class SerRefTestScenario implements Runnable {
     }
 
     public Builder withAssertion(FailableBiConsumer<Path, Path, ?> aAssertion) {
-      this.assertion = aAssertion;
+      assertion = aAssertion;
       return this;
     }
 

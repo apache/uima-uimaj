@@ -99,37 +99,37 @@ public class SofaTest {
   @BeforeEach
   public void setUp() throws Exception {
     try {
-      this.casMgr = CASFactory.createCAS();
-      CasCreationUtils.setupTypeSystem(this.casMgr, (TypeSystemDescription) null);
+      casMgr = CASFactory.createCAS();
+      CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
       // Create a writable type system.
-      TypeSystemMgr tsa = this.casMgr.getTypeSystemMgr();
+      TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
       // Add new types and features.
       // Type topType = tsa.getTopType();
-      this.annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+      annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       // annotSofaFeat = annotationType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA);
-      this.docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-      assertTrue(this.annotationType != null);
-      this.crossType = tsa.addType("sofa.test.CrossAnnotation", this.annotationType);
-      this.otherFeat = tsa.addFeature("otherAnnotation", this.crossType, this.annotationType);
+      docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+      assertTrue(annotationType != null);
+      crossType = tsa.addType("sofa.test.CrossAnnotation", annotationType);
+      otherFeat = tsa.addFeature("otherAnnotation", crossType, annotationType);
       // Commit the type system.
-      ((CASImpl) this.casMgr).commitTypeSystem();
+      ((CASImpl) casMgr).commitTypeSystem();
 
       // reinit type system values because the commit might reuse an existing one
-      tsa = this.casMgr.getTypeSystemMgr();
-      this.annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
-      this.docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-      this.crossType = tsa.getType("sofa.test.CrossAnnotation");
-      this.otherFeat = crossType.getFeatureByBaseName("otherAnnotation");
+      tsa = casMgr.getTypeSystemMgr();
+      annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+      docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+      crossType = tsa.getType("sofa.test.CrossAnnotation");
+      otherFeat = crossType.getFeatureByBaseName("otherAnnotation");
 
       // Create the Base indexes.
-      this.casMgr.initCASIndexes();
-      FSIndexRepositoryMgr irm = this.casMgr.getIndexRepositoryMgr();
+      casMgr.initCASIndexes();
+      FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
       // init.initIndexes(irm, casMgr.getTypeSystemMgr());
       irm.commit();
 
-      this.cas = this.casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
-      assertTrue(this.cas.getSofa() == null);
-      assertTrue(this.cas.getViewName().equals(CAS.NAME_DEFAULT_SOFA));
+      cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
+      assertTrue(cas.getSofa() == null);
+      assertTrue(cas.getViewName().equals(CAS.NAME_DEFAULT_SOFA));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -155,7 +155,7 @@ public class SofaTest {
       // Create a Sofa (using old APIs for now)
       SofaID_impl id = new SofaID_impl();
       id.setSofaID("EnglishDocument");
-      SofaFS es = this.cas.createSofa(id, "text");
+      SofaFS es = cas.createSofa(id, "text");
       // Initial View is #1!!!
       assertTrue(2 == es.getSofaRef());
 
@@ -164,7 +164,7 @@ public class SofaTest {
 
       // Test Multiple Sofas across XCAS serialization
       String xcasFilename = "Sofa.xcas";
-      XCASSerializer ser = new XCASSerializer(this.cas.getTypeSystem());
+      XCASSerializer ser = new XCASSerializer(cas.getTypeSystem());
       OutputStream outputXCAS = new FileOutputStream(xcasFilename);
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
@@ -177,7 +177,7 @@ public class SofaTest {
       }
 
       // Deserialize XCAS
-      this.cas.reset();
+      cas.reset();
       InputStream inputXCAS = new FileInputStream(xcasFilename);
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
@@ -197,7 +197,7 @@ public class SofaTest {
       // SofaID_impl gid = new SofaID_impl();
       // gid.setSofaID("GermanDocument");
       // SofaFS gs = ((CASImpl)cas).createSofa(gid,"text");
-      CAS gerTcas = this.cas.createView("GermanDocument");
+      CAS gerTcas = cas.createView("GermanDocument");
       assertTrue(gerTcas.getViewName().equals("GermanDocument"));
       SofaFS gs = gerTcas.getSofa();
 
@@ -216,7 +216,7 @@ public class SofaTest {
       // SofaID_impl fid = new SofaID_impl();
       // fid.setSofaID("FrenchDocument");
       // SofaFS fs = ((CASImpl)cas).createSofa(fid, "text");
-      CAS frT = this.cas.createView("FrenchDocument");
+      CAS frT = cas.createView("FrenchDocument");
       assertTrue(frT.getViewName().equals("FrenchDocument"));
       SofaFS fs = frT.getSofa();
       assertTrue(fs != null);
@@ -225,14 +225,14 @@ public class SofaTest {
       // Test multiple Sofas across blob serialization
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas, fos);
-      this.cas.reset();
+      cas.reset();
       ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
       Serialization.deserializeCAS(cas, fis);
 
       // Open TCas views of some Sofas
-      CAS engTcas = this.cas.getView(es);
+      CAS engTcas = cas.getView(es);
       assertTrue(engTcas.getViewName().equals("EnglishDocument"));
-      CAS frTcas = this.cas.getView("FrenchDocument");
+      CAS frTcas = cas.getView("FrenchDocument");
 
       // Set the document text off SofaFS after the CAS view exists
       frTcas.setSofaDataString("cette biere est bonne", "text");
@@ -279,11 +279,11 @@ public class SofaTest {
           assertTrue("ANNOTATION_IN_WRONG_INDEX".equals(c.getMessageKey()));
         }
 
-        AnnotationFS frAnnot = frTcas.createAnnotation(this.annotationType, frBegin, frEnd);
+        AnnotationFS frAnnot = frTcas.createAnnotation(annotationType, frBegin, frEnd);
         frTcas.getIndexRepository().addFS(frAnnot);
 
-        AnnotationFS gerAnnot = gerTcas.createAnnotation(this.crossType, gerBegin, gerEnd);
-        gerAnnot.setFeatureValue(this.otherFeat, engAnnot);
+        AnnotationFS gerAnnot = gerTcas.createAnnotation(crossType, gerBegin, gerEnd);
+        gerAnnot.setFeatureValue(otherFeat, engAnnot);
         gerTcas.getIndexRepository().addFS(gerAnnot);
       }
 
@@ -291,7 +291,7 @@ public class SofaTest {
       // Sofas are indexed
       // FSIndex sofaIndex =
       // cas.getIndexRepository().getIndex(CAS.SOFA_INDEX_NAME);
-      FSIterator<SofaFS> sofaIter = this.cas.getSofaIterator();
+      FSIterator<SofaFS> sofaIter = cas.getSofaIterator();
       int numSofas = 0;
       while (sofaIter.isValid()) {
         numSofas++;
@@ -343,7 +343,7 @@ public class SofaTest {
 
       // Test that annotations accessed from a reference in the base CAS
       // work correctly
-      ArrayFS anArray = this.cas.createArrayFS(3);
+      ArrayFS anArray = cas.createArrayFS(3);
       anArray.set(0, engAnnot);
       anArray.set(1, frAnnot);
       anArray.set(2, gerAnnot);
@@ -372,11 +372,11 @@ public class SofaTest {
       // id.setSofaID("StringSofaData");
       // SofaFS strSofa = cas.createSofa(id, "text");
       // strSofa.setLocalSofaData("this beer is good");
-      CAS stringView = this.cas.createView("StringSofaData");
+      CAS stringView = cas.createView("StringSofaData");
       stringView.setDocumentText("this beer is good");
 
       // create a int array fs
-      IntArrayFS intArrayFS = this.cas.createIntArrayFS(5);
+      IntArrayFS intArrayFS = cas.createIntArrayFS(5);
       intArrayFS.set(0, 1);
       intArrayFS.set(1, 2);
       intArrayFS.set(2, 3);
@@ -387,21 +387,21 @@ public class SofaTest {
       // id.setSofaID("intArraySofaData");
       // SofaFS intarraySofaFS = cas.createSofa(id, "text");
       // intarraySofaFS.setLocalSofaData(intArrayFS);
-      CAS intArrayView = this.cas.createView("intArraySofaData");
+      CAS intArrayView = cas.createView("intArraySofaData");
       intArrayView.setSofaDataArray(intArrayFS, "integers");
 
       // create a string array fs
-      StringArrayFS stringArrayFS = this.cas.createStringArrayFS(5);
+      StringArrayFS stringArrayFS = cas.createStringArrayFS(5);
       stringArrayFS.set(0, "This");
       stringArrayFS.set(1, "beer");
       stringArrayFS.set(2, "is");
       stringArrayFS.set(3, "really");
       stringArrayFS.set(4, "good");
-      CAS stringArrayView = this.cas.createView("stringArraySofaData");
+      CAS stringArrayView = cas.createView("stringArraySofaData");
       stringArrayView.setSofaDataArray(stringArrayFS, "strings");
 
       // create a float array fs
-      FloatArrayFS floatArrayFS = this.cas.createFloatArrayFS(5);
+      FloatArrayFS floatArrayFS = cas.createFloatArrayFS(5);
       floatArrayFS.set(0, (float) 0.1);
       floatArrayFS.set(1, (float) 0.2);
       floatArrayFS.set(2, (float) 0.3);
@@ -412,11 +412,11 @@ public class SofaTest {
       // id.setSofaID("floatArraySofaData");
       // SofaFS floatarraySofaFS = cas.createSofa(id,"text");
       // floatarraySofaFS.setLocalSofaData(floatArrayFS);
-      CAS floatArrayView = this.cas.createView("floatArraySofaData");
+      CAS floatArrayView = cas.createView("floatArraySofaData");
       floatArrayView.setSofaDataArray(floatArrayFS, "floats");
 
       // create a short array fs
-      ShortArrayFS shortArrayFS = this.cas.createShortArrayFS(5);
+      ShortArrayFS shortArrayFS = cas.createShortArrayFS(5);
       shortArrayFS.set(0, (short) 128);
       shortArrayFS.set(1, (short) 127);
       shortArrayFS.set(2, (short) 126);
@@ -427,11 +427,11 @@ public class SofaTest {
       // id.setSofaID("shortArraySofaData");
       // SofaFS shortarraySofaFS = cas.createSofa(id, "text");
       // shortarraySofaFS.setLocalSofaData(shortArrayFS);
-      CAS shortArrayView = this.cas.createView("shortArraySofaData");
+      CAS shortArrayView = cas.createView("shortArraySofaData");
       shortArrayView.setSofaDataArray(shortArrayFS, "shorts");
 
       // create a byte array fs
-      ByteArrayFS byteArrayFS = this.cas.createByteArrayFS(5);
+      ByteArrayFS byteArrayFS = cas.createByteArrayFS(5);
       byteArrayFS.set(0, (byte) 8);
       byteArrayFS.set(1, (byte) 16);
       byteArrayFS.set(2, (byte) 64);
@@ -442,11 +442,11 @@ public class SofaTest {
       // id.setSofaID("byteArraySofaData");
       // SofaFS bytearraySofaFS = cas.createSofa(id, "text");
       // bytearraySofaFS.setLocalSofaData(byteArrayFS);
-      CAS byteArrayView = this.cas.createView("byteArraySofaData");
+      CAS byteArrayView = cas.createView("byteArraySofaData");
       byteArrayView.setSofaDataArray(byteArrayFS, "bytes");
 
       // create a long array fs
-      LongArrayFS longArrayFS = this.cas.createLongArrayFS(5);
+      LongArrayFS longArrayFS = cas.createLongArrayFS(5);
       longArrayFS.set(0, Long.MAX_VALUE);
       longArrayFS.set(1, Long.MAX_VALUE - 1);
       longArrayFS.set(2, Long.MAX_VALUE - 2);
@@ -457,10 +457,10 @@ public class SofaTest {
       // id.setSofaID("longArraySofaData");
       // SofaFS longarraySofaFS = cas.createSofa(id, "text");
       // longarraySofaFS.setLocalSofaData(longArrayFS);
-      CAS longArrayView = this.cas.createView("longArraySofaData");
+      CAS longArrayView = cas.createView("longArraySofaData");
       longArrayView.setSofaDataArray(longArrayFS, "longs");
 
-      DoubleArrayFS doubleArrayFS = this.cas.createDoubleArrayFS(5);
+      DoubleArrayFS doubleArrayFS = cas.createDoubleArrayFS(5);
       doubleArrayFS.set(0, Double.MAX_VALUE);
       doubleArrayFS.set(1, Double.MIN_VALUE);
       doubleArrayFS.set(2, Double.parseDouble("1.5555"));
@@ -471,7 +471,7 @@ public class SofaTest {
       // id.setSofaID("doubleArraySofaData");
       // SofaFS doublearraySofaFS = cas.createSofa(id, "text");
       // doublearraySofaFS.setLocalSofaData(doubleArrayFS);
-      CAS doubleArrayView = this.cas.createView("doubleArraySofaData");
+      CAS doubleArrayView = cas.createView("doubleArraySofaData");
       doubleArrayView.setSofaDataArray(doubleArrayFS, "doubles");
 
       // create remote sofa and set the SofaURI feature
@@ -479,7 +479,7 @@ public class SofaTest {
       // id.setSofaID("remoteSofaData");
       // SofaFS remoteSofa = cas.createSofa(id, "text");
       // remoteSofa.setRemoteSofaURI("file:.\\Sofa.xcas");
-      CAS remoteView = this.cas.createView("remoteSofaData");
+      CAS remoteView = cas.createView("remoteSofaData");
       String sofaFileName = "./Sofa.xcas";
       remoteView.setSofaDataURI("file:" + sofaFileName, "text");
       PrintWriter out = new PrintWriter(sofaFileName);
@@ -591,7 +591,7 @@ public class SofaTest {
   public void testSetSofaDataString() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
-    CAS testView = this.cas.createView("TestView");
+    CAS testView = cas.createView("TestView");
     testView.setSofaDataString(TEST_TEXT, TEST_MIME);
     assertEquals(TEST_TEXT, testView.getSofa().getLocalStringData());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
@@ -602,17 +602,17 @@ public class SofaTest {
   public void testSetSofaDataStringOnInitialView() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
-    this.cas.setSofaDataString(TEST_TEXT, TEST_MIME);
-    assertEquals(TEST_TEXT, this.cas.getSofa().getLocalStringData());
-    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
-    assertEquals(TEST_TEXT, this.cas.getSofaDataString());
+    cas.setSofaDataString(TEST_TEXT, TEST_MIME);
+    assertEquals(TEST_TEXT, cas.getSofa().getLocalStringData());
+    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
+    assertEquals(TEST_TEXT, cas.getSofaDataString());
   }
 
   @Test
   public void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
-    CAS testView = this.cas.createView("TestView");
+    CAS testView = cas.createView("TestView");
     testView.setSofaDataURI(TEST_URI, TEST_MIME);
     assertEquals(TEST_URI, testView.getSofa().getSofaURI());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
@@ -629,11 +629,11 @@ public class SofaTest {
 
     final String TEST_URI = "file:" + someTextFile;
     final String TEST_MIME = "text/plain";
-    this.cas.setSofaDataURI(TEST_URI, TEST_MIME);
-    assertEquals(TEST_URI, this.cas.getSofa().getSofaURI());
-    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
+    cas.setSofaDataURI(TEST_URI, TEST_MIME);
+    assertEquals(TEST_URI, cas.getSofa().getSofaURI());
+    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
 
-    InputStream is = this.cas.getSofaDataStream();
+    InputStream is = cas.getSofaDataStream();
     assertTrue(is != null);
 
     // This obviously can't work on all platforms
@@ -656,7 +656,7 @@ public class SofaTest {
   @Test
   public void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";
-    CAS testView = this.cas.createView("TestView");
+    CAS testView = cas.createView("TestView");
     ByteArrayFS sofaDataArray = testView.createByteArrayFS(2);
     sofaDataArray.set(0, (byte) 0);
     sofaDataArray.set(1, (byte) 42);
@@ -668,28 +668,28 @@ public class SofaTest {
   @Test
   public void testSetSofaDataArrayOnInitialView() {
     final String TEST_MIME = "text/plain";
-    ByteArrayFS sofaDataArray = this.cas.createByteArrayFS(2);
+    ByteArrayFS sofaDataArray = cas.createByteArrayFS(2);
     sofaDataArray.set(0, (byte) 0);
     sofaDataArray.set(1, (byte) 42);
-    this.cas.setSofaDataArray(sofaDataArray, TEST_MIME);
-    assertEquals(sofaDataArray, this.cas.getSofa().getLocalFSData());
-    assertEquals(TEST_MIME, this.cas.getSofa().getSofaMime());
+    cas.setSofaDataArray(sofaDataArray, TEST_MIME);
+    assertEquals(sofaDataArray, cas.getSofa().getLocalFSData());
+    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
   }
 
   @Test
   public void testReset() {
-    this.cas.reset();
-    this.cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
-    CAS testView = this.cas.createView("TestView");
+    cas.reset();
+    cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
+    CAS testView = cas.createView("TestView");
     testView.setDocumentText("create a 2nd Sofa");
-    assertTrue(this.cas.getViewName().equals("_InitialView"));
+    assertTrue(cas.getViewName().equals("_InitialView"));
     assertTrue(testView.getViewName().equals("TestView"));
 
-    this.cas.reset();
+    cas.reset();
     SofaID_impl id = new SofaID_impl();
     id.setSofaID("TestView");
-    SofaFS testSofa = this.cas.createSofa(id, "text");
-    CAS newView = this.cas.getView(testSofa);
+    SofaFS testSofa = cas.createSofa(id, "text");
+    CAS newView = cas.getView(testSofa);
     assertTrue(newView.getViewName().equals("TestView"));
   }
 
@@ -705,14 +705,14 @@ public class SofaTest {
 
   @Test
   public void testGetViewIterator() throws Exception {
-    this.cas.reset();
-    CAS view1 = this.cas.createView("View1");
-    CAS view2 = this.cas.createView("View2");
-    checkViewsExist(this.cas.getViewIterator(), cas, view1, view2);
+    cas.reset();
+    CAS view1 = cas.createView("View1");
+    CAS view2 = cas.createView("View2");
+    checkViewsExist(cas.getViewIterator(), cas, view1, view2);
 
-    CAS viewE1 = this.cas.createView("EnglishDocument");
-    CAS viewE2 = this.cas.createView("EnglishDocument.2");
-    checkViewsExist(this.cas.getViewIterator("EnglishDocument"), viewE1, viewE2);
+    CAS viewE1 = cas.createView("EnglishDocument");
+    CAS viewE2 = cas.createView("EnglishDocument.2");
+    checkViewsExist(cas.getViewIterator("EnglishDocument"), viewE1, viewE2);
 
     // try with Sofa mappings
     UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
@@ -721,13 +721,13 @@ public class SofaTest {
     sofamap.put("SourceDocument", "EnglishDocument");
     UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
-    checkViewsExist(this.cas.getViewIterator("SourceDocument"), viewE1, viewE2);
+    checkViewsExist(cas.getViewIterator("SourceDocument"), viewE1, viewE2);
 
-    this.cas.setCurrentComponentInfo(null);
+    cas.setCurrentComponentInfo(null);
 
     // repeat with JCas
-    this.cas.reset();
-    JCas jcas = this.cas.getJCas();
+    cas.reset();
+    JCas jcas = cas.getJCas();
     JCas jview1 = jcas.createView("View1");
     JCas jview2 = jcas.createView("View2");
     checkViewsExist(jcas.getViewIterator(), jcas, jview1, jview2);

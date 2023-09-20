@@ -45,7 +45,7 @@ public class UIMAClassLoaderTest {
   @BeforeEach
   public void setUp() throws Exception {
 
-    this.testClassPath = JUnitExtension.getFile("ClassLoaderTest/classLoadingTest.jar")
+    testClassPath = JUnitExtension.getFile("ClassLoaderTest/classLoadingTest.jar")
             .getAbsolutePath();
   }
 
@@ -84,7 +84,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testSimpleClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
+    UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -100,7 +100,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testParallelClassLoading() throws Exception {
-    final UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath,
+    final UIMAClassLoader cl = new UIMAClassLoader(testClassPath,
             this.getClass().getClassLoader());
     final Class<?>[] loadedClasses = new Class<?>[Misc.numberOfCores];
 
@@ -122,7 +122,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testSimpleClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
+    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 
@@ -139,7 +139,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testAdvancedClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
+    UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -155,7 +155,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testAdvancedClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
+    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 

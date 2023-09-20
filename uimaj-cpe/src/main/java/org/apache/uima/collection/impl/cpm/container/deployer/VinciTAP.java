@@ -759,7 +759,7 @@ public class VinciTAP {
 
       aPT.startEvent(aResourceName, "Vinci Response Frame to CAS", "");
       CasData newCasData = new CasDataImpl();
-      FeatureStructure casDataFs = this.getDocTextFeatureStructure(aCas);
+      FeatureStructure casDataFs = getDocTextFeatureStructure(aCas);
       if (casDataFs != null) {
         newCasData.addFeatureStructure(casDataFs);
       }
@@ -977,7 +977,7 @@ public class VinciTAP {
             // CasData. BUT, we also need to preserve the document text from the request,
             // since it may not be echoed by the service.
             CasData newCasData = new CasDataImpl();
-            FeatureStructure casDataFs = this.getDocTextFeatureStructure(aCasList[instanceCount]);
+            FeatureStructure casDataFs = getDocTextFeatureStructure(aCasList[instanceCount]);
             if (casDataFs != null) {
               newCasData.addFeatureStructure(casDataFs);
             }

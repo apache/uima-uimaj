@@ -133,9 +133,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     public boolean equals(Object obj) {
       if (this == obj)
         return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
+      if ((obj == null) || (getClass() != obj.getClass()))
         return false;
       MetaDataAttr other = (MetaDataAttr) obj;
       if (clazz == null) {
@@ -698,7 +696,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     MetaDataObject_impl mdo = (MetaDataObject_impl) aObj;
     // get the attributes (and classes) for the two objects
 
-    MetaDataAttr[] theseAttrs = this.getAttributes();
+    MetaDataAttr[] theseAttrs = getAttributes();
     MetaDataAttr[] thoseAttrs = mdo.getAttributes();
     // attribute lists must be same length
     if (theseAttrs.length != thoseAttrs.length) {
@@ -769,14 +767,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
 
     if (val1 instanceof Map) {// only need this to handle Maps w/ array vals
-      if (!(val2 instanceof Map)) {
-        return false;
-      }
-      if (((Map) val1).size() != ((Map) val2).size()) {
-        return false;
-      }
-
-      if (val1.getClass() != val2.getClass()) {
+      if (!(val2 instanceof Map) || (((Map) val1).size() != ((Map) val2).size()) || (val1.getClass() != val2.getClass())) {
         return false;
       }
 

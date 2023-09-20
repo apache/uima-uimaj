@@ -212,7 +212,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
 
     CASTestSetup cts = new CASTestSetup();
     cas = (CASImpl) CASInitializer.initCas(cts, t -> cts.reinitTypeSystem(t));
-    ts = (TypeSystemImpl) this.cas.getTypeSystem();
+    ts = (TypeSystemImpl) cas.getTypeSystem();
     cas2 = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
     deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
     deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);

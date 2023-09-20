@@ -40,13 +40,13 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
 
   StringConstraint(ArrayList<String> path, FSStringConstraint cons) {
     super(path);
-    this.stringConstraint = cons;
+    stringConstraint = cons;
   }
 
   @Override
   public boolean match(FeatureStructure fs) {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
-    final int max = this.featNames.size() - 1; // The last position in the
+    final int max = featNames.size() - 1; // The last position in the
     // path!
     if (max < 0) {
       // If the path is empty, we can't get a string, and therefore the
@@ -55,22 +55,22 @@ class StringConstraint extends PathConstraint implements FSMatchConstraint {
     }
     Feature feat;
     for (int i = 0; i < max; i++) {
-      feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
+      feat = fs.getType().getFeatureByBaseName(featNames.get(i));
       if (feat == null) {
         return false;
       }
       fs = fs.getFeatureValue(feat);
     }
-    feat = fs.getType().getFeatureByBaseName(this.featNames.get(max));
+    feat = fs.getType().getFeatureByBaseName(featNames.get(max));
     if (feat == null) {
       return false;
     }
-    return this.stringConstraint.match(fs.getStringValue(feat));
+    return stringConstraint.match(fs.getStringValue(feat));
   }
 
   @Override
   public String toString() {
-    return super.toString() + " " + this.stringConstraint.toString();
+    return super.toString() + " " + stringConstraint.toString();
   }
 
 }

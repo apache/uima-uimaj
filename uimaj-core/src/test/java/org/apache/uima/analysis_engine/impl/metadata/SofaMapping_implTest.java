@@ -19,14 +19,13 @@
 
 package org.apache.uima.analysis_engine.impl.metadata;
 
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.StringWriter;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +36,8 @@ public class SofaMapping_implTest {
 
   SofaMapping_impl sm2;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");
     sm1.setComponentKey("myAnnotator");
@@ -55,23 +49,25 @@ public class SofaMapping_implTest {
   }
 
   @Test
-  public void testXmlization() throws Exception {
+  void testXmlization() throws Exception {
     // write to XML
-    StringWriter writer = new StringWriter();
+    var writer = new StringWriter();
     sm1.toXML(writer);
-    String sm1Xml = writer.getBuffer().toString();
+    var sm1Xml = writer.toString();
+
     writer = new StringWriter();
     sm2.toXML(writer);
-    String sm2Xml = writer.getBuffer().toString();
-    // parse from XML
-    InputStream is = new ByteArrayInputStream(sm1Xml.getBytes(encoding));
-    SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser()
-        .parse(new XMLInputSource(is, null));
-    is = new ByteArrayInputStream(sm2Xml.getBytes(encoding));
-    SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser()
-        .parse(new XMLInputSource(is, null));
+    var sm2Xml = writer.toString();
 
-    assertThat(newSm1).isEqualTo(sm1);
-    assertThat(newSm2).isEqualTo(sm2);
+    // parse from XML
+    try (var is = new ByteArrayInputStream(sm1Xml.getBytes(UTF_8))) {
+      var newSm1 = (SofaMapping_impl) getXMLParser().parse(new XMLInputSource(is));
+      assertThat(newSm1).isEqualTo(sm1);
+    }
+
+    try (var is = new ByteArrayInputStream(sm2Xml.getBytes(UTF_8))) {
+      var newSm2 = (SofaMapping_impl) getXMLParser().parse(new XMLInputSource(is));
+      assertThat(newSm2).isEqualTo(sm2);
+    }
   }
 }

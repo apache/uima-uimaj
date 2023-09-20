@@ -38,17 +38,17 @@ final class ByteHeap extends CommonAuxHeap {
 
   @Override
   void initMemory() {
-    this.heap = new byte[this.heapBaseSize];
+    heap = new byte[heapBaseSize];
   }
 
   @Override
   void initMemory(int size) {
-    this.heap = new byte[size];
+    heap = new byte[size];
   }
 
   @Override
   int getCapacity() {
-    return this.heap.length;
+    return heap.length;
   }
 
   @Override
@@ -64,12 +64,12 @@ final class ByteHeap extends CommonAuxHeap {
 
   @Override
   void resetToZeros() {
-    Arrays.fill(this.heap, 0, this.heapPos, (byte) NULL);
+    Arrays.fill(heap, 0, heapPos, (byte) NULL);
   }
 
   // Getters
   byte getHeapValue(int offset) {
-    return this.heap[offset];
+    return heap[offset];
   }
 
   // setters
@@ -109,7 +109,7 @@ final class ByteHeap extends CommonAuxHeap {
       heap = new byte[argLength];
 
     System.arraycopy(byteHeap, 0, heap, 0, argLength);
-    this.heapPos = argLength;
+    heapPos = argLength;
   }
 
   public byte[] toArray() {

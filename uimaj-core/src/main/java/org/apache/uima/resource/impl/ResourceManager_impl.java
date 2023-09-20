@@ -99,7 +99,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     public ResourceRegistration(Object resourceOrImplementation,
             ExternalResourceDescription description, String definingContext) {
-      this.resource = resourceOrImplementation;
+      resource = resourceOrImplementation;
       this.description = description;
       this.definingContext = definingContext;
     }
@@ -277,14 +277,14 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   public ResourceManager_impl copy() {
-    ResourceManager_impl rm = new ResourceManager_impl(this.mResourceMap,
-            this.mInternalResourceRegistrationMap, this.mParameterizedResourceImplClassMap,
-            this.mInternalParameterizedResourceImplClassMap,
-            this.mParameterizedResourceInstanceMap);
+    ResourceManager_impl rm = new ResourceManager_impl(mResourceMap,
+            mInternalResourceRegistrationMap, mParameterizedResourceImplClassMap,
+            mInternalParameterizedResourceImplClassMap,
+            mParameterizedResourceInstanceMap);
     // non-final fields init
-    rm.uimaCL = this.uimaCL;
-    rm.importCache = this.importCache;
-    rm.importUrlsCache = this.importUrlsCache;
+    rm.uimaCL = uimaCL;
+    rm.importCache = importCache;
+    rm.importUrlsCache = importUrlsCache;
     return rm;
   }
 

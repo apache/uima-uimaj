@@ -166,7 +166,7 @@ public class CASSerializer implements Serializable {
                                                                                              // the
                                                                                              // cas
       bcsd.scanAllFSsForBinarySerialization(null, csds); // no mark
-      this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr); // must follow scanAll...
+      fsIndex = bcsd.getIndexedFSs(csds.fs2addr); // must follow scanAll...
 
       if (addMetaData) {
         // some details about current main-heap specifications
@@ -175,7 +175,7 @@ public class CASSerializer implements Serializable {
         // is 7 words long
         // not serialized by custom serializers, only by Java object serialization
         int heapsz = bcsd.heap.getCellsUsed();
-        this.heapMetaData = new int[] { Heap.getRoundedSize(heapsz), // a bit more than the size of
+        heapMetaData = new int[] { Heap.getRoundedSize(heapsz), // a bit more than the size of
                                                                      // the used heap
             heapsz, // the position of the next (unused) slot in the heap
             heapsz, 0, 0, 1024, // initial size
@@ -307,7 +307,7 @@ public class CASSerializer implements Serializable {
         DataOutputStream dos = new DataOutputStream(ostream);
 
         // get the indexed FSs for all views
-        this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr);
+        fsIndex = bcsd.getIndexedFSs(csds.fs2addr);
 
         // output the key and version number
         CommonSerDes.createHeader().seqVer(2) // 0 original, 1 UIMA-4743 2 for uima v3
@@ -384,9 +384,9 @@ public class CASSerializer implements Serializable {
         // }
 
         // output the index FSs
-        dos.writeInt(this.fsIndex.length);
-        for (int i = 0; i < this.fsIndex.length; i++) {
-          dos.writeInt(this.fsIndex[i]);
+        dos.writeInt(fsIndex.length);
+        for (int i = 0; i < fsIndex.length; i++) {
+          dos.writeInt(fsIndex[i]);
         }
 
         // 8bit heap
@@ -511,7 +511,7 @@ public class CASSerializer implements Serializable {
           break;
         }
         if (fs instanceof CommonArrayFS) {
-          CommonArrayFS ca = (CommonArrayFS) fs;
+          CommonArrayFS<?> ca = (CommonArrayFS<?>) fs;
           SlotKind kind = fs._getTypeImpl().getComponentSlotKind();
           switch (kind) {
             case Slot_BooleanRef:
@@ -542,7 +542,7 @@ public class CASSerializer implements Serializable {
         DataOutputStream dos = new DataOutputStream(ostream);
 
         // get the indexed FSs
-        this.fsIndex = bcsd.getDeltaIndexedFSs(mark, csds.fs2addr);
+        fsIndex = bcsd.getDeltaIndexedFSs(mark, csds.fs2addr);
 
         CommonSerDes.createHeader().delta().seqVer(2) // 1 for UIMA-4743 2 for uima v3
                 .v3().write(dos);
@@ -591,9 +591,9 @@ public class CASSerializer implements Serializable {
         }
 
         // output the index FSs
-        dos.writeInt(this.fsIndex.length);
-        for (int i = 0; i < this.fsIndex.length; i++) {
-          dos.writeInt(this.fsIndex[i]);
+        dos.writeInt(fsIndex.length);
+        for (int i = 0; i < fsIndex.length; i++) {
+          dos.writeInt(fsIndex[i]);
         }
 
         // 8bit heap new
@@ -688,24 +688,19 @@ public class CASSerializer implements Serializable {
   /**
    * Scan the v3 fsChange info and produce v2 style info into chgXxxAddr, chgXxxValue
    * 
-   * A prescan approach is needed in order to write the number of modifications preceding the write
+   * A pre-scan approach is needed in order to write the number of modifications preceding the write
    * of the values (which unfortunately were written to the same stream in V2).
    * 
    * @param bcsd
    *          holds the model needed for v2 aux arrays
-   * @param cas
-   *          the cas to use for the delta serialization
-   * @param chgMainHeapAddr
+   * @param chgMainAvs
    *          an ordered collection of changed addresses as an array for the main heap
-   * @param chgByteAddr
+   * @param chgByteAvs
    *          an ordered collection of changed addresses as an array for the aux byte heap
-   * @param chgShortAddr
+   * @param chgShortAvs
    *          an ordered collection of changed addresses as an array for the aus short heap
-   * @param chgLongAddr
+   * @param chgLongAvs
    *          an ordered collection of changed addresses as an array for the aux long heap
-   * 
-   * @param chgMainHeapValue
-   *          corresponding values
    */
   static void scanModifications(BinaryCasSerDes bcsd, CommonSerDesSequential csds,
           FsChange[] fssModified, Obj2IntIdentityHashMap<TOP> fs2auxOffset,
@@ -791,7 +786,7 @@ public class CASSerializer implements Serializable {
 
           case Slot_HeapRef:
             fsChange.arrayUpdates.forAllInts(index -> {
-              TOP tgtFs = (TOP) ((FSArray) fs).get(index);
+              TOP tgtFs = (TOP) ((FSArray<?>) fs).get(index);
               chgMainAvs.add(new AddrPlusValue(convertArrayIndexToMainHeapAddr(index, fs, fs2addr),
                       fs2addr.get(tgtFs)));
             });
@@ -888,38 +883,38 @@ public class CASSerializer implements Serializable {
   // }
 
   int[] getHeapMetadata() {
-    return this.heapMetaData;
+    return heapMetaData;
   }
 
   int[] getHeapArray() {
-    return this.heapArray;
+    return heapArray;
   }
 
   String[] getStringTable() {
-    return this.stringTable;
+    return stringTable;
   }
 
   int[] getFSIndex() {
-    return this.fsIndex;
+    return fsIndex;
   }
 
   byte[] getByteArray() {
-    return this.byteHeapArray;
+    return byteHeapArray;
   }
 
   short[] getShortArray() {
-    return this.shortHeapArray;
+    return shortHeapArray;
   }
 
   long[] getLongArray() {
-    return this.longHeapArray;
+    return longHeapArray;
   }
 
   private void copyHeapsToArrays(BinaryCasSerDes bcsd) {
-    this.heapArray = bcsd.heap.toArray();
-    this.byteHeapArray = bcsd.byteHeap.toArray();
-    this.shortHeapArray = bcsd.shortHeap.toArray();
-    this.longHeapArray = bcsd.longHeap.toArray();
-    this.stringTable = bcsd.stringHeap.toArray();
+    heapArray = bcsd.heap.toArray();
+    byteHeapArray = bcsd.byteHeap.toArray();
+    shortHeapArray = bcsd.shortHeap.toArray();
+    longHeapArray = bcsd.longHeap.toArray();
+    stringTable = bcsd.stringHeap.toArray();
   }
 }

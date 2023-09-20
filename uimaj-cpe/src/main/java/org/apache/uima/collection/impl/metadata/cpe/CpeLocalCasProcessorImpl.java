@@ -196,7 +196,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject
       param.setParameterType("String");
       param.setParameterValue("9904");
       deployParams.add(param);
-      this.setDeploymentParams(deployParams);
+      setDeploymentParams(deployParams);
     }
 
     super.addDefaults();

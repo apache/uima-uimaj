@@ -50,7 +50,7 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     String text = "this beer is good";
     try {
-      this.getCasInitializer().initializeCas(text, aCAS);
+      getCasInitializer().initializeCas(text, aCAS);
     } catch (NullPointerException e) {
       // Create the Source text Sofa
       SofaID sofaid = getUimaContext().mapToSofaID("InputText");

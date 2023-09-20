@@ -62,7 +62,7 @@ public class TypeSystemUtilsTest {
       XMLParser parser = UIMAFramework.getXMLParser();
       TypeSystemDescription spec = (TypeSystemDescription) parser
               .parse(new XMLInputSource(descriptorFile));
-      this.cas = CasCreationUtils.createCas(spec, null, new FsIndexDescription[] {});
+      cas = CasCreationUtils.createCas(spec, null, new FsIndexDescription[] {});
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -78,7 +78,7 @@ public class TypeSystemUtilsTest {
 
   @Test
   public void testPathValidation() {
-    Type type1 = this.cas.getTypeSystem().getType("Type1");
+    Type type1 = cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
     List<String> path = new ArrayList<>();
     path.add("f0");
@@ -106,7 +106,7 @@ public class TypeSystemUtilsTest {
     path = new ArrayList<>();
     assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS);
     // t1, f1/f2/f3, always
-    Type t1 = this.cas.getTypeSystem().getType("t1");
+    Type t1 = cas.getTypeSystem().getType("t1");
     path = new ArrayList<>();
     path.add("f1");
     path.add("f2");
@@ -116,6 +116,6 @@ public class TypeSystemUtilsTest {
 
   @AfterEach
   public void tearDown() {
-    this.cas = null;
+    cas = null;
   }
 }

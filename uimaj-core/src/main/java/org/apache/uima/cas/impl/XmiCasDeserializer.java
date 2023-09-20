@@ -297,13 +297,13 @@ public class XmiCasDeserializer {
     private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient,
             XmiSerializationSharedData sharedData, int mergePoint,
             AllowPreexistingFS allowPreexistingFS) {
-      this.casBeingFilled = aCAS.getBaseCAS();
+      casBeingFilled = aCAS.getBaseCAS();
       this.lenient = lenient;
       this.sharedData = sharedData != null ? sharedData : new XmiSerializationSharedData();
       this.mergePoint = mergePoint;
       this.allowPreexistingFS = allowPreexistingFS;
-      this.featsSeen = null;
-      this.disallowedViewMemberEncountered = false;
+      featsSeen = null;
+      disallowedViewMemberEncountered = false;
       if (mergePoint < 0) {
         // If not merging, reset the CAS.
         // Necessary to get Sofas to work properly.
@@ -312,20 +312,20 @@ public class XmiCasDeserializer {
         // clear ID mappings stored in the SharedData (from previous deserializations)
         this.sharedData.clearIdMap();
         // new Sofas start at 2
-        this.nextSofaNum = 2;
+        nextSofaNum = 2;
       } else {
-        this.nextSofaNum = this.casBeingFilled.getViewCount() + 1;
+        nextSofaNum = casBeingFilled.getViewCount() + 1;
       }
-      this.buffer = new StringBuilder();
-      this.indexRepositories = new ArrayList<>();
-      this.views = new ArrayList<>();
-      indexRepositories.add(this.casBeingFilled.getBaseIndexRepository());
+      buffer = new StringBuilder();
+      indexRepositories = new ArrayList<>();
+      views = new ArrayList<>();
+      indexRepositories.add(casBeingFilled.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories
-              .add(this.casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
+              .add(casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       // add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
       // a mergePoint was specified)
-      FSIterator<Sofa> sofaIter = this.casBeingFilled.getSofaIterator();
+      FSIterator<Sofa> sofaIter = casBeingFilled.getSofaIterator();
       while (sofaIter.hasNext()) {
         SofaFS sofa = sofaIter.next();
         if (sofa.getSofaRef() == 1) {
@@ -353,7 +353,7 @@ public class XmiCasDeserializer {
     @Override
     public void startDocument() throws SAXException {
       // Do setup work in the constructor.
-      this.state = DOC_STATE;
+      state = DOC_STATE;
       // System.out.println("Starting to read document.");
       // time = System.currentTimeMillis();
     }
@@ -389,29 +389,29 @@ public class XmiCasDeserializer {
               }
             }
           }
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case FS_STATE: {
           // ignore elements with XMI prefix (such as XMI annotations)
           if (qualifiedName.startsWith("xmi")) {
-            this.state = IGNORING_XMI_ELEMENTS_STATE;
-            this.ignoreDepth++;
+            state = IGNORING_XMI_ELEMENTS_STATE;
+            ignoreDepth++;
             return;
           }
 
           // if Delta CAS check if preexisting FS check if allowed
-          if (this.mergePoint >= 0) {
+          if (mergePoint >= 0) {
             String id = attrs.getValue(ID_ATTR_NAME);
             if (id != null) {
               int idInt = Integer.parseInt(id);
-              if (idInt > 0 && !this.isNewFS(idInt)) { // preexisting FS
-                if (this.allowPreexistingFS == AllowPreexistingFS.ignore) { // skip elements whose
+              if (idInt > 0 && !isNewFS(idInt)) { // preexisting FS
+                if (allowPreexistingFS == AllowPreexistingFS.ignore) { // skip elements whose
                                                                             // ID is <= mergePoint
-                  this.state = IGNORING_XMI_ELEMENTS_STATE;
-                  this.ignoreDepth++;
+                  state = IGNORING_XMI_ELEMENTS_STATE;
+                  ignoreDepth++;
                   return;
-                } else if (this.allowPreexistingFS == AllowPreexistingFS.disallow) { // fail
+                } else if (allowPreexistingFS == AllowPreexistingFS.disallow) { // fail
                   throw new CASRuntimeException(
                           CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
                           ID_ATTR_NAME + "=" + id, nameSpaceURI, localName, qualifiedName);
@@ -451,19 +451,19 @@ public class XmiCasDeserializer {
             // for out-of-typesystem objects, there's special handling here
             // to keep track of the fact this was an href so we re-serialize
             // correctly.
-            if (this.outOfTypeSystemElement != null) {
+            if (outOfTypeSystemElement != null) {
               XmlElementName elemName = new XmlElementName(nameSpaceURI, localName, qualifiedName);
               List<XmlAttribute> ootsAttrs = new ArrayList<>();
               ootsAttrs.add(new XmlAttribute("href", href));
               XmlElementNameAndContents elemWithContents = new XmlElementNameAndContents(elemName,
                       null, ootsAttrs);
-              this.outOfTypeSystemElement.childElements.add(elemWithContents);
+              outOfTypeSystemElement.childElements.add(elemWithContents);
             } else {
               // In-typesystem FS, so we can forget this was an href and just add
               // the integer value, which will be interpreted as a reference later.
               // NOTE: this will end up causing it to be reserialized as an attribute
               // rather than an element, but that is not in violation of the XMI spec.
-              ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName,
+              ArrayList<String> valueList = multiValuedFeatures.computeIfAbsent(qualifiedName,
                       k -> new ArrayList<>());
               valueList.add(href.substring(1));
             }
@@ -567,7 +567,7 @@ public class XmiCasDeserializer {
             int thisSofaNum = (sofaID.equals(CAS.NAME_DEFAULT_SOFA)
                     || sofaID.equals("_DefaultTextSofaName")) ? 1 // initial view Sofa always has
                                                                   // sofaNum = 1
-                            : this.nextSofaNum++;
+                            : nextSofaNum++;
 
             // get the sofa's mimeType
             String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
@@ -628,10 +628,10 @@ public class XmiCasDeserializer {
           } // end of not a sofa, not an array
           readFS(fs, attrs, IS_NEW_FS);
         } else { // preexisting
-          if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+          if (allowPreexistingFS == AllowPreexistingFS.disallow) {
             throw new CASRuntimeException(CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
                     ID_ATTR_NAME + "=" + idStr, nameSpaceURI, localName, qualifiedName);
-          } else if (this.allowPreexistingFS == AllowPreexistingFS.allow) { // get the FS
+          } else if (allowPreexistingFS == AllowPreexistingFS.allow) { // get the FS
             final TOP fs = getFsForXmiId(xmiId);
             // remove from indexes, and remember if was there, per view
             // (might be indexed in some views, not in others)
@@ -649,18 +649,18 @@ public class XmiCasDeserializer {
       if (processingDeferredFSs) {
         throw createException(XCASParsingException.SOFA_REF_MISSING);
       }
-      if (this.deferredFSs == null) {
-        this.deferredFSs = new ArrayList<>();
+      if (deferredFSs == null) {
+        deferredFSs = new ArrayList<>();
       }
-      this.deferredFsElement = new OotsElementData(idStr,
+      deferredFsElement = new OotsElementData(idStr,
               new XmlElementName(nameSpaceURI, localName, qualifiedName),
               (locator == null) ? 0 : locator.getLineNumber(),
               (locator == null) ? 0 : locator.getColumnNumber());
 
-      deferredFSs.add(this.deferredFsElement);
+      deferredFSs.add(deferredFsElement);
       // This next call isn't about oots data, it's reusing that to store the attributes with the
       // deferred thing.
-      addOutOfTypeSystemAttributes(this.deferredFsElement, attrs);
+      addOutOfTypeSystemAttributes(deferredFsElement, attrs);
     }
 
     /**
@@ -692,13 +692,13 @@ public class XmiCasDeserializer {
           // special handling for merge operations ...
           if (!newview && !isNewFS(xmiId)) {
             // a pre-existing FS is indexed in a pre-existing view
-            if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
+            if (allowPreexistingFS == AllowPreexistingFS.ignore) {
               // merging with full CAS: ignore anything below the high water mark
               continue;
             }
-            if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+            if (allowPreexistingFS == AllowPreexistingFS.disallow) {
               // merging with delta CAS: flag it
-              this.disallowedViewMemberEncountered = true;
+              disallowedViewMemberEncountered = true;
               continue;
             }
           }
@@ -714,7 +714,7 @@ public class XmiCasDeserializer {
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
             } else {
               // unknown view member may be an OutOfTypeSystem FS
-              this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
+              sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
             }
           }
         }
@@ -788,10 +788,10 @@ public class XmiCasDeserializer {
         for (int i = 0; i < members.length; i++) {
           int xmiId = Integer.parseInt(members[i]);
           if (!isNewFS(xmiId)) { // preexisting FS
-            if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
-              this.disallowedViewMemberEncountered = true; // ignore but flag it.
+            if (allowPreexistingFS == AllowPreexistingFS.disallow) {
+              disallowedViewMemberEncountered = true; // ignore but flag it.
               continue;
-            } else if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
+            } else if (allowPreexistingFS == AllowPreexistingFS.ignore) {
               continue; // ignore
             }
           }
@@ -807,7 +807,7 @@ public class XmiCasDeserializer {
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
             } else {
               // unknown view member may be an OutOfTypeSystem FS
-              this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
+              sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
             }
           }
         } // end of for loop over members
@@ -845,7 +845,7 @@ public class XmiCasDeserializer {
 
     private void readFS(final TOP fs, Attributes attrs, final boolean isNewFs) throws SAXException {
       // Hang on to FS for setting content feature (things coded as child xml elements)
-      this.currentFs = fs;
+      currentFs = fs;
       String attrName, attrValue;
       final TypeImpl type = fs._getTypeImpl();
       final int typeCode = type.getCode();
@@ -877,7 +877,7 @@ public class XmiCasDeserializer {
       // throw createException(XCASParsingException.ILLEGAL_ID, attrs.getValue(ID_ATTR_NAME));
       // }
 
-      this.featsSeen = null;
+      featsSeen = null;
 
       // before looping over all features for this FS,
       // remove this FS if
@@ -908,7 +908,7 @@ public class XmiCasDeserializer {
         addFsToXmiId(fs, extId);
 
         // set up feats seen for existing, non-sofa FSs
-        this.featsSeen = (sofaTypeCode != typeCode && !isNewFs) ? new IntVector(attrs.getLength())
+        featsSeen = (sofaTypeCode != typeCode && !isNewFs) ? new IntVector(attrs.getLength())
                 : null;
 
         // loop over all attributes in the xml for this FS
@@ -922,8 +922,8 @@ public class XmiCasDeserializer {
           int featCode = handleFeatureFromName(type, fs, attrName, attrValue, isNewFs);
           // if processing delta cas preexisting FS, keep track of features that have
           // been deserialized.
-          if (this.featsSeen != null && featCode != -1) {
-            this.featsSeen.add(featCode);
+          if (featsSeen != null && featCode != -1) {
+            featsSeen.add(featCode);
           }
         } // end of all features loop
       } finally {
@@ -977,7 +977,7 @@ public class XmiCasDeserializer {
             final boolean isNewFS) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!this.lenient) {
+        if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         } else {
           // this logic mimics the way version 2 did this.
@@ -1028,7 +1028,7 @@ public class XmiCasDeserializer {
             ArrayList<String> featVals) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!this.lenient) {
+        if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         } else {
           sharedData.addOutOfTypeSystemChildElements(fs, featName, featVals);
@@ -1690,7 +1690,7 @@ public class XmiCasDeserializer {
      */
     @Override
     public void characters(char[] chars, int start, int length) throws SAXException {
-      switch (this.state) {
+      switch (state) {
         case FEAT_CONTENT_STATE:
           buffer.append(chars, start, length);
           break;
@@ -1707,36 +1707,36 @@ public class XmiCasDeserializer {
     @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
             throws SAXException {
-      switch (this.state) {
+      switch (state) {
         case DOC_STATE: {
           // Do nothing.
           break;
         }
         case FS_STATE: {
-          this.state = DOC_STATE;
+          state = DOC_STATE;
           break;
         }
         case FEAT_CONTENT_STATE: {
           // We have just processed one of possibly many values for a feature.
           // Store this value in the multiValuedFeatures map for later use.
-          ArrayList<String> valueList = this.multiValuedFeatures.computeIfAbsent(qualifiedName,
+          ArrayList<String> valueList = multiValuedFeatures.computeIfAbsent(qualifiedName,
                   k -> new ArrayList<>());
           valueList.add(buffer.toString());
 
           // go back to the state where we're expecting a feature
-          this.state = FEAT_STATE;
+          state = FEAT_STATE;
           break;
         }
         case REF_FEAT_STATE: {
-          this.state = FEAT_STATE;
+          state = FEAT_STATE;
           break;
         }
         case FEAT_STATE: {
           // end of FS. Process multi-valued features or array elements that were
           // encoded as subelements
-          if (this.outOfTypeSystemElement != null || this.deferredFsElement != null) {
-            if (!this.multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, ArrayList<String>> entry : this.multiValuedFeatures
+          if (outOfTypeSystemElement != null || deferredFsElement != null) {
+            if (!multiValuedFeatures.isEmpty()) {
+              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures
                       .entrySet()) {
                 String featName = entry.getKey();
                 ArrayList<String> featVals = entry.getValue();
@@ -1746,7 +1746,7 @@ public class XmiCasDeserializer {
                         featName, featVals);
               }
             }
-            this.outOfTypeSystemElement = this.deferredFsElement = null;
+            outOfTypeSystemElement = deferredFsElement = null;
 
           } else if (currentType != null) {
 
@@ -1758,48 +1758,48 @@ public class XmiCasDeserializer {
               // the overhead of parsing into a String array first
               if (currentArrayElements == null) // were not specified as attributes
               {
-                currentArrayElements = this.multiValuedFeatures.get("elements");
+                currentArrayElements = multiValuedFeatures.get("elements");
                 if (currentArrayElements == null) {
                   currentArrayElements = Collections.emptyList();
                 }
               }
               createOrUpdateArray(currentType, currentArrayElements, currentArrayId, null);
 
-            } else if (!this.multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, ArrayList<String>> entry : this.multiValuedFeatures
+            } else if (!multiValuedFeatures.isEmpty()) {
+              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures
                       .entrySet()) {
                 String featName = entry.getKey();
                 ArrayList<String> featVals = entry.getValue();
                 int featcode = handleFeatMultiValueFromName(currentType, currentFs, featName,
                         featVals);
-                if (featcode != -1 && this.featsSeen != null) {
-                  this.featsSeen.add(featcode);
+                if (featcode != -1 && featsSeen != null) {
+                  featsSeen.add(featcode);
                 }
               }
             }
 
             // if this is a preexisting FS which is not a Sofa FS,
             // set the features that were not deserialized to null.
-            if (sofaTypeCode != currentType.getCode() && this.featsSeen != null) {
+            if (sofaTypeCode != currentType.getCode() && featsSeen != null) {
               for (FeatureImpl fi : currentType.getFeatureImpls()) {
                 if (!(fi.getName().equals(CAS.FEATURE_FULL_NAME_SOFA))) {
-                  if (!this.featsSeen.contains(fi.getCode())) {
+                  if (!featsSeen.contains(fi.getCode())) {
                     CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(currentFs, fi, null);
                   }
                 }
               }
-              this.featsSeen = null; // set for every feature instance being deserialized
+              featsSeen = null; // set for every feature instance being deserialized
             }
 
           }
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
 
         case IGNORING_XMI_ELEMENTS_STATE: {
           ignoreDepth--;
           if (ignoreDepth == 0) {
-            this.state = FS_STATE;
+            state = FS_STATE;
           }
           break;
         }
@@ -1849,7 +1849,7 @@ public class XmiCasDeserializer {
       }
 
       // check if disallowed fs encountered]
-      if (this.disallowedViewMemberEncountered) {
+      if (disallowedViewMemberEncountered) {
         throw new CASRuntimeException(CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
                 "Preexisting FS view member encountered.");
       }
@@ -1868,7 +1868,7 @@ public class XmiCasDeserializer {
         } else {
           // the element may be out of typesystem. In that case set it
           // to null, but record the id so we can add it back on next serialization.
-          this.sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(),
+          sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(),
                   Integer.toString(xmiId));
           CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
         }
@@ -1887,7 +1887,7 @@ public class XmiCasDeserializer {
         } else {
           // the element may be out of typesystem. In that case set it
           // to null, but record the id so we can add it back on next serialization.
-          this.sharedData.addOutOfTypeSystemAttribute(neNode, CAS.FEATURE_BASE_NAME_HEAD,
+          sharedData.addOutOfTypeSystemAttribute(neNode, CAS.FEATURE_BASE_NAME_HEAD,
                   Integer.toString(xmiId));
           neNode.setHead(null);
         }
@@ -1905,7 +1905,7 @@ public class XmiCasDeserializer {
         } else {
           // the array element may be out of typesystem. In that case set it
           // to null, but record the id so we can add it back on next serialization.
-          this.sharedData.addOutOfTypeSystemArrayElement(fsArray, index, xmiId);
+          sharedData.addOutOfTypeSystemArrayElement(fsArray, index, xmiId);
           fsArray.set(index, null);
         }
       } else {
@@ -1980,7 +1980,7 @@ public class XmiCasDeserializer {
     @Override
     public void setDocumentLocator(Locator loc) {
       // System.out.println("debug DEBUG Setting document locator.");
-      this.locator = loc;
+      locator = loc;
     }
 
     /*
@@ -2052,19 +2052,19 @@ public class XmiCasDeserializer {
     private void addToOutOfTypeSystemData(XmlElementName xmlElementName, Attributes attrs)
             throws XCASParsingException {
       String xmiId = attrs.getValue(ID_ATTR_NAME);
-      this.outOfTypeSystemElement = new OotsElementData(xmiId, xmlElementName);
-      addOutOfTypeSystemAttributes(this.outOfTypeSystemElement, attrs);
-      this.sharedData.addOutOfTypeSystemElement(this.outOfTypeSystemElement);
+      outOfTypeSystemElement = new OotsElementData(xmiId, xmlElementName);
+      addOutOfTypeSystemAttributes(outOfTypeSystemElement, attrs);
+      sharedData.addOutOfTypeSystemElement(outOfTypeSystemElement);
     }
 
     private boolean isNewFS(int id) {
-      return (id > this.mergePoint);
+      return (id > mergePoint);
     }
 
     private void addNonsharedFSToEncompassingFSMapping(TOP nonsharedFS, TOP encompassingFS) {
       // System.out.println("addNonsharedFSToEncompassingFSMapping" + nonsharedFS + " " +
       // encompassingFS);
-      this.sharedData.addNonsharedRefToFSMapping(nonsharedFS, encompassingFS);
+      sharedData.addNonsharedRefToFSMapping(nonsharedFS, encompassingFS);
     }
 
     private void processDeferredFSs() throws SAXException {
@@ -2100,8 +2100,8 @@ public class XmiCasDeserializer {
           for (NameMultiValue nmv : deferredFs.multiValuedFeatures) {
             int featcode = handleFeatMultiValueFromName(currentType, currentFs, nmv.name,
                     nmv.values);
-            if (featcode != -1 && this.featsSeen != null) {
-              this.featsSeen.add(featcode);
+            if (featcode != -1 && featsSeen != null) {
+              featsSeen.add(featcode);
             }
           } // end of for loop over child elements
         } finally {

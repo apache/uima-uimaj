@@ -51,7 +51,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
   private File testBaseDir;
 
   public SequencerTestAnnotator() {
-    this.testBaseDir = JUnitExtension.getFile("SequencerTest");
+    testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
   /**
@@ -75,7 +75,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
 
     try {
       // read annotator name from configuration parameter 'AnnotatorName'
-      this.name = secureGetConfigParameterValue(context, "AnnotatorName", "defaultName");
+      name = secureGetConfigParameterValue(context, "AnnotatorName", "defaultName");
     } catch (AnnotatorContextException e) {
       throw new AnnotatorConfigurationException(e);
     }
@@ -91,7 +91,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
     if (true) {
       try {
         // use standard output file
-        File fp = new File(this.testBaseDir, "SequencerTest.txt");
+        File fp = new File(testBaseDir, "SequencerTest.txt");
         if (!fp.exists()) {
           fp.createNewFile();
         }
@@ -99,7 +99,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
           // write result specification to the output file
           OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fp, true),
                   StandardCharsets.UTF_8);
-          writer.write("\nResultSpec for annotator " + this.name + ":\n");
+          writer.write("\nResultSpec for annotator " + name + ":\n");
           TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
           // sort by name to ensure consistent output for testing purposes
           Arrays.sort(tofs, new Comparator<TypeOrFeature>() {

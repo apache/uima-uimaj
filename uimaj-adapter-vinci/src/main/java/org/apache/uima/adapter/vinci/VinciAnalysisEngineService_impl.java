@@ -210,7 +210,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       // cas.getAnnotationIndex().size());
       int totalAnnots = 0;
       SofaFS sofa;
-      FSIterator sItr = cas.getSofaIterator();
+      FSIterator<SofaFS> sItr = cas.getSofaIterator();
       while (sItr.isValid()) {
         sofa = (SofaFS) sItr.get();
         totalAnnots += cas.getView(sofa).getAnnotationIndex().size();
@@ -246,7 +246,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       String op = ct.getCommand();
       if (Constants.GETMETA.equals(op)) {
         ct.cleanup();
-        return this.getMetaData();
+        return getMetaData();
       } else if (Constants.PROCESS_CAS.equals(op) || Constants.ANNOTATE.equals(op)) {
         return analyze(ct);
       } else if (Constants.BATCH_PROCESS_COMPLETE.equals(op)) {

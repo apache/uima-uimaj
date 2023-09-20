@@ -203,21 +203,21 @@ public class XCASDeserializer {
     private int fsId;
 
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
-      this.cas = aCAS.getBaseCAS();
+      cas = aCAS.getBaseCAS();
       // Reset the CAS.
       cas.resetNoQuestions();
-      this.fsTree = new RedBlackTree<>();
-      this.idLess = new ArrayList<>();
-      this.buffer = new StringBuffer();
-      this.outOfTypeSystemData = ootsData;
-      this.indexRepositories = new ArrayList<>();
-      this.views = new ArrayList<>();
+      fsTree = new RedBlackTree<>();
+      idLess = new ArrayList<>();
+      buffer = new StringBuffer();
+      outOfTypeSystemData = ootsData;
+      indexRepositories = new ArrayList<>();
+      views = new ArrayList<>();
       // using the baseCas for indexing Sofas
-      indexRepositories.add(this.cas.getBaseIndexRepository());
+      indexRepositories.add(cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
-      indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
-      this.sofaRefMap = new IntVector();
-      this.indexMap = new IntVector();
+      indexRepositories.add(cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
+      sofaRefMap = new IntVector();
+      indexMap = new IntVector();
       // add entry for baseCAS ... point non-compliant annotations at first Sofa
       sofaRefMap.add(1);
       // add entry for baseCAS ... _indexed=0 stays in 0
@@ -226,7 +226,7 @@ public class XCASDeserializer {
 
     private final void resetBuffer() {
       // this.buffer.delete(0, this.buffer.length());
-      this.buffer = new StringBuffer();
+      buffer = new StringBuffer();
     }
 
     /*
@@ -237,7 +237,7 @@ public class XCASDeserializer {
     @Override
     public void startDocument() throws SAXException {
       // Do setup work in the constructor.
-      this.state = DOC_STATE;
+      state = DOC_STATE;
       // System.out.println("Starting to read document.");
       // time = System.currentTimeMillis();
     }
@@ -263,11 +263,11 @@ public class XCASDeserializer {
           if (!qualifiedName.equals(XCASSerializer.casTagName)) {
             throw createException(XCASParsingException.WRONG_ROOT_TAG, qualifiedName);
           }
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case FS_STATE: {
-          this.currentContentFeat = DEFAULT_CONTENT_FEATURE;
+          currentContentFeat = DEFAULT_CONTENT_FEATURE;
           if (qualifiedName.equals(getDocumentTypeName())) {
             readDocument(attrs);
           } else {
@@ -288,7 +288,7 @@ public class XCASDeserializer {
 
     // Get ready to read document text.
     private void readDocument(Attributes attrs) {
-      this.state = DOC_TEXT_STATE;
+      state = DOC_TEXT_STATE;
     }
 
     // Get ready to read array element.
@@ -299,7 +299,7 @@ public class XCASDeserializer {
       if (attrs.getLength() > 0) {
         throw createException(XCASParsingException.ARRAY_ELE_ATTRS);
       }
-      this.state = ARRAY_ELE_CONTENT_STATE;
+      state = ARRAY_ELE_CONTENT_STATE;
       // resetBuffer();
     }
 
@@ -316,7 +316,7 @@ public class XCASDeserializer {
       TypeImpl type = ts.getType(typeName);
 
       if (type == null) {
-        if (this.outOfTypeSystemData == null) {
+        if (outOfTypeSystemData == null) {
           throw createException(XCASParsingException.UNKNOWN_TYPE, typeName);
         } else {
           // add this FS to out-of-typesystem data - this also sets the
@@ -371,30 +371,30 @@ public class XCASDeserializer {
         // Two scenarios ... the initial view is the first sofa, or not.
         // If not, the _indexed values need to be remapped to leave room for the initial view,
         // which may or may not be in the received CAS.
-        if (this.indexMap.size() == 1) {
+        if (indexMap.size() == 1) {
           if (isInitialView) {
             // the first Sofa an initial view
             if (extSofaNum == 2) {
               // this sofa was mapped to the initial view
-              this.indexMap.add(-1); // for this CAS, there should not be a sofanum = 1
-              this.indexMap.add(1); // map 2 to 1
-              this.nextIndex = 2;
+              indexMap.add(-1); // for this CAS, there should not be a sofanum = 1
+              indexMap.add(1); // map 2 to 1
+              nextIndex = 2;
             } else {
-              this.indexMap.add(1);
-              this.nextIndex = 2;
+              indexMap.add(1);
+              nextIndex = 2;
             }
           } else {
             if (extSofaNum > 1) {
               // the first Sofa not initial, but sofaNum > 1
               // must be a v2 format, and sofaNum better be 2
-              this.indexMap.add(1);
+              indexMap.add(1);
               assert (extSofaNum == 2);
-              this.indexMap.add(2);
-              this.nextIndex = 3;
+              indexMap.add(2);
+              nextIndex = 3;
             } else {
               // must be v1 format
-              this.indexMap.add(2);
-              this.nextIndex = 3;
+              indexMap.add(2);
+              nextIndex = 3;
             }
           }
         } else {
@@ -403,35 +403,35 @@ public class XCASDeserializer {
           if (isInitialView) {
             // the initial view is not the first
             // if v2 format, space already reserved in mapping
-            if (this.indexMap.size() == extSofaNum) {
+            if (indexMap.size() == extSofaNum) {
               // v1 format, add mapping for initial view
-              this.indexMap.add(1);
+              indexMap.add(1);
             }
           } else {
-            this.indexMap.add(this.nextIndex);
-            this.nextIndex++;
+            indexMap.add(nextIndex);
+            nextIndex++;
           }
 
         }
 
         // Now update the mapping from annotation int to ref values
-        if (this.sofaRefMap.size() == extSofaNum) {
+        if (sofaRefMap.size() == extSofaNum) {
           // Sofa received in sofaNum order, add new one
-          this.sofaRefMap.add(fsId);
-        } else if (this.sofaRefMap.size() > extSofaNum) {
+          sofaRefMap.add(fsId);
+        } else if (sofaRefMap.size() > extSofaNum) {
           // new Sofa has lower sofaNum than last one
-          this.sofaRefMap.set(extSofaNum, fsId);
+          sofaRefMap.set(extSofaNum, fsId);
         } else {
           // new Sofa has skipped ahead more than 1
-          this.sofaRefMap.setSize(extSofaNum + 1);
-          this.sofaRefMap.set(extSofaNum, fsId);
+          sofaRefMap.setSize(extSofaNum + 1);
+          sofaRefMap.set(extSofaNum, fsId);
         }
 
         // get the sofa's mimeType
         String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
         String finalSofaId = sofaID;
         fs = maybeCreateWithV2Id(fsId,
-                () -> cas.createSofa(this.indexMap.get(extSofaNum), finalSofaId, sofaMimeType));
+                () -> cas.createSofa(indexMap.get(extSofaNum), finalSofaId, sofaMimeType));
       } else { // not a Sofa
         if (type.isAnnotationBaseType()) {
 
@@ -443,9 +443,9 @@ public class XCASDeserializer {
           String extSofaNum = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFA);
           CAS casView;
           if (extSofaNum != null) {
-            casView = cas.getView((this.indexMap.size() == 1) ? 1 // case of no Sofa, but view ref =
+            casView = cas.getView((indexMap.size() == 1) ? 1 // case of no Sofa, but view ref =
                                                                   // 1 = _InitialView
-                    : this.indexMap.get(Integer.parseInt(extSofaNum)));
+                    : indexMap.get(Integer.parseInt(extSofaNum)));
           } else {
             String extSofaRefString = attrs
                     .getValue(XCASSerializer.REF_PREFIX + CAS.FEATURE_BASE_NAME_SOFA);
@@ -475,7 +475,7 @@ public class XCASDeserializer {
       }
 
       // Hang on to FS for setting content feature (things coded as child xml elements)
-      this.currentFs = fs;
+      currentFs = fs;
       int extId = -1;
       IntVector indexRep = new IntVector(1); // empty means not indexed
 
@@ -498,7 +498,7 @@ public class XCASDeserializer {
               throw createException(XCASParsingException.ILLEGAL_ID, attrValue);
             }
           } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME)) {
-            this.currentContentFeat = attrValue;
+            currentContentFeat = attrValue;
             // this.state = CONTENT_STATE; APL-6/28/04 - removed, see below
           } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME)) {
             // if (attrValue.equals(XCASSerializer.TRUE_VALUE) && toIndex)
@@ -556,7 +556,7 @@ public class XCASDeserializer {
       // would
       // be assigned to the "value" feature, as per XCAS spec. FEAT_STATE did not really seem to be
       // working, anyway.
-      this.state = CONTENT_STATE;
+      state = CONTENT_STATE;
       // if (this.state != CONTENT_STATE)
       // {
       // this.state = FEAT_STATE;
@@ -608,10 +608,10 @@ public class XCASDeserializer {
         idLess.add(fsInfo);
       }
       // Hang on to those for setting array values.
-      this.currentFs = fs;
-      this.arrayPos = 0;
+      currentFs = fs;
+      arrayPos = 0;
 
-      this.state = ARRAY_ELE_STATE;
+      state = ARRAY_ELE_STATE;
     }
 
     // The definition of a null value. Any other value must be in the expected
@@ -635,7 +635,7 @@ public class XCASDeserializer {
 
       // handle v1.x format annotations, mapping int to ref values
       final String featVal = (featName.equals("sofa") && ((TypeImpl) type).isAnnotationBaseType())
-              ? Integer.toString(this.sofaRefMap
+              ? Integer.toString(sofaRefMap
                       .get(((Sofa) fsTree.get(Integer.parseInt(featValIn)).fs).getSofaNum()))
               : featValIn;
 
@@ -693,7 +693,7 @@ public class XCASDeserializer {
      */
     @Override
     public void characters(char[] chars, int start, int length) throws SAXException {
-      switch (this.state) {
+      switch (state) {
         case DOC_TEXT_STATE:
         case CONTENT_STATE:
         case OOTS_CONTENT_STATE:
@@ -724,17 +724,17 @@ public class XCASDeserializer {
     @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
             throws SAXException {
-      switch (this.state) {
+      switch (state) {
         case DOC_STATE: {
           // Do nothing.
           break;
         }
         case FS_STATE: {
-          this.state = DOC_STATE;
+          state = DOC_STATE;
           break;
         }
         case FEAT_STATE: {
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case CONTENT_STATE: {
@@ -746,23 +746,23 @@ public class XCASDeserializer {
               // Not sure why we are calling handleFeature for WF content
             }
           }
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case FEAT_CONTENT_STATE: {
           // Create a feature value from an element.
           handleFeature(currentFs, qualifiedName, buffer.toString(), false);
-          this.state = FEAT_STATE;
+          state = FEAT_STATE;
           break;
         }
         case ARRAY_ELE_CONTENT_STATE: {
           // Create an array value.
           addArrayElement(buffer.toString());
-          this.state = ARRAY_ELE_STATE;
+          state = ARRAY_ELE_STATE;
           break;
         }
         case ARRAY_ELE_STATE: {
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case DOC_TEXT_STATE: {
@@ -776,13 +776,13 @@ public class XCASDeserializer {
 
           // and assume the new Sofa is at location 1!
           int id = 1;
-          this.sofaRefMap.add(id);
+          sofaRefMap.add(id);
 
           // and register the id for this Sofa
           FSInfo fsInfo = new FSInfo(newSofa, new IntVector());
           fsTree.put(id, fsInfo);
 
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case OOTS_CONTENT_STATE: {
@@ -791,11 +791,11 @@ public class XCASDeserializer {
             // Set the value of the content feature.
             currentOotsFs.featVals.put(currentContentFeat, buffer.toString());
           }
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
         case OOTS_FEAT_STATE: {
-          this.state = FS_STATE;
+          state = FS_STATE;
           break;
         }
       }
@@ -1112,7 +1112,7 @@ public class XCASDeserializer {
     @Override
     public void setDocumentLocator(Locator loc) {
       // System.out.println("Setting document locator.");
-      this.locator = loc;
+      locator = loc;
     }
 
     /*
@@ -1131,7 +1131,7 @@ public class XCASDeserializer {
      */
     private void addToOutOfTypeSystemData(String typeName, Attributes attrs)
             throws XCASParsingException {
-      if (this.outOfTypeSystemData != null) {
+      if (outOfTypeSystemData != null) {
         FSData fsData = new FSData();
         fsData.type = typeName;
         fsData.indexRep = null; // not indexed
@@ -1143,7 +1143,7 @@ public class XCASDeserializer {
             if (attrName.equals(XCASSerializer.ID_ATTR_NAME)) {
               fsData.id = attrValue;
             } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME)) {
-              this.currentContentFeat = attrValue;
+              currentContentFeat = attrValue;
             } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME)) {
               fsData.indexRep = attrValue;
             } else {
@@ -1153,11 +1153,11 @@ public class XCASDeserializer {
             fsData.featVals.put(attrName, attrValue);
           }
         }
-        this.outOfTypeSystemData.fsList.add(fsData);
-        this.currentOotsFs = fsData;
+        outOfTypeSystemData.fsList.add(fsData);
+        currentOotsFs = fsData;
         // Set the state; we're ready to accept the "content" feature,
         // if one is specified
-        this.state = OOTS_CONTENT_STATE;
+        state = OOTS_CONTENT_STATE;
       }
     }
 

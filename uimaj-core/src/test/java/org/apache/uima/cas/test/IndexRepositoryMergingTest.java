@@ -64,17 +64,17 @@ public class IndexRepositoryMergingTest {
   public void setUp() throws Exception {
     cas = (CASImpl) CASFactory.createCAS();
 
-    TypeSystemImpl ts = this.typeSystem = cas.getTypeSystemImpl();
+    TypeSystemImpl ts = typeSystem = cas.getTypeSystemImpl();
     annotSubtype = ts.addType("annotSubtype", ts.annotType);
     ts.addFeature("x", annotSubtype, ts.intType);
     cas.commitTypeSystem(); // also creates the initial indexrepository
     // handle type system reuse
-    ts = this.typeSystem = cas.getTypeSystemImpl();
+    ts = typeSystem = cas.getTypeSystemImpl();
     annotSubtype = ts.getType("annotSubtype");
 
     cas.initCASIndexes(); // requires committed type system
 
-    ir = (FSIndexRepositoryImpl) this.cas.getIndexRepositoryMgr();
+    ir = (FSIndexRepositoryImpl) cas.getIndexRepositoryMgr();
     FSIndexComparator comp = ir.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);

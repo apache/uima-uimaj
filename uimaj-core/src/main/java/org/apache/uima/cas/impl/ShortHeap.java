@@ -38,17 +38,17 @@ final class ShortHeap extends CommonAuxHeap {
 
   @Override
   void initMemory() {
-    this.heap = new short[this.heapBaseSize];
+    heap = new short[heapBaseSize];
   }
 
   @Override
   void initMemory(int size) {
-    this.heap = new short[size];
+    heap = new short[size];
   }
 
   @Override
   int getCapacity() {
-    return this.heap.length;
+    return heap.length;
   }
 
   @Override
@@ -64,12 +64,12 @@ final class ShortHeap extends CommonAuxHeap {
 
   @Override
   void resetToZeros() {
-    Arrays.fill(this.heap, 0, this.heapPos, (short) NULL);
+    Arrays.fill(heap, 0, heapPos, (short) NULL);
   }
 
   // Getters
   short getHeapValue(int offset) {
-    return this.heap[offset];
+    return heap[offset];
   }
 
   // setters
@@ -95,7 +95,7 @@ final class ShortHeap extends CommonAuxHeap {
       heap = new short[argLength];
 
     System.arraycopy(shortHeap, 0, heap, 0, argLength);
-    this.heapPos = argLength;
+    heapPos = argLength;
   }
 
   public short[] toArray() {

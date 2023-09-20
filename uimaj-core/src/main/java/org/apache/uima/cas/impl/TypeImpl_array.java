@@ -35,8 +35,8 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype,
           SlotKind componentSlotKind, boolean isHeapStoredArray, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
-    this.isInheritanceFinal = true;
-    this.isFeatureFinal = true;
+    isInheritanceFinal = true;
+    isFeatureFinal = true;
     this.componentType = componentType;
     this.isHeapStoredArray = isHeapStoredArray;
     this.componentSlotKind = componentSlotKind;

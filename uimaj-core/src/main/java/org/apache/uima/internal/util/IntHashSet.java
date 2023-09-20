@@ -108,7 +108,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     super(initialSizeBeforeExpanding);
     isMake4 = offset == Integer.MIN_VALUE;
     this.offset = isMake4 ? 0 : offset;
-    newTable(this.initialCapacity);
+    newTable(initialCapacity);
     resetTable();
     if (IS_TRACE_MODE_SWITCH) {
       System.out.println("TRACE_MODE new IntHashSet, sizeBeforeExpanding = "
@@ -818,7 +818,7 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     private int curPosition;
 
     private IntHashSetIterator() {
-      this.curPosition = 0;
+      curPosition = 0;
     }
 
     @Override

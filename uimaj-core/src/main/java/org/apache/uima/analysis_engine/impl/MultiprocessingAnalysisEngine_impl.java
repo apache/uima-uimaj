@@ -118,7 +118,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase
     mPool = new AnalysisEnginePool("", poolSize, aSpecifier, aAdditionalParams);
 
     // update metadata from pool (this gets the merged type system for aggregates)
-    this.setMetaData(mPool.getMetaData());
+    setMetaData(mPool.getMetaData());
     return true;
   }
 

@@ -95,17 +95,17 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      */
     private TotalTypeOrder(int[] typeList, TypeSystem ts, boolean isEmpty) {
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
-      this.order = typeList;
-      final int sz = this.order.length + tsi.getSmallestType();
+      order = typeList;
+      final int sz = order.length + tsi.getSmallestType();
       if (sz > 32767) {
         /** Total number of UIMA types, {0}, exceeds the maximum of 32766. **/
         throw new CASAdminException(CASAdminException.TOO_MANY_TYPES, sz - 1);
       }
-      this.typeCodeToOrder = new short[this.order.length + tsi.getSmallestType()];
-      for (int i = 0; i < this.order.length; i++) {
-        this.typeCodeToOrder[this.order[i]] = (short) i;
+      typeCodeToOrder = new short[order.length + tsi.getSmallestType()];
+      for (int i = 0; i < order.length; i++) {
+        typeCodeToOrder[order[i]] = (short) i;
       }
-      this.isEmptyTypeOrder = isEmpty;
+      isEmptyTypeOrder = isEmpty;
     }
 
     /*
@@ -120,7 +120,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       TypeImpl t2 = ((FeatureStructureImplC) fs2)._getTypeImpl();
       if (t1 == t2)
         return 0;
-      return Short.compare(this.typeCodeToOrder[t1.getCode()], this.typeCodeToOrder[t2.getCode()]);
+      return Short.compare(typeCodeToOrder[t1.getCode()], typeCodeToOrder[t2.getCode()]);
     }
 
     // Look-up.
@@ -133,13 +133,13 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public boolean lessThan(int t1, int t2) {
-      return this.typeCodeToOrder[t1] < this.typeCodeToOrder[t2];
+      return typeCodeToOrder[t1] < typeCodeToOrder[t2];
       // return this.lt[t1].get(t2);
     }
 
     @Override
     public int[] getOrder() {
-      return this.order;
+      return order;
     }
 
     @Override
@@ -156,10 +156,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       TotalTypeOrder other = (TotalTypeOrder) obj;
@@ -186,7 +183,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private void removeAncestor(Node node) {
-      this.predecessors.remove(node);
+      predecessors.remove(node);
     }
 
     private int outRank() {
@@ -198,21 +195,21 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private ArrayList<GraphNode> getAllPredecessors() {
-      return this.predecessors;
+      return predecessors;
     }
 
     private ArrayList<GraphNode> getAllSuccessors() {
-      return this.successors;
+      return successors;
     }
 
     private void removeSuccessor(int i) {
-      this.successors.remove(i);
+      successors.remove(i);
     }
 
     private void addAllPredecessors(ArrayList<? extends GraphNode> pred) {
       for (Iterator<? extends GraphNode> it = pred.iterator(); it.hasNext();) {
         Node n = (Node) it.next();
-        if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(this, n)) {
+        if (!order.pathFromTo(this, n)) {
           n.connect(this);
         }
         // else {
@@ -226,7 +223,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     private void addAllSuccessors(ArrayList<? extends GraphNode> successors1) {
       for (Iterator<? extends GraphNode> it = successors1.iterator(); it.hasNext();) {
         Node n = (Node) it.next();
-        if (!LinearTypeOrderBuilderImpl.this.order.pathFromTo(n, this)) {
+        if (!order.pathFromTo(n, this)) {
           connect(n);
         }
         // else {
@@ -244,21 +241,21 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     private final Map<String, Node> nodeMap = new HashMap<>();
 
     private int size() {
-      return this.nodeMap.size();
+      return nodeMap.size();
     }
 
     private Node getNode(String name) {
-      Node node = this.nodeMap.get(name);
+      Node node = nodeMap.get(name);
       if (node == null) {
         node = new Node(name);
-        this.nodeMap.put(name, node);
+        nodeMap.put(name, node);
       }
       return node;
     }
 
     private Graph copy(Node inRank0nodes) {
       Graph copy = new Graph();
-      Iterator<Map.Entry<String, Node>> it = this.nodeMap.entrySet().iterator();
+      Iterator<Map.Entry<String, Node>> it = nodeMap.entrySet().iterator();
       Map.Entry<String, Node> entry;
       String key;
       // Copy the nodes.
@@ -269,7 +266,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
                                                   // node
       }
       // Set pred's and succ's for nodes.
-      it = this.nodeMap.entrySet().iterator();
+      it = nodeMap.entrySet().iterator();
       Node origNode, copyNode;
       while (it.hasNext()) {
         entry = it.next();
@@ -302,7 +299,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       // if (node == null) {
       // return ;
       // }
-      this.nodeMap.remove(node.getElement());
+      nodeMap.remove(node.getElement());
       final int max = node.outRank();
       for (int i = 0; i < max; i++) {
         Node n = (Node) node.getSuccessor(i);
@@ -342,7 +339,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   private TypeSystem ts;
 
   public LinearTypeOrderBuilderImpl(TypeSystem ts) {
-    this.order = new Graph();
+    order = new Graph();
     this.ts = ts;
   }
 
@@ -373,12 +370,12 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   }
 
   private boolean add(String s1, String s2) {
-    final Node n1 = this.order.getNode(s1);
-    final Node n2 = this.order.getNode(s2);
-    if (this.order.pathFromTo(n1, n2)) {
+    final Node n1 = order.getNode(s1);
+    final Node n2 = order.getNode(s2);
+    if (order.pathFromTo(n1, n2)) {
       return true;
     }
-    if (this.order.pathFromTo(n2, n1)) {
+    if (order.pathFromTo(n2, n1)) {
       return false;
     }
     n1.connect(n2);
@@ -388,7 +385,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   private void addInheritanceTypes() {
     List<Type> typesToModify = new ArrayList<>();
 
-    for (Iterator<Type> tsi = this.ts.getTypeIterator(); tsi.hasNext();) {
+    for (Iterator<Type> tsi = ts.getTypeIterator(); tsi.hasNext();) {
       Type bottomType = tsi.next();
 
       Type type = bottomType;
@@ -398,28 +395,25 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
       while (true) {
         String typeName = type.getName();
-        final Node n = this.order.getNode(typeName);
+        final Node n = order.getNode(typeName);
         if ((nIn == null) && (n.inRank() != 0)) {
           nIn = n;
         }
         if ((nOut == null) && (n.outRank() != 0)) {
           nOut = n;
         }
-        if ((nIn != null) && (nOut != null)) {
-          break;
-        }
-        if (typeName.equals(CAS.TYPE_NAME_TOP)) {
+        if (((nIn != null) && (nOut != null)) || typeName.equals(CAS.TYPE_NAME_TOP)) {
           break;
         }
         typesToModify.add(type);
-        type = this.ts.getParent(type);
+        type = ts.getParent(type);
       }
       boolean doIn = true;
       boolean doOut = true;
       for (Iterator<Type> ni = typesToModify.iterator(); ni.hasNext();) {
         type = ni.next();
         String typeName = type.getName();
-        final Node n = this.order.getNode(typeName);
+        final Node n = order.getNode(typeName);
         if (doIn && (nIn != null)) {
           if (n.inRank() == 0) {
             n.addAllPredecessors(nIn.getAllPredecessors());
@@ -444,7 +438,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     int origOrderSize = order.size();
     addInheritanceTypes();
     Node inRank0Nodes = new Node("");
-    Graph g = this.order.copy(inRank0Nodes);
+    Graph g = order.copy(inRank0Nodes);
 
     String[] totalOrder = new String[g.size()];
     // String s;
@@ -462,7 +456,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // for (int i = 0; i < totalOrder.length; i++) {
     // System.out.println(" " + totalOrder[i]);
     // }
-    return new TotalTypeOrder(totalOrder, this.ts, origOrderSize == 0);
+    return new TotalTypeOrder(totalOrder, ts, origOrderSize == 0);
   }
 
 }

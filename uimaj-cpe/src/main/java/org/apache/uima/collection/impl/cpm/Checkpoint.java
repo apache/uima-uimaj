@@ -19,37 +19,48 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+import static java.io.ObjectInputFilter.allowFilter;
+import static java.io.ObjectInputFilter.rejectUndecidedClass;
+import static java.io.ObjectInputFilter.Status.UNDECIDED;
+import static org.apache.uima.util.Level.FINEST;
+import static org.apache.uima.util.Level.INFO;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.base_cpm.SynchPoint;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
+import org.apache.uima.util.impl.ProcessTrace_impl;
 
 /**
- * Runing in a seperate thread creates a checkpoint file at predefined intervals.
- * 
+ * Running in a separate thread creates a checkpoint file at predefined intervals.
  */
 public class Checkpoint implements Runnable {
 
+  static final String PROP_CPE_CHECKPOINT_SERIAL_FILTER = "uima.cpe.checkpoint.serial_filter";
+
   /** The file name. */
-  private String fileName = null;
+  private final String fileName;
 
   /** The stop. */
-  private volatile boolean stop = false; // volatile may be buggy in some JVMs apparently
-                                         // consider changing to use synch
+  // volatile may be buggy in some JVMs apparently
+  // consider changing to use synch
+  private volatile boolean stop = false;
 
   /** The checkpoint frequency. */
-  private long checkpointFrequency = 3000;
+  private final long checkpointFrequency;
 
   /**
    * The pause.
@@ -63,10 +74,10 @@ public class Checkpoint implements Runnable {
 
   /** The cpm. */
   // private boolean isRunning = false;
-  private BaseCPMImpl cpm = null;
+  private final BaseCPMImpl cpm;
 
   /** The synch point file name. */
-  private String synchPointFileName = null;
+  private final String synchPointFileName;
 
   /**
    * Initialize the checkpoint with a reference to controlling cpe, the file where the checkpoint is
@@ -84,6 +95,8 @@ public class Checkpoint implements Runnable {
     int fExtPos = fileName.indexOf('.');
     if (fExtPos > -1) {
       synchPointFileName = fileName.substring(0, fExtPos) + "_synchPoint.xml";
+    } else {
+      synchPointFileName = null;
     }
     cpm = aCpm;
     checkpointFrequency = aCheckpointFrequency;
@@ -95,11 +108,10 @@ public class Checkpoint implements Runnable {
   public void stop() {
     stop = true;
     // isRunning = false;
-    if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_checkpoint_thread__INFO",
+    if (UIMAFramework.getLogger().isInfoEnabled()) {
+      UIMAFramework.getLogger(this.getClass()).logrb(INFO, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_checkpoint_thread__INFO",
               new Object[] { Thread.currentThread().getName() });
-
     }
   }
 
@@ -120,22 +132,22 @@ public class Checkpoint implements Runnable {
           }
         }
       }
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
+      if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(), "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
       doCheckpoint();
 
       try {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+        if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
         Thread.sleep(checkpointFrequency);
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+        if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wakeup__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
@@ -184,9 +196,9 @@ public class Checkpoint implements Runnable {
    */
   public void doCheckpoint() {
     try {
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
+      if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(), "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
       // 02/08/05 Checkpoint has been broken up into two files. One containing the
@@ -207,17 +219,17 @@ public class Checkpoint implements Runnable {
         CheckpointData targetToSave = null;
         if (pTrace != null) {
           if (synchPoint != null) {
-            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+              UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(),
+                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
                       new Object[] { Thread.currentThread().getName() });
             }
             targetToSave = new CheckpointData(pTrace, synchPoint);
           } else {
-            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+            if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+              UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(),
+                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_checkpoint_with_pt__FINEST",
                       new Object[] { Thread.currentThread().getName() });
             }
@@ -234,16 +246,14 @@ public class Checkpoint implements Runnable {
           }
         }
       } catch (Exception e) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_exception_when_checkpointing__FINEST",
+        UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(), "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception_when_checkpointing__FINEST",
                 new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
 
     } catch (Exception e) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_exception_when_checkpointing__FINEST",
+      UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(), "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception_when_checkpointing__FINEST",
               new Object[] { Thread.currentThread().getName(), e.getMessage() });
     }
   }
@@ -267,18 +277,18 @@ public class Checkpoint implements Runnable {
    *          the pr T
    */
   public static void printStats(ProcessTrace prT) {
-    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
+    if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+      UIMAFramework.getLogger(Checkpoint.class).log(FINEST,
               "\n\t\t\t----------------------------------------");
-      UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, "\t\t\t\t PERFORMANCE REPORT ");
-      UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
+      UIMAFramework.getLogger(Checkpoint.class).log(FINEST, "\t\t\t\t PERFORMANCE REPORT ");
+      UIMAFramework.getLogger(Checkpoint.class).log(FINEST,
               "\t\t\t----------------------------------------\n");
     }
     // get the list of events from the processTrace
-    List eveList = prT.getEvents();
+    List<ProcessTraceEvent> eveList = prT.getEvents();
     printEveList(eveList, 0);
-    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
+    if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+      UIMAFramework.getLogger(Checkpoint.class).log(FINEST,
               "_________________________________________________________________\n");
     }
   }
@@ -291,12 +301,12 @@ public class Checkpoint implements Runnable {
    * @param tCnt
    *          depth of this List in the Process Trace hierarchy
    */
-  public static void printEveList(List lst, int tCnt) {
+  public static void printEveList(List<ProcessTraceEvent> lst, int tCnt) {
     String compNameS;
     String typeS;
     int dur;
     int totDur;
-    List subEveList;
+    List<ProcessTraceEvent> subEveList;
     String tabS = "";
     int tabCnt = tCnt;
     for (int j = 0; j < tabCnt; j++) {
@@ -309,17 +319,17 @@ public class Checkpoint implements Runnable {
       dur = prEvent.getDurationExcludingSubEvents();
       totDur = prEvent.getDuration();
       subEveList = prEvent.getSubEvents();
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, tabS + "COMPONENT : "
-                + compNameS + "\tTYPE : " + typeS + "\tDescription : " + prEvent.getDescription());
-        UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
+      if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+        UIMAFramework.getLogger(Checkpoint.class).log(FINEST, tabS + "COMPONENT : " + compNameS
+                + "\tTYPE : " + typeS + "\tDescription : " + prEvent.getDescription());
+        UIMAFramework.getLogger(Checkpoint.class).log(FINEST,
                 tabS + "TOTAL_TIME : " + totDur + "\tTIME_EXCLUDING_SUBEVENTS : " + dur);
       }
       if (subEveList != null) {
         printEveList(subEveList, (tabCnt + 1));
       }
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, " ");
+      if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+        UIMAFramework.getLogger(Checkpoint.class).log(FINEST, " ");
       }
     }
   }
@@ -340,13 +350,11 @@ public class Checkpoint implements Runnable {
   /**
    * Retrieves the checkpoint from the filesystem.
    * 
-   * @return - desirialized object containing recovery information.
+   * @return deserialized object containing recovery information.
    * @throws IOException
    *           -
    */
   public synchronized Object restoreFromCheckpoint() throws IOException {
-    ObjectInputStream stream = null;
-    FileInputStream synchPointStream = null;
     try {
       File file = new File(fileName);
       Object anObject = null;
@@ -355,18 +363,14 @@ public class Checkpoint implements Runnable {
       // part of the checkpoint, namely the SynchPoint. This data needed to be exposed as text to
       // a human administrator to manually change it. Requirement from the WF project.
       if (file.exists()) {
-
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_restoring_from_checkpoint__FINEST",
+        if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+          UIMAFramework.getLogger(getClass()).logrb(FINEST, this.getClass().getName(), "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_restoring_from_checkpoint__FINEST",
                   new Object[] { Thread.currentThread().getName() });
         }
-        FileInputStream in = new FileInputStream(file);
-        stream = new ObjectInputStream(in);
-        if (stream != null) {
-          anObject = stream.readObject();
-          if (anObject != null && anObject instanceof CheckpointData) {
+        try (var stream = new FileInputStream(file)) {
+          anObject = deserializeCheckpoint(stream);
+          if (anObject instanceof CheckpointData) {
             ProcessTrace processTrace = ((CheckpointData) anObject).getProcessTrace();
             printStats(processTrace);
           }
@@ -376,18 +380,18 @@ public class Checkpoint implements Runnable {
       // Read the synchpoint from the filesystem.
       SynchPoint synchPoint = null;
       if (file.exists()) {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+        if (UIMAFramework.getLogger().isLoggable(FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                   "UIMA_CPM_synchpoint_from_file__FINEST",
                   new Object[] { Thread.currentThread().getName(), synchPointFileName });
         }
-        synchPointStream = new FileInputStream(file);
-        if (synchPointStream != null) {
+
+        try (var synchPointStream = new FileInputStream(file)) {
           // Use the SynchPoint object retrieved above. Its internal data should be
           // overwritten during deserialization done below. Its just a convenience to
           // reuse the same object that was saved as part of a checkpoint.
-          if (anObject != null && anObject instanceof CheckpointData) {
+          if (anObject instanceof CheckpointData) {
             synchPoint = ((CheckpointData) anObject).getSynchPoint();
             if (synchPoint != null) {
               synchPoint.deserialize(synchPointStream);
@@ -400,14 +404,24 @@ public class Checkpoint implements Runnable {
     } catch (EOFException e) {
     } catch (Exception e) {
       e.printStackTrace();
-    } finally {
-      if (stream != null) {
-        stream.close();
-      }
-      if (synchPointStream != null) {
-        synchPointStream.close();
-      }
     }
     return null;
+  }
+
+  static CheckpointData deserializeCheckpoint(InputStream stream)
+          throws IOException, ClassNotFoundException {
+    var safeList = Set.of(CheckpointData.class, ProcessTrace.class, ProcessTrace_impl.class,
+            SynchPoint.class);
+
+    var filter = allowFilter(safeList::contains, UNDECIDED);
+    var ois = new ObjectInputStream(stream);
+    var serialFilterPropertyValue = System.getProperty(PROP_CPE_CHECKPOINT_SERIAL_FILTER);
+    if (serialFilterPropertyValue != null) {
+      var serialFilter = ObjectInputFilter.Config.createFilter(serialFilterPropertyValue);
+      filter = ObjectInputFilter.merge(filter, serialFilter);
+    }
+    filter = rejectUndecidedClass(filter);
+    ois.setObjectInputFilter(filter);
+    return (CheckpointData) ois.readObject();
   }
 }

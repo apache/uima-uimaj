@@ -40,7 +40,7 @@ public class TypeImpl_string extends TypeImpl_primitive { // string considered a
 
   @Override
   public boolean subsumes(TypeImpl ti) {
-    if (this.isStringSubtype()) {
+    if (isStringSubtype()) {
       return this == ti; // a string subtype only can subsume itself
     }
     return ti.isStringOrStringSubtype();

@@ -47,11 +47,11 @@ public class PerformanceTestRunner {
   private byte[] randomizedCasBytes;
 
   private PerformanceTestRunner(Builder builder) {
-    this.iterations = builder.iterations;
-    this.warmUpIterations = builder.warmUpIterations;
-    this.generator = builder.generator;
-    this.serializer = builder.serializer;
-    this.deserializer = builder.deserializer;
+    iterations = builder.iterations;
+    warmUpIterations = builder.warmUpIterations;
+    generator = builder.generator;
+    serializer = builder.serializer;
+    deserializer = builder.deserializer;
 
     try {
       TypeSystemDescription tsd = generator.generateTypeSystem();
@@ -135,12 +135,12 @@ public class PerformanceTestRunner {
     }
 
     public Builder withSerializer(FailableBiConsumer<CAS, OutputStream, Exception> aSerializer) {
-      this.serializer = aSerializer;
+      serializer = aSerializer;
       return this;
     }
 
     public Builder withDeserializer(FailableBiConsumer<InputStream, CAS, Exception> aDeserializer) {
-      this.deserializer = aDeserializer;
+      deserializer = aDeserializer;
       return this;
     }
 
@@ -150,7 +150,7 @@ public class PerformanceTestRunner {
     }
 
     public Builder withWarmUpIterations(int iterations) {
-      this.warmUpIterations = iterations;
+      warmUpIterations = iterations;
       return this;
     }
 

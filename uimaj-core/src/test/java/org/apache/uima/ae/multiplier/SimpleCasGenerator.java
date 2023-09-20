@@ -88,7 +88,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
     lastDocument = null;
     lastResultSpec = null;
 
-    this.nToGen = (Integer) aContext.getConfigParameterValue("NumberToGenerate");
+    nToGen = (Integer) aContext.getConfigParameterValue("NumberToGenerate");
     FileInputStream fis = null;
     try {
       String filename = ((String) aContext.getConfigParameterValue("InputFile")).trim();
@@ -129,8 +129,8 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
     // and value of StringParam configuration parameter.
     lastDocument = aCas.getDocumentText();
     lastResultSpec = getResultSpecification();
-    this.mCount = 0;
-    this.docCount = 0;
+    mCount = 0;
+    docCount = 0;
   }
 
   /*
@@ -140,7 +140,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
    */
   @Override
   public boolean hasNext() throws AnalysisEngineProcessException {
-    return this.mCount < this.nToGen;
+    return mCount < nToGen;
   }
 
   /*
@@ -162,8 +162,8 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
     docCount++;
     if (UIMAFramework.getLogger().isLoggable(Level.FINE))
       System.out.println("CasMult creating document#" + docCount);
-    cas.setDocumentText(this.text);
-    this.mCount++;
+    cas.setDocumentText(text);
+    mCount++;
     return cas;
   }
 

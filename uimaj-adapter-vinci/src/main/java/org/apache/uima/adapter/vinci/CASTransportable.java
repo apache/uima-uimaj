@@ -89,11 +89,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
           UimaContext uimaContext, boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
-    this.myCasPool = casPool;
-    this.myCas = null;
+    myCasPool = casPool;
+    myCas = null;
     this.outOfTypeSystemData = outOfTypeSystemData;
     this.uimaContext = uimaContext;
-    this.extraDataFrame = new VinciFrame();
+    extraDataFrame = new VinciFrame();
     this.includeDocText = includeDocText;
   }
 
@@ -113,11 +113,11 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData, UimaContext uimaContext,
           boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
-    this.myCas = cas;
-    this.myCasPool = null;
+    myCas = cas;
+    myCasPool = null;
     this.outOfTypeSystemData = outOfTypeSystemData;
     this.uimaContext = uimaContext;
-    this.extraDataFrame = new VinciFrame();
+    extraDataFrame = new VinciFrame();
     this.includeDocText = includeDocText;
   }
 
@@ -136,7 +136,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @return the out of type system data
    */
   public OutOfTypeSystemData getOutOfTypeSystemData() {
-    return this.outOfTypeSystemData;
+    return outOfTypeSystemData;
   }
 
   /**
@@ -190,7 +190,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
      */
     XTalkSerializer(OutputStream os, XCASSerializer s) {
       this.os = os;
-      this.serializer = s;
+      serializer = s;
     }
 
     /*
@@ -359,7 +359,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   public void toStream(OutputStream os) throws IOException {
     try {
       UIMAFramework.getLogger().log(Level.FINEST, "Serializing CAS.");
-      XCASSerializer xcasSerializer = new XCASSerializer(myCas.getTypeSystem(), this.uimaContext);
+      XCASSerializer xcasSerializer = new XCASSerializer(myCas.getTypeSystem(), uimaContext);
       // Not sure why we need to do the next two lines:
       xcasSerializer.setDocumentTypeName(Constants.VINCI_DETAG);
       xcasSerializer.setDocumentTextFeature(null);
@@ -442,7 +442,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         myCas = myCasPool.getCas(0);
       }
       myCas.reset();
-      XCASDeserializer deser = new XCASDeserializer(myCas.getTypeSystem(), this.uimaContext);
+      XCASDeserializer deser = new XCASDeserializer(myCas.getTypeSystem(), uimaContext);
       deser.setDocumentTypeName("Detag:DetagContent");
       if (!ignoreResponse) {
         handler = deser.getXCASHandler(myCas, outOfTypeSystemData);
@@ -506,7 +506,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    */
   @Override
   public void startDocument() throws SAXException {
-    this.ready = 0;
+    ready = 0;
   }
 
   /*

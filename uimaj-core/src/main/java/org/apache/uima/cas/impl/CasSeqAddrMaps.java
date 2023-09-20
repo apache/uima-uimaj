@@ -72,15 +72,15 @@ public class CasSeqAddrMaps {
   public CasSeqAddrMaps() {
     // this call makes the first real seq number == 1.
     // seq 0 refers to the NULL fs value.
-    this.tgtId2SrcFs = new ArrayList<>();
-    this.srcId2TgtId = new Int2IntRBT();
+    tgtId2SrcFs = new ArrayList<>();
+    srcId2TgtId = new Int2IntRBT();
     addItemId(null, 0, true);
   }
 
   // copy constructor
   public CasSeqAddrMaps(List<TOP> tgtSeq2SrcFs, Int2IntRBT srcAddr2TgtSeq) {
-    this.tgtId2SrcFs = tgtSeq2SrcFs;
-    this.srcId2TgtId = srcAddr2TgtSeq;
+    tgtId2SrcFs = tgtSeq2SrcFs;
+    srcId2TgtId = srcAddr2TgtSeq;
   }
 
   /**

@@ -52,15 +52,15 @@ public class IntegerArrayListTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    this.cas = CASInitializer.initCas(new CASTestSetup(), null
+    cas = CASInitializer.initCas(new CASTestSetup(), null
     // (tsm -> {
     // Type fsat = tsm.addType("org.apache.uima.jcas.cas.FSArrayList", tsm.getTopType());
     // tsm.addFeature("fsArray", fsat, tsm.getType("uima.cas.FSArray"));
     // }
     // )
     );
-    this.ts = this.cas.getTypeSystem();
-    this.jcas = cas.getJCas();
+    ts = cas.getTypeSystem();
+    jcas = cas.getJCas();
   }
 
   @Test

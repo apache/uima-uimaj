@@ -42,7 +42,7 @@ public class TypeNameSpaceImpl implements TypeNameSpace {
    */
   @Override
   public Type getType(String typeName) {
-    return this.ts.getType(this.name + TypeSystem.NAMESPACE_SEPARATOR + typeName);
+    return ts.getType(name + TypeSystem.NAMESPACE_SEPARATOR + typeName);
   }
 
 }

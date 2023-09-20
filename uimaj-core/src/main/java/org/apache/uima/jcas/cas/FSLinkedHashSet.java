@@ -61,7 +61,6 @@ public class FSLinkedHashSet <T extends TOP> extends FSHashSet<T> {
   /** Never called.  Disable default constructor
    * @generated */
   protected FSLinkedHashSet() {
-    super();
   }
     
   /** Internal - constructor used by generator 

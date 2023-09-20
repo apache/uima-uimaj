@@ -236,7 +236,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   public BinaryCasSerDes4(TypeSystemImpl ts, boolean doMeasurements) {
     this.ts = ts;
     this.doMeasurements = doMeasurements;
-    this.fsArrayType = ts.fsArrayType;
+    fsArrayType = ts.fsArrayType;
   }
 
   /**
@@ -416,9 +416,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private Serializer(CASImpl cas, DataOutputStream serializedOut, MarkerImpl mark,
             SerializationMeasures sm, CompressLevel compressLevel, CompressStrat compressStrategy,
             boolean isTsi) {
-      this.baseCas = cas.getBaseCAS();
-      this.bcsd = cas.getBinaryCasSerDes();
-      this.isDelta = (mark != null);
+      baseCas = cas.getBaseCAS();
+      bcsd = cas.getBinaryCasSerDes();
+      isDelta = (mark != null);
       // this.csds = getCsds(baseCas, isDelta);
       // this.ccs = new CommonCompressedSerialization(
       // new CommonSerDesTypeMap(cas.getTypeSystemImpl(), cas.getTypeSystemImpl()), // no type
@@ -466,7 +466,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       strSeg_dos = dosZipSources[strSeg_i];
       uimaSerializableSavedToCas = new PositiveIntSet_impl(1024, 1, 1024);
 
-      this.prevFsByType = new TOP[ts.getTypeArraySize()];
+      prevFsByType = new TOP[ts.getTypeArraySize()];
       csds = getCsds(baseCas, isDelta);
       // getCsds() internally already causes _save_to_cas_data() to be called (via AllFSs), so we
       // have to add all the FSes that are returned here to the uimaSerializableSavedToCas tracking
@@ -485,8 +485,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * the source id's if some FSs were GC'd.
      * 
      * To determine for delta what new strings and new
-     *
-     * @throws IOException
      */
     private void serialize() throws IOException {
 
@@ -510,8 +508,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           CasIOUtils.writeTypeSystem(baseCas, serializedOut, true);
         }
 
-        if (TRACE_SER)
+        if (TRACE_SER) {
           System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
+        }
         /*******************************************************************************
          * Setup tables that map to v2 "addresses" - needed for backwards compatibility fs2addr -
          * feature structure to address addr2fs - address to feature structure sortedFSs - sorted by
@@ -600,13 +599,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         // heapEnd);
         // }
 
-        if (TRACE_SER)
+        if (TRACE_SER) {
           System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+        }
 
         writeVnumber(control_dos, heapEnd - heapStart); // used for delta heap size to grow the CAS
                                                         // and ending condition on deser loop
-        if (TRACE_SER)
+        if (TRACE_SER) {
           System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+        }
         Arrays.fill(prevFsByType, null);
 
         // if (heapStart == 0) {
@@ -624,13 +625,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           writeFs(fs);
         }
 
-        if (TRACE_SER)
+        if (TRACE_SER) {
           System.out.println("Form4Ser writing index info");
+        }
         serializeIndexedFeatureStructures(csds);
 
         if (isDelta) {
-          if (TRACE_SER)
+          if (TRACE_SER) {
             System.out.println("Form4Ser writing modified FSs");
+          }
           (new SerializeModifiedFSs(csds)).serializeModifiedFSs();
         }
 
@@ -644,8 +647,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
     /**
      * Write the compressed string table(s)
-     * 
-     * @throws IOException
      */
     private void writeStringInfo() throws IOException {
       String[] commonStrings = os.getCommonStrings();
@@ -718,11 +719,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       // }
     }
 
-    private void serializeIndexedFeatureStructures(final CommonSerDesSequential csds)
+    private void serializeIndexedFeatureStructures(final CommonSerDesSequential aCsds)
             throws IOException {
       // fsIndexes already have the modelled address conversion
-      int[] fsIndexes = isDelta ? bcsd.getDeltaIndexedFSs(mark, csds.fs2addr)
-              : bcsd.getIndexedFSs(csds.fs2addr);
+      int[] fsIndexes = isDelta ? bcsd.getDeltaIndexedFSs(mark, aCsds.fs2addr)
+              : bcsd.getIndexedFSs(aCsds.fs2addr);
       if (doMeasurement) {
         sm.statDetails[fsIndexes_i].original = fsIndexes.length * 4 + 1;
       }
@@ -747,15 +748,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
 
       for (int vi = 0; vi < nbrViews; vi++) {
-        fi = compressFsxPart(fsIndexes, fi, csds); // added FSs
+        fi = compressFsxPart(fsIndexes, fi, aCsds); // added FSs
         if (isDelta) {
-          fi = compressFsxPart(fsIndexes, fi, csds); // removed FSs
-          fi = compressFsxPart(fsIndexes, fi, csds); // reindexed FSs
+          fi = compressFsxPart(fsIndexes, fi, aCsds); // removed FSs
+          fi = compressFsxPart(fsIndexes, fi, aCsds); // reindexed FSs
         }
       }
     }
 
-    private int compressFsxPart(int[] fsIndexes, int fsNdxStart, final CommonSerDesSequential csds)
+    private int compressFsxPart(int[] fsIndexes, int fsNdxStart, final CommonSerDesSequential aCsds)
             throws IOException {
       int ix = fsNdxStart;
       final int nbrEntries = fsIndexes[ix++];
@@ -767,7 +768,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       final int[] ia = new int[nbrEntries];
       for (int i = ix, t = 0; i < end; i++, t++) {
-        ia[t] = fs2seq(csds.addr2fs.get(fsIndexes[i])); // convert "addr" to "seq" offset
+        ia[t] = fs2seq(aCsds.addr2fs.get(fsIndexes[i])); // convert "addr" to "seq" offset
       }
       // System.arraycopy(fsIndexes, ix, ia, 0, nbrEntries);
       Arrays.sort(ia);
@@ -798,7 +799,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       switch (arrayElementKind) {
         case Slot_HeapRef: {
           int prev = getPrevArray0HeapRef();
-          for (TOP item : ((FSArray) fs)._getTheArray()) {
+          for (TOP item : ((FSArray<?>) fs)._getTheArray()) {
             int v = fs2seq(item);
             writeDiff(arrayElementKind.ordinal(), v, prev);
             prev = v;
@@ -865,18 +866,20 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
 
     private int getPrevArray0HeapRef() {
-      if (isNoPrevArrayValue((CommonArrayFS) prevFs))
+      if (isNoPrevArrayValue((CommonArrayFS<?>) prevFs)) {
         return 0;
-      return fs2seq((TOP) ((FSArray) prevFs).get(0));
+      }
+      return fs2seq((TOP) ((FSArray<?>) prevFs).get(0));
     }
 
     private int getPrevArray0Int() {
-      if (isNoPrevArrayValue((CommonArrayFS) prevFs))
+      if (isNoPrevArrayValue((CommonArrayFS<?>) prevFs)) {
         return 0;
+      }
       return ((IntegerArray) prevFs).get(0);
     }
 
-    private boolean isNoPrevArrayValue(CommonArrayFS prevCommonArray) {
+    private boolean isNoPrevArrayValue(CommonArrayFS<?> prevCommonArray) {
       return prevCommonArray == null || prevCommonArray.size() == 0;
     }
 
@@ -932,7 +935,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
 
     private int serializeArrayLength(TOP fs) throws IOException {
-      int length = ((CommonArrayFS) fs).size();
+      int length = ((CommonArrayFS<?>) fs).size();
       writeVnumber(arrayLength_i, length);
       return length;
     }
@@ -980,9 +983,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           long startTime = System.currentTimeMillis();
           int zipBufSize = Math.max(1024, baos.size() / 100);
           deflater.reset();
-          DeflaterOutputStream cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize);
-          baos.writeTo(cds);
-          cds.close();
+          try (var cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize)) {
+            baos.writeTo(cds);
+          }
           idxAndLen.add(i);
           if (doMeasurement) {
             idxAndLen.add((int) (sm.statDetails[i].afterZip = deflater.getBytesWritten()));
@@ -1264,8 +1267,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
     /**
      * For delta, for each fsChange element, extract any strings
-     * 
-     * @param fsChange
      */
     private void extractStringsFromModifications(FsChange fsChange) {
       final TOP fs = fsChange.fs;
@@ -1466,7 +1467,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
                 break;
 
               case Slot_HeapRef:
-                int v = fs2seq((TOP) ((FSArray) fs).get(i));
+                int v = fs2seq((TOP) ((FSArray<?>) fs).get(i));
                 writeDiff(kindi, v, vPrevModHeapRef);
                 vPrevModHeapRef = v;
                 break;
@@ -1667,10 +1668,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      *           passthru
      */
     Deserializer(CASImpl cas, DataInput deserIn, boolean isDelta) throws IOException {
-      this.baseCas = cas.getBaseCAS();
-      this.ivCas = baseCas.getInitialView();
-      this.bcsd = cas.getBinaryCasSerDes();
-      this.csds = getCsds(baseCas, isDelta);
+      baseCas = cas.getBaseCAS();
+      ivCas = baseCas.getInitialView();
+      bcsd = cas.getBinaryCasSerDes();
+      csds = getCsds(baseCas, isDelta);
       this.deserIn = deserIn;
       this.isDelta = isDelta;
 
@@ -1710,8 +1711,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
 
     private void deserialize(CommonSerDes.Header h) throws IOException {
-      if (TRACE_DES)
+      if (TRACE_DES) {
         System.out.println("Form4Deser starting");
+      }
 
       // fs2seq.clear();
       seq2fs.clear();
@@ -1759,8 +1761,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       // heap = heapObj.heap;
 
       for (int[] ia : prevFsRefsByType) {
-        if (ia != null)
+        if (ia != null) {
           Arrays.fill(ia, 0);
+        }
       }
 
       if (heapStart == 0) {
@@ -1785,8 +1788,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int arraySize = 0;
       Arrays.fill(prevFsByType, null);
 
-      if (TRACE_DES)
+      if (TRACE_DES) {
         System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
+      }
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
         final int typeCode = readVnumber(typeCode_dis);
         // final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode >
@@ -1801,7 +1805,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
         if (type.isArray()) {
           currentFs = readArray(iHeap, type);
-          arraySize = ((CommonArrayFS) currentFs).size();
+          arraySize = ((CommonArrayFS<?>) currentFs).size();
         } else {
           if (!ts.annotBaseType.subsumes(type) && // defer subtypes of AnnotationBase
                   !(ts.sofaType == type)) { // defer sofa types
@@ -1894,13 +1898,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         r.run();
       }
 
-      if (TRACE_DES)
+      if (TRACE_DES) {
         System.out.println("Form4Deser indexing FSs");
+      }
       readIndexedFeatureStructures();
 
       if (isDelta) {
-        if (TRACE_DES)
+        if (TRACE_DES) {
           System.out.println("Form4Deser modifying existing FSs");
+        }
         (new ReadModifiedFSs()).readModifiedFSs();
       }
 
@@ -1975,7 +1981,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           break;
 
         case Slot_HeapRef: {
-          final TOP[] a = ((FSArray) fs)._getTheArray();
+          final TOP[] a = ((FSArray<?>) fs)._getTheArray();
           int prev = getPrevIntValue(refKind, null);
           for (int i = 0; i < a.length; i++) {
             final int v = readDiff(SlotKind.Slot_HeapRef, prev);
@@ -2007,15 +2013,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return readVnumber(arrayLength_dis);
     }
 
-    /**
-     * If the fs is null, accumulate fixup operations, otherwise directly set this
-     * 
-     * @param fs
-     *          - null or the fs whose slots are to be set
-     * @param feat
-     * @param type
-     * @throws IOException
-     */
     private void readByKind(FeatureImpl feat, TypeImpl type) throws IOException {
       SlotKind kind = feat.getSlotKind();
 
@@ -2062,7 +2059,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             // but binary serialization keeps creation order
           }
           if (ts.annotBaseSofaFeat != feat || sofaRef == null) {
-            https: // issues.apache.org/jira/browse/UIMA-5588
+            // https://issues.apache.org/jira/browse/UIMA-5588
             maybeStoreOrDefer(lfs -> {
               // in addition to deferring if currentFs is null,
               // heap refs may need deferring if forward refs
@@ -2079,8 +2076,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
         case Slot_StrRef: {
           String s = readString();
-          if (null == s)
+          if (null == s) {
             break; // null is default, no need to store it
+          }
           if (ts.sofaType.subsumes(type)) {
             if (feat == ts.sofaId) {
               sofaName = s;
@@ -2143,10 +2141,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
       }
 
-      bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta, i -> seq2fs.get(i), // written on
-                                                                               // separate line for
-                                                                               // Eclipse breakpoint
-                                                                               // control
+      bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta, i -> seq2fs.get(i),
+              // written on separate line for Eclipse breakpoint control
               i -> csds.addr2fs.get(i) // https://issues.apache.org/jira/browse/UIMA-5593
       );
     }
@@ -2154,10 +2150,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     /**
      * Maybe defers setting features for a Feature Structure if the FS isn't created yet (perhaps
      * because it needs a sofa ref, not yet read)
-     * 
-     * @param fs
-     *          - the Feature Structure or null if not yet created
-     * @param storeAction
      */
     private void maybeStoreOrDefer(Consumer<TOP> storeAction) {
       if (null == currentFs) {
@@ -2167,9 +2159,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
     }
 
-    /**
-     * FS Ref slots fixups
-     */
     /**
      * FS Ref slots fixups
      * 
@@ -2311,7 +2300,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * @param kind - the slot kind being deserialized
      * @param feat - the feature (null for arrays)
      * @return - the previous value, for differencing
-     * @throws IOException
      */
     // @formatter:on
     private int readDiffWithPrevTypeSlot(SlotKind kind, FeatureImpl feat) throws IOException {
@@ -2334,10 +2322,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     /**
      * Common code for feature offset and array
      * 
-     * @param kind
      * @param feat
      *          feature or null for array access
-     * @return
      */
     private int getPrevIntValue(SlotKind kind, FeatureImpl feat) {
       if (kind == SlotKind.Slot_HeapRef) {
@@ -2683,8 +2669,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         return cache;
       }
 
-      if (type.isArray())
+      if (type.isArray()) {
         return null; // all arrays except fsArray (see above) don't have fs refs
+      }
 
       int[] cache = prevFsRefsByType[type.getCode()];
       if (null == cache && type.hasRefFeature) { // skip allocating if no refs

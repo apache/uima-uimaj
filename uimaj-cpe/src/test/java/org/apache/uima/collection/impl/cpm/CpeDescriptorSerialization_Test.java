@@ -63,7 +63,7 @@ public class CpeDescriptorSerialization_Test {
   @BeforeEach
   public void setUp() throws Exception {
     // get test base path setting
-    this.testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");
+    testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");
   }
 
   /**
@@ -82,7 +82,7 @@ public class CpeDescriptorSerialization_Test {
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    File outputFile = new File(this.testBaseDir, "outConf.xml");
+    File outputFile = new File(testBaseDir, "outConf.xml");
 
     // serialize input file to output file
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -113,7 +113,7 @@ public class CpeDescriptorSerialization_Test {
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    File outputFile = new File(this.testBaseDir, "outConf2.xml");
+    File outputFile = new File(testBaseDir, "outConf2.xml");
 
     // serialize input file to output file
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();

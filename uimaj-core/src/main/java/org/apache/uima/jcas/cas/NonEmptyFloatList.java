@@ -120,7 +120,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(float v) {
-    this._setFloatValueNfc(wrapGetIntCatchException(_FH_head), v);
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
 
   // public void _setHeadNcNj(float v) {

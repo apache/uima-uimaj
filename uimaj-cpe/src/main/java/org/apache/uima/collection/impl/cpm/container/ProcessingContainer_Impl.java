@@ -1116,11 +1116,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * @return - true if feature is in the Cas, false otherwise
    */
   private boolean processCas(Object aCas) {
-    if (!(aCas instanceof CasData)) // || skipIfCasEmpty == null)
-    {
-      return false;
-    }
-    if (DATACasUtils.isCasEmpty((CasData) aCas)) {
+    if (!(aCas instanceof CasData) || DATACasUtils.isCasEmpty((CasData) aCas)) {
       return false; // dont process empty CAS'es
     }
 
@@ -1663,7 +1659,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   @Override
   public boolean isPaused() {
     synchronized (lockForIsPaused) {
-      return this.isPaused;
+      return isPaused;
     }
   }
 

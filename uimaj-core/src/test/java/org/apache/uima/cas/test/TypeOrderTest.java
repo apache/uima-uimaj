@@ -102,8 +102,8 @@ public class TypeOrderTest {
       XMLParser parser = UIMAFramework.getXMLParser();
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      this.cas = ae.newCAS();
-      assertTrue(this.cas != null);
+      cas = ae.newCAS();
+      assertTrue(cas != null);
     } catch (IOException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -115,21 +115,21 @@ public class TypeOrderTest {
       assertTrue(false);
     }
 
-    TypeSystem ts = this.cas.getTypeSystem();
+    TypeSystem ts = cas.getTypeSystem();
     // assert(wordType != null);
-    this.tokenType = ts.getType(TOKEN_TYPE);
-    this.sentenceType = ts.getType(SENT_TYPE);
-    this.annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(this.annotationType != null);
+    tokenType = ts.getType(TOKEN_TYPE);
+    sentenceType = ts.getType(SENT_TYPE);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    assertTrue(annotationType != null);
   }
 
   @AfterEach
   public void tearDown() {
     // this.casMgr = null;
-    this.cas = null;
-    this.tokenType = null;
-    this.sentenceType = null;
-    this.annotationType = null;
+    cas = null;
+    tokenType = null;
+    sentenceType = null;
+    annotationType = null;
   }
 
   // Initialize the first CAS.
@@ -197,31 +197,31 @@ public class TypeOrderTest {
             UTF_8);
 
     for (int i = 0; i < 10; i++) {
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     }
     for (int i = 19; i >= 10; i--) {
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-      this.cas.getIndexRepository()
-              .addFS(this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository()
+              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     }
 
-    FSIterator<FeatureStructure> it = this.cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX)
+    FSIterator<FeatureStructure> it = cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX)
             .iterator();
 
     // it = cas.getAnnotationIndex().iterator();

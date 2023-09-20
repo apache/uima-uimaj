@@ -73,7 +73,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    */
   @Override
   public AnnotationIndex<Annotation> getAnnotationIndex() {
-    return this.jcas.getCas().getAnnotationIndex();
+    return jcas.getCas().getAnnotationIndex();
   }
 
   /*
@@ -83,7 +83,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    */
   @Override
   public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) {
-    return this.jcas.getCas().getAnnotationIndex(this.jcas.getCasType(type));
+    return jcas.getCas().getAnnotationIndex(jcas.getCasType(type));
   }
 
   /*

@@ -153,7 +153,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   @Override
   public final void setEnd(int v) {
     try {
-      this._setIntValueNfc((int) _FH_end.invokeExact(), v);
+      _setIntValueNfc((int) _FH_end.invokeExact(), v);
     } catch (Throwable e) {
       throw new RuntimeException(e); // never happen
     }
@@ -172,8 +172,8 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public Annotation(JCas jcas, int begin, int end) {
     super(jcas); // forward to constructor
-    this.setBegin(begin);
-    this.setEnd(end);
+    setBegin(begin);
+    setEnd(end);
   }
 
   /**

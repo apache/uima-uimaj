@@ -951,7 +951,7 @@ public class CpmAE_ErrorTest {
     public void aborted() {
       super.aborted();
       System.out.println("abort was called.");
-      this.cpe.stop();
+      cpe.stop();
     }
   }
 }

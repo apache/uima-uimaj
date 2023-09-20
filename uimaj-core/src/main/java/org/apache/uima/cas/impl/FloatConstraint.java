@@ -40,13 +40,13 @@ class FloatConstraint extends PathConstraint implements FSMatchConstraint {
 
   FloatConstraint(ArrayList<String> path, FSFloatConstraint cons) {
     super(path);
-    this.floatConstraint = cons;
+    floatConstraint = cons;
   }
 
   @Override
   public boolean match(FeatureStructure fs) {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
-    final int max = this.featNames.size() - 1; // The last position in the
+    final int max = featNames.size() - 1; // The last position in the
     // path!
     if (max < 0) {
       // If the path is empty, we can't get a float, and therefore the
@@ -55,22 +55,22 @@ class FloatConstraint extends PathConstraint implements FSMatchConstraint {
     }
     Feature feat;
     for (int i = 0; i < max; i++) {
-      feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
+      feat = fs.getType().getFeatureByBaseName(featNames.get(i));
       if (feat == null) {
         return false;
       }
       fs = fs.getFeatureValue(feat);
     }
-    feat = fs.getType().getFeatureByBaseName(this.featNames.get(max));
+    feat = fs.getType().getFeatureByBaseName(featNames.get(max));
     if (feat == null) {
       return false;
     }
-    return this.floatConstraint.match(fs.getFloatValue(feat));
+    return floatConstraint.match(fs.getFloatValue(feat));
   }
 
   @Override
   public String toString() {
-    return super.toString() + " " + this.floatConstraint.toString();
+    return super.toString() + " " + floatConstraint.toString();
   }
 
 }

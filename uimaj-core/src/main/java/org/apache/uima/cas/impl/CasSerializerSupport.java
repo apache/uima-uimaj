@@ -195,7 +195,7 @@ public class CasSerializerSupport {
    * @return the original instance, possibly updated
    */
   public CasSerializerSupport setPrettyPrint(boolean pp) {
-    this.isFormattedOutput = pp;
+    isFormattedOutput = pp;
     return this;
   }
 
@@ -208,7 +208,7 @@ public class CasSerializerSupport {
    * @return the original instance, possibly updated
    */
   public CasSerializerSupport setFilterTypes(TypeSystemImpl ts) {
-    this.filterTypeSystem = ts;
+    filterTypeSystem = ts;
     return this;
   }
 
@@ -237,7 +237,7 @@ public class CasSerializerSupport {
    * @return the original instance, possibly updated
    */
   public CasSerializerSupport setErrorHandler(ErrorHandler eh) {
-    this.errorHandler = eh;
+    errorHandler = eh;
     return this;
   }
 
@@ -478,10 +478,10 @@ public class CasSerializerSupport {
       this.sharedData = sharedData;
 
       // copy outer class values into final inner ones, to keep the outer thread-safe
-      filterTypeSystem_inner = CasSerializerSupport.this.filterTypeSystem;
-      isFormattedOutput_inner = CasSerializerSupport.this.isFormattedOutput;
+      filterTypeSystem_inner = filterTypeSystem;
+      isFormattedOutput_inner = isFormattedOutput;
       this.marker = marker;
-      errorHandler2 = CasSerializerSupport.this.errorHandler;
+      errorHandler2 = errorHandler;
 
       tsi = cas.getTypeSystemImpl();
       queue = new ArrayDeque<>();
@@ -505,8 +505,8 @@ public class CasSerializerSupport {
                       + " multiple references.  These will be serialized in duplicate.",
               fi.getName());
       Misc.decreasingWithTrace(errorCount, message, logger);
-      if (this.errorHandler2 != null) {
-        this.errorHandler2.warning(new SAXParseException(message, null));
+      if (errorHandler2 != null) {
+        errorHandler2.warning(new SAXParseException(message, null));
       }
     }
 
@@ -594,7 +594,7 @@ public class CasSerializerSupport {
             Collection<TOP> fss = loopIR.getIndexedFSs();
             csss.writeView(sofa, fss);
           } else { // is Delta Cas
-            if (sofaNum != 1 && this.marker.isNew(sofa)) {
+            if (sofaNum != 1 && marker.isNew(sofa)) {
               // for views created after mark (initial view never is - it is always created with the
               // CAS)
               // write out the view as new
@@ -673,7 +673,7 @@ public class CasSerializerSupport {
       if (sharedData == null) {
         return;
       }
-      TOP[] fss = this.sharedData.getAndSortByIdAllFSsInIdMap();
+      TOP[] fss = sharedData.getAndSortByIdAllFSsInIdMap();
       previouslySerializedFSs = new ArrayList<>();
 
       for (TOP fs : fss) {
@@ -863,10 +863,6 @@ public class CasSerializerSupport {
      * This call is recursive with enqueueFeatures, \ and an arbitrary long chain can get stack
      * overflow error. Probably should fix this someday. See
      * https://issues.apache.org/jira/browse/UIMA-106
-     * 
-     * @param addr
-     *          The FS address.
-     * @throws SAXException
      */
     private void enqueueFsAndMaybeFeatures(TOP fs) throws SAXException {
       if (null == fs) {
@@ -898,8 +894,6 @@ public class CasSerializerSupport {
      *     noting if they've already been added 
      *     -- this indicates either a loop or another ref from outside,
      *     -- in either case, return true - t
-     * @param curNode -
-     * @param featCode -
      * @return false if no list element is multiply-referenced,
      *         true if there is a loop or another ref from outside the list, for 
      *         one or more list element nodes
@@ -994,13 +988,6 @@ public class CasSerializerSupport {
 
     /**
      * Enqueue all FSs reachable from features of the given FS.
-     * 
-     * @param addr
-     *          address of an FS
-     * @param typeCode
-     *          type of the FS
-     * @param insideListNode
-     *          true iff the enclosing FS (addr) is a list type
      */
     private void enqueueFeatures(TOP fs) throws SAXException {
 
@@ -1008,7 +995,6 @@ public class CasSerializerSupport {
        * Handle FSArrays
        */
       if (fs instanceof FSArray) {
-
         TOP[] theArray = ((FSArray) fs)._getTheArray();
 
         for (TOP elem : theArray) {
@@ -1028,6 +1014,7 @@ public class CasSerializerSupport {
       if (fs instanceof UimaSerializable) {
         ((UimaSerializable) fs)._save_to_cas_data();
       }
+
       for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
         if (isFiltering && filterTypeSystem_inner.getFeatureByFullName(fi.getName()) == null) {
           // skip features that aren't in the target type system
@@ -1127,7 +1114,7 @@ public class CasSerializerSupport {
               }
             } else if (startOfList_node instanceof FSList && !alreadyVisited) {
               // also, we need to enqueue any FSs reachable from an FSList
-              enqueueFSListElements((FSList) startOfList_node);
+              enqueueFSListElements((FSList<?>) startOfList_node);
             }
             break;
           }
@@ -1137,11 +1124,8 @@ public class CasSerializerSupport {
 
     /**
      * Enqueues all FS reachable from an FSArray.
-     * 
-     * @param addr
-     *          Address of an FSArray
      */
-    private void enqueueFSArrayElements(FSArray fsArray) throws SAXException {
+    private <T extends TOP> void enqueueFSArrayElements(FSArray<T> fsArray) throws SAXException {
       for (TOP elem : fsArray._getTheArray()) {
         if (elem != null) {
           enqueueFsAndMaybeFeatures(elem);
@@ -1152,11 +1136,8 @@ public class CasSerializerSupport {
     /**
      * Enqueues all Head values of FSList reachable from an FSList. This does NOT include the list
      * nodes themselves.
-     * 
-     * @param addr
-     *          Address of an FSList
      */
-    private void enqueueFSListElements(FSList<TOP> node) throws SAXException {
+    private <T extends TOP> void enqueueFSListElements(FSList<T> node) throws SAXException {
       node.walkList_saxException(
               n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList<TOP>) n).getHead()), null);
     }
@@ -1356,10 +1337,7 @@ public class CasSerializerSupport {
     }
 
     public int getXmiIdAsInt(TOP fs) {
-      if (fs == null) {
-        return 0;
-      }
-      if (isFiltering && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName())) { // return
+      if ((fs == null) || (isFiltering && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName()))) { // return
                                                                                                 // as
                                                                                                 // null
                                                                                                 // any

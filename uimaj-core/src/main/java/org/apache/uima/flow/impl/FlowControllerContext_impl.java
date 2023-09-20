@@ -62,7 +62,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl
 
     // add our MBean to the tree
     ((AnalysisEngineManagementImpl) aParentContext.getManagementInterface())
-            .addComponent(aContextName, this.mMBean);
+            .addComponent(aContextName, mMBean);
   }
 
   /*

@@ -295,7 +295,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
                   "UIMA_CPM_deactivating_vns_port__INFO",
                   new Object[] { Thread.currentThread().getName() });
         }
-        this.cleanExit();
+        cleanExit();
         return input;
       } else if (cmd.equals("serveon")) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -396,7 +396,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
               new Object[] { Thread.currentThread().getName() });
     }
     try {
-      this.cleanExit();
+      cleanExit();
       if (server != null) {
         server.shutdownServing();
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {

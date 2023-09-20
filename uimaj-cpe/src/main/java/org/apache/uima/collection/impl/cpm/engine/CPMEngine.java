@@ -1276,7 +1276,7 @@ public class CPMEngine implements Runnable {
     // The number of instances is determined based on number of processing
     // threads and CP property setting that determines if the CP is able
     // to run in parallel.
-    if (casProcessorsDeployed == false) {
+    if (!casProcessorsDeployed) {
       CasProcessor[] casprocessorList = new CasProcessor[initial_cp_list.size()];
       ArrayList list;
       for (int i = 0; i < initial_cp_list.size(); i++) {
@@ -1567,7 +1567,7 @@ public class CPMEngine implements Runnable {
    */
   public boolean isPaused() {
     synchronized (lockForPause) {
-      return (pause == true);
+      return pause;
     }
   }
 
@@ -1875,7 +1875,7 @@ public class CPMEngine implements Runnable {
       }
       // CAS[] casList = null;
 
-      if (mixedCasProcessorTypeSupport == false && collectionReader instanceof CollectionReader) {
+      if (!mixedCasProcessorTypeSupport && collectionReader instanceof CollectionReader) {
         mixedCasProcessorTypeSupport = true;
       }
 
@@ -2924,7 +2924,7 @@ public class CPMEngine implements Runnable {
       producer.invalidate(aCASList);
     } else {
       ChunkMetadata meta = CPMUtils.getChunkMetadata(aCASList[0]);
-      if (meta != null && meta.isOneOfMany() && skippedDocs.containsKey(meta.getDocId()) == false) {
+      if (meta != null && meta.isOneOfMany() && !skippedDocs.containsKey(meta.getDocId())) {
         skippedDocs.put(meta.getDocId(), meta.getDocId());
       }
     }
@@ -3081,7 +3081,7 @@ public class CPMEngine implements Runnable {
                   "UIMA_CPM_call_get_cas_returns_null_FINEST", new Object[] {
                       Thread.currentThread().getName(), String.valueOf((casList[0] == null)) });
         }
-        if (isRunning() == false) {
+        if (!isRunning()) {
           readerState = 1009;
           casPool.releaseCas(casList[0]);
           // synchronized (casPool) { // redundant - the above releaseCas call does this

@@ -101,13 +101,9 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
           throws ResourceInitializationException {
     // AnalysisEngine can be build from any ResourceCreationSpecifier-
     // CasConsumer descriptors as well as AnalysisEngine descriptors.
-    if (!(aSpecifier instanceof ResourceCreationSpecifier)) {
-      return false;
-    }
-
     // aSpecifier must be a AnalysisEngineDescription or a CasConsumerDescription
-    if (!(aSpecifier instanceof AnalysisEngineDescription)
-            && !(aSpecifier instanceof CasConsumerDescription)) {
+    if (!(aSpecifier instanceof ResourceCreationSpecifier) || (!(aSpecifier instanceof AnalysisEngineDescription)
+            && !(aSpecifier instanceof CasConsumerDescription))) {
       return false;
     }
 

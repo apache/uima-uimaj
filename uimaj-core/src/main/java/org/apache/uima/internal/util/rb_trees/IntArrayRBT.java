@@ -192,13 +192,13 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
     @Override
     public final boolean hasNext() {
-      return (this.currentNode != NIL);
+      return (currentNode != NIL);
     }
 
     @Override
     public final int nextNvc() {
-      int r = IntArrayRBT.this.getKeyForNode(this.currentNode);
-      this.currentNode = nextNode(this.currentNode);
+      int r = getKeyForNode(currentNode);
+      currentNode = nextNode(currentNode);
       return r;
     }
 
@@ -207,7 +207,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public boolean hasPrevious() {
-      return previousNode(this.currentNode) != NIL;
+      return previousNode(currentNode) != NIL;
     }
 
     /**
@@ -215,17 +215,17 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public int previous() {
-      this.currentNode = previousNode(this.currentNode);
-      if (this.currentNode != NIL) {
-        return getKey(this.currentNode);
+      currentNode = previousNode(currentNode);
+      if (currentNode != NIL) {
+        return getKey(currentNode);
       }
       throw new NoSuchElementException();
     }
 
     @Override
     public int previousNvc() {
-      this.currentNode = previousNode(this.currentNode);
-      return getKey(this.currentNode);
+      currentNode = previousNode(currentNode);
+      return getKey(currentNode);
     }
 
     /**
@@ -233,7 +233,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public void moveToEnd() {
-      this.currentNode = IntArrayRBT.this.greatestNode;
+      currentNode = IntArrayRBT.this.greatestNode;
     }
 
     /**
@@ -241,11 +241,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
      */
     @Override
     public void moveToStart() {
-      this.currentNode = getFirstNode();
+      currentNode = getFirstNode();
     }
 
     protected final int getKey(int node) {
-      return IntArrayRBT.this.getKeyForNode(node);
+      return getKeyForNode(node);
     }
 
   }
@@ -298,19 +298,19 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   }
 
   protected int treeInsert(final int k, boolean withDups) {
-    if (this.greatestNode != NIL) {
+    if (greatestNode != NIL) {
       final int lt = withDups ? 1 : 0;
-      if (compare(getKeyForNode(this.greatestNode), k) < lt) {
-        final int y = this.greatestNode;
+      if (compare(getKeyForNode(greatestNode), k) < lt) {
+        final int y = greatestNode;
         final int z = newNode(k);
-        this.greatestNode = z;
+        greatestNode = z;
         setRight(y, z);
         setParent(z, y);
         return z;
       }
     }
 
-    int x = this.root; // could be NIL
+    int x = root; // could be NIL
     int y = NIL;
 
     // find existing value (key)
@@ -344,7 +344,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     final int z = newNode(k);
     if (y == NIL) { // only happens if this.root is NIL, e.g. table is empty.
       setAsRoot(z); // also set parent to NIL
-      this.greatestNode = z;
+      greatestNode = z;
     } else {
       setParent(z, y);
       if (cr < 0) {
@@ -379,11 +379,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
    * @return true if added (not present before)
    */
   public boolean addAdded(int k) {
-    if (this.root == NIL) {
+    if (root == NIL) {
       final int x = newNode(k);
       setAsRoot(x);
-      this.color[this.root] = black;
-      this.greatestNode = x;
+      color[root] = black;
+      greatestNode = x;
       return true;
     }
     final int x = treeInsert(k);
@@ -399,11 +399,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   // }
 
   private int insertKey(final int k, final boolean withDups) {
-    if (this.root == NIL) {
+    if (root == NIL) {
       final int x = newNode(k);
       setAsRoot(x);
-      this.color[this.root] = black;
-      this.greatestNode = x;
+      color[root] = black;
+      greatestNode = x;
       return x;
     }
     final int x = treeInsert(k, withDups);
@@ -415,11 +415,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
   // for testing only
   public int insertKeyShowNegative(int k) {
-    if (this.root == NIL) {
+    if (root == NIL) {
       final int x = newNode(k);
       setAsRoot(x);
-      this.color[this.root] = black;
-      this.greatestNode = x;
+      color[root] = black;
+      greatestNode = x;
       return x;
     }
     final int x = treeInsert(k, false);
@@ -438,17 +438,17 @@ public class IntArrayRBT extends IntArrayRBTcommon {
    * @return -
    */
   private int commonInsertKey(int x) {
-    this.color[x] = red;
+    color[x] = red;
     final int node = x;
-    while ((x != this.root) && (this.color[getParent(x)] == red)) {
+    while ((x != root) && (color[getParent(x)] == red)) {
       final int parent_x = getParent(x);
       final int parent_parent_x = getParent(parent_x);
       if (parent_x == getLeft(parent_parent_x)) {
         final int y = getRight(parent_parent_x);
-        if (this.color[y] == red) {
-          this.color[parent_x] = black;
-          this.color[y] = black;
-          this.color[parent_parent_x] = red;
+        if (color[y] == red) {
+          color[parent_x] = black;
+          color[y] = black;
+          color[parent_parent_x] = red;
           x = parent_parent_x;
         } else {
           if (x == getRight(parent_x)) {
@@ -456,17 +456,17 @@ public class IntArrayRBT extends IntArrayRBTcommon {
             leftRotate(x);
           }
           final int parent2_x = getParent(x);
-          this.color[parent2_x] = black;
+          color[parent2_x] = black;
           final int parent2_parent2_x = getParent(parent2_x);
-          this.color[parent2_parent2_x] = red;
+          color[parent2_parent2_x] = red;
           rightRotate(parent2_parent2_x);
         }
       } else {
         final int y = getLeft(parent_parent_x);
-        if (this.color[y] == red) {
-          this.color[parent_x] = black;
-          this.color[y] = black;
-          this.color[parent_parent_x] = red;
+        if (color[y] == red) {
+          color[parent_x] = black;
+          color[y] = black;
+          color[parent_parent_x] = red;
           x = parent_parent_x;
         } else {
           if (x == getLeft(parent_x)) {
@@ -474,14 +474,14 @@ public class IntArrayRBT extends IntArrayRBTcommon {
             rightRotate(x);
           }
           final int parent2_x = getParent(x);
-          this.color[parent2_x] = black;
+          color[parent2_x] = black;
           final int parent2_parent2_x = getParent(parent2_x);
-          this.color[parent2_parent2_x] = red;
+          color[parent2_parent2_x] = red;
           leftRotate(parent2_parent2_x);
         }
       }
     }
-    this.color[this.root] = black;
+    color[root] = black;
     return node;
   }
 
@@ -508,7 +508,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       return false;
     }
     deleteNode(node);
-    --this.size;
+    --size;
     if (size == 0 && next > multiplication_limit) {
       flush(); // recover space
     }

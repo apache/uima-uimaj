@@ -558,11 +558,7 @@ public class CasToComparableText {
   }
 
   private String renderStringValue(String aString) {
-    if (aString == null) {
-      return nullValue;
-    }
-
-    if (treatEmptyStringsAsNull && aString.isEmpty()) {
+    if ((aString == null) || (treatEmptyStringsAsNull && aString.isEmpty())) {
       return nullValue;
     }
 
@@ -719,16 +715,10 @@ public class CasToComparableText {
         }
       } else {
         for (Feature feature : fs.getType().getFeatures()) {
-          if (feature.getRange().isPrimitive()) {
-            continue;
-          }
+          
 
           // Check if the feature is excluded
-          if (isExcluded(feature)) {
-            continue;
-          }
-
-          if (CAS.FEATURE_BASE_NAME_SOFA.equals(feature.getShortName())) {
+          if (feature.getRange().isPrimitive() || isExcluded(feature) || CAS.FEATURE_BASE_NAME_SOFA.equals(feature.getShortName())) {
             continue;
           }
 

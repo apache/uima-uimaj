@@ -181,15 +181,12 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
 
     // URLs must be the same (but don't use URL.equals(), which does DNS resolution!)
     URL url = ((DataResource_impl) obj).getUrl();
-    if (url == null || !url.toString().equals(this.getUrl().toString()))
+    if (url == null || !url.toString().equals(getUrl().toString()))
       return false;
 
     // Local Cache Files must be the same
     File localCache = ((DataResource_impl) obj).getLocalCache();
-    if (localCache == null && this.getLocalCache() != null)
-      return false;
-
-    if (localCache != null && !localCache.equals(this.getLocalCache()))
+    if ((localCache == null && getLocalCache() != null) || (localCache != null && !localCache.equals(getLocalCache())))
       return false;
 
     return true;

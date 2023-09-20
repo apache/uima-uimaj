@@ -791,10 +791,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl
   }
 
   static boolean equalsOrBothNull(Object x, Object y) {
-    if (null == x && null == y) {
-      return true;
-    }
-    if (null != x && x.equals(y)) {
+    if ((null == x && null == y) || (null != x && x.equals(y))) {
       return true;
     }
     return false;

@@ -103,15 +103,15 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    */
   public ObjHashSet(ObjHashSet<T> ohs) {
     super(ohs);
-    this.removedMarker = ohs.removedMarker;
-    this.clazz = ohs.clazz;
+    removedMarker = ohs.removedMarker;
+    clazz = ohs.clazz;
     // this.initialCapacity = ohs.initialCapacity;
     // this.histogram = ohs.histogram;
     // this.maxProbe = ohs.maxProbe;
     // this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
     // this.size = ohs.size;
     // this.nbrRemoved = ohs.nbrRemoved;
-    this.keys = Arrays.copyOf(ohs.keys, ohs.keys.length);
+    keys = Arrays.copyOf(ohs.keys, ohs.keys.length);
     // this.secondTimeShrinkable = ohs.secondTimeShrinkable;
     // this.modificationCount = ohs.modificationCount;
   }
@@ -494,7 +494,7 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
     protected int curPosition;
 
     private ObjHashSetIterator() {
-      this.curPosition = moveToNextFilled(0);
+      curPosition = moveToNextFilled(0);
     }
 
     @Override

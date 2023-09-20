@@ -78,7 +78,7 @@ public class Id2FS implements Iterable<TOP> {
   final private int initialSize;
 
   public Id2FS(int initialHeapSize) {
-    this.initialSize = Math.max(32, initialHeapSize >> 4); // won't shrink below this
+    initialSize = Math.max(32, initialHeapSize >> 4); // won't shrink below this
     id2fs = new JCasHashMap(initialSize);
   }
 
@@ -304,10 +304,7 @@ public class Id2FS implements Iterable<TOP> {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (!(obj instanceof MeasureCaller)) {
+      if ((obj == null) || !(obj instanceof MeasureCaller)) {
         return false;
       }
       MeasureCaller other = (MeasureCaller) obj;

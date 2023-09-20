@@ -143,18 +143,18 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
    */
   public OrderedFsSet_array2(OrderedFsSet_array2 set) {
     set.processBatch();
-    this.a = Arrays.copyOf(set.a, set.a.length);
-    this.a_nextFreeslot = set.a_nextFreeslot;
-    this.a_firstUsedslot = set.a_firstUsedslot;
-    this.comparatorWithID = set.comparatorWithID;
-    this.comparatorWithoutID = set.comparatorWithoutID;
-    this.size = set.size;
-    this.maxSize = set.maxSize;
-    this.highest = set.highest;
-    this.nullBlockStart = set.nullBlockStart;
-    this.nullBlockEnd = set.nullBlockEnd;
-    this.modificationCount = set.modificationCount;
-    this.lastRemovedPos = set.lastRemovedPos;
+    a = Arrays.copyOf(set.a, set.a.length);
+    a_nextFreeslot = set.a_nextFreeslot;
+    a_firstUsedslot = set.a_firstUsedslot;
+    comparatorWithID = set.comparatorWithID;
+    comparatorWithoutID = set.comparatorWithoutID;
+    size = set.size;
+    maxSize = set.maxSize;
+    highest = set.highest;
+    nullBlockStart = set.nullBlockStart;
+    nullBlockEnd = set.nullBlockEnd;
+    modificationCount = set.modificationCount;
+    lastRemovedPos = set.lastRemovedPos;
   }
 
   /**
@@ -169,19 +169,19 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     if (!isReadOnly)
       Misc.internalError();
     set.processBatch();
-    this.size = set.size;
-    this.a = (size == 0) ? Constants.EMPTY_TOP_ARRAY : Arrays.copyOf(set.a, set.a.length);
-    this.a_nextFreeslot = set.a_nextFreeslot;
-    this.a_firstUsedslot = set.a_firstUsedslot;
-    this.comparatorWithID = set.comparatorWithID;
-    this.comparatorWithoutID = set.comparatorWithoutID;
+    size = set.size;
+    a = (size == 0) ? Constants.EMPTY_TOP_ARRAY : Arrays.copyOf(set.a, set.a.length);
+    a_nextFreeslot = set.a_nextFreeslot;
+    a_firstUsedslot = set.a_firstUsedslot;
+    comparatorWithID = set.comparatorWithID;
+    comparatorWithoutID = set.comparatorWithoutID;
 
-    this.maxSize = set.maxSize;
-    this.highest = set.highest;
-    this.nullBlockStart = set.nullBlockStart;
-    this.nullBlockEnd = set.nullBlockEnd;
-    this.modificationCount = set.modificationCount;
-    this.lastRemovedPos = set.lastRemovedPos;
+    maxSize = set.maxSize;
+    highest = set.highest;
+    nullBlockStart = set.nullBlockStart;
+    nullBlockEnd = set.nullBlockEnd;
+    modificationCount = set.modificationCount;
+    lastRemovedPos = set.lastRemovedPos;
   }
 
   /**
@@ -479,10 +479,7 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
     synchronized (batch) {
       int batchSize = batch.size();
 
-      if (batchSize == 0) {
-        return; // another thread did this
-      }
-      if (doingBatchAdds == true) {
+      if ((batchSize == 0) || doingBatchAdds) {
         return; // bypass recursive calls from Eclipse IDE on same thread,
                 // when its toString methods invoke this recursively to update the
                 // debug UI for instance, while single stepping.

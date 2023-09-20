@@ -49,41 +49,41 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
   private Vector<Float> values;
 
   FSFloatConstraintImpl() {
-    this.codes = new IntVector();
-    this.values = new Vector<>();
+    codes = new IntVector();
+    values = new Vector<>();
   }
 
   @Override
   public boolean match(float f) {
-    final int max = this.codes.size();
+    final int max = codes.size();
     for (int i = 0; i < max; i++) {
-      switch (this.codes.get(i)) {
+      switch (codes.get(i)) {
         case LT: {
-          if (f >= this.values.get(i)) {
+          if (f >= values.get(i)) {
             return false;
           }
           break;
         }
         case LEQ: {
-          if (f > this.values.get(i)) {
+          if (f > values.get(i)) {
             return false;
           }
           break;
         }
         case EQ: {
-          if (f != this.values.get(i)) {
+          if (f != values.get(i)) {
             return false;
           }
           break;
         }
         case GEQ: {
-          if (f < this.values.get(i)) {
+          if (f < values.get(i)) {
             return false;
           }
           break;
         }
         case GT: {
-          if (f <= this.values.get(i)) {
+          if (f <= values.get(i)) {
             return false;
           }
           break;
@@ -105,8 +105,8 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   @Override
   public void eq(float f) {
-    this.codes.add(EQ);
-    this.values.add(f);
+    codes.add(EQ);
+    values.add(f);
   }
 
   /**
@@ -117,8 +117,8 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   @Override
   public void lt(float f) {
-    this.codes.add(LT);
-    this.values.add(f);
+    codes.add(LT);
+    values.add(f);
   }
 
   /**
@@ -129,8 +129,8 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   @Override
   public void leq(float f) {
-    this.codes.add(LEQ);
-    this.values.add(f);
+    codes.add(LEQ);
+    values.add(f);
   }
 
   /**
@@ -141,8 +141,8 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   @Override
   public void gt(float f) {
-    this.codes.add(GT);
-    this.values.add(f);
+    codes.add(GT);
+    values.add(f);
   }
 
   /**
@@ -153,21 +153,21 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
    */
   @Override
   public void geq(float f) {
-    this.codes.add(GEQ);
-    this.values.add(f);
+    codes.add(GEQ);
+    values.add(f);
   }
 
   @Override
   public String toString() {
-    if (this.codes.size() == 1) {
-      return toString(this.codes.get(0)) + " " + this.values.get(0).toString();
+    if (codes.size() == 1) {
+      return toString(codes.get(0)) + " " + values.get(0).toString();
     }
     StringBuffer buf = new StringBuffer();
     buf.append("( ");
-    for (int i = 0; i < this.codes.size(); i++) {
-      buf.append(toString(this.codes.get(i)));
+    for (int i = 0; i < codes.size(); i++) {
+      buf.append(toString(codes.get(i)));
       buf.append(' ');
-      buf.append(this.values.get(i).toString());
+      buf.append(values.get(i).toString());
       buf.append(' ');
     }
     buf.append(')');
