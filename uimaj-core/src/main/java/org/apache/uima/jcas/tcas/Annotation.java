@@ -27,6 +27,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
@@ -177,6 +178,15 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   }
 
   /**
+   * Used to create temporary marker annotations.
+   */
+  private Annotation(JCas jcas, int begin, int end, int aId) {
+    super(jcas, aId); // forward to constructor
+    setBegin(begin);
+    setEnd(end);
+  }
+
+  /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
    * @return -
    */
@@ -212,8 +222,9 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
       int result = Integer.compare(_getIntValueNc(b), other._getIntValueNc(b));
       // int result = Integer.compare(_getIntValueNc(BEGIN_OFFSET),
       // other._getIntValueNc(BEGIN_OFFSET));
-      if (result != 0)
+      if (result != 0) {
         return result;
+      }
 
       final int e = (int) _FH_end.invokeExact();
       result = Integer.compare(_getIntValueNc(e), other._getIntValueNc(e));
@@ -235,8 +246,9 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public final int compareAnnotation(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other);
-    if (result != 0)
+    if (result != 0) {
       return result;
+    }
 
     return lto.compare(this, other);
   }
@@ -250,8 +262,9 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public final int compareAnnotationWithId(Annotation other) {
     int result = compareAnnotation(other);
-    if (result != 0)
+    if (result != 0) {
       return result;
+    }
     return Integer.compare(_id, other._id);
   }
 
@@ -266,8 +279,9 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public final int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other, lto);
-    if (result != 0)
+    if (result != 0) {
       return result;
+    }
     return Integer.compare(_id, other._id);
   }
 
@@ -308,5 +322,16 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
         setEnd(final_end);
       });
     }
+  }
+
+  /**
+   * For internal use by {@link SelectFSs_impl}
+   */
+  public static Annotation _createMarkerAnnotation(JCas aJCas, int aBegin, int aEnd) {
+    if (aEnd < aBegin) {
+      throw new IllegalArgumentException("End value must be >= Begin value");
+    }
+
+    return new Annotation(aJCas, aBegin, aEnd, 0);
   }
 }

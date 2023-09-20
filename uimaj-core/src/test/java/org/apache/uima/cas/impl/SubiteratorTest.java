@@ -99,9 +99,9 @@ public class SubiteratorTest {
               .containsOnly(CAS.TYPE_NAME_SOFA, CAS.TYPE_NAME_DOCUMENT_ANNOTATION,
                       Sentence._TypeName, Token._TypeName);
 
-      // The +1 here accounts for the temporary Annotation that was created.
+      // The temporary annotation should not have been assigned an ID
       var t = new Token(jcas);
-      assertThat(t._id).isEqualTo(maxId + 2 + 1);
+      assertThat(t._id).isEqualTo(maxId + 1);
     }
   }
 

@@ -82,11 +82,6 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   protected AnnotationBase() {
   }
 
-  // /* Internal - Constructor used by generator */
-  // public AnnotationBase(int addr, TOP_Type type) {
-  // super(addr, type);
-  // }
-
   public AnnotationBase(JCas jcas) {
     super(jcas);
     if (_casView.isBaseCas()) {
@@ -98,14 +93,21 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   }
 
   /**
-   * used by generator Make a new AnnotationBase
-   * 
-   * @param c
-   *          -
-   * @param t
-   *          -
+   * Used to create temporary marker annotations.
    */
+  protected AnnotationBase(JCas jcas, int aId) {
+    super(jcas, 0);
+    if (_casView.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+              this.getClass().getName());
+    }
+    // no journaling, no index corruption checking
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
+  }
 
+  /**
+   * used by generator Make a new AnnotationBase
+   */
   public AnnotationBase(TypeImpl t, CASImpl c) {
     super(t, c);
     if (_casView.isBaseCas()) {

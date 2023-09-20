@@ -66,7 +66,7 @@ public class TOP extends FeatureStructureImplC {
    * @param id
    *          -
    */
-  private TOP(int id) {
+  TOP(int id) {
     super(id);
   }
 
@@ -91,6 +91,16 @@ public class TOP extends FeatureStructureImplC {
    */
   public TOP(JCas jcas) {
     super((JCasImpl) jcas);
+  }
+
+  /**
+   * Internal. Used to create marker annotations.
+   * 
+   * @param jcas
+   *          -
+   */
+  TOP(JCas jcas, int aId) {
+    super((JCasImpl) jcas, aId);
   }
 
   public static TOP _createSearchKey(int id) {

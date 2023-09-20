@@ -1250,8 +1250,7 @@ public class CASImpl extends AbstractCas_ImplBase
     mySofaRef = (Sofa) aSofa;
 
     // get the indexRepository for this Sofa
-    indexRepository = (mySofaRef == null)
-            ? (FSIndexRepositoryImpl) cas.getSofaIndexRepository(1)
+    indexRepository = (mySofaRef == null) ? (FSIndexRepositoryImpl) cas.getSofaIndexRepository(1)
             : (FSIndexRepositoryImpl) cas.getSofaIndexRepository(aSofa);
     if (null == indexRepository) {
       // create the indexRepository for this CAS
@@ -1703,9 +1702,9 @@ public class CASImpl extends AbstractCas_ImplBase
     }
 
     Sofa sofa = new Sofa(getTypeSystemImpl().sofaType, getBaseCAS(), // view for a sofa is the
-                                                                          // base cas to correspond
-                                                                          // to where it gets
-                                                                          // indexed
+                                                                     // base cas to correspond
+                                                                     // to where it gets
+                                                                     // indexed
             sofaNum, sofaName, mimeType);
 
     getBaseIndexRepository().addFS(sofa);

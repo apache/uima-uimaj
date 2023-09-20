@@ -365,7 +365,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       if (begin < 0) {
         begin = 0;
       }
-      coveringStartPos = SelectFSs_impl.makePosAnnot(jcas, begin, Integer.MAX_VALUE);
+      coveringStartPos = Annotation._createMarkerAnnotation(jcas, begin, Integer.MAX_VALUE);
     } else {
       coveringStartPos = null;
     }
@@ -759,7 +759,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private void moveToJustPastBoundsAndBackup(int begin, int end,
           Predicate<Annotation> continue_going_backwards) {
-    it.moveToNoReinit(SelectFSs_impl.makePosAnnot(jcas, begin, end));
+    it.moveToNoReinit(Annotation._createMarkerAnnotation(jcas, begin, end));
 
     if (!it.isValid()) {
       it.moveToLastNoReinit();
