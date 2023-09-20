@@ -23,11 +23,11 @@ import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.PreferencePage;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -109,8 +109,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    */
   @Override
   public void setActiveEditor(IEditorPart part) {
-    if (activeEditorPart == part)
+    if (activeEditorPart == part) {
       return;
+    }
 
     if (null == part) {
       return;
@@ -190,9 +191,9 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       // to update the checked status to correspond to that
       @Override
       public void run() {
-        TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-        Preferences prefs = plugin.getPluginPreferences();
+        IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
         boolean bAutoJCasGen = !prefs.getBoolean(PreferencePage.P_JCAS);
+
         autoJCasAction.setChecked(bAutoJCasGen);
         prefs.setValue(PreferencePage.P_JCAS, bAutoJCasGen);
       }
@@ -203,8 +204,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       // to update the checked status to correspond to that
       @Override
       public void run() {
-        TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-        Preferences prefs = plugin.getPluginPreferences();
+        IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
         boolean bJCasLimit = !prefs.getBoolean(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE);
         limitJCasGenToProject.setChecked(bJCasLimit);
         prefs.setValue(PreferencePage.P_JCAS_LIMIT_TO_PROJECT_SCOPE, bJCasLimit);
@@ -222,8 +222,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     qualifiedTypesAction = new Action() {
       @Override
       public void run() {
-        TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-        Preferences prefs = plugin.getPluginPreferences();
+        IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
         boolean bFullyQualifiedTypeNames = !prefs
                 .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES);
         qualifiedTypesAction.setChecked(bFullyQualifiedTypeNames);
@@ -373,8 +372,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * @return the uima pref string
    */
   private static String getUimaPrefString(String key, String defaultValue) {
-    TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-    Preferences prefs = plugin.getPluginPreferences();
+    IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
       prefs.setDefault(key, defaultValue);
@@ -392,8 +390,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * @return the uima pref boolean
    */
   private static boolean getUimaPrefBoolean(String key, boolean defaultValue) {
-    TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-    Preferences prefs = plugin.getPluginPreferences();
+    IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
       prefs.setDefault(key, defaultValue);
@@ -411,8 +408,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
    * @return the uima pref int
    */
   private static int getUimaPrefInt(String key, int defaultValue) {
-    TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
-    Preferences prefs = plugin.getPluginPreferences();
+    IPreferenceStore prefs = TAEConfiguratorPlugin.getDefault().getPreferenceStore();
     boolean isDefault = prefs.isDefault(key);
     if (isDefault) {
       prefs.setDefault(key, defaultValue);
