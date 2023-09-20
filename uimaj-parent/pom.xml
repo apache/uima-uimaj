@@ -139,7 +139,7 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
-    <maven.version>3.2.5</maven.version>
+    <maven.version>3.8.1</maven.version>
 
     <log4j-version>2.20.0</log4j-version>
     <commons-io-version>2.13.0</commons-io-version>
