@@ -139,11 +139,12 @@
      properties already, they should be injected manually into the plugins. 
     -->
     <slf4j-version>1.7.36</slf4j-version>
-    <maven.version>3.2.5</maven.version>
+    <maven.version>3.8.1</maven.version>
 
     <log4j-version>2.20.0</log4j-version>
     <commons-io-version>2.13.0</commons-io-version>
     <commons-csv-version>1.10.0</commons-csv-version>
+    <commons-lang3-version>3.13.0</commons-lang3-version>
     <jackson-version>2.15.2</jackson-version>
     <junit-version>5.10.0</junit-version>
     <junit-vintage-version>4.13.2</junit-vintage-version>
@@ -216,11 +217,24 @@
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j-version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3-version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>

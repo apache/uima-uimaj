@@ -173,7 +173,6 @@ under the License.
     <!--  loggers and other lib 3rd party jars not renamed -->
     <dependencySet>
       <includes>
-        <include>com.fasterxml.jackson.core:jackson-core</include>
         <include>org.bitbucket.mstrobel:procyon-compilertools</include>
         <include>org.bitbucket.mstrobel:procyon-core</include>
         <include>com.github.javaparser:javaparser-core</include>
@@ -316,7 +315,8 @@ under the License.
       <fileMode>644</fileMode>
     </file>
     <file>
-      <source>src/main/bin_distr_license_notices/NOTICE.md</source>
+      <source>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</source>
+      <destName>NOTICE.md</destName>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
     </file>

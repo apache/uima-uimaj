@@ -26,8 +26,8 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
-  <name>Apache UIMA Base: ${project.artifactId}: JSON</name>
-  <description>JSON support for UIMA SDK</description>
+  <name>Apache UIMA Base: ${project.artifactId}: JSON (deprecated)</name>
+  <description>JSON support for UIMA SDK. This module is deprecated. Use https://github.com/apache/uima-uimaj-io-jsoncas instead.</description>
 
   <dependencies>
     <dependency>

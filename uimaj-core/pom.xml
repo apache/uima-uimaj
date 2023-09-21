@@ -40,73 +40,29 @@
   </properties>
 
   <dependencies>
-    
-    <!-- Loggers -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>  <!-- core, not api, because need to set log level via api -->
-      <version>${log4j-version}</version>
-      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
-            "test" fails in maven compile - cannot compile -->
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- dependency>  moved to surefire configuration
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId-->  <!-- core, not api, because need to set log level via api -->
-      <!-- version>${log4j-version}</version-->
-      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
-            "test" fails in maven compile - cannot compile -->
-      <!-- scope>test</scope>
-    </dependency-->
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>${log4j-version}</version>
-      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
-            "test" fails in maven compile - cannot compile -->
-      <scope>provided</scope>
-    </dependency>
-
-     <!-- dependency>  moved to surefire configuration
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>${log4j-version}</version>
-      <scope>test</scope>  
-    </dependency-->
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    
-    <!-- needed to convert slf4j markers into log4j markers 
-         and for running the test -->
+
+    <!-- Optional loggers -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${log4j-version}</version>
-      <!-- scope provided: put in compile classpath, excluded from test classpath, not passed along -->
+      <artifactId>log4j-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
-     <!-- dependency>  moved to surefire configuration  
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${log4j-version}</version>
-      <scope>test</scope> 
-    </dependency-->
-
-    <!--  causes build error: package org.apache.logging.slf4j does not exist
+      <artifactId>log4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>${log4j-version}</version>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
-                     -->
-
+    
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-test-util</artifactId>
@@ -161,37 +117,8 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
       <scope>test</scope>
     </dependency>
-
-    <!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests.
-          1 fails due to different formatting and a dropped xmlns attribute, 
-          5 work when run separately or by mvn, but fail when running all tests from Eclipse:
-              Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
-      -->
-   <!--
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <version>9.7.0-14</version>
-      <scope>test</scope>
-    </dependency>
-      
- 
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>8.7</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>saxon-dom</artifactId>
-      <version>8.7</version>
-      <scope>test</scope>
-    </dependency>
-  -->
   </dependencies>
 
   <build>
@@ -218,15 +145,6 @@
             </execution>
           </executions>
         </plugin>
-
-        <!-- Uncomment the next to run with -Xlint:unchecked -->
-        <!--plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <compilerArgument>-Xlint:unchecked</compilerArgument>
-          </configuration>
-        </plugin-->
 
         <plugin>
           <groupId>org.apache.rat</groupId>
@@ -311,26 +229,6 @@
         </configuration>
       </plugin>
     
-      <!-- experiment with CLIRR
-        gets fatal error: 
-        
-        net.sf.clirr.core.CheckerException: Unable to find information in class org.apache.uima.cas.impl.AnnotationBaseImpl 
-        referring back to nested class org.apache.uima.cas.impl.AnnotationBaseImpl$1
-        at net.sf.clirr.core.internal.bcel.BcelScopeHelper.getClassScope(BcelScopeHelper.java:127)
-        at net.sf.clirr.core.internal.bcel.BcelJavaType.getDeclaredScope(BcelJavaType.java:141)
-        at net.sf.clirr.core.internal.bcel.BcelJavaType.getEffectiveScope(BcelJavaType.java:145)
-        at net.sf.clirr.core.internal.checks.ClassScopeCheck.check(ClassScopeCheck.java:72)
-        at net.sf.clirr.core.Checker.runClassChecks(Checker.java:190)
-        at net.sf.clirr.core.Checker.reportDiffs(Checker.java:136)
-        at org.codehaus.mojo.clirr.AbstractClirrMojo.executeClirr(AbstractClirrMojo.java:236) 
-      -->
-      <!--plugin>  
-        <artifactId>clirr-maven-plugin</artifactId>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>2.2.3-SNAPSHOT</version>
-        
-      </plugin-->
-      
       <!-- filter the template for the version java code
            to insert the version from properties -->
       <plugin>
