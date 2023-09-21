@@ -66,10 +66,10 @@
   </repositories>
 
   <properties>
-    <spring-version>5.3.25</spring-version>
+    <spring-version>5.3.30</spring-version>
     <uima-version>3.5.0-SNAPSHOT</uima-version>
     <slf4j-version>1.7.36</slf4j-version>
-    <maven.version>3.2.5</maven.version>
+    <maven.version>3.8.1</maven.version>
 
     <junit-version>5.10.0</junit-version>
     <junit-platform-version>1.10.0</junit-platform-version>
