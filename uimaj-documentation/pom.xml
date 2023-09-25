@@ -32,6 +32,10 @@
   <name>Apache UIMA Java SDK Documentation</name>
   <url>https://uima.apache.org</url>
 
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
