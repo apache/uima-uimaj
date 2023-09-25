@@ -187,15 +187,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   /**
    * For non-JCas use, Internal Use Only, called by cas.createFS via generators
-   * 
-   * @param casView
-   *          -
-   * @param type
-   *          -
    */
   protected FeatureStructureImplC(TypeImpl type, CASImpl casView) {
     _casView = casView;
     _typeImpl = type;
+
     _id = casView.getNextFsId((TOP) this);
 
     if (_casView.maybeMakeBaseVersionForPear(this, _typeImpl)) {
@@ -226,7 +222,6 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param jcasImpl
    *          - the view this is being created in
    */
-
   protected FeatureStructureImplC(JCasImpl jcasImpl) {
     _casView = jcasImpl.getCasImpl();
     _typeImpl = _casView.getTypeSystemImpl().getJCasRegisteredType(getTypeIndexID());
@@ -262,6 +257,35 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     // _setLongValueNcNj(_typeImpl.featUimaUID, id);
     // _casView.add2uid2fs(id, (TOP)this);
     // }
+  }
+
+  /**
+   * For temporary marker annotations. Does not assign an ID from the CAS ID generator and never
+   * retains the annotation. We also do not trace this annotation.
+   */
+  protected FeatureStructureImplC(JCasImpl jcasImpl, int aId) {
+    _casView = jcasImpl.getCasImpl();
+    _typeImpl = _casView.getTypeSystemImpl().getJCasRegisteredType(getTypeIndexID());
+    _id = aId;
+
+    if (null == _typeImpl) {
+      throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS,
+              this.getClass().getName());
+    }
+
+    if (_casView.maybeMakeBaseVersionForPear(this, _typeImpl)) {
+      _setPearTrampoline();
+    }
+
+    FeatureStructureImplC baseFs = _casView.pearBaseFs;
+    if (null != baseFs) {
+      _intData = baseFs._intData;
+      _refData = baseFs._refData;
+      _casView.pearBaseFs = null;
+    } else {
+      _intData = _allocIntData();
+      _refData = _allocRefData();
+    }
   }
 
   private int[] _allocIntData() {

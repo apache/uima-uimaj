@@ -19,6 +19,7 @@
 package org.apache.uima.cas.impl;
 
 import static org.apache.uima.cas.impl.Subiterator.BoundsUse.notBounded;
+import static org.apache.uima.jcas.tcas.Annotation._createMarkerAnnotation;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationPredicates;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
@@ -64,7 +64,6 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.util.AutoCloseableNoException;
 
 // @formatter:off
 /**
@@ -1019,19 +1018,10 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
   // }
 
   private Annotation makePosAnnot(int begin, int end) {
-    return makePosAnnot(jcas, begin, end);
+    return _createMarkerAnnotation(jcas, begin, end);
   }
 
-  static Annotation makePosAnnot(JCas jcas, int begin, int end) {
-    if (end < begin) {
-      throw new IllegalArgumentException("End value must be >= Begin value");
-    }
-    try (AutoCloseableNoException c = ((CASImpl) jcas.getCas()).ll_forceEnableV2IdRefs(false)) {
-      return new Annotation(jcas, begin, end);
-    }
-  }
-
-//@formatter:off
+  //@formatter:off
   /**
    * Iterator respects backwards
    * 
