@@ -166,6 +166,12 @@
     <api_check_oldVersion>3.4.1</api_check_oldVersion>
 
     <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
+    
+    <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
+    <github-repository>uima-uimaj</github-repository>
+    <git-branch>main</git-branch>
+    <previous-release-version>3.4.1</previous-release-version>
+    <!-- END PROFILE SETTINGS: generate-release-notes-->
   </properties>
 
   <dependencyManagement>

@@ -54,7 +54,7 @@ public class AnnotationTreeNodeImpl<T extends AnnotationFS> implements Annotatio
     try {
       return dtrs.get(i);
     } catch (IndexOutOfBoundsException e) {
-      throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB, null);
+      throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB);
     }
   }
 
