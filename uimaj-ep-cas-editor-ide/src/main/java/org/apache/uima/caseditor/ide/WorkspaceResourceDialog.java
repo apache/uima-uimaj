@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.views.navigator.ResourceSorter;
+import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class WorkspaceResourceDialog {
     dialog.setTitle(dialogTitle);
     dialog.setMessage(dialogMessage);
     dialog.setInput(root);
-    dialog.setSorter(new ResourceSorter(ResourceSorter.NAME));
+    dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
     int buttonId = dialog.open();
     if (buttonId == IDialogConstants.OK_ID) {
       resource = (IResource) dialog.getFirstResult();
@@ -70,7 +70,7 @@ public class WorkspaceResourceDialog {
     dialog.setTitle("Select Cpe descriptor");
     dialog.setMessage("Select Cpe Xml descriptor file");
     dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-    dialog.setSorter(new ResourceSorter(ResourceSorter.NAME));
+    dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
     int buttonId = dialog.open();
     if (buttonId == IDialogConstants.OK_ID) {
       resource = (IResource) dialog.getFirstResult();

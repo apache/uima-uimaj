@@ -347,22 +347,27 @@
                 </goals>
                 <configuration>
                   <target>
-                    <mkdir dir="${staging-local-root}/${staging-folder}" />
-                    <copy todir="${staging-local-root}/${staging-folder}">
-                      <fileset dir="${project.build.directory}">
-                        <include name="uimaj-${project.version}-*.zip" />
-                        <include name="uimaj-${project.version}-*.zip.asc" />
-                        <include name="uimaj-${project.version}-*.zip.sha512" />
-                        <include name="uimaj-${project.version}-*.tar.gz" />
-                        <include name="uimaj-${project.version}-*.tar.gz.asc" />
-                        <include name="uimaj-${project.version}-*.tar.gz.sha512" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${staging-local-root}/${staging-folder}/eclipse-update-site">
-                      <fileset dir="uimaj-eclipse-update-site/target/repository">
-                        <include name="**/*" />
-                      </fileset>
-                    </copy>
+                    <sequential xmlns:if="ant:if" if:set="isApacheRelease">
+                      <mkdir dir="${staging-local-root}/${staging-folder}" />
+                      <copy todir="${staging-local-root}/${staging-folder}">
+                        <fileset dir="${project.build.directory}">
+                          <include name="uimaj-${project.version}-*.zip" />
+                          <include name="uimaj-${project.version}-*.zip.asc" />
+                          <include name="uimaj-${project.version}-*.zip.sha512" />
+                          <include name="uimaj-${project.version}-*.tar.gz" />
+                          <include name="uimaj-${project.version}-*.tar.gz.asc" />
+                          <include name="uimaj-${project.version}-*.tar.gz.sha512" />
+                        </fileset>
+                      </copy>
+                      <copy todir="${staging-local-root}/${staging-folder}/eclipse-update-site">
+                        <fileset dir="uimaj-eclipse-update-site/target/repository">
+                          <include name="**/*" />
+                        </fileset>
+                      </copy>
+                    </sequential>
+                    <sequential xmlns:unless="ant:unless" unless:set="iisApacheRelease">
+                      <echo level="info">Not preparing RC staging - this is not a release build</echo>
+                    </sequential>
                   </target>
                 </configuration>
               </execution>

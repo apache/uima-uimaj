@@ -32,11 +32,11 @@ This chapter provides instructions for
 * installing the UIMA SDK's Eclipse plugins into your Eclipse environment, and 
 * importing the example UIMA code into an Eclipse project. 
 
-The UIMA Eclipse plugins are designed to be used with Eclipse version 4.10 (2018-12) or later. 
+The UIMA Eclipse plugins are designed to be used with Eclipse version 4.29 (2023-09) or later. 
 
 [NOTE]
 ====
-You will need to run Eclipse using a Java at the 1.8 or later level, in order to use the UIMA Eclipse plugins.
+You will need to run Eclipse using a Java 17 or later, in order to use the UIMA Eclipse plugins.
 ====
 
 [[ugr.ovv.eclipse_setup.installation]]

@@ -86,9 +86,9 @@ class QuickTypeSelectionDialog extends PopupDialog {
    * @param editor
    *          the editor
    */
-  @SuppressWarnings("deprecation")
   QuickTypeSelectionDialog(Shell parent, AnnotationEditor editor) {
-    super(parent, PopupDialog.INFOPOPUPRESIZE_SHELLSTYLE, true, true, false, true, null, null);
+    super(parent, PopupDialog.INFOPOPUPRESIZE_SHELLSTYLE, true, true, true, false, true, null,
+            null);
 
     this.editor = editor;
 

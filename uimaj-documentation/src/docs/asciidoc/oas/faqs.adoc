@@ -196,8 +196,8 @@ As of version 2, UIMA development has moved to Apache and is being developed wit
 It is licensed under the Apache version 2 license. 
 
 *What Java level and OS are required for the UIMA SDK?*::
-As of release 3.0.0, the UIMA SDK requires Java 1.8.
-It has been tested on mainly on Windows and Linux platforms, with some testing on the MacOSX.
+As of release 3.5.0, the UIMA SDK requires Java 17.
+It has been tested on mainly on Windows, Linux and macOS platforms.
 Other platforms and JDK implementations will likely work, but have not been as significantly tested.
 
 *Can I build my UIM application on top of UIMA?*::

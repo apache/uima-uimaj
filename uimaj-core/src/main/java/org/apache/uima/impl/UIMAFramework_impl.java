@@ -344,7 +344,7 @@ public class UIMAFramework_impl extends UIMAFramework {
       // get static method getInstance()
       Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
       // invoke getInstance() method and retrieve default logger object
-      return (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
+      return (Logger) instanceMethod.invoke(null, (Object[]) Constants.EMPTY_CLASS_ARRAY);
     } catch (NoSuchMethodException e) {
       throw new UIMARuntimeException(e);
     } catch (InvocationTargetException e) {
@@ -569,7 +569,8 @@ public class UIMAFramework_impl extends UIMAFramework {
           Method instanceMethod = mLoggerClass.getMethod("getInstance",
                   Constants.EMPTY_CLASS_ARRAY);
           // invoke getInstance() method and retrieve default logger object
-          mDefaultLogger = (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
+          mDefaultLogger = (Logger) instanceMethod.invoke(null,
+                  (Object[]) Constants.EMPTY_CLASS_ARRAY);
         } catch (Exception e) {
           throw new SAXException(e);
         }
