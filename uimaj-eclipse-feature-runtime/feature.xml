@@ -149,7 +149,7 @@ Apache UIMA is a trademark of the Apache Software Foundation in the United State
    </url>
 
    <requires>
-      <import plugin="org.slf4j.api"/>
+      <import plugin="slf4j.api"/>
    </requires>
 
    <plugin

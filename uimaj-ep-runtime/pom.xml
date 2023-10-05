@@ -195,7 +195,7 @@
     
                 <Import-Package>
                   !org.slf4j.impl,
-                  org.slf4j.*,
+                  org.slf4j.*;version="[1.7,3)",
                   com.apple.eio;resolution:=optional,
                   !com.strobel.assembler,
                   !com.strobel.assembler.metadata,

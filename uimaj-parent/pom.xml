@@ -100,7 +100,7 @@
 
     <repository>
       <id>${eclipseP2RepoId}</id>
-      <url>https://download.eclipse.org/releases/2018-12/</url>
+      <url>https://download.eclipse.org/releases/2023-09/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -161,7 +161,7 @@
     <maven.compiler.release>17</maven.compiler.release>
     <execution.environment>JavaSE-17</execution.environment>
 
-    <eclipseP2RepoId>org.eclipse.p2.201812</eclipseP2RepoId>
+    <eclipseP2RepoId>org.eclipse.p2.202309</eclipseP2RepoId>
 
     <api_check_oldVersion>3.4.1</api_check_oldVersion>
 

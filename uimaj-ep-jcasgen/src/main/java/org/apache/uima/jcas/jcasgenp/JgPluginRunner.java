@@ -24,16 +24,15 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class holds type plugin-wide collections and static methods. Also implements the runnable that is
  * called to do the processing
  */
-
-public class JgPluginRunner implements IPlatformRunnable {
+public class JgPluginRunner implements IApplication {
 
   /**
    * Instantiates a new jg plugin runner.
@@ -41,15 +40,11 @@ public class JgPluginRunner implements IPlatformRunnable {
   public JgPluginRunner() {
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.core.runtime.IPlatformRunnable#run(java.lang.Object)
-   */
   @Override
-  public Object run(Object object) {
+  public Object start(IApplicationContext aContext) throws Exception {
     try {
-      final String[] arguments = (String[]) object;
+      final String[] arguments = (String[]) aContext.getArguments()
+              .get(IApplicationContext.APPLICATION_ARGS);
       final IWorkspace workspace = ResourcesPlugin.getWorkspace();
       final Jg jg = new Jg();
       IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -66,5 +61,10 @@ public class JgPluginRunner implements IPlatformRunnable {
     }
 
     return 1;
+  }
+
+  @Override
+  public void stop() {
+    // Nothing to do
   }
 }
