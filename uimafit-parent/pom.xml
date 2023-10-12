@@ -23,7 +23,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>17-SNAPSHOT</version>
+    <version>17</version>
   </parent>
 
   <artifactId>uimafit-parent</artifactId>
