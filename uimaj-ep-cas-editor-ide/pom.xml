@@ -158,6 +158,19 @@
                 <Bundle-Activator>org.apache.uima.caseditor.ide.CasEditorIdePlugin</Bundle-Activator>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
+                <!-- 
+                  - Need to enforce not having the "common" attribute here, otherwise we get wired to the wrong bundle
+                  - ("org.eclipse.equinox.common" instead of "org.eclipse.core.runtime").
+                  - Cf. https://bnd.bndtools.org/heads/import_package.html
+                  -->
+                <Import-Package>
+                  org.eclipse.ui;ui.workbench=!,
+                  org.eclipse.ui.dialogs;ui.workbench=!,
+                  org.eclipse.ui.model;ui.workbench=!,
+                  org.eclipse.ui.part;ui.workbench=!,
+                  org.eclipse.core.runtime;common=!,
+                  *
+                </Import-Package>
               </instructions>
             </configuration>
           </execution>

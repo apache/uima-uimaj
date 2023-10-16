@@ -98,9 +98,15 @@
             <Bundle-Activator>org.apache.uima.jcas.jcasgenp.JgPlugin</Bundle-Activator>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
             <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
-            <Require-Bundle>
-              org.eclipse.core.runtime
-            </Require-Bundle>
+            <!-- 
+              - Need to enforce not having the "common" attribute here, otherwise we get wired to the wrong bundle
+              - ("org.eclipse.equinox.common" instead of "org.eclipse.core.runtime").
+              - Cf. https://bnd.bndtools.org/heads/import_package.html
+              -->
+            <Import-Package>
+              org.eclipse.core.runtime;common=!,
+              *
+            </Import-Package>
           </instructions>
         </configuration>
       </plugin>
