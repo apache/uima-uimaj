@@ -38,6 +38,7 @@
     <module>../uimaj-cpe</module>
     <module>../uimaj-examples</module>
     <module>../uimaj-tools</module>
+    <module>../uimaj-json</module>
     <module>../uimaj-adapter-vinci</module>
     <module>../uimaj-test-util</module>
     <module>../uimaj-component-test-util</module>
