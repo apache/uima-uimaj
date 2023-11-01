@@ -238,7 +238,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ====================================================================================================
 
-This product contains SLF4J, licensed and distirbuted under the MIT license:
+This product contains SLF4J, licensed and distributed under the MIT license:
 
 Copyright (c) 2004-2017 QOS.ch
  All rights reserved.
@@ -261,3 +261,4 @@ Copyright (c) 2004-2017 QOS.ch
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
