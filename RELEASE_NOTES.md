@@ -19,7 +19,7 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.4.1 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.5.0 Release Notes
 
 ## Contents
 
@@ -59,7 +59,7 @@ This is a feature and bug fix release.
 ## System requirements updated
 
 * Minimum Java version required: 17 or later
-* Minimum Eclipse version required: 4.29 (2023-09)
+* Minimum Eclipse version required: 4.25 (2022-09)
 
 
 ## What's Changed
@@ -79,7 +79,7 @@ This is a feature and bug fix release.
 * 💀 Issue #339: Drop CasAnnotationViewerApplet and CasTreeViewerApplet
 
 
-**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.4.1...uimaj-3.5.0-SNAPSHOT
+**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.4.1...uimaj-3.5.0
 
 
 ## <a id="get.involved">How to Get Involved</a>

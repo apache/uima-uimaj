@@ -22,7 +22,7 @@ build on Apache UIMA and that provide collections of analysis components or read
 
 Apache UIMA v3.5.0 and later requires Java version 17 or later.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse 4.29 (2023-09) or later using a Java 17 or later.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse 4.25 (2022-09) or later using a Java 17 or later.
 
 Running the migration tool on class files requires running with a Java JDK, not a Java JRE.
 
