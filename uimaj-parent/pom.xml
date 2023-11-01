@@ -100,7 +100,7 @@
 
     <repository>
       <id>${eclipseP2RepoId}</id>
-      <url>https://download.eclipse.org/releases/2023-09/</url>
+      <url>https://download.eclipse.org/releases/2022-09/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -133,6 +133,8 @@
   </pluginRepositories>
 
   <properties>
+    <tycho-version>4.0.3</tycho-version>
+    
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
@@ -161,7 +163,7 @@
     <maven.compiler.release>17</maven.compiler.release>
     <execution.environment>JavaSE-17</execution.environment>
 
-    <eclipseP2RepoId>org.eclipse.p2.202309</eclipseP2RepoId>
+    <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
 
     <api_check_oldVersion>3.4.1</api_check_oldVersion>
 
@@ -248,27 +250,6 @@
         <version>${commons-csv-version}</version>
       </dependency>
       <dependency>
-        <groupId>${eclipseP2RepoId}</groupId>
-        <artifactId>org.eclipse.jdt.debug</artifactId>
-        <exclusions>
-          <exclusion>
-            <!-- 
-              The p2 resolver appears to have trouble with the "icu-data" classifier
-             -->
-            <groupId>${eclipseP2RepoId}</groupId>
-            <artifactId>com.ibm.icu</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- 
-              The p2 resolver appears to have trouble with this one and tries to download it with 
-              "tools" as the classifier.
-             -->
-            <groupId>${eclipseP2RepoId}</groupId>
-            <artifactId>org.eclipse.jdt.debug</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>org.sonatype.plexus</groupId>
         <artifactId>plexus-build-api</artifactId>
         <version>0.0.7</version>
@@ -292,6 +273,154 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-compat</artifactId>
         <version>${maven.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jface</artifactId>
+        <version>3.27.0.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jface.text</artifactId>
+        <version>3.21.0.v20220817-1340</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+        <version>3.121.0.v20220829-1402</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.runtime</artifactId>
+        <version>3.26.0.v20220813-0916</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.resources</artifactId>
+        <version>3.18.0.v20220828-0546</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.filesystem</artifactId>
+        <version>1.9.500.v20220817-1539</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.debug.core</artifactId>
+        <version>3.20.0.v20220811-0741</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.debug.ui</artifactId>
+        <version>3.17.0.v20220817-1312</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.emf.codegen</artifactId>
+        <version>2.22.0.v20210420-0623</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.app</artifactId>
+        <version>1.6.200.v20220720-2012</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.common</artifactId>
+        <version>3.16.200.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.registry</artifactId>
+        <version>3.11.200.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.preferences</artifactId>
+        <version>3.10.100.v20220710-1223</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.osgi</artifactId>
+        <version>3.18.100.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.text</artifactId>
+        <version>3.12.200.v20220817-1340</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.editors</artifactId>
+        <version>3.14.400.v20220730-1844</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.forms</artifactId>
+        <version>3.11.400.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.ide</artifactId>
+        <version>3.19.100.v20220820-0412</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.views</artifactId>
+        <version>3.11.200.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.workbench</artifactId>
+        <version>3.126.0.v20220823-0718</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+        <version>3.16.600.v20220809-1658</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.core</artifactId>
+        <version>3.31.0.v20220831-1439</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.launching</artifactId>
+        <version>3.19.700.v20220730-1850</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.debug</artifactId>
+        <version>3.19.300.v20220812-1529</version>
+        <exclusions>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with the "icu-data" classifier
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>com.ibm.icu</artifactId>
+          </exclusion>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with this one and tries to download it with 
+              "tools" as the classifier.
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>org.eclipse.jdt.debug</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.ui</artifactId>
+        <version>3.27.0.v20220824-0714</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.debug.ui</artifactId>
+        <version>3.12.800.v20220813-1738</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

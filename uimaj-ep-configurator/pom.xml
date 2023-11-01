@@ -67,104 +67,87 @@
     <!-- Eclipse dependencies -->
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jface</artifactId>
-      <version>[3.13.0, 4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jdt.ui</artifactId>
-      <version>[3.12.0, 4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-      <version>[3.2.0,5.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.equinox.common</artifactId>
-      <version>[3.10.200,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jdt.launching</artifactId>
-      <version>[3.12.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.jface.text</artifactId>
-      <version>[3.15.0,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
-      <version>[3.11.200,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
-      <artifactId>org.eclipse.ui.workbench</artifactId>
-      <version>[3.112.100,4.0.0)</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.core.resources</artifactId>
-      <version>[3.13.200,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>[3.15.100,4.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jface.text</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.ui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.jdt.launching</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.equinox.common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${eclipseP2RepoId}</groupId>
+      <artifactId>org.eclipse.ui.workbench</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui.ide</artifactId>
-      <version>[3.14.200,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui.editors</artifactId>
-      <version>[3.11.300,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
-      <version>[3.13.200,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.equinox.registry</artifactId>
-      <version>[3.8.200,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.text</artifactId>
-      <version>[3.8.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>[3.16.0,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.ui.forms</artifactId>
-      <version>[3.7.400,4.0.0)</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

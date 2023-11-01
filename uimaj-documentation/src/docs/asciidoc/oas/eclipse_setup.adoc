@@ -32,7 +32,7 @@ This chapter provides instructions for
 * installing the UIMA SDK's Eclipse plugins into your Eclipse environment, and 
 * importing the example UIMA code into an Eclipse project. 
 
-The UIMA Eclipse plugins are designed to be used with Eclipse version 4.29 (2023-09) or later. 
+The UIMA Eclipse plugins are designed to be used with Eclipse version 4.25 (2022-09) or later. 
 
 [NOTE]
 ====
@@ -45,9 +45,9 @@ You will need to run Eclipse using a Java 17 or later, in order to use the UIMA 
 [[ugr.ovv.eclipse_setup.install_eclipse]]
 === Install Eclipse
 
-* Go to &url_eclipse;link: and follow the instructions there to download Eclipse. 
+* Go to https://www.eclipse.org/downloads/ and follow the instructions there to download Eclipse. 
 * We recommend using the latest release level. Navigate to the Eclipse Release version you want and download the archive for your platform.
-* Unzip the archive to install Eclipse somewhere, e.g., c:\
+* Unzip the archive to install Eclipse somewhere, e.g., `c:\`
 * Eclipse has a bit of a learning curve. If you plan to make significant use of Eclipse, check out the tutorial under the help menu. It is well worth the effort. There are also books you can get that describe Eclipse and its use.
 
 The first time Eclipse starts up it will take a bit longer as it completes its installation.
@@ -63,7 +63,7 @@ See below for an alternative, manual approach.
 [NOTE]
 ====
 If your computer is on an internet connection which uses a proxy server, you can configure Eclipse to know about that.
-Put your proxy settings into Eclipse using the Eclipse preferences by accessing the menus: Window →Preferences... →Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the information about your proxy. 
+Put your proxy settings into Eclipse using the Eclipse preferences by accessing the menus: Window → Preferences... → Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the information about your proxy. 
 ====
 
 To use the Eclipse Install New Software mechanism, start Eclipse, and then pick the menu ``Help → Install new software...``.
@@ -117,7 +117,7 @@ Here's how to create a special project in Eclipse to hold the examples.
 * In Eclipse, if the Java perspective is not already open, switch to it by going to Window →Open Perspective →Java.
 * Set up a class path variable named UIMA_HOME, whose value is the directory where you installed the UIMA SDK. This is done as follows: 
 +
-** Go to Window →Preferences →Java →Build Path →Classpath Variables.
+** Go to Window → Preferences → Java → Build Path → Classpath Variables.
 ** Click "`New`"
 ** Enter UIMA_HOME (all capitals, exactly as written) in the "`Name`" field.
 ** Enter your installation directory (e.g. ``C:/Program Files/apache-uima``) in the "`Path`" field
@@ -145,7 +145,7 @@ To add the source code to the jars, you need to:
 
 * Download and unpack the UIMA source distribution. 
 * Download and install the UIMA binary distribution (the UIMA_HOME environment variable needs to be set to point to where you installed the UIMA binary distribution). 
-* "cd" to the root directory of the source distribution
+* `cd` to the root directory of the source distribution
 * Execute the `src\main\readme_src\addSourceToJars` script in the root directory of the  source distribution. 
 
 This adds the source code to the jar files, and it will then be automatically available from Eclipse.
