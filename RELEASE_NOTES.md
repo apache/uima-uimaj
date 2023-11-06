@@ -19,7 +19,7 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.4.1 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.5.0 Release Notes
 
 ## Contents
 
@@ -50,22 +50,37 @@ specification is, in turn, being developed concurrently by a technical committee
 participate in both the implementation and specification efforts.
 
 UIMA is a component framework for analysing unstructured content such as text, audio and video. It
-comprises an SDK and tooling for composing and running analytic components written in Java and C++,
-with some support for Perl, Python and TCL.
+comprises an SDK and tooling for composing and running analytic components written in Java and C++.
 
 ## <a id="major.changes">Notable changes in this release</a>
 
-This is a bug fix release.
+This is a feature and bug fix release.
+
+## System requirements updated
+
+* Minimum Java version required: 17 or later
+* Minimum Eclipse version required: 4.25 (2022-09)
 
 
 ## What's Changed
+* ⭐️ Issue #327: Provide a BOM
+* ⭐️ Issue #341: Deploy Eclipse feature definitions to Maven repo
+* 🦟 Issue #315: ThreadContextClassLoader ignored by ResourceManager when extension classloader is set
+* 🦟 Issue #320: Copy of FsIterator_set_sorted_pear does not retain position
+* 🦟 Issue #337: Component description editor may not open in Eclipse
+* 🦟 Issue #346: Helper annotation created by subiterator may remain in CAS
+* 🦟 Issue #345: Certain select operations deplete FS ID pool
+* ⚙️ Issue #319: SelectFSs_impl.close() creates stream just to close it
+* ⚙️ Issue #331: Convert remaining documentation to asciidoc
+* ⚙️ Issue #335: Remove dependency on JUnit 4 and JUnit Assert
+* ⚙️ Issue #350: Clean up and modernize code
+* 🩹 Issue #317: Update dependencies
+* 🩹 Issue #325: Update dependencies
+* 💀 Issue #339: Drop CasAnnotationViewerApplet and CasTreeViewerApplet
 
-* 🦟 Issue #304: - Unable to deserialize CAS if last element on the heap is an empty array by @reckart in https://github.com/apache/uima-uimaj/pull/305
-* 🦟 Issue #306: Cannot install Ruta 3.3.0 workbench against UIMA 3.4.0 Eclipse plugins by @reckart in https://github.com/apache/uima-uimaj/pull/307
-* 🦟 Issue #303: Build fails on Windows if namespace contains whitespace by @reckart in https://github.com/apache/uima-uimaj/pull/309
-* 🩹 Issue #302: Update dependencies by @reckart in https://github.com/apache/uima-uimaj/pull/308
 
-**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.4.0...uimaj-3.4.1
+**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.4.1...uimaj-3.5.0
+
 
 ## <a id="get.involved">How to Get Involved</a>
 

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.5.0-SNAPSHOT</version>
+    <version>3.5.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -38,42 +38,42 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>org.apache.uima.runtime</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-cas-editor</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-cas-editor-ide</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-configurator</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-debug</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-pear-packager</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-launcher</artifactId>
-      <version>3.5.0-SNAPSHOT</version>
+      <version>3.5.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
@@ -96,15 +96,15 @@
                   <target>
                     <echo message="Generating checksums for p2content.xml" />
                     <property name="p2content-path" location="${project.build.directory}/${project.artifactId}-${project.version}-p2metadata.xml" />
-                    <copy file="${project.build.directory}/p2content.xml" tofile="${p2content-path}" overwrite="true" verbose="true"/>
+                    <copy file="${project.build.directory}/p2content.xml" tofile="${p2content-path}" overwrite="true" verbose="true" />
                     <checksum format="MD5SUM" forceoverwrite="yes" algorithm="SHA-512" fileext=".sha512" file="${p2content-path}" />
-                    <copy file="${p2content-path}.sha512" tofile="${project.build.directory}/p2content.xml.sha512" overwrite="true" verbose="true"/>
+                    <copy file="${p2content-path}.sha512" tofile="${project.build.directory}/p2content.xml.sha512" overwrite="true" verbose="true" />
     
                     <echo message="Generating checksums for p2artifacts.xml" />
                     <property name="p2artifacts-path" location="${project.build.directory}/${project.artifactId}-${project.version}-p2artifacts.xml" />
-                    <copy file="${project.build.directory}/p2artifacts.xml" tofile="${p2artifacts-path}" overwrite="true" verbose="true"/>
+                    <copy file="${project.build.directory}/p2artifacts.xml" tofile="${p2artifacts-path}" overwrite="true" verbose="true" />
                     <checksum format="MD5SUM" forceoverwrite="yes" algorithm="SHA-512" fileext=".sha512" file="${p2artifacts-path}" />
-                    <copy file="${p2artifacts-path}.sha512" tofile="${project.build.directory}/p2artifacts.xml.sha512" overwrite="true" verbose="true"/>
+                    <copy file="${p2artifacts-path}.sha512" tofile="${project.build.directory}/p2artifacts.xml.sha512" overwrite="true" verbose="true" />
                   </target>
                 </configuration>
               </execution>

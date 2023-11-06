@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.5.0-SNAPSHOT</version>
+    <version>3.5.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -38,6 +38,7 @@
     <module>../uimaj-cpe</module>
     <module>../uimaj-examples</module>
     <module>../uimaj-tools</module>
+    <module>../uimaj-json</module>
     <module>../uimaj-adapter-vinci</module>
     <module>../uimaj-test-util</module>
     <module>../uimaj-component-test-util</module>

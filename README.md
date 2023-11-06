@@ -20,9 +20,9 @@ build on Apache UIMA and that provide collections of analysis components or read
 
 #### System requirements
 
-Apache UIMA v3.0.0 and later requires Java version 8; it has been tested with Java 11 and Java 8.
+Apache UIMA v3.5.0 and later requires Java version 17 or later.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse 4.25 (2022-09) or later using a Java 17 or later.
 
 Running the migration tool on class files requires running with a Java JDK, not a Java JRE.
 
@@ -44,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.4.1</version>
+  <version>3.5.0</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Apache uimaFIT is a separate dependency that you can add:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>3.4.0</version>
+  <version>3.5.0</version>
 </dependency>
 ```
 
@@ -159,7 +159,7 @@ for (var anno : cas.<Annotation>select(entityType)) {
 
 #### Building
 
-To build Apache UIMA, you need at least a Java 11 JDK and a recent Maven 3 version.
+To build Apache UIMA, you need at least a Java 17 JDK and a recent Maven 3 version.
 
 After extracting the source distribution ZIP or cloning the repository, change into the created
 directory and run the following command:
