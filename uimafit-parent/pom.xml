@@ -91,6 +91,12 @@
     <execution.environment>JavaSE-17</execution.environment>
     
     <api_check_oldVersion>3.4.0</api_check_oldVersion>
+
+    <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
+    <github-repository>uima-uimafit</github-repository>
+    <git-branch>main</git-branch>
+    <previous-release-version>3.4.0</previous-release-version>
+    <!-- END PROFILE SETTINGS: generate-release-notes-->
   </properties>
 
   <dependencies>
