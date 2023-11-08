@@ -35,10 +35,10 @@
     <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}uimaFIT</jiraVersion>
   </properties>
   <scm>
-    <connection>scm:git:git://github.com/apache/uima-uimafit</connection>
-    <developerConnection>scm:git:git@github.com:apache/uima-uimafit.git</developerConnection>
-    <url>https://github.com/apache/uima-uimafit</url>
     <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/apache/uima-uimafit/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimafit/</developerConnection>
+    <url>https://github.com/apache/uima-uimafit/</url>
   </scm>
   <licenses>
     <license>
