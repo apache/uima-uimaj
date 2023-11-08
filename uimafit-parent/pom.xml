@@ -23,7 +23,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>17-SNAPSHOT</version>
+    <version>17</version>
   </parent>
 
   <artifactId>uimafit-parent</artifactId>
@@ -51,7 +51,6 @@
       - The Eclipse Plugin modules use version ranges for their dependencies. These could resolve to
       - SNAPSHOT versions if we have a SNAPSHOT repo declaration here. Thus, this repo should only
       - be enabled when really needed.
-      -->
     <repository>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
@@ -63,24 +62,24 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+      -->
   </repositories>
 
   <properties>
     <spring-version>5.3.30</spring-version>
-    <uima-version>3.5.0-SNAPSHOT</uima-version>
+    <uima-version>3.5.0</uima-version>
     <slf4j-version>1.7.36</slf4j-version>
     <maven.version>3.8.1</maven.version>
 
-    <junit-version>5.10.0</junit-version>
-    <junit-platform-version>1.10.0</junit-platform-version>
+    <junit-version>5.10.1</junit-version>
+    <junit-platform-version>1.10.1</junit-platform-version>
     <assertj-version>3.24.2</assertj-version>
-    <mockito-version>5.4.0</mockito-version>
+    <mockito-version>5.7.0</mockito-version>
     <opentest4j-version>1.3.0</opentest4j-version>
     <xmlunit-version>2.9.1</xmlunit-version>
     
-    <commons-io-version>2.13.0</commons-io-version>
+    <commons-io-version>2.15.0</commons-io-version>
     <commons-lang3-version>3.13.0</commons-lang3-version>
-    <groovy-version>3.0.18</groovy-version>
 
     <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
     <asciidoctor.version>2.5.10</asciidoctor.version>
@@ -228,7 +227,12 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.0.20</version>
+        <version>3.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.29.2-GA</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -290,7 +294,6 @@
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1.1</version>
         <executions>
           <execution>
             <!-- Load postNoticeText from NOTICE file -->
@@ -312,14 +315,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy-version}</version>
-            <type>pom</type>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
     <pluginManagement>
