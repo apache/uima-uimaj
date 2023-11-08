@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>uimafit-parent</artifactId>
-  <version>3.5.0-SNAPSHOT</version>
+  <version>3.5.0</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA uimaFIT - Parent</name>
@@ -40,7 +40,7 @@
   </issueManagement>
   
   <scm>
-    <tag>HEAD</tag>
+    <tag>uimafit-3.5.0</tag>
     <connection>scm:git:https://github.com/apache/uima-uimafit/</connection>
     <developerConnection>scm:git:https://github.com/apache/uima-uimafit/</developerConnection>
     <url>https://github.com/apache/uima-uimafit/</url>
