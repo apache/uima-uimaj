@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>uimafit-parent</artifactId>
-  <version>3.5.1-SNAPSHOT</version>
+  <version>3.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA uimaFIT - Parent</name>
