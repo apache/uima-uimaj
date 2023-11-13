@@ -85,11 +85,27 @@ uimaFIT is available via Maven Central. If you use Maven for your build
 environment, then you can add uimaFIT as a dependency to your pom.xml file with the 
 following:
 
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimafit-core</artifactId>
-      <version>3.4.0</version>
-    </dependency>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>uimafit-core</artifactId>
+        <version>3.5.0</version>
+      </dependency>
+    </dependencies>
+    
+If you want to manage the version for multiple uimaFIT dependencies, you can import the BOM:
+
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>uimafit-bom</artifactId>
+          <version>3.5.0</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+      </dependencies>
+    <dependencyManagement>
 
 
 Modules
