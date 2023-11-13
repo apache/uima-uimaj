@@ -95,7 +95,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  void setConfigurationGroups(ConfigurationGroup[] aGroups);
+  void setConfigurationGroups(ConfigurationGroup... aGroups);
 
   /**
    * Adds a Configuration Group.
@@ -137,7 +137,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
    *          parameter common to all groups.
    */
-  void setCommonParameters(ConfigurationParameter[] aParams);
+  void setCommonParameters(ConfigurationParameter... aParams);
 
   /**
    * Adds a Configuration Parameter that is common to all groups.

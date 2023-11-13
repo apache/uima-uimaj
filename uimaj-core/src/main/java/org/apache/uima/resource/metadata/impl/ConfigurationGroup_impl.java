@@ -62,7 +62,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    * @see ConfigurationGroup#setNames(java.lang.String[])
    */
   @Override
-  public void setNames(String[] aNames) {
+  public void setNames(String... aNames) {
     mNames = aNames;
   }
 
@@ -78,7 +78,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    * @see ConfigurationGroup#setConfigurationParameters(ConfigurationParameter[])
    */
   @Override
-  public void setConfigurationParameters(ConfigurationParameter[] aParams) {
+  public void setConfigurationParameters(ConfigurationParameter... aParams) {
     mConfigurationParameters = aParams;
   }
 

@@ -198,7 +198,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#setOverrides(java.lang.String[])
    */
   @Override
-  public void setOverrides(String[] aOverrides) {
+  public void setOverrides(String... aOverrides) {
     if (aOverrides == null) {
       mOverrides = Constants.EMPTY_STRING_ARRAY;
     } else {

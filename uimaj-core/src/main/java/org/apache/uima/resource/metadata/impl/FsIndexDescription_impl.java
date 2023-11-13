@@ -106,7 +106,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
    * @see FsIndexDescription#setKeys(FsIndexKeyDescription[])
    */
   @Override
-  public void setKeys(FsIndexKeyDescription[] aKeys) {
+  public void setKeys(FsIndexKeyDescription... aKeys) {
     if (aKeys == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aKeys", "setKeys" });

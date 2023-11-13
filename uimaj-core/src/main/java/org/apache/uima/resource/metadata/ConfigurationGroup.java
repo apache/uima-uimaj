@@ -43,7 +43,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    * @param aNames
    *          an array of group names. Names are not allowed to contain whitespace.
    */
-  void setNames(String[] aNames);
+  void setNames(String... aNames);
 
   /**
    * Gets the configuration parameters in this group.
@@ -60,7 +60,7 @@ public interface ConfigurationGroup extends MetaDataObject {
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
    *          configuration parameter in this group.
    */
-  void setConfigurationParameters(ConfigurationParameter[] aParams);
+  void setConfigurationParameters(ConfigurationParameter... aParams);
 
   /**
    * Adds a Configuration Parameter to this group.

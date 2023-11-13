@@ -174,7 +174,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          an array of {@link org.apache.uima.resource.ExternalResourceDescription} objects that
    *          describe the external resources.
    */
-  void setExternalResources(ExternalResourceDescription[] aDescriptions);
+  void setExternalResources(ExternalResourceDescription... aDescriptions);
 
   /**
    * Adds a External Resource to this configuration
@@ -220,7 +220,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          an array of {@link org.apache.uima.resource.metadata.ExternalResourceBinding} objects
    *          that bind dependencies to resources.
    */
-  void setExternalResourceBindings(ExternalResourceBinding[] aBindings);
+  void setExternalResourceBindings(ExternalResourceBinding... aBindings);
 
   /**
    * Adds a External ResourceBinding to this configuration

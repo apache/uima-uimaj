@@ -118,7 +118,7 @@ public interface Capability extends MetaDataObject {
    * @param aInputs
    *          an array of references to Types or Features in this Resource's TypeSystem.
    */
-  void setInputs(TypeOrFeature[] aInputs);
+  void setInputs(TypeOrFeature... aInputs);
 
   /**
    * Sets the outputs of this Capability.
@@ -126,7 +126,7 @@ public interface Capability extends MetaDataObject {
    * @param aOutputs
    *          an array of references to Types or Features in this Resource's TypeSystem.
    */
-  void setOutputs(TypeOrFeature[] aOutputs);
+  void setOutputs(TypeOrFeature... aOutputs);
 
   /**
    * Sets the input Sofa names.
@@ -135,7 +135,7 @@ public interface Capability extends MetaDataObject {
    *          an array of strings containing SofA names
    */
   /* Reserved for future use. */
-  void setInputSofas(String[] aInputSofas);
+  void setInputSofas(String... aInputSofas);
 
   /**
    * Sets the output Sofa names of this capability
@@ -143,7 +143,7 @@ public interface Capability extends MetaDataObject {
    * @param aOutputSofas
    *          an array of strings containing SoFA name
    */
-  void setOutputSofas(String[] aOutputSofas);
+  void setOutputSofas(String... aOutputSofas);
 
   /**
    * Sets the <code>Precondition</code>s of this <code>Capability</code>.
@@ -154,7 +154,7 @@ public interface Capability extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setPreconditions(Precondition[] aPreconditions);
+  void setPreconditions(Precondition... aPreconditions);
 
   /**
    * A convenience method that sets the languages that this Resource supports. This is only
@@ -168,7 +168,7 @@ public interface Capability extends MetaDataObject {
    *          an array of ISO language identifiers. An empty array means that the Resource claims to
    *          be language-independent.
    */
-  void setLanguagesSupported(String[] aLanguageIDs);
+  void setLanguagesSupported(String... aLanguageIDs);
 
   /**
    * A convenience method that sets the MIME types that this Resource can take as input.
@@ -180,7 +180,7 @@ public interface Capability extends MetaDataObject {
    *          an array of MIME types. This may be empty if the Resource does not declare MIME type
    *          preconditions.
    */
-  void setMimeTypesSupported(String[] aMimeTypes);
+  void setMimeTypesSupported(String... aMimeTypes);
 
   /**
    * A convenience method that adds an input Type to this Capability.

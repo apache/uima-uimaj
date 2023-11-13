@@ -168,7 +168,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
    * uima.resource.ExternalResourceDescription[])
    */
   @Override
-  public void setExternalResources(ExternalResourceDescription[] aDescriptions) {
+  public void setExternalResources(ExternalResourceDescription... aDescriptions) {
     mExternalResources = (aDescriptions != null) ? aDescriptions
             : ExternalResourceDescription.EMPTY_EXTERNAL_RESORUCE_DESCRIPTIONS;
   }
@@ -192,7 +192,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl
    * apache.uima.resource.metadata.ExternalResourceBinding[])
    */
   @Override
-  public void setExternalResourceBindings(ExternalResourceBinding[] aBindings) {
+  public void setExternalResourceBindings(ExternalResourceBinding... aBindings) {
     mBindings = (aBindings != null) ? aBindings : ExternalResourceBinding.EMPTY_RESOURCE_BINDINGS;
   }
 
