@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -41,6 +42,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.spi.TypeSystemDescriptionProvider;
 
 public class TypeSystemUtil {
+
+  private static final String NAMESPACE_SEPARATOR_AS_STRING = "" + TypeSystem.NAMESPACE_SEPARATOR;
 
   /**
    * Loads type system descriptions and resolves their imports. For example when you place a
@@ -206,4 +209,74 @@ public class TypeSystemUtil {
     return lts.ll_getStringSet(lts.ll_getCodeForType(aType));
   }
 
+  /**
+   * @return if the given {@code name} is a valid feature name. Does not check if the feature
+   *         actually exists!
+   * @param name
+   *          The name to check.
+   */
+  public static boolean isFeatureName(String name) {
+
+    return isIdentifier(name);
+  }
+
+  /**
+   * Check if {@code name} is a possible type name. Does not check if this type actually exists!
+   * 
+   * @param name
+   *          The name to check.
+   * @return <code>true</code> iff <code>name</code> is a possible type name.
+   */
+  public static boolean isTypeName(String name) {
+    // Create a string tokenizer that will split the string at the name space
+    // boundaries. We need to see the delimiters to make sure there are no
+    // gratuitous delimiters at the beginning or the end.
+    var tok = new StringTokenizer(name, NAMESPACE_SEPARATOR_AS_STRING, true);
+    // Loop over the tokens and check that every item is an identifier.
+    while (tok.hasMoreTokens()) {
+      // Any subsequence must start with an identifier.
+      if (!isIdentifier(tok.nextToken())) {
+        return false;
+      }
+      // If there is a next token, it must be a separator.
+      if (tok.hasMoreTokens()) {
+        // A sequence can not end in a separator.
+        if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING) || !tok.hasMoreTokens()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private static boolean isIdentifier(String s) {
+    if (s == null) {
+      return false;
+    }
+    final int len = s.length();
+    if (len == 0) {
+      return false;
+    }
+    int pos = 0;
+    // Check that the first character is a letter.
+    if (!isIdentifierStart(s.charAt(pos))) {
+      return false;
+    }
+    ++pos;
+    while (pos < len) {
+      if (!isIdentifierChar(s.charAt(pos))) {
+        return false;
+      }
+      ++pos;
+    }
+    return true;
+  }
+
+  private static boolean isIdentifierStart(char c) {
+    return Character.isLetter(c);
+  }
+
+  private static boolean isIdentifierChar(char c) {
+    return (Character.isLetter(c) || Character.isDigit(c) || (c == '_'));
+  }
 }
