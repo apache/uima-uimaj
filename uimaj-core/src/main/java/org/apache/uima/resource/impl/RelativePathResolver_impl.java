@@ -19,23 +19,24 @@
 
 package org.apache.uima.resource.impl;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.uima.resource.RelativePathResolver;
-import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link RelativePathResolver}.
@@ -43,18 +44,17 @@ import org.apache.uima.util.impl.Constants;
 public class RelativePathResolver_impl implements RelativePathResolver {
 
   /** Data path as a string. */
+  @Deprecated(since = "3.6.0")
   private List<String> mDataPath;
 
   /** Array of base URLs parsed from the data path. */
-  private URL[] mBaseUrls;
+  private List<URL> mBaseUrls;
 
   /** ClassLoader to fall back on if resource not in data path. */
   private ClassLoader mClassLoader;
 
   public RelativePathResolver_impl() {
-    this(null);
-    mClassLoader = getClass().getClassLoader(); // default value, maybe overridden by
-                                                // setPathResolverClassLoader
+    this(MethodHandles.lookup().lookupClass().getClassLoader());
   }
 
   public RelativePathResolver_impl(ClassLoader aClassLoader) {
@@ -84,95 +84,199 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       setDataPath(dataPath);
     } catch (MalformedURLException e) {
       // initialize to empty path
-      mDataPath = emptyList();
-      mBaseUrls = Constants.EMPTY_URL_ARRAY;
+      mDataPath = null;
+      mBaseUrls = null;
     }
+
     mClassLoader = aClassLoader;
   }
 
   @Override
   @Deprecated
   public String getDataPath() {
-    String pathSepChar = System.getProperty("path.separator");
+    if (mDataPath == null) {
+      return "";
+    }
+
+    var pathSepChar = System.getProperty("path.separator");
     return mDataPath.stream().collect(joining(pathSepChar));
   }
 
+  @Deprecated
   @Override
   public List<String> getDataPathElements() {
-    return mDataPath;
+    if (mDataPath == null) {
+      return emptyList();
+    }
+
+    return unmodifiableList(mDataPath);
   }
 
   @Override
-  public void setDataPathElements(File... aPaths) throws MalformedURLException {
-    if (aPaths == null) {
-      mDataPath = emptyList();
-      mBaseUrls = Constants.EMPTY_URL_ARRAY;
-      return;
+  public List<URL> getDataPathUrls() {
+    if (mBaseUrls == null) {
+      return emptyList();
     }
 
-    mDataPath = unmodifiableList(Arrays.stream(aPaths) //
-            .map(File::getPath) //
-            .map(s -> s.replace(File.separator, "/")) //
-            .collect(toList()));
-    mBaseUrls = new URL[aPaths.length];
-    for (int i = 0; i < aPaths.length; i++) {
-      // Note, this URL can contain space characters if there were spaces in the
-      // datapath. This may not be ideal but we're keeping that behavior for
-      // backwards compatibility. Some components relied on this (e.g. by calling
-      // URL.getFile() and expecting it to be a valid file name).
-      mBaseUrls[i] = aPaths[i].toURL();
-    }
+    return unmodifiableList(mBaseUrls);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
-  public void setDataPathElements(String... aPaths) throws MalformedURLException {
-    if (aPaths == null) {
+  public void setDataPathElements(File... aElements) throws MalformedURLException {
+    if (aElements == null) {
       mDataPath = null;
       mBaseUrls = null;
       return;
     }
 
-    mDataPath = unmodifiableList(Arrays.stream(aPaths).collect(toList()));
-    mBaseUrls = new URL[aPaths.length];
-    for (int i = 0; i < aPaths.length; i++) {
+    var baseUrls = new ArrayList<URL>(aElements.length);
+    for (var path : aElements) {
       // Note, this URL can contain space characters if there were spaces in the
       // datapath. This may not be ideal but we're keeping that behavior for
       // backwards compatibility. Some components relied on this (e.g. by calling
       // URL.getFile() and expecting it to be a valid file name).
-      mBaseUrls[i] = new File(aPaths[i]).toURL();
+      baseUrls.add(path.toURL());
     }
+
+    mDataPath = stream(aElements) //
+            .map(File::getPath) //
+            .map(s -> s.replace(File.separator, "/")) //
+            .toList();
+    mBaseUrls = baseUrls;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public void setDataPathElements(String... aElements) throws MalformedURLException {
+    if (aElements == null) {
+      mDataPath = null;
+      mBaseUrls = null;
+      return;
+    }
+
+    var dataPath = new ArrayList<String>(aElements.length);
+
+    var baseUrls = new ArrayList<URL>(aElements.length);
+    for (var element : aElements) {
+      try {
+        var url = new URL(element);
+        baseUrls.add(url);
+        var protocol = url.getProtocol();
+        if ((protocol != null) && protocol.equalsIgnoreCase("file")) {
+          dataPath.add(new File(URLDecoder.decode(url.getPath(), UTF_8)).getPath());
+        }
+      } catch (MalformedURLException e) {
+        // Note, this URL can contain space characters if there were spaces in the
+        // datapath. This may not be ideal but we're keeping that behavior for
+        // backwards compatibility. Some components relied on this (e.g. by calling
+        // URL.getFile() and expecting it to be a valid file name).
+        baseUrls.add(new File(element).toURL());
+        dataPath.add(element);
+      }
+    }
+
+    mDataPath = dataPath;
+    mBaseUrls = baseUrls;
+  }
+
+  @Override
+  public void setDataPathElements(URL... aElements) {
+    if (aElements == null) {
+      mDataPath = null;
+      mBaseUrls = null;
+      return;
+    }
+
+    var dataPath = new ArrayList<String>(aElements.length);
+    for (var url : aElements) {
+      var protocol = url.getProtocol();
+      if ((protocol == null) || !protocol.equalsIgnoreCase("file")) {
+        continue;
+      }
+      dataPath.add(new File(URLDecoder.decode(url.getPath(), UTF_8)).getPath());
+    }
+
+    mDataPath = dataPath;
+    mBaseUrls = asList(aElements);
   }
 
   @Override
   @Deprecated
   public void setDataPath(String aPath) throws MalformedURLException {
-    List<URL> urls = new ArrayList<>();
-    List<String> paths = new ArrayList<>();
+    var urls = new ArrayList<URL>();
+    var paths = new ArrayList<String>();
 
     // tokenize based on path.separator system property
-    String pathSepChar = System.getProperty("path.separator");
-    StringTokenizer tokenizer = new StringTokenizer(aPath, pathSepChar);
+    var pathSepChar = System.getProperty("path.separator");
+    var tokenizer = new StringTokenizer(aPath, pathSepChar);
     while (tokenizer.hasMoreTokens()) {
-      String tok = tokenizer.nextToken();
+      var tok = tokenizer.nextToken();
       paths.add(tok);
-      URL url = new File(tok).toURL();
-      urls.add(url);
       // Note, this URL can contain space characters if there were spaces in the
       // datapath. This may not be ideal but we're keeping that behavior for
       // backwards compatibility. Some components relied on this (e.g. by calling
       // URL.getFile() and expecting it to be a valid file name).
+      urls.add(new File(tok).toURL());
     }
-    mBaseUrls = urls.toArray(new URL[urls.size()]);
-    mDataPath = unmodifiableList(paths);
+
+    mDataPath = paths;
+    mBaseUrls = urls;
   }
 
   @Override
-  public URL resolveRelativePath(URL aRelativeUrl) {
+  public URL resolveRelativePath(String aPathOrUrl) {
+    // check if an URL was passed in - if so, we fall back to the old logic which is a bit odd
+    // because for relative URLs, it basically discards the protocol. This is behavior we may
+    // want to change on the next major release... e.g. to require that relative paths are
+    // always specified without a protocol.
+    try {
+      var url = new URL(aPathOrUrl);
+      return resolveRelativePath(url);
+    } catch (MalformedURLException e) {
+      // ignore and move on
+    }
+
     // try each base URL
-    URL[] baseUrls = getBaseUrls();
-    for (int i = 0; i < baseUrls.length; i++) {
+    for (var baseUrl : mBaseUrls) {
       try {
-        URL absUrl = new URL(baseUrls[i], aRelativeUrl.toString());
+        var absUrl = new URL(baseUrl, aPathOrUrl);
+        // if file exists here, return this URL
+        if (fileExistsAtUrl(absUrl)) {
+          return absUrl;
+        }
+      } catch (MalformedURLException e) {
+        // ignore and move on to next base URL
+      }
+    }
+
+    // fallback on classloader
+    URL absURL = null;
+    if (mClassLoader != null) {
+      absURL = mClassLoader.getResource(aPathOrUrl);
+    }
+
+    // fallback on TCCL
+    if (absURL == null) {
+      var tccl = Thread.currentThread().getContextClassLoader();
+      absURL = tccl.getResource(aPathOrUrl);
+    }
+
+    // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
+    if (absURL == null && mClassLoader == null) {
+      absURL = ClassLoader.getSystemClassLoader().getResource(aPathOrUrl);
+    }
+
+    return absURL;
+  }
+
+  @Deprecated
+  @Override
+  public URL resolveRelativePath(URL aUrl) {
+    // try each base URL
+    for (var baseUrl : mBaseUrls) {
+      try {
+        var absUrl = new URL(baseUrl, aUrl.toString());
         // if file exists here, return this URL
         if (fileExistsAtUrl(absUrl)) {
           return absUrl;
@@ -183,12 +287,12 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     }
 
     // check if an absolute URL was passed in
-    if (aRelativeUrl.getPath().startsWith("/") && fileExistsAtUrl(aRelativeUrl)) {
-      return aRelativeUrl;
+    if (aUrl.getPath().startsWith("/") && fileExistsAtUrl(aUrl)) {
+      return aUrl;
     }
 
     // fallback on classloader
-    String f = aRelativeUrl.getFile();
+    var f = aUrl.getFile();
     URL absURL = null;
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
@@ -196,7 +300,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
     // fallback on TCCL
     if (absURL == null) {
-      ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+      var tccl = Thread.currentThread().getContextClassLoader();
       absURL = tccl.getResource(f);
     }
 
@@ -213,7 +317,6 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    */
   @Override
   public void setPathResolverClassLoader(ClassLoader aClassLoader) {
-    // set ClassLoader
     mClassLoader = aClassLoader;
   }
 
@@ -221,8 +324,14 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
-    try (InputStream testStream = aUrl.openStream()) {
-      return true;
+    try {
+      // Ensure that we actually always check the resource for existence. In case of a JAR URL,
+      // this is also important to ensure that the ZIP/JAR file is closed again.
+      var connection = aUrl.openConnection();
+      connection.setDefaultUseCaches(false);
+      try (var testStream = connection.getInputStream()) {
+        return true;
+      }
     } catch (IOException e) {
       return false;
     }
@@ -230,8 +339,10 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
   /**
    * @return the base URLs that were parsed from the data path.
+   * @deprecated Use {@link #getDataPathUrls()} instead.
    */
+  @Deprecated
   protected URL[] getBaseUrls() {
-    return mBaseUrls;
+    return mBaseUrls.toArray(URL[]::new);
   }
 }

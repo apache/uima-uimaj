@@ -46,7 +46,6 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
-import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.ParameterizedDataResource;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.Resource;
@@ -62,28 +61,25 @@ import org.apache.uima.util.XMLizable;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.ResourceManager}.
- * 
- * 
  */
 public class ResourceManager_impl implements ResourceManager {
   private static final AtomicInteger IMPORT_URL_CACHE_WARNING_THROTTLE = new AtomicInteger();
 
- // @formatter:off
   /**
    * Ties an External Resource instance to
-   *   - its description 
-   *     -- name
-   *     -- textual description
-   *     -- a ResourceSpecifier describing how to create it
-   *     -- (optional) the String name of the Java class that implements the resource)
-   *   - its defining UIMA Context
-   *   
-   *   These are used to validate multiple declarations, and to get
-   *   a resource to tie it to a binding
+   * <ul>
+   * <li>its description
+   * <ul>
+   * <li>name
+   * <li>textual description
+   * <li>a ResourceSpecifier describing how to create it
+   * <li>(optional) the String name of the Java class that implements the resource)
+   * </ul>
+   * <li>its defining UIMA Context
+   * </ul>
+   * These are used to validate multiple declarations, and to get a resource to tie it to a binding
    */
-  // @formatter:on
-  static protected class ResourceRegistration { // make protected
-                                                // https://issues.apache.org/jira/browse/UIMA-2102
+  static protected class ResourceRegistration {
     /**
      * For ParameterizedDataResources or DataResources, is the implementation object, which is an
      * arbitrary Java class implementing SharedDataResource (which has the "load" method)
@@ -97,11 +93,11 @@ public class ResourceManager_impl implements ResourceManager {
 
     String definingContext;
 
-    public ResourceRegistration(Object resourceOrImplementation,
-            ExternalResourceDescription description, String definingContext) {
-      resource = resourceOrImplementation;
-      this.description = description;
-      this.definingContext = definingContext;
+    public ResourceRegistration(Object aResource, ExternalResourceDescription aDescription,
+            String aDefiningContext) {
+      resource = aResource;
+      description = aDescription;
+      definingContext = aDefiningContext;
     }
   }
 
@@ -279,8 +275,7 @@ public class ResourceManager_impl implements ResourceManager {
   public ResourceManager_impl copy() {
     ResourceManager_impl rm = new ResourceManager_impl(mResourceMap,
             mInternalResourceRegistrationMap, mParameterizedResourceImplClassMap,
-            mInternalParameterizedResourceImplClassMap,
-            mParameterizedResourceInstanceMap);
+            mInternalParameterizedResourceImplClassMap, mParameterizedResourceInstanceMap);
     // non-final fields init
     rm.uimaCL = uimaCL;
     rm.importCache = importCache;
@@ -307,12 +302,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /**
-   * 
-   * /**
-   * 
-   * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(java.lang.String, boolean)
-   */
   @Override
   public synchronized void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException {
@@ -325,10 +314,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(ClassLoader,java.lang.String,
-   *      boolean)
-   */
   @Override
   public synchronized void setExtensionClassPath(ClassLoader parent, String classpath,
           boolean resolveResource) throws MalformedURLException {
@@ -354,30 +339,29 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
-   */
   @Override
   public ClassLoader getExtensionClassLoader() {
     return uimaCL;
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#getDataPath()
-   */
+  @Deprecated(since = "3.3.0")
   @Override
   public String getDataPath() {
     return getRelativePathResolver().getDataPath();
   }
 
+  @Deprecated(since = "3.6.0")
   @Override
   public List<String> getDataPathElements() {
     return getRelativePathResolver().getDataPathElements();
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#setDataPath(String)
-   */
+  @Override
+  public List<URL> getDataPathUrls() {
+    return getRelativePathResolver().getDataPathUrls();
+  }
+
+  @Deprecated(since = "3.6.0")
   @Override
   public void setDataPath(String aPath) throws MalformedURLException {
     getRelativePathResolver().setDataPath(aPath);
@@ -393,20 +377,14 @@ public class ResourceManager_impl implements ResourceManager {
     getRelativePathResolver().setDataPathElements(aElements);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#resolveRelativePath(java.lang.String)
-   */
+  @Override
+  public void setDataPathUrls(URL... aUrls) {
+    getRelativePathResolver().setDataPathElements(aUrls);
+  }
+
   @Override
   public URL resolveRelativePath(String aRelativePath) throws MalformedURLException {
-    URL relativeUrl;
-    try {
-      relativeUrl = new URL(aRelativePath);
-    } catch (MalformedURLException e) {
-      relativeUrl = new URL("file", "", aRelativePath);
-    }
-    return getRelativePathResolver().resolveRelativePath(relativeUrl);
+    return getRelativePathResolver().resolveRelativePath(aRelativePath);
   }
 
   private void checkDestroyed() {
@@ -415,9 +393,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#getResource(String)
-   */
   @Override
   public Object getResource(String aName) throws ResourceAccessException {
     checkDestroyed();
@@ -430,9 +405,6 @@ public class ResourceManager_impl implements ResourceManager {
     return r;
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#getResource(java.lang.String, java.lang.String[])
-   */
   @Override
   public Object getResource(String aName, String[] aParams) throws ResourceAccessException {
    // @formatter:off
@@ -503,9 +475,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.ResourceManager#getResourceClass(java.lang.String)
-   */
   @Override
   @SuppressWarnings("unchecked")
   public Class<?> getResourceClass(String aName) {
@@ -531,23 +500,12 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getResourceAsStream(java.lang.String,
-   * java.lang.String[])
-   */
   @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey, aParams));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getResourceAsStream(java.lang.String)
-   */
   @Override
   public InputStream getResourceAsStream(String aKey) throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey));
@@ -574,22 +532,11 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getResourceURL(java.lang.String,
-   * java.lang.String[])
-   */
   @Override
   public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey, aParams));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getResourceURL(java.lang.String)
-   */
   @Override
   public URL getResourceURL(String aKey) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey));
@@ -697,22 +644,16 @@ public class ResourceManager_impl implements ResourceManager {
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource
       String qname = aQualifiedContextName + aDependencies[i].getKey();
-      Object resourceImpl = mResourceMap.get(qname); // may or may not implement Resource, may
-                                                     // implement SharedResourceObject
+      // may or may not implement Resource, may implement SharedResourceObject
+      Object resourceImpl = mResourceMap.get(qname);
 
       if (resourceImpl == null) {
-        // no resource found
-        // try to look up in classpath/datapath
-        URL relativeUrl;
-        try {
-          relativeUrl = new URL("file", "", aDependencies[i].getKey());
-        } catch (MalformedURLException e) {
-          throw new ResourceInitializationException(e);
-        }
-        URL absUrl = getRelativePathResolver().resolveRelativePath(relativeUrl);
+        // no resource found - try to look up in classpath/datapath
+        var relativeUrl = aDependencies[i].getKey();
+        var absUrl = getRelativePathResolver().resolveRelativePath(relativeUrl);
         if (absUrl != null) {
           // found - create a DataResource object and store it in the mResourceMap
-          FileResourceSpecifier spec = new FileResourceSpecifier_impl();
+          var spec = new FileResourceSpecifier_impl();
           spec.setFileUrl(absUrl.toString());
           // produces an instance of DataResourceImpl
           resourceImpl = UIMAFramework.produceResource(spec, null);
@@ -839,11 +780,6 @@ public class ResourceManager_impl implements ResourceManager {
     mInternalResourceRegistrationMap.put(aName, registration);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getCasManager()
-   */
   @Override
   public CasManager getCasManager() {
     // Optimization for case where mCasManager already created
@@ -859,12 +795,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.ResourceManager#setCasManager(org.apache.uima.resource.CasManager)
-   */
   @Override
   public void setCasManager(CasManager aCasManager) {
     synchronized (casManagerMonitor) {
@@ -882,6 +812,7 @@ public class ResourceManager_impl implements ResourceManager {
     return mRelativePathResolver;
   }
 
+  @Deprecated(since = "3.3.0")
   @Override
   public Map<String, XMLizable> getImportCache() {
     return importCache;
@@ -894,7 +825,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @deprecated No longer used. Scheduled for removal in UIMA 4.0.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   public Map<String, Set<String>> getImportUrlsCache() {
     Misc.decreasingWithTrace(IMPORT_URL_CACHE_WARNING_THROTTLE,
             "ResourceManager_impl.getImportUrlsCache() should not be called. It is no longer "
@@ -924,11 +855,6 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#destroy()
-   */
   @Override
   public void destroy() {
     boolean alreadyDestroyed = isDestroyed.getAndSet(true);
@@ -980,11 +906,6 @@ public class ResourceManager_impl implements ResourceManager {
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#getExternalResources()
-   */
   @Override
   public List<Object> getExternalResources() {
 
@@ -1001,5 +922,4 @@ public class ResourceManager_impl implements ResourceManager {
 
     return rs;
   }
-
 }

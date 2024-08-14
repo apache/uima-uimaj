@@ -94,13 +94,8 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
       relPathResolver = new RelativePathResolver_impl();
     }
 
-    // Get the file URL, resolving relative path as necessary
-    try {
-      mFileUrl = relPathResolver.resolveRelativePath(new URL(mUri.toString()));
-    } catch (IOException e) {
-      // this is OK. The URI may not be a valid URL (e.g. it may use a non-standard protocol).
-      // in this case getUrl returns null but getUri can still be used to access the URI
-    }
+    mFileUrl = relPathResolver.resolveRelativePath(mUri.toString());
+
     return true;
   }
 
@@ -153,18 +148,22 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   @Override
   public boolean equals(Object obj) {
     // obj must be a DataResource_impl
-    if (!(obj instanceof ConfigurableDataResource_impl))
+    if (!(obj instanceof ConfigurableDataResource_impl)) {
       return false;
+    }
 
     // URIs must be the same
     URI uri = ((ConfigurableDataResource_impl) obj).getUri();
-    if (uri == null || !uri.equals(getUri()))
+    if (uri == null || !uri.equals(getUri())) {
       return false;
+    }
 
     // Local Cache Files must be the same
     File localCache = ((ConfigurableDataResource_impl) obj).getLocalCache();
-    if ((localCache == null && getLocalCache() != null) || (localCache != null && !localCache.equals(getLocalCache())))
+    if ((localCache == null && getLocalCache() != null)
+            || (localCache != null && !localCache.equals(getLocalCache()))) {
       return false;
+    }
 
     return true;
   }
@@ -176,8 +175,9 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;
-    if (mUri != null)
+    if (mUri != null) {
       hashCode += mUri.hashCode();
+    }
 
     return hashCode;
   }

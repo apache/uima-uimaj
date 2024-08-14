@@ -143,7 +143,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    * @deprecated Use {@link #getImports()} instead. There may be many imports; this method only
    *             returns the first.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   Import getImport();
 
   /**
@@ -154,7 +154,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          manager configuration. Null indicates that there is no import.
    * @deprecated Use {@link #setImports(Import[])} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   void setImport(Import aImport);
 
   /**
@@ -292,5 +292,4 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    */
   void resolveImports(Collection<String> aAlreadyImportedURLs, ResourceManager aResourceManager)
           throws InvalidXMLException;
-
 }
