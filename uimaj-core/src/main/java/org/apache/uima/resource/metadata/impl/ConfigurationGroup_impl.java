@@ -38,7 +38,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ConfigurationGroup_impl extends MetaDataObject_impl implements ConfigurationGroup {
 
-  static final long serialVersionUID = 4220504881786100821L;
+  private static final long serialVersionUID = 4220504881786100821L;
 
   /**
    * Group names.

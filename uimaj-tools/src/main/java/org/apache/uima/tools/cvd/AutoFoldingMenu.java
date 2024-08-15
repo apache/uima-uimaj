@@ -30,6 +30,8 @@ import javax.swing.JMenuItem;
  */
 public class AutoFoldingMenu extends JMenu {
 
+  private static final long serialVersionUID = 7077427321467278198L;
+
   /** The Constant DEFAULT_MENU_SIZE. */
   public static final int DEFAULT_MENU_SIZE = 12;
 

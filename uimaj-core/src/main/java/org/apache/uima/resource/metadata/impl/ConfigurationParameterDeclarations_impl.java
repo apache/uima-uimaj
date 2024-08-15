@@ -42,7 +42,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         implements ConfigurationParameterDeclarations {
 
-  static final long serialVersionUID = -2248322904617280983L;
+  private static final long serialVersionUID = -2248322904617280983L;
 
   static final ConfigurationGroup[] EMPTY_CONFIG_GROUP_ARRAY = new ConfigurationGroup[0];
 
@@ -172,8 +172,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         for (int i = 0; i < groups.length; i++) {
           ConfigurationParameter[] paramsInGroup = groups[i].getConfigurationParameters();
           p = _getConfigurationParameter(paramsInGroup, aParamName);
-          if (p != null)
+          if (p != null) {
             break;
+          }
         }
       }
       return p;
@@ -297,8 +298,9 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
           String aName) {
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
-        if (aName.equals(aParams[i].getName()))
+        if (aName.equals(aParams[i].getName())) {
           return aParams[i];
+        }
       }
     }
     return null;

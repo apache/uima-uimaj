@@ -29,12 +29,10 @@ import org.apache.uima.resource.metadata.Capability;
  * {@link CapabilityLanguageFlowObject}. A <code>AnalysisSequenceCapabilityNode</code> has a
  * <code>AnalysisEngine</code>, a <code>ResultSpecification</code> which should be processed from
  * the <code>AnalysisEngine</code>. Also a <code>AnalysisSequenceCapabilityNode</code> has a
- * {@link ResultSpecification} which inculdes the capabilities of the <code>AnalysisEngine</code>.
+ * {@link ResultSpecification} which includes the capabilities of the <code>AnalysisEngine</code>.
  * 
  */
 public class AnalysisSequenceCapabilityNode implements Cloneable {
-  private static final long serialVersionUID = -1471125199227401514L;
-
   /**
    * The reference to the AnalysisEngine to be executed at this point in the sequence. If this is
    * null, the Key should be used to find the AnalysisEngine. This field is transient and so does

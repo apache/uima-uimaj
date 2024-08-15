@@ -29,7 +29,7 @@ import org.apache.uima.resource.metadata.FsIndexKeyDescription;
  */
 public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIndexDescription {
 
-  static final long serialVersionUID = 8939000196947456114L;
+  private static final long serialVersionUID = 8939000196947456114L;
 
   static final FsIndexKeyDescription[] EMPTY_FS_INDEX_KEY_DESCRIPTION_ARRAY = new FsIndexKeyDescription[0];
 

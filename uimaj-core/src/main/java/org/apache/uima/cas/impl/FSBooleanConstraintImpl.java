@@ -26,6 +26,7 @@ import org.apache.uima.cas.FSBooleanConstraint;
  */
 public class FSBooleanConstraintImpl implements FSBooleanConstraint {
 
+  private static final long serialVersionUID = -8309465799610643571L;
   private boolean condition = true;
 
   /**

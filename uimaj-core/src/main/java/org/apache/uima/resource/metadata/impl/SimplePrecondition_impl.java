@@ -32,7 +32,7 @@ import org.apache.uima.resource.metadata.SimplePrecondition;
  */
 public class SimplePrecondition_impl extends MetaDataObject_impl implements SimplePrecondition {
 
-  static final long serialVersionUID = -3736364411654445630L;
+  private static final long serialVersionUID = -3736364411654445630L;
 
   /**
    * Value to compare against the feature.

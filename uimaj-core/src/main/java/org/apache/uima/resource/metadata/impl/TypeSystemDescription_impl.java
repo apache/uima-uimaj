@@ -38,7 +38,7 @@ import org.apache.uima.util.InvalidXMLException;
 public class TypeSystemDescription_impl extends MetaDataObject_impl
         implements TypeSystemDescription {
 
-  static final long serialVersionUID = -3372766232454730201L;
+  private static final long serialVersionUID = -3372766232454730201L;
 
   private String mName;
 

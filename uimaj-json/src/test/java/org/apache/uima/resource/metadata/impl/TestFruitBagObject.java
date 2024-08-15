@@ -27,6 +27,8 @@ import java.util.Set;
  */
 public class TestFruitBagObject extends MetaDataObject_impl {
 
+  private static final long serialVersionUID = 5048321235384115244L;
+
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
           new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
 

@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.NameValuePair;
  */
 public class NameValuePair_impl extends MetaDataObject_impl implements NameValuePair {
 
-  static final long serialVersionUID = -1806648654924417387L;
+  private static final long serialVersionUID = -1806648654924417387L;
 
   /** Name */
   private String mName;

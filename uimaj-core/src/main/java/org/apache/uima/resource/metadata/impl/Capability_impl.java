@@ -38,7 +38,7 @@ import org.apache.uima.util.impl.Constants;
  */
 public class Capability_impl extends MetaDataObject_impl implements Capability {
 
-  static final long serialVersionUID = -2821073595288674925L;
+  private static final long serialVersionUID = -2821073595288674925L;
 
   private final static TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
 

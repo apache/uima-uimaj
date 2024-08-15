@@ -35,7 +35,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class FsIndexKeyDescription_impl extends MetaDataObject_impl
         implements FsIndexKeyDescription {
 
-  static final long serialVersionUID = -4015997042353963398L;
+  private static final long serialVersionUID = -4015997042353963398L;
 
   /**
    * String representations of comparator values used in XML import/export.

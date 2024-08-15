@@ -59,6 +59,8 @@ public abstract class SerDesTstCommon {
   //@formatter:on
   class MyRandom extends Random {
 
+    private static final long serialVersionUID = 2168010833123875311L;
+
     @Override
     public int nextInt(int n) {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(n);

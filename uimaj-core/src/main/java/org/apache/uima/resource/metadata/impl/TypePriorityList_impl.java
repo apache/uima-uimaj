@@ -31,7 +31,7 @@ import org.apache.uima.resource.metadata.TypePriorityList;
  */
 public class TypePriorityList_impl extends MetaDataObject_impl implements TypePriorityList {
 
-  static final long serialVersionUID = 4700170375564691096L;
+  private static final long serialVersionUID = 4700170375564691096L;
 
   private List<String> mTypeNames = new ArrayList<>();
 

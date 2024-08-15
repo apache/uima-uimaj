@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  */
 public class TypePriorities_impl extends MetaDataObject_impl implements TypePriorities {
 
-  static final long serialVersionUID = -4773863151055424438L;
+  private static final long serialVersionUID = -4773863151055424438L;
 
   private volatile String mName;
 

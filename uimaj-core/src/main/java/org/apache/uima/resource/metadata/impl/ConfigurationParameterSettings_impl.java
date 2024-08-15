@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
         implements ConfigurationParameterSettings {
 
-  static final long serialVersionUID = 3476535733588304983L;
+  private static final long serialVersionUID = 3476535733588304983L;
 
   static final NameValuePair[] EMPTY_NAME_VALUE_PAIR_ARRAY = new NameValuePair[0];
 

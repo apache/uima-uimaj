@@ -28,6 +28,7 @@ import org.apache.uima.cas.FSMatchConstraint;
  */
 abstract class PathConstraint implements FSMatchConstraint {
 
+  private static final long serialVersionUID = -866548380590006704L;
   protected ArrayList<String> featNames;
 
   protected PathConstraint() {
