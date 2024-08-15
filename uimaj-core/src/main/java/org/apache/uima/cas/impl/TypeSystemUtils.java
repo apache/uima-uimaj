@@ -18,13 +18,15 @@
  */
 package org.apache.uima.cas.impl;
 
+import static org.apache.uima.cas.impl.TypeSystemUtils.PathValid.NEVER;
+import static org.apache.uima.cas.impl.TypeSystemUtils.PathValid.POSSIBLE;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.util.TypeSystemUtil;
 
 /**
  * Type Utilities - all static, so class is abstract to prevent creation Used by Feature Path
@@ -233,45 +235,46 @@ public abstract class TypeSystemUtils {
     public void setErrorPosition(int errorPosition) {
       this.errorPosition = errorPosition;
     }
-
   }
 
+  /**
+   * @deprecated Use {@link TypeSystemUtil#isFeatureName} instead
+   */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.6.0")
   public static boolean isIdentifier(String s) {
-    if (s == null) {
-      return false;
-    }
-    final int len = s.length();
-    if (len == 0) {
-      return false;
-    }
-    int pos = 0;
-    // Check that the first character is a letter.
-    if (!isIdentifierStart(s.charAt(pos))) {
-      return false;
-    }
-    ++pos;
-    while (pos < len) {
-      if (!isIdentifierChar(s.charAt(pos))) {
-        return false;
-      }
-      ++pos;
-    }
-    return true;
+    return TypeSystemUtil.isFeatureName(s);
   }
 
+  /**
+   * @deprecated Unused. To be removed without replacement.
+   * @forRemoval 4.0.0
+   */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.6.0")
   static boolean isNonQualifiedName(String s) {
     return isIdentifier(s);
   }
 
+  /**
+   * @deprecated Unused. To be removed without replacement.
+   * @forRemoval 4.0.0
+   */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.6.0")
   static boolean isIdentifierStart(char c) {
     return Character.isLetter(c);
   }
 
+  /**
+   * @deprecated Unused. To be removed without replacement.
+   * @forRemoval 4.0.0
+   */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.6.0")
   static boolean isIdentifierChar(char c) {
     return (Character.isLetter(c) || Character.isDigit(c) || (c == '_'));
   }
-
-  static private final String NAMESPACE_SEPARATOR_AS_STRING = "" + TypeSystem.NAMESPACE_SEPARATOR;
 
   /**
    * Check if <code>name</code> is a possible type name. Does not check if this type actually
@@ -280,28 +283,12 @@ public abstract class TypeSystemUtils {
    * @param name
    *          The name to check.
    * @return <code>true</code> iff <code>name</code> is a possible type name.
+   * @deprecated Use {@link TypeSystemUtil#isTypeName(String)} instead.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   static boolean isTypeName(String name) {
-    // Create a string tokenizer that will split the string at the name
-    // space
-    // boundaries. We need to see the delimiters to make sure there are no
-    // gratuitous delimiters at the beginning or the end.
-    StringTokenizer tok = new StringTokenizer(name, NAMESPACE_SEPARATOR_AS_STRING, true);
-    // Loop over the tokens and check that every item is an identifier.
-    while (tok.hasMoreTokens()) {
-      // Any subsequence must start with an identifier.
-      if (!isIdentifier(tok.nextToken())) {
-        return false;
-      }
-      // If there is a next token, it must be a separator.
-      if (tok.hasMoreTokens()) {
-        // A sequence can not end in a separator.
-        if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING) || !tok.hasMoreTokens()) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return TypeSystemUtil.isTypeName(name);
   }
 
   static boolean isTypeNameSpaceName(String name) {
@@ -357,16 +344,17 @@ public abstract class TypeSystemUtils {
     if (path.isEmpty()) {
       return status;
     }
+
     // Pop the next feature name from the stack and check if it's defined for the current type.
-    String featName = path.pop();
-    FeatureImpl fi = type.getFeatureByBaseName(featName);
+    var featName = path.pop();
+    var fi = type.getFeatureByBaseName(featName);
     if (fi != null) {
       // If feature is defined, we can continue directly.
       return isPathValid(fi.getRangeImpl(), path, status);
     }
+
     // If feature is not defined for type, check to see if there are any subtypes for which the
     // path is defined (possible).
-
     return isPathValidInSubtypes(type, featName, path);
 
   }
@@ -399,20 +387,19 @@ public abstract class TypeSystemUtils {
     for (TypeImpl subtype : type.getDirectSubtypes()) {
       FeatureImpl fi = subtype.getFeatureByBaseName(fName);
       if (fi != null) {
-        if (PathValid.POSSIBLE == isPathValid(fi.getRangeImpl(), nextPath, PathValid.POSSIBLE)) { // check
-                                                                                                  // subsequent
-                                                                                                  // types.
-          return PathValid.POSSIBLE;
+        // check subsequent types.
+        if (POSSIBLE == isPathValid(fi.getRangeImpl(), nextPath, POSSIBLE)) {
+          return POSSIBLE;
         } else {
           continue; // try another subtype
         }
       } else { // look in sub-sub-types for feature
-        if (PathValid.POSSIBLE == isPathValidInSubtypes(subtype, fName, nextPath)) {
-          return PathValid.POSSIBLE;
+        if (POSSIBLE == isPathValidInSubtypes(subtype, fName, nextPath)) {
+          return POSSIBLE;
         }
       }
     } // loop for all subtypes, looking for a POSSIBLE path
-    return PathValid.NEVER;
+    return NEVER;
   }
 
   /**
