@@ -11,3 +11,4 @@ api-change-report
 issuesFixed
 .idea
 *.iml
+.tycho-consumer-pom.xml
