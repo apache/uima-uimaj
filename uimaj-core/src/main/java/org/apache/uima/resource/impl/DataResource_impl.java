@@ -70,8 +70,9 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // aSpecifier must be a FileResourceSpecifier
-    if (!(aSpecifier instanceof FileResourceSpecifier))
+    if (!(aSpecifier instanceof FileResourceSpecifier)) {
       return false;
+    }
 
     // If we get here, aSpecifier is supported by this implementation.
     FileResourceSpecifier spec = (FileResourceSpecifier) aSpecifier;
@@ -85,22 +86,22 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
       // Get the file URL from the specifier. If the user has passed a file path
       // (e.g. c:\Program Files\...) instead of a URL, be lenient and convert it to
       // a URL
-      URL relativeUrl;
+      String relativeUrl;
       try {
-        relativeUrl = new URL(spec.getFileUrl());
+        relativeUrl = new URL(spec.getFileUrl()).toString();
       } catch (MalformedURLException e) {
         // try to treat the URL as a file name.
-        File file = new File(spec.getFileUrl());
+        var file = new File(spec.getFileUrl());
         if (file.isAbsolute()) {
           // for absolute paths, use File.toURL(), which handles
           // windows absolute paths correctly
-          relativeUrl = file.toURL();
+          relativeUrl = file.toURL().toString();
         } else {
           // for relative paths, we can' use File.toURL() because it always
           // produces an absolute URL. Instead we do the following, which
           // won't work for windows absolute paths (but that's OK, since we
           // know we're working with a relative path)
-          relativeUrl = new URL("file", "", spec.getFileUrl());
+          relativeUrl = spec.getFileUrl();
         }
       }
 
@@ -176,18 +177,22 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   @Override
   public boolean equals(Object obj) {
     // obj must be a DataResource_impl
-    if (!(obj instanceof DataResource_impl))
+    if (!(obj instanceof DataResource_impl)) {
       return false;
+    }
 
     // URLs must be the same (but don't use URL.equals(), which does DNS resolution!)
     URL url = ((DataResource_impl) obj).getUrl();
-    if (url == null || !url.toString().equals(getUrl().toString()))
+    if (url == null || !url.toString().equals(getUrl().toString())) {
       return false;
+    }
 
     // Local Cache Files must be the same
     File localCache = ((DataResource_impl) obj).getLocalCache();
-    if ((localCache == null && getLocalCache() != null) || (localCache != null && !localCache.equals(getLocalCache())))
+    if ((localCache == null && getLocalCache() != null)
+            || (localCache != null && !localCache.equals(getLocalCache()))) {
       return false;
+    }
 
     return true;
   }
@@ -199,11 +204,13 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;
-    if (mFileUrl != null)
+    if (mFileUrl != null) {
       hashCode += mFileUrl.toString().hashCode(); // don't use URL.hashCode(), which does DNS
-                                                  // resolution
-    if (mLocalCache != null)
+    }
+    // resolution
+    if (mLocalCache != null) {
       hashCode += mLocalCache.hashCode();
+    }
 
     return hashCode;
   }

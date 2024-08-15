@@ -33,8 +33,6 @@ import org.apache.uima.util.XMLizable;
 /**
  * A <code>ResourceManager</code> holds a collection of {@link org.apache.uima.resource.Resource}
  * objects, each registered under a specified key.
- * 
- * 
  */
 public interface ResourceManager {
 
@@ -42,20 +40,37 @@ public interface ResourceManager {
    * Gets the data path used to resolve relative paths. More than one directory may be specified by
    * separating them with the System <code>path.separator</code> character (; on windows, : on
    * UNIX).
+   * <p>
+   * <b>Note:</b> This method will only return file paths. If any non-file URLs have been added to
+   * the data path e.g via {@link #setDataPathUrls(URL...)}, these will not be included. Use
+   * {@link #getDataPathUrls()} to get a full list.
    * 
    * @return the data path
    * 
    * @deprecated Use {@link #getDataPathElements()} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   String getDataPath();
 
   /**
    * Gets the data path elements used to resolve relative paths.
+   * <p>
+   * <b>Note:</b> This method will only return file paths. If any non-file URLs have been added to
+   * the data path e.g via {@link #setDataPathUrls(URL...)}, these will not be included. Use
+   * {@link #getDataPathUrls()} to get a full list.
+   *
+   * @return the data path elements
+   * @deprecated Use {@link #getDataPathUrls()}
+   */
+  @Deprecated(since = "3.6.0")
+  List<String> getDataPathElements();
+
+  /**
+   * Gets the data path URLs used to resolve relative paths.
    * 
    * @return the data path elements
    */
-  List<String> getDataPathElements();
+  List<URL> getDataPathUrls();
 
   /**
    * Sets the data path used to resolve relative paths. More than one directory may be specified by
@@ -69,18 +84,18 @@ public interface ResourceManager {
    *           if an element of the path is neither a valid URL or a valid file path
    * @deprecated Use {@link #setDataPathElements} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   void setDataPath(String aPath) throws MalformedURLException;
 
   /**
-   * Sets the data path elements used to resolve relative paths. Elements of this path may be
-   * absolute or relative file paths.
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be URLs
+   * or absolute or relative file paths.
    * 
    * @param aElements
-   *          the data path
+   *          the data path elements
    * 
    * @throws MalformedURLException
-   *           if an element of the path is neither a valid URL or a valid file path
+   *           if a file path could not be converted to a URL
    */
   void setDataPathElements(String... aElements) throws MalformedURLException;
 
@@ -95,6 +110,15 @@ public interface ResourceManager {
    *           if an element of the path is neither a valid URL or a valid file path
    */
   void setDataPathElements(File... aElements) throws MalformedURLException;
+
+  /**
+   * Sets the data path elements used to resolve relative paths. Elements of this path may be
+   * absolute or relative URLs.
+   * 
+   * @param aUrls
+   *          the data path aURLs
+   */
+  void setDataPathUrls(URL... aUrls);
 
   /**
    * Attempts to resolve a relative path to an absolute path using the same mechanism that the
@@ -130,23 +154,23 @@ public interface ResourceManager {
    */
   Object getResource(String aName) throws ResourceAccessException;
 
-//@formatter:off
   /**
    * Returns one of two kinds of objects (or null):
-   *   - an instance of the implementation object for a resource, that has 
-   *     been loaded with a DataResource resource produced by the resource given the aParms
-   *     
-   *   - (if there is no implementation defined for this resource) 
-   *     returns an instance of the DataResource, itself, produced by the resource given the aParms
-   *    
-   *   An example of a parameterized Resource is a
-   *     dictionary whose data depend on a specified language identifier.
-   *   
-   *   If the implementation object class exists, but no instance has been 
-   *   created (yet) for the particular data resource corresponding to the parameters,
-   *   then this method will create and register a new instance and call its
-   *   load() api using the data resource corresponding to the parameters, and
-   *   return that.
+   * <ul>
+   * <li>an instance of the implementation object for a resource, that has been loaded with a
+   * DataResource resource produced by the resource given the aParms
+   * 
+   * <li>(if there is no implementation defined for this resource) returns an instance of the
+   * DataResource, itself, produced by the resource given the aParms
+   * </ul>
+   * <p>
+   * An example of a parameterized Resource is a dictionary whose data depend on a specified
+   * language identifier.
+   * <p>
+   * If the implementation object class exists, but no instance has been created (yet) for the
+   * particular data resource corresponding to the parameters, then this method will create and
+   * register a new instance and call its load() api using the data resource corresponding to the
+   * parameters, and return that.
    * 
    * @param aName
    *          the name of the parameterized resource to retrieve
@@ -171,7 +195,6 @@ public interface ResourceManager {
    *           if there is a resource registered under <code>aName</code> but it could not be
    *           instantiated for the specified parameters.
    */
-//@formatter:on
   Object getResource(String aName, String[] aParams) throws ResourceAccessException;
 
   /**
@@ -308,20 +331,20 @@ public interface ResourceManager {
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException;
 
-//@formatter:off
   /**
    * Resolves a component's external resource dependencies (bindings) using this resource manager.
-   * 
+   * <p>
    * The default implementation has special defaulting logic:
+   * <p>
+   * If a binding specifies a non-existing resource, an attempt is made to interpret the key as a
+   * file name, looked up using the current context for relative path resolution.
+   * <ul>
+   * <li>If successfully found, a FileResourceSpecifier is created using the file and used as the
+   * implementing class.
    * 
-   *   If a binding specifies a non-existing resource, 
-   *   an attempt is made to interpret the key as a file name, looked up 
-   *   using the current context for relative path resolution.  
-   *     - If successfully found, a FileResourceSpecifier is created using the file
-   *       and used as the implementing class. 
-   * 
-   * If no resource can be found at all, then unless the dependency is marked "optional", an
+   * <li>If no resource can be found at all, then unless the dependency is marked "optional", an
    * ResourceInitializationException is thrown.
+   * </ul>
    * 
    * Multi-threading: may be called on multiple threads, repeatedly for the same set of resources.
    * Implementations should recognize this and skip repeated resolutions.
@@ -335,7 +358,6 @@ public interface ResourceManager {
    * @throws ResourceInitializationException
    *           if a required dependency is not satisfied
    */
-//@formatter:on
   void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException;
 
@@ -423,7 +445,7 @@ public interface ResourceManager {
    * @return A map from absolute URL to the XMLizable object that was parsed from that URL
    * @deprecated Intended just for internal use.
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   Map<String, XMLizable> getImportCache();
 
   /**
@@ -465,7 +487,6 @@ public interface ResourceManager {
   void destroy();
 
   /**
-   * 
    * @return a List of External Shared Resource instances instantiated by this Resource Manager. For
    *         parameterized resources, those which have been asked for (having unique parameter sets)
    *         are included.

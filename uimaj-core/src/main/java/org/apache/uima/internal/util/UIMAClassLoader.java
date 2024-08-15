@@ -90,11 +90,11 @@ public class UIMAClassLoader extends URLClassLoader {
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
-   * The classpath string must be separated with the filesystem path separator.
+   * The classpath string must be separated with the file system path separator.
    * 
    * @param classpath
    *          a classpath string
-   * @return URL[] array of wellformed URL's
+   * @return URL[] array of well-formed URL's
    * @throws MalformedURLException
    *           if a malformed URL has occurred in the classpath string.
    */

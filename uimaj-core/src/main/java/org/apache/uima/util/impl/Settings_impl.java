@@ -168,7 +168,7 @@ public class Settings_impl implements Settings {
           if (fname.startsWith("path:")) { // Convert to a url and search the datapath & classpath
             URL relativeUrl = new URL("file", "",
                     fname.substring(5).replace('.', '/') + ".settings");
-            URL relPath = relativePathResolver.resolveRelativePath(relativeUrl);
+            URL relPath = relativePathResolver.resolveRelativePath(relativeUrl.toString());
             if (relPath != null) {
               is = relPath.openStream();
             } else {
