@@ -31,7 +31,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
  */
 public class TypeDescription_impl extends MetaDataObject_impl implements TypeDescription {
 
-  static final long serialVersionUID = 7505580429981863281L;
+  private static final long serialVersionUID = 7505580429981863281L;
 
   static final private FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
 

@@ -301,6 +301,8 @@ class MyTestResource extends ConfigurableResource_ImplBase {
 }
 
 class MyTestSpecifier extends ResourceCreationSpecifier_impl {
+  private static final long serialVersionUID = 3128559748798504638L;
+
   public MyTestSpecifier() {
     setMetaData(new ResourceMetaData_impl());
   }

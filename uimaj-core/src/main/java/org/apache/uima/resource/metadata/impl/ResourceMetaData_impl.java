@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 
 public class ResourceMetaData_impl extends MetaDataObject_impl implements ResourceMetaData {
 
-  static final long serialVersionUID = 3408359518094534817L;
+  private static final long serialVersionUID = 3408359518094534817L;
 
   /** UUID of the Resource */
   private String mUUID;

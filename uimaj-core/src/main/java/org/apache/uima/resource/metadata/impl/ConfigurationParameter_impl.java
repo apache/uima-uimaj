@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 public class ConfigurationParameter_impl extends MetaDataObject_impl
         implements ConfigurationParameter {
 
-  static final long serialVersionUID = 4234432343384779535L;
+  private static final long serialVersionUID = 4234432343384779535L;
 
   /** Name of this Configuration Parameter. */
   private String mName;

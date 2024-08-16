@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.FeatureDescription;
  */
 public class FeatureDescription_impl extends MetaDataObject_impl implements FeatureDescription {
 
-  static final long serialVersionUID = 3661516916992500406L;
+  private static final long serialVersionUID = 3661516916992500406L;
 
   /** Feature name. */
   private String mName;

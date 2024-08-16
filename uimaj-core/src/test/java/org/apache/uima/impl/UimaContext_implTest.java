@@ -865,6 +865,8 @@ public class UimaContext_implTest {
 }
 
 class MyTestSpecifier extends ResourceCreationSpecifier_impl {
+  private static final long serialVersionUID = 5299829144240029297L;
+
   public MyTestSpecifier() {
     setMetaData(new ResourceMetaData_impl());
   }

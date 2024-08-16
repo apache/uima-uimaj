@@ -31,6 +31,7 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class BooleanConstraint extends PathConstraint implements FSMatchConstraint {
 
+  private static final long serialVersionUID = 1343440948993166178L;
   private final FSBooleanConstraint cons;
 
   BooleanConstraint(ArrayList<String> path, FSBooleanConstraint constraint) {

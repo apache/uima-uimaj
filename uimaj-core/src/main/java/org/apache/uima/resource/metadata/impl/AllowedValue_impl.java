@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.AllowedValue;
  */
 public class AllowedValue_impl extends MetaDataObject_impl implements AllowedValue {
 
-  static final long serialVersionUID = -3463916068572525348L;
+  private static final long serialVersionUID = -3463916068572525348L;
 
   /** The allowed value string. */
   private String mString;
