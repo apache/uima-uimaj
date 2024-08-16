@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
-import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -34,14 +33,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
@@ -115,8 +112,8 @@ import org.apache.uima.util.Logger;
  *       via accessing/updating a thread local instance of TypeSystemImpl.SlotAllocate.
  */
 // @formatter:on
-public abstract class FSClassRegistry { // abstract to prevent instantiating; this class only has
-                                        // static methods
+// Abstract to prevent instantiating; this class only has static methods
+public abstract class FSClassRegistry {
 
   static final String RECORD_JCAS_CLASSLOADERS = "uima.record_jcas_classloaders";
   static final boolean IS_RECORD_JCAS_CLASSLOADERS = Misc
@@ -160,7 +157,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
   // @formatter:off
   /**
-   * precomputed generators for built-in types
+   * pre-computed generators for built-in types
    * These instances are shared for all type systems
    * Key = index = typecode
    */
@@ -200,6 +197,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static final WeakIdentityMap<ClassLoader, Map<String, Class<? extends TOP>>> cl_to_spiJCas = WeakIdentityMap
           .newHashMap();
   private static final WeakIdentityMap<ClassLoader, UIMAClassLoader> cl_to_uimaCl = WeakIdentityMap
+          .newHashMap();
+  private static final WeakIdentityMap<Class<? extends TOP>, FsGenerator3> JCAS_TO_GENERATOR = WeakIdentityMap
           .newHashMap();
 
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
@@ -261,11 +260,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
     final JCasClassFeatureInfo[] features;
 
-    JCasClassInfo(Class<? extends TOP> jcasClass, FsGenerator3 generator, int jcasType) {
-      this.generator = generator;
-      this.jcasClass = jcasClass;
-      this.jcasType = jcasType; // typeId for jcas class, **NOT Typecode**
-      features = getJCasClassFeatureInfo(jcasClass);
+    JCasClassInfo(Class<? extends TOP> aJCasClass, FsGenerator3 aGenerator, int aJCasType) {
+      generator = aGenerator;
+      jcasClass = aJCasClass;
+      jcasType = aJCasType; // typeId for jcas class, **NOT Typecode**
+      features = getJCasClassFeatureInfo(aJCasClass);
 
       // System.out.println("debug create jcci, class = " + jcasClass.getName() + ", typeint = " +
       // jcasType);
@@ -280,13 +279,48 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
 
     boolean isPearOverride(TypeSystemImpl tsi) {
-      JCasClassInfo baseJcci = tsi.getJcci(jcasClass.getName());
+      var baseJcci = tsi.getJcci(jcasClass.getName());
       return baseJcci == null
               || !jcasClass.getClassLoader().equals(baseJcci.jcasClass.getClassLoader());
     }
 
     TypeImpl getUimaType(TypeSystemImpl tsi) {
       return tsi.getType(Misc.javaClassName2UimaTypeName(jcasClass.getName()));
+    }
+
+    private static JCasClassFeatureInfo[] getJCasClassFeatureInfo(Class<?> jcasClass) {
+      try {
+        var features = new ArrayList<JCasClassFeatureInfo>();
+        for (var f : jcasClass.getDeclaredFields()) {
+          var fname = f.getName();
+          if (fname.length() <= 5 || !fname.startsWith("_FC_")) {
+            continue;
+          }
+          var featName = fname.substring(4);
+
+          // compute range by looking at get method
+          var getterName = "get" + Character.toUpperCase(featName.charAt(0))
+                  + featName.substring(1);
+          Method m;
+          try {
+            // get the getter with no args
+            m = jcasClass.getDeclaredMethod(getterName);
+          } catch (NoSuchMethodException e) {
+            var logger = UIMAFramework.getLogger(FSClassRegistry.class);
+            logger.warn(() -> logger.rb_ue(CASRuntimeException.JCAS_MISSING_GETTER,
+                    jcasClass.getName(), featName));
+            continue;
+          }
+
+          var rangeClassName = m.getReturnType().getName();
+          var uimaRangeName = Misc.javaClassName2UimaTypeName(rangeClassName);
+          features.add(new JCasClassFeatureInfo(featName, uimaRangeName));
+        }
+
+        return features.toArray(JCasClassFeatureInfo[]::new);
+      } catch (Throwable e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -440,23 +474,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       /**
        * Two passes are needed loading is needed.  
        *   - The first one loads the JCas Cover Classes initializes everything
-       *      -- some of the classes might already be loaded (including the builtins which are loaded once per class loader)
+       *      -- some of the classes might already be loaded (including the built-ins which are loaded once per class loader)
        *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
        *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
        */
       // @formatter:on
 
-      // this is this here rather than in a static initializer, because
-      // we want to use the "cl" parameter to get a version of the
-      // getMethodHandlesLookup that will have the right (maybe more local) permissions checking.
-      // This is done by having the UIMA Class loader notice that the class being loaded is
-      // MHLC, and then dynamically loading in that class loader a copy of the byte code
-      // for that class.
-      Lookup lookup = getLookup(cl);
-
       ArrayList<MutableCallSite> callSites_toSync = new ArrayList<>();
       maybeLoadJCasAndSubtypes(ts, ts.topType, type2jcci.get(TOP.class.getCanonicalName()), cl,
-              type2jcci, callSites_toSync, lookup);
+              type2jcci, callSites_toSync);
 
       MutableCallSite[] sync = callSites_toSync
               .toArray(new MutableCallSite[callSites_toSync.size()]);
@@ -504,10 +530,9 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // @formatter:on
   private static void maybeLoadJCasAndSubtypes(TypeSystemImpl tsi, TypeImpl ti,
           JCasClassInfo copyDownDefault_jcasClassInfo, ClassLoader cl,
-          Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync,
-          Lookup lookup) {
+          Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync) {
 
-    JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, lookup);
+    var jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, null);
 
     if (null != jcci && tsi.isCommitted()) {
       updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
@@ -581,64 +606,68 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // this is done even after the class is first loaded, in case the type system changed.
     // don't set anything if copy down - otherwise was setting the copyed-down typeId ref to the
     // new ti
-    // System.out.println("debug set jcas regisered type " + jcci.jcasType + ", type = " +
+    // System.out.println("debug set jcas registered type " + jcci.jcasType + ", type = " +
     // ti.getName());
 
-    JCasClassInfo jcci_or_copyDown = (jcci == null) ? copyDownDefault_jcasClassInfo : jcci;
+    var jcci_or_copyDown = (jcci == null) ? copyDownDefault_jcasClassInfo : jcci;
 
-    if (!ti.isPrimitive()) { // bypass this for primitives because the jcasClassInfo is the
-                             // "inherited one" of TOP
-      /**
-       * Note: this value sets into the shared TypeImpl (maybe shared among many JCas impls) the
-       * "latest" jcasClass It is "read" by the conformance testing, while still under the type
-       * system lock. Other uses of this may get an arbitrary (the latest) version of the class
-       * Currently the only other use is in backwards compatibility with low level type system
-       * "switching" an existing type.
-       */
+    // bypass this for primitives because the jcasClassInfo is the "inherited one" of TOP
+    if (!ti.isPrimitive()) {
+      // Note: this value sets into the shared TypeImpl (maybe shared among many JCas impls) the
+      // "latest" jcasClass It is "read" by the conformance testing, while still under the type
+      // system lock. Other uses of this may get an arbitrary (the latest) version of the class
+      // Currently the only other use is in backwards compatibility with low level type system
+      // "switching" an existing type.
       ti.setJavaClass(jcci_or_copyDown.jcasClass);
     }
 
-    for (TypeImpl subtype : ti.getDirectSubtypes()) {
-      maybeLoadJCasAndSubtypes(tsi, subtype, jcci_or_copyDown, cl, type2jcci, callSites_toSync,
-              lookup);
+    for (var subType : ti.getDirectSubtypes()) {
+      maybeLoadJCasAndSubtypes(tsi, subType, jcci_or_copyDown, cl, type2jcci, callSites_toSync);
     }
   }
 
-  // @formatter:off
   /**
    * For a particular type name, get the JCasClassInfo
-   *   - by fetching the cached value
-   *   - by loading the class
-   *   - return null if no JCas class for this name 
+   * <ul>
+   * <li>by fetching the cached value
+   * <li>by loading the class
+   * <li>return null if no JCas class for this name
+   * </ul>
    * only called for non-Pear callers
-   * @param ti -
-   * @param cl -
-   * @param type2jcci -
-   * @param lookup -
-   * @return - jcci or null, if no JCas class for this type was able to be loaded
+   * 
+   * @return jcci or null, if no JCas class for this type was able to be loaded
+   * 
+   * @deprecated This will become a package private method.
+   * @forRemoval 4.0.0
    */
-  // @formatter:on
-  public static JCasClassInfo getOrCreateJCasClassInfo(TypeImpl ti, ClassLoader cl,
-          Map<String, JCasClassInfo> type2jcci, Lookup lookup) {
+  @Deprecated(since = "3.5.1")
+  public static JCasClassInfo getOrCreateJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
+          Map<String, JCasClassInfo> aType2Jcci, Lookup aUnusedLookup) {
 
-    JCasClassInfo jcci = type2jcci.get(ti.getJCasClassName());
+    var jcci = aType2Jcci.get(aTypeInfo.getJCasClassName());
 
     if (jcci == null) {
-      jcci = maybeCreateJCasClassInfo(ti, cl, type2jcci, lookup);
+      jcci = maybeCreateJCasClassInfo(aTypeInfo, aClassLoader, aType2Jcci, aUnusedLookup);
     }
 
     // do this setup for new type systems using previously loaded jcci, as well as
     // for new jccis
     if (jcci != null && jcci.jcasType >= 0) {
-      ti.getTypeSystem().setJCasRegisteredType(jcci.jcasType, ti);
+      aTypeInfo.getTypeSystem().setJCasRegisteredType(jcci.jcasType, aTypeInfo);
     }
     return jcci;
   }
 
+  /**
+   * @deprecated This will become a private method.
+   * @forRemoval 4.0.0
+   */
+  @Deprecated(since = "3.5.1")
   static JCasClassInfo maybeCreateJCasClassInfo(TypeImpl ti, ClassLoader cl,
-          Map<String, JCasClassInfo> type2jcci, Lookup lookup) {
-    JCasClassInfo jcci = createJCasClassInfo(ti, cl, lookup); // does update of callsites if was
-                                                              // able find JCas class
+          Map<String, JCasClassInfo> type2jcci, Lookup aUnusedLookup) {
+
+    // does update of callsites if was able find JCas class
+    var jcci = createJCasClassInfo(ti, cl, aUnusedLookup);
 
     if (null != jcci) {
       type2jcci.put(ti.getJCasClassName(), jcci);
@@ -647,43 +676,33 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     return jcci;
   }
 
-  public static JCasClassInfo createJCasClassInfo(TypeImpl ti, ClassLoader cl, Lookup lookup) {
-    Lookup actualLookup = lookup;
-
-    // First we try the local classloader - this is necessary because it might be a PEAR situation
-    Class<? extends TOP> clazz = maybeLoadLocalJCas(ti, cl);
-
-    // If the local classloader does not have the JCas wrapper, we try the SPI
-    if (clazz == null) {
-      Map<String, Class<? extends TOP>> spiJCasClasses = loadJCasClassesFromSPI(cl);
-      clazz = spiJCasClasses.get(ti.getJCasClassName());
-      if (clazz != null) {
-        actualLookup = getLookup(clazz.getClassLoader());
-      }
-    }
-
-    if (null == clazz || !TOP.class.isAssignableFrom(clazz)) {
+  /**
+   * @deprecated This will become a private method.
+   * @forRemoval 4.0.0
+   */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.5.1")
+  public static JCasClassInfo createJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
+          Lookup aUnusedLookup) {
+    var jcasClass = maybeJCasWrapperClass(aTypeInfo, aClassLoader);
+    if (null == jcasClass || !TOP.class.isAssignableFrom(jcasClass)) {
       return null;
     }
 
-    int jcasType = -1;
-    if (!Modifier.isAbstract(clazz.getModifiers())) { // skip next for abstract classes
-      jcasType = Misc.getStaticIntFieldNoInherit(clazz, "typeIndexID");
+    // Get the type ID for non-abstract classes
+    var jcasType = -1;
+    if (!Modifier.isAbstract(jcasClass.getModifiers())) {
+      jcasType = Misc.getStaticIntFieldNoInherit(jcasClass, "typeIndexID");
       // if jcasType is negative, this means there's no value for this field
-      if (jcasType == -1) {
-        add2errors(errorSet,
-                /**
-                 * The Class "{0}" matches a UIMA Type, and is a subtype of uima.cas.TOP, but is
-                 * missing the JCas typeIndexId.
-                 */
-                new CASRuntimeException(CASRuntimeException.JCAS_MISSING_TYPEINDEX,
-                        clazz.getName()),
-                false); // not a fatal error
+      if (jcasType < 0) {
+        add2errors(errorSet, new CASRuntimeException(CASRuntimeException.JCAS_MISSING_TYPEINDEX,
+                jcasClass.getName()), false); // not a fatal error
         return null;
       }
     }
 
-    return createJCasClassInfo(clazz, ti, jcasType, actualLookup);
+    var lookup = getLookup(jcasClass.getClassLoader());
+    return createJCasClassInfo(jcasClass, aTypeInfo, jcasType, lookup);
   }
 
   // static AtomicLong time = IS_TIME_AUGMENT_FEATURES ? new AtomicLong(0) : null;
@@ -921,44 +940,49 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   //
   // }
 
-  // @formatter:off
   /**
-   * Called to load (if possible) a corresponding JCas class for a UIMA type.
-   * Called at Class Init time for built-in types
-   * Called at TypeSystemCommit for non-built-in types
-   *   Runs the static initializers in the loaded JCas classes - doing resolve
-   * 
+   * <ul>
+   * <li>Called to load (if possible) a corresponding JCas class for a UIMA type.
+   * <li><Called at Class Init time for built-in types
+   * <li>Called at TypeSystemCommit for non-built-in types
+   * </ul>
+   * <p>
+   * Runs the static initializers in the loaded JCas classes - doing resolve
+   * <p>
    * Synchronization: done outside this class
    * 
    * @param cl
    *          the class loader to use
    * @return the loaded / resolved class
    */
-  // @formatter:on
   @SuppressWarnings("unchecked")
-  private static Class<? extends TOP> maybeLoadLocalJCas(TypeImpl ti, ClassLoader cl) {
-    String className = ti.getJCasClassName();
+  private static Class<? extends TOP> maybeJCasWrapperClass(TypeImpl ti, ClassLoader cl) {
+    var className = ti.getJCasClassName();
+
+    // First we try the local classloader - this is necessary because it might be a PEAR situation
     try {
       return (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
-      // Class not found is normal, if there is no JCas for this class
-      return null;
+      // Class not found is normal in the local classloader - lets try the next mechanism
     } catch (ExceptionInInitializerError e) {
       throw new RuntimeException("Exception while loading " + className, e);
     }
+
+    // If the local classloader does not have the JCas wrapper, we try the SPI
+    return loadJCasClassesFromSPI(cl).get(className);
   }
 
   static Map<String, Class<? extends TOP>> loadJCasClassesFromSPI(ClassLoader cl) {
     synchronized (cl_to_spiJCas) {
-      Map<String, Class<? extends TOP>> spiJCas = cl_to_spiJCas.get(cl);
+      var spiJCas = cl_to_spiJCas.get(cl);
       if (spiJCas != null) {
         return spiJCas;
       }
 
-      Map<String, Class<? extends TOP>> spiJCasClasses = new LinkedHashMap<>();
-      ServiceLoader<JCasClassProvider> loader = ServiceLoader.load(JCasClassProvider.class, cl);
+      var spiJCasClasses = new LinkedHashMap<String, Class<? extends TOP>>();
+      var loader = ServiceLoader.load(JCasClassProvider.class, cl);
       loader.forEach(provider -> {
-        List<Class<? extends TOP>> list = provider.listJCasClasses();
+        var list = provider.listJCasClasses();
         if (list != null) {
           list.forEach(item -> spiJCasClasses.put(item.getName(), item));
         }
@@ -969,8 +993,6 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
   }
 
-  // SYNCHRONIZED
-
   static synchronized MethodHandle getConstantIntMethodHandle(int i) {
     MethodHandle mh = Misc.getWithExpand(methodHandlesForInt, i);
     if (mh == null) {
@@ -980,46 +1002,50 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   }
 
   /**
-   * Return a Functional Interface for a generator for creating instances of a type. Function takes
-   * a casImpl arg, and returning an instance of the JCas type.
+   * Return a {@link FsGenerator3 functional interface for a generator} for creating instances of
+   * the given JCas cover class.
    * 
-   * @param jcasClass
+   * @param aJCasClass
    *          the class of the JCas type to construct
-   * @param typeImpl
-   *          the UIMA type
    * @return a Functional Interface whose createFS method takes a casImpl and when subsequently
    *         invoked, returns a new instance of the class
+   * @see FsGenerator3
    */
-  private static FsGenerator3 createGenerator(Class<?> jcasClass, Lookup lookup) {
-    try {
+  private static FsGenerator3 createGenerator(Class<? extends TOP> aJCasClass, Lookup aLookup) {
+    synchronized (JCAS_TO_GENERATOR) {
+      var generator = JCAS_TO_GENERATOR.get(aJCasClass);
+      if (generator != null) {
+        return generator;
+      }
 
-      MethodHandle mh = lookup.findConstructor(jcasClass, findConstructorJCasCoverType);
-      MethodType mtThisGenerator = methodType(jcasClass, TypeImpl.class, CASImpl.class);
+      try {
+        var mh = aLookup.findConstructor(aJCasClass, findConstructorJCasCoverType);
+        var mtThisGenerator = methodType(aJCasClass, TypeImpl.class, CASImpl.class);
 
-      CallSite callSite = LambdaMetafactory.metafactory(lookup, // lookup context for the
-                                                                // constructor
-              "createFS", // name of the method in the Function Interface
-              callsiteFsGenerator, // signature of callsite, return type is functional interface,
-                                   // args are captured args if any
-              fsGeneratorType, // samMethodType signature and return type of method impl by function
-                               // object
-              mh, // method handle to constructor
-              mtThisGenerator);
-      return (FsGenerator3) callSite.getTarget().invokeExact();
-    } catch (Throwable e) {
-      if (e instanceof NoSuchMethodException) {
-        String classname = jcasClass.getName();
+        // lookup context for the constructor
+        var callSite = LambdaMetafactory.metafactory(aLookup,
+                // name of the method in the Function Interface
+                "createFS",
+                // signature of callsite, return type is functional interface, args are captured
+                // if any
+                callsiteFsGenerator,
+                // samMethodType signature and return type of method impl by function object
+                fsGeneratorType,
+                // method handle to constructor
+                mh, mtThisGenerator);
+        generator = (FsGenerator3) callSite.getTarget().invokeExact();
+        JCAS_TO_GENERATOR.put(aJCasClass, generator);
+        return generator;
+      } catch (NoSuchMethodException e) {
+        var classname = aJCasClass.getName();
         add2errors(errorSet,
                 new CASRuntimeException(e, CASRuntimeException.JCAS_CAS_NOT_V3, classname,
-                        jcasClass.getClassLoader()
+                        aJCasClass.getClassLoader()
                                 .getResource(classname.replace('.', '/') + ".class").toString()));
         return null;
+      } catch (Throwable e) {
+        throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
       }
-      /**
-       * An internal error occurred, please report to the Apache UIMA project; nested exception if
-       * present: {0}
-       */
-      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
     }
   }
 
@@ -1132,69 +1158,27 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // return jcasClassesInfo[typecode].gettersAndSetters.get(featShortName);
   // }
 
-  // static for setting up static builtin values
-  // @formatter:off
   /**
-   * Called after succeeding at loading, once per load for an exact matching JCas Class 
-   *   - class was already checked to insure is of proper type for JCas
-   *   - skips creating-generator-for-Sofa - since "new Sofa(...)" is not a valid way to create a sofa   
+   * Called after succeeding at loading, once per load for an exact matching JCas Class
+   * <ul>
+   * <li>class was already checked to insure is of proper type for JCas
+   * <li>skips creating-generator-for-Sofa - since "new Sofa(...)" is not a valid way to create a
+   * sofa
+   * </ul>
    * 
-   * @param jcasClass
+   * @param aJCasClass
    *          the JCas class that corresponds to the type
-   * @param ti
+   * @param aTypeInfo
    *          the type
    * @return the info for this JCas that is shared across all type systems under this class loader
    */
-  // @formatter:on
-  private static JCasClassInfo createJCasClassInfo(Class<? extends TOP> jcasClass, TypeImpl ti,
-          int jcasType, Lookup lookup) {
-    boolean noGenerator = ti.getCode() == TypeSystemConstants.sofaTypeCode
-            || Modifier.isAbstract(jcasClass.getModifiers()) || ti.isArray();
-    FsGenerator3 generator = noGenerator ? null : createGenerator(jcasClass, lookup);
-    JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, generator, jcasType);
-    // System.out.println("debug creating jcci, classname = " + jcasClass.getName() + ",
-    // jcasTypeNumber: " + jcasType);
-    return jcasClassInfo;
-  }
-
-  private static JCasClassFeatureInfo[] getJCasClassFeatureInfo(Class<?> jcasClass) {
-    ArrayList<JCasClassFeatureInfo> features = new ArrayList<>();
-
-    try {
-      for (Field f : jcasClass.getDeclaredFields()) {
-        String fname = f.getName();
-        if (fname.length() <= 5 || !fname.startsWith("_FC_")) {
-          continue;
-        }
-        String featName = fname.substring(4);
-
-        // compute range by looking at get method
-
-        String getterName = "get" + Character.toUpperCase(featName.charAt(0))
-                + featName.substring(1);
-        Method m;
-        try {
-          m = jcasClass.getDeclaredMethod(getterName); // get the getter with no args
-        } catch (NoSuchMethodException e) {
-          /**
-           * Cas class {0} with feature {1} but is mssing a 0 argument getter. This feature will not
-           * be used to maybe expand the type's feature set.
-           */
-          Logger logger = UIMAFramework.getLogger(FSClassRegistry.class);
-          logger.warn(() -> logger.rb_ue(CASRuntimeException.JCAS_MISSING_GETTER,
-                  jcasClass.getName(), featName));
-          continue; // skip this one
-        }
-
-        String rangeClassName = m.getReturnType().getName();
-        String uimaRangeName = Misc.javaClassName2UimaTypeName(rangeClassName);
-        features.add(new JCasClassFeatureInfo(featName, uimaRangeName));
-      } // end of for loop
-      JCasClassFeatureInfo[] r = new JCasClassFeatureInfo[features.size()];
-      return features.toArray(r);
-    } catch (Throwable e) {
-      throw new RuntimeException(e);
-    }
+  // static for setting up static built-in values
+  private static JCasClassInfo createJCasClassInfo(Class<? extends TOP> aJCasClass,
+          TypeImpl aTypeInfo, int aJCasType, Lookup aLookup) {
+    var noGenerator = aTypeInfo.getCode() == TypeSystemConstants.sofaTypeCode
+            || Modifier.isAbstract(aJCasClass.getModifiers()) || aTypeInfo.isArray();
+    var generator = noGenerator ? null : createGenerator(aJCasClass, aLookup);
+    return new JCasClassInfo(aJCasClass, generator, aJCasType);
   }
 
   // static boolean isFieldInClass(Feature feat, Class<?> clazz) {
@@ -1487,18 +1471,18 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    *     - other entries are null; this serves as a boolean indicator that no pear override exists for that type
    *       and therefore no trampoline is needed
    * 
-   * @param cl
-   *          identifies which set of jcas cover classes
-   * @param isPear
+   * @param aClassLoader
+   *          identifies which set of JCas cover classes
+   * @param aIsPear
    *          true for pear case
    * @param tsi
    *          the type system being used
    * @return the generators for that set, as an array indexed by type code
    */
   // @formatter:on
-  static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear,
+  static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader aClassLoader, boolean aIsPear,
           TypeSystemImpl tsi) {
-    Map<String, JCasClassInfo> type2jcci = get_className_to_jcci(cl, isPear);
+    var type2jcci = get_className_to_jcci(aClassLoader, aIsPear);
     // final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = isPear ? cl_4pears_to_type2JCas :
     // cl_to_type2JCas;
     // synchronized(cl2t2j) {
@@ -1509,16 +1493,16 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // system, or
     // This is the first time this class loader is being used with this particular type system
 
-    loadJCasForTSandClassLoader(tsi, true, cl, type2jcci);
+    loadJCasForTSandClassLoader(tsi, true, aClassLoader, type2jcci);
 
-    FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
+    var generators = new FsGenerator3[tsi.getTypeArraySize()];
 
     // Map<String, JCasClassInfo> t2jcci = cl2t2j.get(cl);
     // can't use values alone because many types have the same value (due to copy-down)
 
     // cannot iterate over type2jcci - that map only has types with found JCas classes
 
-    getGeneratorsForTypeAndSubtypes(tsi.topType, type2jcci, isPear, cl, r, tsi);
+    getGeneratorsForTypeAndSubtypes(tsi.topType, type2jcci, aIsPear, aClassLoader, generators, tsi);
 
     // for (Entry<String, JCasClassInfo> e : type2jcci.entrySet()) {
     // TypeImpl ti = tsi.getType(Misc.javaClassName2UimaTypeName(e.getKey()));
@@ -1534,40 +1518,30 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // r[ti.getCode()] = (FsGenerator3) jcci.generator;
     // }
     // }
-    return r;
+    return generators;
   }
 
-  private static void getGeneratorsForTypeAndSubtypes(TypeImpl ti,
+  private static void getGeneratorsForTypeAndSubtypes(TypeImpl aTypeInfo,
           Map<String, JCasClassInfo> t2jcci, boolean isPear, ClassLoader cl, FsGenerator3[] r,
           TypeSystemImpl tsi) {
 
-    TypeImpl jti = ti;
-    JCasClassInfo jcci = t2jcci.get(jti.getJCasClassName());
+    var typeInfo = aTypeInfo;
+    var jcci = t2jcci.get(typeInfo.getJCasClassName());
     while (jcci == null) {
-      jti = jti.getSuperType();
-      jcci = t2jcci.get(jti.getJCasClassName());
+      typeInfo = typeInfo.getSuperType();
+      jcci = t2jcci.get(typeInfo.getJCasClassName());
     }
 
     // skip entering a generator in the result if
-    // in a pear setup, and this cl is not the cl that loaded the JCas class.
+    // in a PEAR setup, and this cl is not the cl that loaded the JCas class.
     // See method comment getGeneratorsForClassLoader(...) in for why.
     if (!isPear || jcci.isPearOverride(tsi)) {
-      r[ti.getCode()] = (FsGenerator3) jcci.generator;
+      r[aTypeInfo.getCode()] = (FsGenerator3) jcci.generator;
     }
 
-    for (TypeImpl subtype : ti.getDirectSubtypes()) {
-      getGeneratorsForTypeAndSubtypes(subtype, t2jcci, isPear, cl, r, tsi);
+    for (var subType : aTypeInfo.getDirectSubtypes()) {
+      getGeneratorsForTypeAndSubtypes(subType, t2jcci, isPear, cl, r, tsi);
     }
-
-  }
-
-  private static boolean isAllNull(FsGenerator3[] r) {
-    for (FsGenerator3 v : r) {
-      if (v != null) {
-        return false;
-      }
-    }
-    return true;
   }
 
   // @formatter:off
@@ -1596,8 +1570,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     try {
       Field[] fields = clazz.getDeclaredFields();
 
-      for (Field field : fields) {
-        String fieldName = field.getName();
+      for (var field : fields) {
+        var fieldName = field.getName();
         if (fieldName.startsWith("_FC_")) {
 
           // //debug
@@ -1612,25 +1586,29 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           // System.out.println(Misc.getCallers(1, 32));
           // }
           if (index == -1) {
-            continue; // a feature defined in the JCas class doesn't exist in the currently loaded
-                      // type
-          } // skip setting it. If code uses this, a runtime error will happen.
+            // a feature defined in the JCas class doesn't exist in the currently loaded type
+            continue;
+            // skip setting it. If code uses this, a runtime error will happen.
             // only happens for pear-loaded lazyily JCas classes
             // "Normal" loaded JCas classes (at start of type system commit)
             // have any extra features added to the type system
             // https://issues.apache.org/jira/browse/UIMA-5698
+          }
 
           MutableCallSite c;
           field.setAccessible(true);
           c = (MutableCallSite) field.get(null);
 
-          if (c == null) { // happens when first load of TypeSystemImpl is from JCas class ref
-            continue; // will be set later when type system is committed.
+          if (c == null) {
+            // happens when first load of TypeSystemImpl is from JCas class ref
+            // will be set later when type system is committed.
+            continue;
           }
 
           int prev = (int) c.getTarget().invokeExact();
-          if (prev == -1) { // the static method in JCas classes, TypeSystemImpl.createCallSite,
-                            // initializes the call site with a method handle that returns -1
+          // the static method in JCas classes, TypeSystemImpl.createCallSite, initializes the call
+          // site with a method handle that returns -1
+          if (prev == -1) {
             MethodHandle mh_constant = getConstantIntMethodHandle(index);
             c.setTarget(mh_constant);
             callSites_toSync.add(c);
@@ -1652,13 +1630,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         }
       }
     } catch (Throwable e) {
-      Misc.internalError(e); // never happen
+      // never happen
+      Misc.internalError(e);
     }
   }
 
   /**
    * For internal use only!
    */
+  @SuppressWarnings("javadoc")
   public static void unregister_jcci_classloader(ClassLoader cl) {
     synchronized (cl_to_type2JCas) {
       cl_to_type2JCas.remove(cl);
@@ -1670,7 +1650,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
   /**
    * For internal use only!
+   * 
+   * @deprecated Should be made package private
+   * @forRemoval 4.0.0
    */
+  @SuppressWarnings("javadoc")
+  @Deprecated(since = "3.5.1")
   public static void log_registered_classloaders(Level aLogLevel) {
     Logger log = UIMAFramework.getLogger(lookup().lookupClass());
     if (cl_to_type2JCasStacks == null) {
@@ -1681,7 +1666,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       return;
     }
 
-    Map<ClassLoader, StackTraceElement[]> clToLog = new LinkedHashMap<>();
+    var clToLog = new LinkedHashMap<ClassLoader, StackTraceElement[]>();
     synchronized (cl_to_type2JCas) {
       Iterator<ClassLoader> i = cl_to_type2JCas.keyIterator();
       while (i.hasNext()) {
@@ -1705,7 +1690,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       return;
     }
 
-    StringBuilder buf = new StringBuilder();
+    var buf = new StringBuilder();
 
     if (aLogLevel.isGreaterOrEqual(Level.WARN)) {
       buf.append("On shutdown, there were still " + clToLog.size()
@@ -1717,10 +1702,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
 
     int i = 1;
-    for (Entry<ClassLoader, StackTraceElement[]> e : clToLog.entrySet()) {
-      buf.append("[" + i + "] " + e.getKey() + " registered through:\n");
-      for (StackTraceElement s : e.getValue()) {
-        buf.append("    " + s + "\n");
+    for (var clAndStackTraceElements : clToLog.entrySet()) {
+      buf.append("[" + i + "] " + clAndStackTraceElements.getKey() + " registered through:\n");
+      for (var stackTraceElement : clAndStackTraceElements.getValue()) {
+        buf.append("    " + stackTraceElement + "\n");
       }
       i++;
     }
@@ -1728,7 +1713,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     log.log(aLogLevel, buf.toString());
   }
 
-  static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean is_pear) {
+  /**
+   * @deprecated Parameter aIsPear will be removed.
+   * @forRemoval 4.0.0
+   */
+  @Deprecated(since = "3.5.1")
+  static Map<String, JCasClassInfo> get_className_to_jcci(ClassLoader cl, boolean aIsPear) {
     synchronized (cl_to_type2JCas) {
       // This was used before switching from the normal synchronized map to the weak map
       // and is part of a whole bunch of commented out code with special handling for the PEAR
@@ -1737,46 +1727,45 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       // REC - 2020-10-17
       // final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = cl_to_type2JCas; /*is_pear ?
       // cl_4pears_to_type2JCas :*/
-      Map<String, JCasClassInfo> cl_to_jcci = cl_to_type2JCas.get(cl);
-      if (cl_to_jcci == null) {
-        cl_to_jcci = new HashMap<>();
-        cl_to_type2JCas.put(cl, cl_to_jcci);
+      var cl2jcci = cl_to_type2JCas.get(cl);
+      if (cl2jcci == null) {
+        cl2jcci = new HashMap<>();
+        cl_to_type2JCas.put(cl, cl2jcci);
         if (cl_to_type2JCasStacks != null) {
           cl_to_type2JCasStacks.put(cl, new RuntimeException().getStackTrace());
         }
       }
-      return cl_to_jcci;
+      return cl2jcci;
     }
   }
 
-  private static final URL[] NO_URLS = new URL[0];
-
-  static Lookup getLookup(ClassLoader cl) {
-    Lookup lookup = null;
+  static Lookup getLookup(ClassLoader aClassLoader) {
     try {
       // The UIMAClassLoader has special handling for the MHLC, so we must make sure that the CL
       // we are using is actually a UIMAClassLoader, otherwise the MHCL will look up in the wrong
       // CL. This is in particular an issue for classes loaded through the SPI mechanism.
-      UIMAClassLoader ucl;
-      if (!(cl instanceof UIMAClassLoader)) {
-        synchronized (cl_to_uimaCl) {
-          ucl = cl_to_uimaCl.get(cl);
-          if (ucl == null) {
-            ucl = new UIMAClassLoader(NO_URLS, cl);
-            cl_to_uimaCl.put(cl, ucl);
-          }
-        }
-      } else {
-        ucl = (UIMAClassLoader) cl;
-      }
-
-      Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, ucl);
-      Method m = clazz.getMethod("getMethodHandlesLookup");
-      lookup = (Lookup) m.invoke(null);
+      var ucl = getUimaClassLoader(aClassLoader);
+      var clazz = Class.forName(UIMAClassLoader.MHLC, true, ucl);
+      var m = clazz.getMethod("getMethodHandlesLookup");
+      return (Lookup) m.invoke(null);
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
             | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
     }
-    return lookup;
+  }
+
+  private static UIMAClassLoader getUimaClassLoader(ClassLoader aClassLoader) {
+    if (aClassLoader instanceof UIMAClassLoader ucl) {
+      return ucl;
+    }
+
+    synchronized (cl_to_uimaCl) {
+      var ucl = cl_to_uimaCl.get(aClassLoader);
+      if (ucl == null) {
+        ucl = new UIMAClassLoader(aClassLoader);
+        cl_to_uimaCl.put(aClassLoader, ucl);
+      }
+      return ucl;
+    }
   }
 }

@@ -45,6 +45,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
  * 
  */
 public class UIMAClassLoader extends URLClassLoader {
+  private static final URL[] NO_URLS = new URL[0];
 
   static {
     if (!ClassLoader.registerAsParallelCapable()) {
@@ -143,6 +144,17 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(URL[] classpath) {
     super(classpath);
+    commonInit();
+  }
+
+  /**
+   * Creates a new UIMAClassLoader with the given parent ClassLoader.
+   * 
+   * @param parent
+   *          specify the parent of the classloader
+   */
+  public UIMAClassLoader(ClassLoader parent) {
+    super(NO_URLS, parent);
     commonInit();
   }
 
