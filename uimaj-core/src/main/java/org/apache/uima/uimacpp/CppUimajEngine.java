@@ -127,8 +127,9 @@ public class CppUimajEngine {
         Capability[] capabilities = ccdesc.getCasConsumerMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {
           String[] inputsofas = capabilities[i].getInputSofas();
-          if (inputsofas.length > 0)
+          if (inputsofas.length > 0) {
             requiresTCas = false;
+          }
         }
       } else {
         ae = UIMAFramework.produceAnalysisEngine(specifier, resMgr, null);
@@ -351,6 +352,7 @@ public class CppUimajEngine {
     return null;
   }
 
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
     if (ae != null) {

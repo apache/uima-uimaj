@@ -526,7 +526,7 @@ public class XmiCasDeserializerTest {
     }
   }
 
-  private static int MAX_THREADS = 16;
+  private static final int MAX_THREADS = 16;
   // do as sequence 1, 2, 4, 8, 16 and measure elapsed time
   private static int[] threadsToUse = new int[] { 1, 2, 4, 8, 16/* , 32, 64 */ };
 
@@ -1126,8 +1126,9 @@ public class XmiCasDeserializerTest {
     ArrayFS array = newView2.createArrayFS(nToks);
     Type thingType = newCas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Thing");
     FSIterator thingIter = newCas2.getAnnotationIndex(thingType).iterator();
-    for (int i = 0; i < nToks; ++i)
+    for (int i = 0; i < nToks; ++i) {
       array.set(i, (FeatureStructure) thingIter.next());
+    }
     Type annotArrayTestType = newView2.getTypeSystem()
             .getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
     Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
@@ -2271,8 +2272,9 @@ public class XmiCasDeserializerTest {
     String javaVendor = System.getProperty("java.vendor");
     if (javaVendor.startsWith("Sun")) {
       String javaVersion = System.getProperty("java.version");
-      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4"))
+      if (javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4")) {
         return false;
+      }
     }
     return true;
   }

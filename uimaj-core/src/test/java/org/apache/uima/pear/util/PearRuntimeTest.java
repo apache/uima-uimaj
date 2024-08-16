@@ -64,8 +64,9 @@ public class PearRuntimeTest {
     File tempFile = File.createTempFile("pear_runtime_test_", "tmp");
     if (tempFile.delete()) {
       File tempDir = tempFile;
-      if (tempDir.mkdirs())
+      if (tempDir.mkdirs()) {
         tempInstallDir = tempDir;
+      }
     }
   }
 
@@ -85,8 +86,8 @@ public class PearRuntimeTest {
             new String[] { "pearTests/pearSofaMap.pear" });
     Capability[] capabilities = new Capability[] {
         UIMAFramework.getResourceSpecifierFactory().createCapability() };
-    capabilities[0].setInputSofas(new String[] { "_InitialView" });
-    capabilities[0].setOutputSofas(new String[] { "GermanDocument" });
+    capabilities[0].setInputSofas("_InitialView");
+    capabilities[0].setOutputSofas("GermanDocument");
     desc.getAnalysisEngineMetaData().setCapabilities(capabilities);
     SofaMapping[] sofaMappings = new SofaMapping[] {
         UIMAFramework.getResourceSpecifierFactory().createSofaMapping(),
@@ -142,9 +143,10 @@ public class PearRuntimeTest {
 
   private Import installPear(String pear) throws IOException {
     // check temporary working directory
-    if (tempInstallDir == null)
+    if (tempInstallDir == null) {
       throw new FileNotFoundException("temp directory not found");
-    // check sample PEAR files
+      // check sample PEAR files
+    }
 
     // get pear files to install
     File pearFile = JUnitExtension.getFile(pear);

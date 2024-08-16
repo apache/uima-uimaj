@@ -60,7 +60,7 @@ public class ConfigurableDataResourceSpecifier_implTest {
       NameValuePair nvp = new NameValuePair_impl();
       nvp.setName("param");
       nvp.setValue("bar");
-      settings.setParameterSettings(new NameValuePair[] { nvp });
+      settings.setParameterSettings(nvp);
       md.setConfigurationParameterSettings(settings);
 
       // wrtie to XML

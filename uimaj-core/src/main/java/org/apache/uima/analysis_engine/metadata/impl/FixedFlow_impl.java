@@ -38,25 +38,16 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   /** Array of AnalysisEngine identifiers indicating the fixed flow. */
   private String[] mFixedFlow = Constants.EMPTY_STRING_ARRAY;
 
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFlowConstraintsType()
-   */
   @Override
   public String getFlowConstraintsType() {
     return FLOW_CONSTRAINTS_TYPE;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFixedFlow()
-   */
   @Override
   public String[] getFixedFlow() {
     return mFixedFlow;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.FixedFlow#setFixedFlow(String[])
-   */
   @Override
   public void setFixedFlow(String... aFlow) {
     if (aFlow == null) {
@@ -66,9 +57,6 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
     mFixedFlow = aFlow;
   }
 
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
-   */
   @Override
   public void remapIDs(Map<String, String> aIDMap) {
     // Can't just overwrite existing array because cloned FixedFlow_impl objects
@@ -93,7 +81,6 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fixedFlow",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fixedFlow",
           new PropertyXmlInfo[] { new PropertyXmlInfo("fixedFlow", null, true, "node") });
-
 }

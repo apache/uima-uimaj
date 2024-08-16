@@ -73,7 +73,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.Session_impl;
 import org.apache.uima.resource.impl.URISpecifier_impl;
-import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.FeatureDescription;
@@ -159,7 +158,7 @@ public class AnalysisEngine_implTest {
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       AggregateAnalysisEngine_impl ae2 = new AggregateAnalysisEngine_impl();
       result = ae2.initialize(aggDesc, null);
@@ -477,8 +476,7 @@ public class AnalysisEngine_implTest {
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
-      Capability[] caps = new Capability[] { cap };
-      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(cap);
       _testProcess(primitiveDesc);
 
       primitiveDesc = new AnalysisEngineDescription_impl();
@@ -494,8 +492,7 @@ public class AnalysisEngine_implTest {
       cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
-      caps = new Capability[] { cap };
-      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(cap);
       _testProcess(primitiveDesc);
 
       // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
@@ -504,9 +501,9 @@ public class AnalysisEngine_implTest {
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      aggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      aggDesc.getAnalysisEngineMetaData().setCapabilities(cap);
       _testProcess(aggDesc);
 
       // test aggregate TAE containing a CAS Consumer
@@ -629,7 +626,7 @@ public class AnalysisEngine_implTest {
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(p1);
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
@@ -654,15 +651,14 @@ public class AnalysisEngine_implTest {
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       ConfigurationParameter p2 = new ConfigurationParameter_impl();
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
-      p2.setOverrides(new String[] { "Test/StringParam" });
-      aggDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p2 });
+      p2.setOverrides("Test/StringParam");
+      aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(p2);
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
@@ -700,9 +696,9 @@ public class AnalysisEngine_implTest {
     param.setName("StringParam");
     param.setType(ConfigurationParameter.TYPE_STRING);
     pseudoAggregateDesc.getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
-            .setConfigurationParameters(new ConfigurationParameter[] { param });
-    pseudoAggregateDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-            new NameValuePair[] { new NameValuePair_impl("StringParam", "initial") });
+            .setConfigurationParameters(param);
+    pseudoAggregateDesc.getMetaData().getConfigurationParameterSettings()
+            .setParameterSettings(new NameValuePair_impl("StringParam", "initial"));
 
     AnalysisEngine pseudoAggregate = UIMAFramework.produceAnalysisEngine(pseudoAggregateDesc);
     pseudoAggregate.setConfigParameterValue("StringParam", "changed");
@@ -730,22 +726,21 @@ public class AnalysisEngine_implTest {
       desc.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
-      TypeDescription type1 = typeSystem.addType("Type1", "Test Type One",
-              CAS.TYPE_NAME_ANNOTATION);
+      var type1 = typeSystem.addType("Type1", "Test Type One", CAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat1 = new FeatureDescription_impl();
       feat1.setName("Feature1");
       feat1.setRangeTypeName(CAS.TYPE_NAME_INTEGER);
-      type1.setFeatures(new FeatureDescription[] { feat1 });
-      TypeDescription type2 = typeSystem.addType("Type2", "Test Type Two",
-              CAS.TYPE_NAME_ANNOTATION);
+      type1.setFeatures(feat1);
+      var type2 = typeSystem.addType("Type2", "Test Type Two", CAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat2 = new FeatureDescription_impl();
       feat2.setName("Feature2");
       feat2.setRangeTypeName("EnumType");
-      type2.setFeatures(new FeatureDescription[] { feat2 });
+      type2.setFeatures(feat2);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-              "uima.cas.String");
-      enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
-          new AllowedValue_impl("Two", "Second Value") });
+              CAS.TYPE_NAME_STRING);
+      enumType.setAllowedValues( //
+              new AllowedValue_impl("One", "First Value"), //
+              new AllowedValue_impl("Two", "Second Value"));
       desc.getAnalysisEngineMetaData().setTypeSystem(typeSystem);
 
       TypePriorities typePriorities = new TypePriorities_impl();
@@ -760,7 +755,7 @@ public class AnalysisEngine_implTest {
       FsIndexKeyDescription key1 = new FsIndexKeyDescription_impl();
       key1.setFeatureName("Feature1");
       key1.setComparator(FSIndexComparator.STANDARD_COMPARE);
-      index1.setKeys(new FsIndexKeyDescription[] { key1 });
+      index1.setKeys(key1);
       FsIndexDescription index2 = new FsIndexDescription_impl();
       index2.setLabel("Index2");
       index2.setTypeName("Type2");
@@ -768,7 +763,7 @@ public class AnalysisEngine_implTest {
       FsIndexKeyDescription key2 = new FsIndexKeyDescription_impl();
       key2.setFeatureName("Feature2");
       key2.setComparator(FSIndexComparator.REVERSE_STANDARD_COMPARE);
-      index2.setKeys(new FsIndexKeyDescription[] { key2 });
+      index2.setKeys(key2);
       FsIndexDescription index3 = new FsIndexDescription_impl();
       index3.setLabel("Index3");
       index3.setTypeName("uima.tcas.Annotation");
@@ -778,9 +773,8 @@ public class AnalysisEngine_implTest {
       key3.setComparator(FSIndexComparator.STANDARD_COMPARE);
       FsIndexKeyDescription key4 = new FsIndexKeyDescription_impl();
       key4.setTypePriority(true);
-      index3.setKeys(new FsIndexKeyDescription[] { key3, key4 });
-      desc.getAnalysisEngineMetaData()
-              .setFsIndexes(new FsIndexDescription[] { index1, index2, index3 });
+      index3.setKeys(key3, key4);
+      desc.getAnalysisEngineMetaData().setFsIndexes(index1, index2, index3);
 
       // instantiate TextAnalysisEngine
       PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
@@ -1017,7 +1011,7 @@ public class AnalysisEngine_implTest {
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
       aggAe.initialize(aggDesc, null);

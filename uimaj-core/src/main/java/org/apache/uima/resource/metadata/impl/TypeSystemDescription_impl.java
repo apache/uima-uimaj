@@ -132,7 +132,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     // add to array
     TypeDescription[] types = getTypes();
     if (types == null) {
-      setTypes(new TypeDescription[] { newType });
+      setTypes(newType);
     } else {
       TypeDescription[] newArray = new TypeDescription[types.length + 1];
       System.arraycopy(types, 0, newArray, 0, types.length);

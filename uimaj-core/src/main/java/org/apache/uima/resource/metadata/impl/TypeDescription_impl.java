@@ -142,7 +142,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     // add to array
     FeatureDescription[] features = getFeatures();
     if (features == null) {
-      setFeatures(new FeatureDescription[] { newFeature });
+      setFeatures(newFeature);
     } else {
       FeatureDescription[] newArray = new FeatureDescription[features.length + 1];
       System.arraycopy(features, 0, newArray, 0, features.length);

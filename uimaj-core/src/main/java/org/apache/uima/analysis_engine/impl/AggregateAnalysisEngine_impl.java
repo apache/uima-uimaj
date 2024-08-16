@@ -126,7 +126,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       super.initialize(aSpecifier, aAdditionalParams);
       AnalysisEngineMetaData md = mDescription.getAnalysisEngineMetaData();
 
-      // Get logger for this class ... NOT the user's one in the UimaContext
+      // Get logger for this class - NOT the user's one in the UimaContext
       Logger logger = getLogger();
       logger.logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
@@ -315,8 +315,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     enterBatchProcessComplete();
     try {
       // pass call down to components, which might be (or contain) CAS Consumers
-      Iterator<AnalysisEngine> iter = _getASB().getComponentAnalysisEngines().values()
-              .iterator();
+      Iterator<AnalysisEngine> iter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (iter.hasNext()) {
         iter.next().batchProcessComplete();
       }
@@ -415,9 +414,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // add this analysis engine's name to the parameters sent to the ASB
     Map<String, Object> asbParams = new HashMap<>(aAdditionalParams);
     asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, getMetaData().getName()); // not
-                                                                                           // used
-                                                                                           // 9/2013
-                                                                                           // scan
+                                                                                      // used
+                                                                                      // 9/2013
+                                                                                      // scan
     asbParams.put(Resource.PARAM_RESOURCE_MANAGER, getResourceManager());
 
     // Pass sofa mappings defined in this aggregate as additional ASB parameters

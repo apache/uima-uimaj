@@ -553,6 +553,7 @@ public class UimacppEngine {
   }
 
   // //////////////////////////////////////////////////
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
     synchronized (this) {

@@ -145,7 +145,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
         newArr[newArr.length - 1] = newNVP;
         setParameterSettings(newArr);
       } else {
-        setParameterSettings(new NameValuePair[] { new NameValuePair_impl(aParamName, aValue) });
+        setParameterSettings(new NameValuePair_impl(aParamName, aValue));
       }
     } else // clearing a value
     {

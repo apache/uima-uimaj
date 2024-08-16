@@ -854,10 +854,8 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         // covering the zero-width annotation
         int startingFSStart = ((Annotation) startingFs).getBegin();
         int startingFSEnd = ((Annotation) startingFs).getEnd();
-        it = new FilteredIterator<>(it, fs -> {
-          return fs._id() != startingFs._id && AnnotationPredicates.preceding((Annotation) fs,
-                  startingFSStart, startingFSEnd);
-        });
+        it = new FilteredIterator<>(it, fs -> fs._id() != startingFs._id
+                && AnnotationPredicates.preceding((Annotation) fs, startingFSStart, startingFSEnd));
       }
 
       if (isFollowing) {
@@ -866,10 +864,8 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         // considered to be covered and not following
         int startingFSStart = ((Annotation) startingFs).getBegin();
         int startingFSEnd = ((Annotation) startingFs).getEnd();
-        it = new FilteredIterator<>(it, fs -> {
-          return fs._id() != startingFs._id && AnnotationPredicates.following((Annotation) fs,
-                  startingFSStart, startingFSEnd);
-        });
+        it = new FilteredIterator<>(it, fs -> fs._id() != startingFs._id
+                && AnnotationPredicates.following((Annotation) fs, startingFSStart, startingFSEnd));
       }
 
       return it;

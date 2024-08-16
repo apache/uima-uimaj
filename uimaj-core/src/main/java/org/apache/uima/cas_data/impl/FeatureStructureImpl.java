@@ -76,7 +76,7 @@ public class FeatureStructureImpl implements FeatureStructure {
 
   @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    var buf = new StringBuilder();
     buf.append('\n').append(getType()).append('\n');
     if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
@@ -113,10 +113,6 @@ public class FeatureStructureImpl implements FeatureStructure {
     return mIndexed.length > 0;
   }
 
-  /**
-   * @param string
-   *          -
-   */
   @Override
   public void setId(String string) {
     mId = string;
@@ -128,21 +124,11 @@ public class FeatureStructureImpl implements FeatureStructure {
     mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas_data.FeatureStructure#getIndexed()
-   */
   @Override
   public int[] getIndexed() {
     return mIndexed;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas_data.FeatureStructure#setIndexed(int[])
-   */
   @Override
   public void setIndexed(int[] aIndexed) {
     if (aIndexed == null) {

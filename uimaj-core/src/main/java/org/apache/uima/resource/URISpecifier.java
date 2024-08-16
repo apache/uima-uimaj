@@ -118,6 +118,6 @@ public interface URISpecifier extends ResourceServiceSpecifier {
    * @param parameters
    *          The Parameters to set.
    */
-  void setParameters(Parameter[] parameters);
+  void setParameters(Parameter... parameters);
 
 }

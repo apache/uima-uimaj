@@ -26,7 +26,6 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +39,9 @@ class URISpecifier_implTest {
     sut = new URISpecifier_impl();
     sut.setProtocol("Vinci");
     sut.setUri("foo.bar");
-    sut.setParameters(new Parameter[] { //
-        new Parameter_impl("VNS_HOST", "myhost"), //
-        new Parameter_impl("VNS_PORT", "42") });
+    sut.setParameters( //
+            new Parameter_impl("VNS_HOST", "myhost"), //
+            new Parameter_impl("VNS_PORT", "42"));
   }
 
   @Test

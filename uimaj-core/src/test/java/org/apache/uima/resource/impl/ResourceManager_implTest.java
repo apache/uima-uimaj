@@ -135,8 +135,7 @@ public class ResourceManager_implTest {
       ExternalResourceBinding binding6 = new ExternalResourceBinding_impl();
       binding6.setKey("myResourceWithFilePathNotUrl");
       binding6.setResourceName("myResourceWithFilePathNotUrl");
-      cfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding1, binding2, binding3,
-          binding4, binding5, binding6 });
+      cfg.setExternalResourceBindings(binding1, binding2, binding3, binding4, binding5, binding6);
 
       mManager.initializeExternalResources(cfg, TEST_CONTEXT_NAME, null);
 

@@ -348,7 +348,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * For differencing when reading and writing. Also used for arrays to difference the 0th
      * element.
      */
-    final private TOP prevFsByType[];
+    final private TOP[] prevFsByType;
     private TOP prevFs;
 
     private boolean only1CommonString; // true if only one common string
