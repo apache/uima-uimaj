@@ -42,7 +42,9 @@ public interface BaseAnnotator {
    *           if the annotator cannot initialize itself.
    * @throws AnnotatorConfigurationException
    *           if the configuration specified for this annotator is invalid.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   void initialize(AnnotatorContext aContext)
           throws AnnotatorInitializationException, AnnotatorConfigurationException;
 

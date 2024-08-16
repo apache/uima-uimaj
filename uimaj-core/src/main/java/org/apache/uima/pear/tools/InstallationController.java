@@ -362,8 +362,9 @@ public class InstallationController {
       while (files.hasNext()) {
         File file = files.next();
         if (file.getName().toLowerCase().endsWith(JAR_FILE_EXT)) {
-          if (listBuffer.length() > 0)
+          if (listBuffer.length() > 0) {
             listBuffer.append(File.pathSeparatorChar);
+          }
           listBuffer.append(file.getAbsolutePath().replace('\\', '/'));
         }
       }
@@ -476,8 +477,9 @@ public class InstallationController {
         String varName = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
         String varValue = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_VALUE_TAG);
         if (varName != null && varValue != null && varName.equalsIgnoreCase(CLASSPATH_VAR)) {
-          if (cpBuffer.length() > 0)
+          if (cpBuffer.length() > 0) {
             cpBuffer.append(File.pathSeparatorChar);
+          }
           cpBuffer.append(varValue.replace('\\', '/'));
         }
       }
@@ -514,8 +516,9 @@ public class InstallationController {
         String varName = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
         String varValue = actInfo.params.getProperty(InstallationDescriptorHandler.VAR_VALUE_TAG);
         if (varName != null && varValue != null && varName.equalsIgnoreCase(PATH_VAR)) {
-          if (pBuffer.length() > 0)
+          if (pBuffer.length() > 0) {
             pBuffer.append(File.pathSeparatorChar);
+          }
           pBuffer.append(varValue.replace('\\', '/'));
         }
       }
@@ -540,8 +543,9 @@ public class InstallationController {
       String varName = (String) names.nextElement();
       String varValue = envVarsTable.getProperty(varName);
       if (varName.length() > 0 && varValue != null && varValue.length() > 0) {
-        if (envBuffer.length() > 0)
+        if (envBuffer.length() > 0) {
           envBuffer.append(' ');
+        }
         envBuffer.append("-D");
         envBuffer.append(varName);
         envBuffer.append('=');
@@ -599,8 +603,9 @@ public class InstallationController {
           // add new value
           curValue = curValue + File.pathSeparator + varValue;
           envVarsTable.setProperty(varName, curValue);
-        } else
+        } else {
           envVarsTable.setProperty(varName, varValue);
+        }
       }
     }
     return envVarsTable;
@@ -668,12 +673,14 @@ public class InstallationController {
       Enumeration<String> dlgCompIds = dlgComponents.keys();
       while (dlgCompIds.hasMoreElements()) {
         String dlgCompId = dlgCompIds.nextElement();
-        if (!deleteInstalledFiles(dlgCompId, parentDir, true))
+        if (!deleteInstalledFiles(dlgCompId, parentDir, true)) {
           done = false;
+        }
       }
     }
-    if (!FileUtil.deleteDirectory(rootDir))
+    if (!FileUtil.deleteDirectory(rootDir)) {
       done = false;
+    }
     return done;
   }
 
@@ -762,14 +769,15 @@ public class InstallationController {
       if (!pearFile.isFile()) {
         // copy PEAR file to the target directory using URL connection
         URL pearFileUrl = new URL(pearFileLocation);
-        if (controller != null) // write message to OUT msg queue
+        if (controller != null) { // write message to OUT msg queue
           controller.getOutMsgWriter()
                   .println("[InstallationController]: copying " + fileSize + " bytes from "
                           + pearFileUrl.toExternalForm() + " to " + targetDir.getAbsolutePath());
-        else
+        } else { // write message to OUT msg queue
           // print message to console
           System.out.println("[InstallationController]: copying " + fileSize + " bytes from "
                   + pearFileUrl.toExternalForm() + " to " + targetDir.getAbsolutePath());
+        }
         String pearFileName = (new File(pearFileUrl.getFile())).getName();
         pearFile = new File(targetDir, pearFileName);
 
@@ -782,28 +790,31 @@ public class InstallationController {
 
         removeLocalCopy = true;
       }
-      if (controller != null) // write message to OUT msg queue
+      if (controller != null) { // write message to OUT msg queue
         controller.getOutMsgWriter()
                 .println("[InstallationController]: extracting " + pearFile.getAbsolutePath());
-      else
+      } else { // write message to OUT msg queue
         // print message to console
         System.out.println("[InstallationController]: extracting " + pearFile.getAbsolutePath());
+      }
 
       jarFile = new JarFile(pearFile);
       long totalBytes = (fileExt == null) ? FileUtil.extractFilesFromJar(jarFile, targetDir) : // all
       // files
               FileUtil.extractFilesWithExtFromJar( // files with extension
                       jarFile, fileExt, targetDir);
-      if (controller != null) // write message to OUT msg queue
+      if (controller != null) { // write message to OUT msg queue
         controller.getOutMsgWriter()
                 .println("[InstallationController]: " + totalBytes + " bytes extracted");
-      else
+      } else { // write message to OUT msg queue
         // print message to console
         System.out.println("[InstallationController]: " + totalBytes + " bytes extracted");
+      }
       if (removeLocalCopy) {
         // remove local copy of PEAR file
-        if (!pearFile.delete())
+        if (!pearFile.delete()) {
           pearFile.deleteOnExit();
+        }
       }
       done = true;
     } catch (MalformedURLException urlExc) {
@@ -813,7 +824,7 @@ public class InstallationController {
     } catch (Throwable err) {
       throw new IOException(err.toString());
     } finally {
-      if (jarFile != null)
+      if (jarFile != null) {
         try {
           jarFile.close();
         } catch (IOException ioe) {
@@ -821,6 +832,7 @@ public class InstallationController {
           e.initCause(ioe);
           throw e;
         }
+      }
     }
     return done ? targetDir.getAbsolutePath() : null;
   }
@@ -930,8 +942,9 @@ public class InstallationController {
             : new SimplePackageSelector();
     // check if this component is already installed locally
     File componentRootDir = packageSelector.selectPackageDirectory(componentId);
-    if (componentRootDir != null)
+    if (componentRootDir != null) {
       componentRootPath = componentRootDir.getAbsolutePath();
+    }
     return componentRootPath;
   } // end of getInstalledComponentRootPath() method
 
@@ -954,13 +967,14 @@ public class InstallationController {
             : new SimplePackageSelector();
     // check if the PEAR file is in the local FS
     File pearFile = packageSelector.selectPackageFile(componentId);
-    if (pearFile != null)
+    if (pearFile != null) {
       pearFileLocation = pearFile.getAbsolutePath();
-    else {
+    } else {
       // enter PEAR file URL
       URL pearFileUrl = packageSelector.selectPackageUrl(componentId);
-      if (pearFileUrl != null)
+      if (pearFileUrl != null) {
         pearFileLocation = pearFileUrl.toString();
+      }
     }
     return pearFileLocation;
   } // end of getPEARFileLocation()
@@ -990,8 +1004,9 @@ public class InstallationController {
     if (args[argNo].equals(LOCAL_OPT)) {
       // work in 'local' mode
       setLocalMode(true);
-      if (args.length > argNo + 1)
+      if (args.length > argNo + 1) {
         localPearFile = new File(args[++argNo]);
+      }
     } else {
       // work in standard SITH mode
       mainComponentId = args[argNo++];
@@ -1014,9 +1029,9 @@ public class InstallationController {
       System.err.println(
               "[InstallationController]: " + localPearFile.getAbsolutePath() + " file not found");
     }
-    if (installationDir == null) // set CWD by default
+    if (installationDir == null) { // set CWD by default
       installationDir = new File(".");
-    else if (!installationDir.isDirectory()) {
+    } else if (!installationDir.isDirectory()) {
       System.err.println("[InstallationController]: " + installationDir.getAbsolutePath()
               + " directory not found");
       return;
@@ -1028,10 +1043,11 @@ public class InstallationController {
         InstallationDescriptorHandler insdHandler = new InstallationDescriptorHandler();
         insdHandler.parseInstallationDescriptor(jarFile);
         InstallationDescriptor insd = insdHandler.getInstallationDescriptor();
-        if (insd != null)
+        if (insd != null) {
           mainComponentId = insd.getMainComponentId();
-        else
+        } else {
           throw new FileNotFoundException("installation descriptor not found");
+        }
       } catch (Exception err) {
         System.err.println("[InstallationController]: terminated \n" + err.toString());
         return;
@@ -1234,10 +1250,11 @@ public class InstallationController {
   protected InstallationController(String componentId, String rootDirPath, boolean installInRootDir,
           MessageRouter msgRouter, MessageRouter.StdChannelListener msgListener,
           boolean cleanInstallDir) {
-    if (msgRouter == null)
+    if (msgRouter == null) {
       _msgRouter = new MessageRouter();
-    else
+    } else {
       _msgRouter = msgRouter;
+    }
     if (msgListener == null) {
       // set default standard message channel listener
       _defaultMsgListener = new MessageRouter.StdChannelListener() {
@@ -1253,12 +1270,14 @@ public class InstallationController {
           System.out.flush();
         }
       };
-    } else
+    } else {
       // set custom standard message channel listener
       _defaultMsgListener = msgListener;
+    }
     addMsgListener(_defaultMsgListener);
-    if (!_msgRouter.isRunning()) // start messenger
+    if (!_msgRouter.isRunning()) { // start messenger
       _msgRouter.start();
+    }
     // initialize attributes
     _mainComponentId = componentId;
     _cleanInstallDir = cleanInstallDir;
@@ -1274,10 +1293,12 @@ public class InstallationController {
       _mainComponentRootPath = _mainComponentRoot.getAbsolutePath();
     }
     _uimaHomePath = System.getProperty(UIMA_HOME_ENV);
-    if (_uimaHomePath != null)
+    if (_uimaHomePath != null) {
       _uimaHomePath = _uimaHomePath.replace('\\', '/');
-    if (__osName == null)
+    }
+    if (__osName == null) {
       __osName = System.getProperty("os.name");
+    }
     _hostIpAddress = getHostIpAddress();
     // set default package selector
     _packageSelector = new SimplePackageSelector(getOutMsgWriter(), getErrMsgWriter());
@@ -1460,8 +1481,9 @@ public class InstallationController {
           String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD, true);
           if (dlgClassPath.length() > 0) {
             if (cpBuffer.length() > 0
-                    && cpBuffer.charAt(cpBuffer.length() - 1) != File.pathSeparatorChar)
+                    && cpBuffer.charAt(cpBuffer.length() - 1) != File.pathSeparatorChar) {
               cpBuffer.append(File.pathSeparatorChar);
+            }
             cpBuffer.append(dlgClassPath);
           }
         }
@@ -1495,8 +1517,9 @@ public class InstallationController {
           String dlgPath = buildComponentPath(dlgRootPath, dlgInsD);
           if (dlgPath.length() > 0) {
             if (pBuffer.length() > 0
-                    && pBuffer.charAt(pBuffer.length() - 1) != File.pathSeparatorChar)
+                    && pBuffer.charAt(pBuffer.length() - 1) != File.pathSeparatorChar) {
               pBuffer.append(File.pathSeparatorChar);
+            }
             pBuffer.append(dlgPath);
           }
         }
@@ -1534,9 +1557,7 @@ public class InstallationController {
     return null;
   }
 
-  /**
-   * Overrides standard <code>finalize</code> method.
-   */
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() {
     _msgRouter.terminate();
@@ -1554,18 +1575,21 @@ public class InstallationController {
    */
   public synchronized InstallationDescriptor installComponent() {
     try {
-      if (_installationMonitor != null) // notify installation monitor
+      if (_installationMonitor != null) { // notify installation monitor
         _installationMonitor.setInstallationStatus(_mainComponentId, INSTALLATION_IN_PROGRESS);
-      if (_mainPearFileLocation == null) // get PEAR file location
+      }
+      if (_mainPearFileLocation == null) { // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
+      }
       // extract PEAR file in a specified directory
       if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this,
               _cleanInstallDir) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
-        if (_installationMonitor != null) // notify monitor
+        if (_installationMonitor != null) { // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, INSTALLATION_FAILED);
+        }
         return null;
       }
       // load installation descriptor
@@ -1601,8 +1625,9 @@ public class InstallationController {
       exc.printStackTrace(getErrMsgWriter());
       // set error message
       setInstallationError(exc);
-      if (_installationMonitor != null) // notify monitor
+      if (_installationMonitor != null) { // notify monitor
         _installationMonitor.setInstallationStatus(_mainComponentId, INSTALLATION_FAILED);
+      }
       return null;
     }
     return _insdObject;
@@ -1621,8 +1646,9 @@ public class InstallationController {
    */
   public synchronized InstallationDescriptor installComponentDescriptors() {
     try {
-      if (_mainPearFileLocation == null) // get PEAR file location
+      if (_mainPearFileLocation == null) { // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
+      }
       // extract main XML descriptors in a specified directory
       if (extractFilesFromPEARFile(_mainPearFileLocation, ".xml", _mainComponentRoot, this,
               _cleanInstallDir) == null) {
@@ -1676,8 +1702,7 @@ public class InstallationController {
       if (componentRootPath == null) {
         // install next separate delegate component
         InstallationController dlgController = new InstallationController(componentId,
-                _installationDirPath, false, _msgRouter, _defaultMsgListener,
-                _cleanInstallDir);
+                _installationDirPath, false, _msgRouter, _defaultMsgListener, _cleanInstallDir);
         dlgController.setPackageSelector(_packageSelector);
         InstallationDescriptor dlgInsdObject = dlgController.installComponent();
         if (dlgInsdObject == null) {
@@ -1716,8 +1741,7 @@ public class InstallationController {
       String componentId = dlgList.nextElement();
       // install XML descriptors of the next delegate component
       InstallationController dlgController = new InstallationController(componentId,
-              _installationDirPath, false, _msgRouter, _defaultMsgListener,
-              _cleanInstallDir);
+              _installationDirPath, false, _msgRouter, _defaultMsgListener, _cleanInstallDir);
       dlgController.setPackageSelector(_packageSelector);
       InstallationDescriptor dlgInsdObject = dlgController.installComponentDescriptors();
       if (dlgInsdObject == null) {
@@ -1776,12 +1800,14 @@ public class InstallationController {
       fWriter.println();
       // CLASSPATH
       String classPath = buildComponentClassPath();
-      if (classPath.length() > 0)
+      if (classPath.length() > 0) {
         fWriter.println("CLASSPATH=" + classPath);
+      }
       // PATH
       String path = buildComponentPath();
-      if (path.length() > 0)
+      if (path.length() > 0) {
         fWriter.println("PATH=" + path);
+      }
       // the rest of env.vars.
       Properties envVarTable = buildTableOfEnvVars();
       Enumeration<Object> envVarList = envVarTable.keys();
@@ -1902,8 +1928,9 @@ public class InstallationController {
    *          The given implementation of the <code>InstallationMonitor</code> interface.
    */
   public synchronized void setInstallationMonitor(InstallationMonitor monitor) {
-    if (monitor != null)
+    if (monitor != null) {
       _installationMonitor = monitor;
+    }
   }
 
   /**
@@ -1913,8 +1940,9 @@ public class InstallationController {
    *          The given implementation of the <code>PackageSelector</code> interface.
    */
   public synchronized void setPackageSelector(PackageSelector selector) {
-    if (selector != null)
+    if (selector != null) {
       _packageSelector = selector;
+    }
   }
 
   /**
@@ -1956,8 +1984,9 @@ public class InstallationController {
   public synchronized boolean verifyComponent() {
     boolean success = false;
     try {
-      if (_installationMonitor != null) // notify monitor
+      if (_installationMonitor != null) { // notify monitor
         _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_IN_PROGRESS);
+      }
 
       // create PackageBrowser object for the installed PEAR
       PackageBrowser installedPear = new PackageBrowser(_mainComponentRoot);
@@ -1966,23 +1995,27 @@ public class InstallationController {
         // verification successful
         success = true;
         _verificationMsg = null;
-        if (_installationMonitor != null) // notify monitor
+        if (_installationMonitor != null) { // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_COMPLETED);
+        }
       } else if (status.getRetCode() == TestStatus.TEST_NOT_SUCCESSFUL) {
         // verification failed
         _verificationMsg = status.getMessage();
-        if (_installationMonitor != null) // notify monitor
+        if (_installationMonitor != null) { // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_FAILED);
+        }
       } else {
         // verification cancelled
         _verificationMsg = status.getMessage();
-        if (_installationMonitor != null) // notify monitor
+        if (_installationMonitor != null) { // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_CANCELLED);
+        }
       }
     } catch (Exception err) {
       _verificationMsg = err.toString();
-      if (_installationMonitor != null) // notify monitor
+      if (_installationMonitor != null) { // notify monitor
         _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_FAILED);
+      }
     }
     return success;
   }

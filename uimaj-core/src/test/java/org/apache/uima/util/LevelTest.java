@@ -35,13 +35,13 @@ public class LevelTest {
     // check if level is on
     assertThat(level.isOn()).isFalse();
     // check if level is equal to "OFF"
-    assertThat(level.equals(Level.OFF)).isTrue();
+    assertThat(level).isEqualTo(Level.OFF);
     // check if level is not equal to "FINE"
-    assertThat(level.equals(Level.FINE)).isFalse();
+    assertThat(level).isNotEqualTo(Level.FINE);
     // check if level text is "OFF"
-    assertThat("OFF").isEqualTo(level.toString());
+    assertThat(level).hasToString("OFF");
     // check if level value is Integer.MAX_VALUE
-    assertThat(Integer.MAX_VALUE).isEqualTo(level.toInteger());
+    assertThat(level.toInteger()).isEqualTo(Integer.MAX_VALUE);
 
     // check if level is greater or equal to ALL
     assertThat(level.isGreaterOrEqual(Level.ALL)).isFalse();

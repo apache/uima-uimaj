@@ -23,15 +23,11 @@ package org.apache.uima.resource.metadata;
  * Represents an allowed value for an "enumerated" type.
  * 
  * @see TypeDescription
- * 
- * 
  */
 public interface AllowedValue extends MetaDataObject {
 
   /**
-   * Gets the allowed value.
-   * 
-   * @return the allowed value string
+   * @return the allowed value.
    */
   String getString();
 
@@ -44,9 +40,7 @@ public interface AllowedValue extends MetaDataObject {
   void setString(String aString);
 
   /**
-   * Gets the verbose description of this allowed value.
-   * 
-   * @return the description of this allowed value
+   * @return the verbose description of this allowed value.
    */
   String getDescription();
 

@@ -44,8 +44,6 @@ import org.apache.uima.util.InvalidXMLException;
  * {@link #getDescription() description}, {@link #getVendor() vendor}, and {@link #getVersion()
  * version}. It is recommended that these properties be set on any TypePriorities declaration that
  * is meant to be shared by (imported by) multiple components.
- * 
- * 
  */
 public interface TypePriorities extends MetaDataObject {
 
@@ -136,7 +134,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aImports
    *          an array of imports declared by this TypePriorities declaration.
    */
-  void setImports(Import[] aImports);
+  void setImports(Import... aImports);
 
   /**
    * Gets the <code>TypePriorityList</code>s that define the priorities. Each
@@ -153,7 +151,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aPriorityLists
    *          the <code>TypePriorityList</code>s that define the priorities
    */
-  void setPriorityLists(TypePriorityList[] aPriorityLists);
+  void setPriorityLists(TypePriorityList... aPriorityLists);
 
   /**
    * Adds a <code>TypePriorityList</code>.
@@ -198,7 +196,7 @@ public interface TypePriorities extends MetaDataObject {
    * @param aResourceManager
    *          the Resource Manager used to locate type priorities XML files imported by name. For
    *          example, the path in which to locate these type priorities XML files can be set via
-   *          the {@link ResourceManager#setDataPath(String)} method.
+   *          the {@link ResourceManager#setDataPathElements} method.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid

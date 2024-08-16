@@ -25,18 +25,18 @@ public class Token extends Annotation {
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "x.y.z.Token";
+  public static final String _TypeName = "x.y.z.Token";
   
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(Token.class);
+  public static final int typeIndexID = JCasRegistry.register(Token.class);
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -48,21 +48,21 @@ public class Token extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_ttype = "ttype";
-  public final static String _FeatName_tokenFloatFeat = "tokenFloatFeat";
-  public final static String _FeatName_lemma = "lemma";
-  public final static String _FeatName_lemmaList = "lemmaList";
+  public static final String _FeatName_ttype = "ttype";
+  public static final String _FeatName_tokenFloatFeat = "tokenFloatFeat";
+  public static final String _FeatName_lemma = "lemma";
+  public static final String _FeatName_lemmaList = "lemmaList";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_ttype = TypeSystemImpl.createCallSite(Token.class, "ttype");
-  private final static MethodHandle _FH_ttype = _FC_ttype.dynamicInvoker();
-  private final static CallSite _FC_tokenFloatFeat = TypeSystemImpl.createCallSite(Token.class, "tokenFloatFeat");
-  private final static MethodHandle _FH_tokenFloatFeat = _FC_tokenFloatFeat.dynamicInvoker();
-  private final static CallSite _FC_lemma = TypeSystemImpl.createCallSite(Token.class, "lemma");
-  private final static MethodHandle _FH_lemma = _FC_lemma.dynamicInvoker();
-  private final static CallSite _FC_lemmaList = TypeSystemImpl.createCallSite(Token.class, "lemmaList");
-  private final static MethodHandle _FH_lemmaList = _FC_lemmaList.dynamicInvoker();
+  private static final CallSite _FC_ttype = TypeSystemImpl.createCallSite(Token.class, "ttype");
+  private static final MethodHandle _FH_ttype = _FC_ttype.dynamicInvoker();
+  private static final CallSite _FC_tokenFloatFeat = TypeSystemImpl.createCallSite(Token.class, "tokenFloatFeat");
+  private static final MethodHandle _FH_tokenFloatFeat = _FC_tokenFloatFeat.dynamicInvoker();
+  private static final CallSite _FC_lemma = TypeSystemImpl.createCallSite(Token.class, "lemma");
+  private static final MethodHandle _FH_lemma = _FC_lemma.dynamicInvoker();
+  private static final CallSite _FC_lemmaList = TypeSystemImpl.createCallSite(Token.class, "lemmaList");
+  private static final MethodHandle _FH_lemmaList = _FC_lemmaList.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

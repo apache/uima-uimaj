@@ -138,7 +138,7 @@ public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifi
    *          The Parameters to set.
    */
   @Override
-  public void setParameters(Parameter[] parameters) {
+  public void setParameters(Parameter... parameters) {
     mParameters = parameters;
   }
 

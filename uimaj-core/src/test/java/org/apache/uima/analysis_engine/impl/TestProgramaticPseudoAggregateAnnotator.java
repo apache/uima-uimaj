@@ -33,7 +33,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 
@@ -61,9 +60,9 @@ public class TestProgramaticPseudoAggregateAnnotator extends CasAnnotator_ImplBa
     param.setName("StringParam");
     param.setType(ConfigurationParameter.TYPE_STRING);
     delegateDesc.getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
-            .setConfigurationParameters(new ConfigurationParameter[] { param });
-    delegateDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-            new NameValuePair[] { new NameValuePair_impl("StringParam", "initial") });
+            .setConfigurationParameters(param);
+    delegateDesc.getMetaData().getConfigurationParameterSettings()
+            .setParameterSettings(new NameValuePair_impl("StringParam", "initial"));
 
     // Forward the parameter value to the child context
     UimaContextAdmin childContext = ((UimaContextAdmin) aContext).createChild("delegate", null);

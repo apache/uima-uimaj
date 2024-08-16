@@ -24,8 +24,6 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
 /**
  * A precondition on the MIME Type of the entity. This interface is a kind of
  * <code>SimplePrecondition</code> to be used as a convenience.
- * 
- * 
  */
 public interface MimeTypePrecondition extends SimplePrecondition {
   /**
@@ -50,5 +48,5 @@ public interface MimeTypePrecondition extends SimplePrecondition {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setMimeTypes(String[] aMimeTypes);
+  void setMimeTypes(String... aMimeTypes);
 }

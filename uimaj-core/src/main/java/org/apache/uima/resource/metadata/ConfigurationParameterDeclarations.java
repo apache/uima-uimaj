@@ -26,8 +26,6 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
  * single list of {@link ConfigurationParameter}s or a list of {@link ConfigurationGroup}s, where
  * each group can contain a list of parameters. When groups are used, the Resource can also declare
  * a list of {@link #getCommonParameters() common parameters} shared by all groups.
- * 
- * 
  */
 public interface ConfigurationParameterDeclarations extends MetaDataObject {
 
@@ -52,7 +50,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  void setConfigurationParameters(ConfigurationParameter[] aParams);
+  void setConfigurationParameters(ConfigurationParameter... aParams);
 
   /**
    * Adds a Configuration Parameter that is not in any group.
@@ -95,7 +93,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    * @throws org.apache.uima.UIMA_UnsupportedOperationException
    *           if this object is not modifiable
    */
-  void setConfigurationGroups(ConfigurationGroup[] aGroups);
+  void setConfigurationGroups(ConfigurationGroup... aGroups);
 
   /**
    * Adds a Configuration Group.
@@ -137,7 +135,7 @@ public interface ConfigurationParameterDeclarations extends MetaDataObject {
    *          an array containing {@link ConfigurationParameter} objects, each of which describes a
    *          parameter common to all groups.
    */
-  void setCommonParameters(ConfigurationParameter[] aParams);
+  void setCommonParameters(ConfigurationParameter... aParams);
 
   /**
    * Adds a Configuration Parameter that is common to all groups.

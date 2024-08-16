@@ -23,8 +23,6 @@ package org.apache.uima.resource.metadata;
  * A description of a key defining a CAS feature structure index. This implements
  * <code>MetaDataObject</code>, which implements {@link org.apache.uima.util.XMLizable}, so it can
  * be serialized to and deserialized from an XML element.
- * 
- * 
  */
 public interface FsIndexKeyDescription extends MetaDataObject {
   /**

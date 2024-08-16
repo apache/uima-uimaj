@@ -23,7 +23,11 @@ import org.apache.uima.UIMAException;
 /**
  * An <code>AnnotatorContextException</code> is thrown by an {@link AnnotatorContext} if it cannot
  * complete the invoked operation due to a failure in the underlying implementation.
+ * 
+ * @deprecated Use {link UimaContext} instead
+ * @forRemoval 4.0.0
  */
+@Deprecated(since = "3.6.0")
 public class AnnotatorContextException extends UIMAException {
 
   private static final long serialVersionUID = 5021704382907111514L;

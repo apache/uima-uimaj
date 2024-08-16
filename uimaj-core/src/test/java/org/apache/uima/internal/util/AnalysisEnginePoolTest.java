@@ -104,7 +104,7 @@ public class AnalysisEnginePoolTest {
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", mSimpleDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       pool = new AnalysisEnginePool("taePool", 3, aggDesc);
       _testProcess(pool, 0);
@@ -162,7 +162,7 @@ public class AnalysisEnginePoolTest {
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(p1);
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 

@@ -37,43 +37,22 @@ public class OperationalProperties_impl extends MetaDataObject_impl
 
   private boolean mOutputsNewCASes;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
-   */
   @Override
   public boolean getModifiesCas() {
     return mModifiesCas;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
-   */
   @Override
   public boolean isMultipleDeploymentAllowed() {
     return mMultipleDeploymentAllowed;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.OperationalProperties#setModifiesCas(boolean)
-   */
   @Override
   public void setModifiesCas(boolean aModifiesCas) {
     mModifiesCas = aModifiesCas;
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.OperationalProperties#setMultipleDeploymentAllowed(boolean)
-   */
   @Override
   public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed) {
     mMultipleDeploymentAllowed = aMultipleDeploymentAllowed;
@@ -99,13 +78,6 @@ public class OperationalProperties_impl extends MetaDataObject_impl
               new PropertyXmlInfo("multipleDeploymentAllowed"),
               new PropertyXmlInfo("outputsNewCASes") });
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.
-   * Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-   */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {

@@ -195,7 +195,7 @@ public interface ResourceManager {
    *           if there is a resource registered under <code>aName</code> but it could not be
    *           instantiated for the specified parameters.
    */
-  Object getResource(String aName, String[] aParams) throws ResourceAccessException;
+  Object getResource(String aName, String... aParams) throws ResourceAccessException;
 
   /**
    * Gets the Class of the Resource that will be returned by a call to {@link #getResource(String)}
@@ -274,7 +274,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException;
+  URL getResourceURL(String aKey, String... aParams) throws ResourceAccessException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -298,7 +298,7 @@ public interface ResourceManager {
    * @throws ResourceAccessException
    *           if a failure occurs in accessing the resource
    */
-  InputStream getResourceAsStream(String aKey, String[] aParams) throws ResourceAccessException;
+  InputStream getResourceAsStream(String aKey, String... aParams) throws ResourceAccessException;
 
   /**
    * Initializes all external resources declared in a ResourceCreationSpecifier. Multi-threading:

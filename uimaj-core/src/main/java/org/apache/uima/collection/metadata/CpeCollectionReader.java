@@ -24,8 +24,6 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration that is part of the CPE descriptor. Provides the means of
  * configuring CPE CollectionReader.
- * 
- * 
  */
 public interface CpeCollectionReader extends MetaDataObject {
   /**
@@ -38,8 +36,9 @@ public interface CpeCollectionReader extends MetaDataObject {
    *           tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
           throws CpeDescriptorException;
 
@@ -52,15 +51,18 @@ public interface CpeCollectionReader extends MetaDataObject {
    *           tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
 
   /**
    * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from
    * CollectionReader
    * 
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   void removeCasInitializer();
 
   /**

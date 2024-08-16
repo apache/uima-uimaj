@@ -23,15 +23,11 @@ package org.apache.uima.resource.metadata;
  * A description of a CAS feature. This implements <code>MetaDataObject</code>, which implements
  * {@link org.apache.uima.util.XMLizable}, so it can be serialized to and deserialized from an XML
  * element.
- * 
- * 
  */
 public interface FeatureDescription extends MetaDataObject {
 
   /**
-   * Gets the name of this Feature.
-   * 
-   * @return the name of this Feature
+   * @return the name of this Feature.
    */
   String getName();
 
@@ -44,9 +40,7 @@ public interface FeatureDescription extends MetaDataObject {
   void setName(String aName);
 
   /**
-   * Gets the verbose description of this Feature.
-   * 
-   * @return the description of this Feature
+   * @return the verbose description of this Feature.
    */
   String getDescription();
 
@@ -59,9 +53,7 @@ public interface FeatureDescription extends MetaDataObject {
   void setDescription(String aDescription);
 
   /**
-   * Gets the name of the range Type of this Feature.
-   * 
-   * @return the name of the range Type of this Feature
+   * @return the name of the range Type of this Feature.
    */
   String getRangeTypeName();
 

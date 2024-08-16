@@ -138,7 +138,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
   }
 
   /**
-   * Dom parsers if not operating in validating mode can't distinguish between ignorable white space
+   * DOM parsers if not operating in validating mode can't distinguish between ignorable white space
    * and non-ignorable white space.
    * 
    * So we use a heuristic instead - we see if the text is whitespace only, and if so, we consider
@@ -329,15 +329,9 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
       // scan for last node to output
       // we do this first so we output nothing if have non-blank text somewhere
       Node lastNode = null;
-      for (Node n = startNode; (n != null) && ((n instanceof Comment) || (n instanceof Text)); // keep
-                                                                                               // going
-                                                                                               // as
-                                                                                               // long
-                                                                                               // as
-                                                                                               // have
-                                                                                               // non-Element
-                                                                                               // nodes
-              n = n.getNextSibling()) {
+      // keep going as long as have non-Element nodes
+      for (Node n = startNode; (n != null)
+              && ((n instanceof Comment) || (n instanceof Text)); n = n.getNextSibling()) {
         if ((n instanceof Text) && !isWhitespaceText(n)) {
           return; // catch case <someElement> some text
         }

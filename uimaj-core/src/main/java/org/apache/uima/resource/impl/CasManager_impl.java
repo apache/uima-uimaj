@@ -427,11 +427,7 @@ public class CasManager_impl implements CasManager {
     return aMinimumSize;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#finalize()
-   */
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
     // unregister MBeans from MBeanServer when GC occurs.

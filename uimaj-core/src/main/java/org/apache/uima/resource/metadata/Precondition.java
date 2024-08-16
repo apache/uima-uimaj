@@ -30,8 +30,6 @@ import org.apache.uima.cas.CAS;
  * <p>
  * As with all {@link MetaDataObject}s, a <code>Precondition</code> may or may not be modifiable. An
  * application can find out by calling the {@link #isModifiable()} method.
- * 
- * 
  */
 public interface Precondition extends MetaDataObject {
 

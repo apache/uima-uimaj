@@ -24,20 +24,15 @@ import org.apache.uima.resource.metadata.MetaDataObject;
 /**
  * An object that holds configuration that is part of the CPE descriptor. It provides the means of
  * configuring CPE output queue that is shared between processing pipelines and cas consumers
- * 
  */
 public interface OutputQueue extends MetaDataObject {
   /**
-   * Milliseconds to wait for new message
-   * 
-   * @return - ms to wait for message
+   * @return milliseconds to wait for new message
    */
   int getDequeueTimeout();
 
   /**
-   * Class name of the queue object to be used as Output Queue
-   * 
-   * @return - name of the queue class
+   * @return class name of the queue object to be used as Output Queue
    */
   String getQueueClass();
 

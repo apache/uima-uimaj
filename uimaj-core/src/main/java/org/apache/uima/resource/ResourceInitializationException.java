@@ -26,8 +26,6 @@ import org.apache.uima.UIMAException;
 /**
  * Thrown by {@link Resource#initialize(ResourceSpecifier,Map)} to indicate that a failure has
  * occurred during initialization.
- * 
- * 
  */
 public class ResourceInitializationException extends UIMAException {
 

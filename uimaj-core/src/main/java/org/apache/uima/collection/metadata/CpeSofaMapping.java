@@ -40,5 +40,4 @@ public interface CpeSofaMapping extends MetaDataObject {
    *          -
    */
   void setCpeSofaName(String string);
-
 }

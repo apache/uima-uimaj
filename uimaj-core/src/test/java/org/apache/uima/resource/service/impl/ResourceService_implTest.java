@@ -49,7 +49,7 @@ public class ResourceService_implTest {
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(p1);
       // create a ResourceService_impl
       service = new ResourceService_impl();
       service.initialize(primitiveDesc, null);

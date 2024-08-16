@@ -23,6 +23,7 @@ import static org.apache.uima.Constants.JAVA_FRAMEWORK_NAME;
 import static org.apache.uima.UIMAFramework.newConfigurationManager;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.analysis_engine.impl.metadata.MetaDataObjectAssert.assertFieldAsEqualButNotSameValue;
+import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
 import static org.apache.uima.resource.ResourceInitializationException.UNDEFINED_KEY_IN_FLOW;
 import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_FLOAT;
 import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTEGER;
@@ -48,26 +49,16 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
-import org.apache.uima.resource.ExternalResourceDependency;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
-import org.apache.uima.resource.metadata.AllowedValue;
-import org.apache.uima.resource.metadata.Capability;
-import org.apache.uima.resource.metadata.ConfigurationGroup;
-import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.NameValuePair;
@@ -99,7 +90,7 @@ import org.xml.sax.SAXException;
 /**
  * Test the AnalysisEngineDescription_impl class.
  */
-public class AnalysisEngineDescription_implTest {
+class AnalysisEngineDescription_implTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -115,13 +106,12 @@ public class AnalysisEngineDescription_implTest {
     var typeSystem = new TypeSystemDescription_impl();
 
     var fakeType = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
-    var fakeTypeFeature = fakeType.addFeature("TestFeature", "For Testing Only",
-            CAS.TYPE_NAME_STRING);
+    var fakeTypeFeature = fakeType.addFeature("TestFeature", "For Testing Only", TYPE_NAME_STRING);
 
-    var enumType = typeSystem.addType("EnumType", "Test Enumerated Type", "uima.cas.String");
-    enumType.setAllowedValues(new AllowedValue[] { //
-        new AllowedValue_impl("One", "First Value"), //
-        new AllowedValue_impl("Two", "Second Value") });
+    var enumType = typeSystem.addType("EnumType", "Test Enumerated Type", TYPE_NAME_STRING);
+    enumType.setAllowedValues( //
+            new AllowedValue_impl("One", "First Value"), //
+            new AllowedValue_impl("Two", "Second Value"));
 
     var typePriorities = new TypePriorities_impl();
     var priorityList = typePriorities.addPriorityList();
@@ -139,7 +129,7 @@ public class AnalysisEngineDescription_implTest {
     index1_key2.setComparator(0);
     var index1_key3 = new FsIndexKeyDescription_impl();
     index1_key3.setTypePriority(true);
-    index1.setKeys(new FsIndexKeyDescription[] { index1_key1, index1_key2, index1_key3 });
+    index1.setKeys(index1_key1, index1_key2, index1_key3);
 
     var index2 = new FsIndexDescription_impl();
     index2.setLabel("testIndex2");
@@ -148,7 +138,7 @@ public class AnalysisEngineDescription_implTest {
     var index2_key1 = new FsIndexKeyDescription_impl();
     index2_key1.setFeatureName("TestFeature");
     index2_key1.setComparator(1);
-    index2.setKeys(new FsIndexKeyDescription[] { index2_key1 });
+    index2.setKeys(index2_key1);
 
     // create primitive AE description
     primitiveDesc = new AnalysisEngineDescription_impl();
@@ -165,8 +155,8 @@ public class AnalysisEngineDescription_implTest {
     // precond1.setComparisonValue(new String[]{"en,de"});
     // precond1.setPredicate(SimplePrecondition.LANGUAGE_SUBSUMED);
     // cap1.setPreconditions(new Precondition[]{precond1});
-    cap1.setLanguagesSupported(new String[] { "en", "de" });
-    cap1.setMimeTypesSupported(new String[] { "text/plain" });
+    cap1.setLanguagesSupported("en", "de");
+    cap1.setMimeTypesSupported("text/plain");
 
     var cap2 = new Capability_impl();
     cap2.setDescription("Second fake capability");
@@ -184,8 +174,8 @@ public class AnalysisEngineDescription_implTest {
     cfgParam2.setType(TYPE_INTEGER);
 
     var cfgGrp1 = new ConfigurationGroup_impl();
-    cfgGrp1.setNames(new String[] { "cfgGrp1" });
-    cfgGrp1.setConfigurationParameters(new ConfigurationParameter[] { cfgParam1, cfgParam2 });
+    cfgGrp1.setNames("cfgGrp1");
+    cfgGrp1.setConfigurationParameters(cfgParam1, cfgParam2);
 
     var cfgParam3 = new ConfigurationParameter_impl();
     cfgParam3.setName("param3");
@@ -193,8 +183,8 @@ public class AnalysisEngineDescription_implTest {
     cfgParam3.setType(TYPE_FLOAT);
 
     var cfgGrp2 = new ConfigurationGroup_impl();
-    cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
-    cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
+    cfgGrp2.setNames("cfgGrp2a", "cfgGrp2b");
+    cfgGrp2.setConfigurationParameters(cfgParam3);
 
     var md = primitiveDesc.getAnalysisEngineMetaData();
     md.setName("Test TAE");
@@ -202,10 +192,9 @@ public class AnalysisEngineDescription_implTest {
     md.setVersion("1.0");
     md.setTypeSystem(typeSystem);
     md.setTypePriorities(typePriorities);
-    md.setFsIndexes(new FsIndexDescription[] { index1, index2 });
-    md.setCapabilities(new Capability[] { cap1, cap2 });
-    md.getConfigurationParameterDeclarations()
-            .setConfigurationGroups(new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+    md.setFsIndexes(index1, index2);
+    md.setCapabilities(cap1, cap2);
+    md.getConfigurationParameterDeclarations().setConfigurationGroups(cfgGrp1, cfgGrp2);
 
     var nvp1 = new NameValuePair_impl("param1", "test");
     var nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -222,8 +211,7 @@ public class AnalysisEngineDescription_implTest {
     aggregateDesc.setFrameworkImplementation(JAVA_FRAMEWORK_NAME);
     aggregateDesc.setPrimitive(false);
 
-    Map<String, MetaDataObject> delegateTaeMap = aggregateDesc
-            .getDelegateAnalysisEngineSpecifiersWithImports();
+    var delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
     delegateTaeMap.put("Test", primitiveDesc);
 
     var primDesc2 = new AnalysisEngineDescription_impl();
@@ -231,8 +219,7 @@ public class AnalysisEngineDescription_implTest {
     primDesc2.setPrimitive(true);
     primDesc2.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
     primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
-    primDesc2.getAnalysisEngineMetaData()
-            .setCapabilities(new Capability[] { new Capability_impl() });
+    primDesc2.getAnalysisEngineMetaData().setCapabilities(new Capability_impl());
     delegateTaeMap.put("Empty", primDesc2);
     FileResourceSpecifier fileResSpec = new FileResourceSpecifier_impl();
     fileResSpec.setFileUrl(getClass()
@@ -249,30 +236,30 @@ public class AnalysisEngineDescription_implTest {
     var dep = UIMAFramework.getResourceSpecifierFactory().createExternalResourceDependency();
     dep.setKey("ResourceKey");
     dep.setDescription("Test");
-    aggregateDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
+    aggregateDesc.setExternalResourceDependencies(dep);
     var resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
             .createResourceManagerConfiguration();
     var extRes = UIMAFramework.getResourceSpecifierFactory().createExternalResourceDescription();
     extRes.setResourceSpecifier(fileResSpec);
     extRes.setName("Resource1");
     extRes.setDescription("Test");
-    resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
+    resMgrCfg.setExternalResources(extRes);
 
     var binding = UIMAFramework.getResourceSpecifierFactory().createExternalResourceBinding();
     binding.setKey("ResourceKey");
     binding.setResourceName("Resource1");
-    resMgrCfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding });
+    resMgrCfg.setExternalResourceBindings(binding);
     aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
 
     var fixedFlow = new FixedFlow_impl();
-    fixedFlow.setFixedFlow(new String[] { "Test", "Empty" });
+    fixedFlow.setFixedFlow("Test", "Empty");
 
     var md2 = aggregateDesc.getAnalysisEngineMetaData();
     md2.setName("Test Aggregate TAE");
     md2.setDescription("Does not do anything useful.");
     md2.setVersion("1.0");
     // md2.setTypeSystem(typeSystem);
-    // md2.setFsIndexes(new FsIndexDescription[]{index});
+    // md2.setFsIndexes(index);
     md2.setCapabilities(primitiveDesc.getAnalysisEngineMetaData().getCapabilities());
     md2.setFlowConstraints(fixedFlow);
   }
@@ -555,11 +542,11 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void thatAggregateWithImportByNameAndConfigParameterOverridesValidates() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
-    XMLInputSource in = new XMLInputSource(
+    var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
-    ResourceManager resMgr = newDefaultResourceManager();
-    File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
+    var desc = xmlParser.parseAnalysisEngineDescription(in);
+    var resMgr = newDefaultResourceManager();
+    var dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.doFullValidation(resMgr);
   }
@@ -567,11 +554,11 @@ public class AnalysisEngineDescription_implTest {
   @Test
   public void testValidate() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
-    XMLInputSource in = new XMLInputSource(
+    var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
-    AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
-    ResourceManager resMgr = newDefaultResourceManager();
-    File dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
+    var desc = xmlParser.parseAnalysisEngineDescription(in);
+    var resMgr = newDefaultResourceManager();
+    var dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.validate(resMgr);
 

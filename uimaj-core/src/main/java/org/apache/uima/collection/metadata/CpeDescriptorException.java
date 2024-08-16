@@ -19,10 +19,6 @@
 
 package org.apache.uima.collection.metadata;
 
-/**
- * 
- * 
- */
 public class CpeDescriptorException extends Exception {
   private static final long serialVersionUID = -5008821641810813512L;
 

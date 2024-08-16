@@ -69,11 +69,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
 
   /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.
-   * ResourceSpecifier, java.util.Map)
-   * 
    * UIMA-5043 Set & restore the UimaContextHolder around calls to user code so it can be used to
    * access the External Settings
    */
@@ -155,11 +150,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#finalize()
-   */
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
     // unregister MBean from MBeanServer when GC occurs
@@ -174,11 +165,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     return (FlowControllerContext) getUimaContext();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
-   */
   @Override
   public void reconfigure() throws ResourceConfigurationException {
     UimaContext prevContext = setContextHolder(); // for use by POJOs
@@ -191,11 +177,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.Resource_ImplBase#destroy()
-   */
   @Override
   public void destroy() {
     withContextHolder(() -> mFlowController.destroy());
@@ -225,8 +206,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // now get the right interface(e.g. CAS or JCAS)
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
-      ((CASImpl) view)
-              .switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
+      ((CASImpl) view).switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
       Flow flow = mFlowController.computeFlow(casToPass);
       if (flow instanceof CasFlow_ImplBase) {
         ((CasFlow_ImplBase) flow).setCas(view);

@@ -46,8 +46,6 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
  * <p>
  * As with all {@link MetaDataObject}s, a <code>ConfigurationParameter</code> may or may not be
  * modifiable. An application can find out by calling the {@link #isModifiable()} method.
- * 
- * 
  */
 public interface ConfigurationParameter extends MetaDataObject {
 
@@ -206,7 +204,7 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @param aOverrides
    *          the parameters this this parameter overrides
    */
-  void setOverrides(String[] aOverrides);
+  void setOverrides(String... aOverrides);
 
   /**
    * Adds an override to this configuration parameter.

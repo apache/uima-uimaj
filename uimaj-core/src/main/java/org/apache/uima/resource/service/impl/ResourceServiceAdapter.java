@@ -35,8 +35,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * remote <code>ResourceService</code>. Thus, applications can interact with this adapter in the
  * same way they would interact with any <code>Resource</code>, and can be completely unaware of the
  * fact that a remote <code>ResourceService</code> is being used.
- * 
- * 
  */
 public abstract class ResourceServiceAdapter extends Resource_ImplBase {
 
@@ -70,9 +68,6 @@ public abstract class ResourceServiceAdapter extends Resource_ImplBase {
     return mStub;
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#getMetaData()
-   */
   @Override
   public ResourceMetaData getMetaData() {
     try {
@@ -83,12 +78,5 @@ public abstract class ResourceServiceAdapter extends Resource_ImplBase {
     } catch (ResourceServiceException e) {
       throw new UIMARuntimeException(e);
     }
-  }
-
-  /**
-   * @see org.apache.uima.resource.Resource#destroy()
-   */
-  @Override
-  public void destroy() {
   }
 }

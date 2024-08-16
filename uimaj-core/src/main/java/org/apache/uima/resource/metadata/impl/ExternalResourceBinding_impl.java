@@ -21,10 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 
-/**
- * 
- * 
- */
 public class ExternalResourceBinding_impl extends MetaDataObject_impl
         implements ExternalResourceBinding {
 
@@ -34,42 +30,21 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl
 
   private String mKey;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getKey()
-   */
   @Override
   public String getKey() {
     return mKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setKey(java.lang.String)
-   */
   @Override
   public void setKey(String aKey) {
     mKey = aKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getResourceName()
-   */
   @Override
   public String getResourceName() {
     return mResourceName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ExternalResourceBinding#setResourceName(java.lang.String)
-   */
   @Override
   public void setResourceName(String aName) {
     mResourceName = aName;

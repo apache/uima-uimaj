@@ -33,8 +33,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Reference implementation of {@link ConfigurationGroup}.
- * 
- * 
  */
 public class ConfigurationGroup_impl extends MetaDataObject_impl implements ConfigurationGroup {
 
@@ -62,7 +60,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    * @see ConfigurationGroup#setNames(java.lang.String[])
    */
   @Override
-  public void setNames(String[] aNames) {
+  public void setNames(String... aNames) {
     mNames = aNames;
   }
 
@@ -74,21 +72,11 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     return mConfigurationParameters;
   }
 
-  /**
-   * @see ConfigurationGroup#setConfigurationParameters(ConfigurationParameter[])
-   */
   @Override
-  public void setConfigurationParameters(ConfigurationParameter[] aParams) {
+  public void setConfigurationParameters(ConfigurationParameter... aParams) {
     mConfigurationParameters = aParams;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(
-   * org.apache.uima.resource.metadata.ConfigurationParameter)
-   */
   @Override
   public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -98,12 +86,6 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     setConfigurationParameters(newArr);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#
-   * removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
-   */
   @Override
   public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -164,9 +146,6 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     super.buildFromXMLElement(aElement, aParser, aOptions);
   }
 
-  /**
-   * @see MetaDataObject_impl#getXmlizationInfo()
-   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;

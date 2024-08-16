@@ -26,7 +26,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 
 public class FsIndexCollection_impl extends MetaDataObject_impl implements FsIndexCollection {
@@ -47,90 +46,54 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
 
   private FsIndexDescription[] mFsIndexes = EMPTY_FS_INDEX_DESCRIPTION_ARRAY;
 
-  /**
-   * @see ResourceMetaData#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see ResourceMetaData#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see ResourceMetaData#getVersion()
-   */
   @Override
   public String getVersion() {
     return mVersion;
   }
 
-  /**
-   * @see ResourceMetaData#setVersion(String)
-   */
   @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
-  /**
-   * @see ResourceMetaData#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see ResourceMetaData#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see ResourceMetaData#getVendor()
-   */
   @Override
   public String getVendor() {
     return mVendor;
   }
 
-  /**
-   * @see ResourceMetaData#setVendor(String)
-   */
   @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#getImports()
-   */
   @Override
   public Import[] getImports() {
     // don't allow this to return null
     return (mImports == null) ? Import.EMPTY_IMPORTS : mImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.TypeSystemDescription#setImports(org.apache.uima.resource.
-   * metadata.Import[])
-   */
   @Override
-  public void setImports(Import[] aImports) {
+  public void setImports(Import... aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aImports", "setImports" });
@@ -138,11 +101,6 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     mImports = aImports;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.FsIndexCollection#getFsIndexes()
-   */
   @Override
   public FsIndexDescription[] getFsIndexes() {
     // don't allow this to return null
@@ -152,14 +110,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     return mFsIndexes;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.FsIndexCollection#setFsIndexes(org.apache.uima.resource.
-   * metadata.FsIndexDescription[])
-   */
   @Override
-  public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
+  public void setFsIndexes(FsIndexDescription... aFSIndexes) {
     if (aFSIndexes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aFSIndexes", "setImports" });
@@ -190,11 +142,6 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.TypeSystemDescription#resolveImports()
-   */
   // support multi-threading, avoid object creation if no imports
   @Override
   public synchronized void resolveImports() throws InvalidXMLException {
@@ -226,5 +173,4 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
               new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
               new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
               new PropertyXmlInfo("fsIndexes", "fsIndexes") });
-
 }

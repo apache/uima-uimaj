@@ -73,7 +73,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * <p>
  * Also provides the ability to write objects to XML and build objects from their DOM
  * representation, as required to implement the {@link XMLizable} interface, which is a
- * superinterface of {@link MetaDataObject}. In future versions, this could be replaced by a
+ * super-interface of {@link MetaDataObject}. In future versions, this could be replaced by a
  * non-proprietary XML binding solution such as JAXB or EMF.
  * <p>
  * 
@@ -131,21 +131,27 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if ((obj == null) || (getClass() != obj.getClass()))
+      }
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
+      }
       MetaDataAttr other = (MetaDataAttr) obj;
       if (clazz == null) {
-        if (other.clazz != null)
+        if (other.clazz != null) {
           return false;
-      } else if (!clazz.equals(other.clazz))
+        }
+      } else if (!clazz.equals(other.clazz)) {
         return false;
+      }
       if (name == null) {
-        if (other.name != null)
+        if (other.name != null) {
           return false;
-      } else if (!name.equals(other.name))
+        }
+      } else if (!name.equals(other.name)) {
         return false;
+      }
       return true;
     }
 
@@ -171,10 +177,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   // holds the unfiltered set of Java Bean Info
   private static final transient ConcurrentHashMapWithProducer<Class<? extends MetaDataObject_impl>, MetaDataAttr[]> class2attrsMapUnfiltered = new ConcurrentHashMapWithProducer<>();
 
-  /**
-   * methods used for serializing
-   *
-   */
   public interface Serializer {
     void outputStartElement(Node node, String nameSpace, String localName, String qname,
             Attributes attributes) throws SAXException;
@@ -409,9 +411,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     return null;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.MetaDataObject#getAttributeValue(String)
-   */
   @Override
   public Object getAttributeValue(String aName) {
     try {
@@ -475,9 +474,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.MetaDataObject#setAttributeValue(String, Object)
-   */
   @Override
   public void setAttributeValue(String aName, Object aValue) {
     try {
@@ -610,10 +606,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.MetaDataObject#clone() multi-core: could be cloning
-   *      while another thread is modifying?
-   */
   @Override
   public Object clone() {
     // System.out.println("MetaDataObject_impl: clone");
@@ -663,17 +655,18 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     for (MetaDataAttr attr : attrList) {
       buf.append(attr.name + " = ");
       Object val = getAttributeValue(attr);
-      if (val == null)
+      if (val == null) {
         buf.append("NULL");
-      else if (val instanceof Object[]) {
+      } else if (val instanceof Object[]) {
         Object[] array = (Object[]) val;
         buf.append("Array{");
         for (int j = 0; j < array.length; j++) {
           buf.append(j).append(": ").append(array[j].toString()).append('\n');
         }
         buf.append("}\n");
-      } else
+      } else {
         buf.append(val.toString());
+      }
       buf.append('\n');
     }
     return buf.toString();
@@ -744,30 +737,40 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
       // some of this may not be necessary - it depends what kind of array values are actually used
       // The "if" statements below are in guessed order of frequency of occurance
-      if (val1 instanceof String[])
+      if (val1 instanceof String[]) {
         return Arrays.equals((String[]) val1, (String[]) val2);
+      }
       // deepEquals handles arrays whose elements are arrays
-      if (val1 instanceof Object[])
+      if (val1 instanceof Object[]) {
         return Arrays.deepEquals((Object[]) val1, (Object[]) val2);
-      if (val1 instanceof int[])
+      }
+      if (val1 instanceof int[]) {
         return Arrays.equals((int[]) val1, (int[]) val2);
-      if (val1 instanceof float[])
+      }
+      if (val1 instanceof float[]) {
         return Arrays.equals((float[]) val1, (float[]) val2);
-      if (val1 instanceof double[])
+      }
+      if (val1 instanceof double[]) {
         return Arrays.equals((double[]) val1, (double[]) val2);
-      if (val1 instanceof boolean[])
+      }
+      if (val1 instanceof boolean[]) {
         return Arrays.equals((boolean[]) val1, (boolean[]) val2);
-      if (val1 instanceof byte[])
+      }
+      if (val1 instanceof byte[]) {
         return Arrays.equals((byte[]) val1, (byte[]) val2);
-      if (val1 instanceof short[])
+      }
+      if (val1 instanceof short[]) {
         return Arrays.equals((short[]) val1, (short[]) val2);
-      if (val1 instanceof long[])
+      }
+      if (val1 instanceof long[]) {
         return Arrays.equals((long[]) val1, (long[]) val2);
+      }
       return Arrays.equals((char[]) val1, (char[]) val2);
     }
 
     if (val1 instanceof Map) {// only need this to handle Maps w/ array vals
-      if (!(val2 instanceof Map) || (((Map) val1).size() != ((Map) val2).size()) || (val1.getClass() != val2.getClass())) {
+      if (!(val2 instanceof Map) || (((Map) val1).size() != ((Map) val2).size())
+              || (val1.getClass() != val2.getClass())) {
         return false;
       }
 
@@ -962,8 +965,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   protected PropertyXmlInfo getPropertyXmlInfo(String aXmlElementName) {
     PropertyXmlInfo[] inf = getXmlizationInfo().propertyInfo;
     for (int i = 0; i < inf.length; i++) {
-      if (aXmlElementName.equals(inf[i].xmlElementName))
+      if (aXmlElementName.equals(inf[i].xmlElementName)) {
         return inf[i];
+      }
     }
     return null;
   }
@@ -1257,9 +1261,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // check element type
-    if (!aElement.getTagName().equals(getXmlizationInfo().elementTagName))
+    if (!aElement.getTagName().equals(getXmlizationInfo().elementTagName)) {
       throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
               new Object[] { getXmlizationInfo().elementTagName, aElement.getTagName() });
+    }
 
     if (aOptions.preserveComments) {
       infoset = aElement;
@@ -1413,10 +1418,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             } catch (Exception e) {
               throw new InvalidXMLException(e);
             }
-          } else
+          } else {
             // element type does not match
             throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE,
                     new Object[] { aPropXmlInfo.arrayElementTagName, curElem.getTagName() });
+          }
         } else {
           // array element type is not specified, try defaults
           valueList.add(aParser.buildObjectOrPrimitive(curElem, aOptions));
@@ -1621,24 +1627,25 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *         If <code>aPrimitiveType</code> is not a primitive type, it is itself returned.
    */
   protected static Class getWrapperClass(Class aPrimitiveType) {
-    if (Integer.TYPE.equals(aPrimitiveType))
+    if (Integer.TYPE.equals(aPrimitiveType)) {
       return Integer.class;
-    else if (Short.TYPE.equals(aPrimitiveType))
+    } else if (Short.TYPE.equals(aPrimitiveType)) {
       return Short.class;
-    else if (Long.TYPE.equals(aPrimitiveType))
+    } else if (Long.TYPE.equals(aPrimitiveType)) {
       return Long.class;
-    else if (Byte.TYPE.equals(aPrimitiveType))
+    } else if (Byte.TYPE.equals(aPrimitiveType)) {
       return Byte.class;
-    else if (Character.TYPE.equals(aPrimitiveType))
+    } else if (Character.TYPE.equals(aPrimitiveType)) {
       return Character.class;
-    else if (Float.TYPE.equals(aPrimitiveType))
+    } else if (Float.TYPE.equals(aPrimitiveType)) {
       return Float.class;
-    else if (Double.TYPE.equals(aPrimitiveType))
+    } else if (Double.TYPE.equals(aPrimitiveType)) {
       return Double.class;
-    else if (Boolean.TYPE.equals(aPrimitiveType))
+    } else if (Boolean.TYPE.equals(aPrimitiveType)) {
       return Boolean.class;
-    else
+    } else {
       return aPrimitiveType;
+    }
   }
 
   /**
@@ -1698,8 +1705,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
     String className = aObj.getClass().getName();
     int lastDotIndex = className.lastIndexOf(".");
-    if (lastDotIndex > -1)
+    if (lastDotIndex > -1) {
       className = className.substring(lastDotIndex + 1).toLowerCase();
+    }
     Node node = getMatchingNode(sc, className);
 
     serializer.writeSimpleValueWithTag(className, aObj, node);

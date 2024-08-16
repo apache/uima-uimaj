@@ -26,8 +26,9 @@ import org.apache.uima.cas.TypeSystem;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  * 
  * @deprecated As of release 2.3.0, use CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public abstract class Annotator_ImplBase implements BaseAnnotator {
 
   /**

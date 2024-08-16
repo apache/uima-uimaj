@@ -44,7 +44,7 @@ public interface ConfigurationParameterSettings extends MetaDataObject {
    *          an array of <code>NameValuePair</code> objects, each of which contains a parameter
    *          name and the value of that parameter
    */
-  void setParameterSettings(NameValuePair[] aSettings);
+  void setParameterSettings(NameValuePair... aSettings);
 
   /**
    * Gets the settings for configuration parameters that are defined within groups.

@@ -46,7 +46,6 @@ import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
-import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
@@ -84,17 +83,16 @@ public class MultiprocessingAnalysisEngine_implTest {
       Capability cap = new Capability_impl();
       cap.addOutputType("NamedEntity", true);
       cap.addOutputType("DocumentStructure", true);
-      Capability[] caps = new Capability[] { cap };
-      mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(cap);
 
       mAggDesc = new AnalysisEngineDescription_impl();
       mAggDesc.setPrimitive(false);
       mAggDesc.getMetaData().setName("Simple Test Aggregate");
       mAggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", mSimpleDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+      flow.setFixedFlow("Test");
       mAggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      mAggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
+      mAggDesc.getAnalysisEngineMetaData().setCapabilities(cap);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -347,22 +345,23 @@ public class MultiprocessingAnalysisEngine_implTest {
   }
 
   @Test
-  public void testReconfigure() throws Exception {
+  void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
-      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
+      var primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Reconfigure Test 1");
-      ConfigurationParameter p1 = new ConfigurationParameter_impl();
+
+      var p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
-      primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+              .setConfigurationParameters(p1);
+      primitiveDesc.getMetaData().getConfigurationParameterSettings()
+              .setParameterSettings(new NameValuePair_impl("StringParam", "Test1"));
 
       // instantiate MultiprocessingTextAnalysisEngine
       MultiprocessingAnalysisEngine_impl tae = new MultiprocessingAnalysisEngine_impl();
@@ -379,25 +378,26 @@ public class MultiprocessingAnalysisEngine_implTest {
       assertEquals("Test2", TestAnnotator.stringParamValue);
 
       // test aggregate TAE
-      AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
+      var aggDesc = new AnalysisEngineDescription_impl();
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       aggDesc.getMetaData().setName("Reconfigure Test 2");
-      FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
+
+      var flow = new FixedFlow_impl();
+      flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      ConfigurationParameter p2 = new ConfigurationParameter_impl();
+
+      var p2 = new ConfigurationParameter_impl();
       p2.setName("StringParam");
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
-      p2.setOverrides(new String[] { "Test/StringParam" });
-      aggDesc.getMetaData().getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p2 });
-      aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
+      p2.setOverrides("Test/StringParam");
+      aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(p2);
+      aggDesc.getMetaData().getConfigurationParameterSettings()
+              .setParameterSettings(new NameValuePair_impl("StringParam", "Test3"));
       // instantiate TextAnalysisEngine
-      MultiprocessingAnalysisEngine_impl aggTae = new MultiprocessingAnalysisEngine_impl();
+      var aggTae = new MultiprocessingAnalysisEngine_impl();
       aggTae.initialize(aggDesc, null);
 
       assertEquals("Test3", TestAnnotator.stringParamValue);
