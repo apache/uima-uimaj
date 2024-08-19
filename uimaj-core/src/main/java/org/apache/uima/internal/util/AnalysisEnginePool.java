@@ -157,7 +157,7 @@ public class AnalysisEnginePool {
 
     // set Result Spec on each AnalysisEngine in the pool
 
-    Vector<Resource> allInstances = mPool.getAllInstances();
+    var allInstances = mPool.getAllInstances();
     for (int i = 0; i < mPool.getSize(); i++) {
       AnalysisEngine ae = (AnalysisEngine) allInstances.get(i);
 

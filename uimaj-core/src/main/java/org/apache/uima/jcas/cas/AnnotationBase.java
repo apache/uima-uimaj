@@ -71,9 +71,9 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
 
   /* local data */
   // public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
-  private final static CallSite _FC_sofa = TypeSystemImpl
+  private static final CallSite _FC_sofa = TypeSystemImpl
           .createCallSiteForBuiltIn(AnnotationBase.class, "sofa");
-  private final static MethodHandle _FH_sofa = _FC_sofa.dynamicInvoker();
+  private static final MethodHandle _FH_sofa = _FC_sofa.dynamicInvoker();
 
   // private final Sofa _F_sofa;
 

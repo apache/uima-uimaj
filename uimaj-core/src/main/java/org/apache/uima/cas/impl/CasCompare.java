@@ -854,7 +854,7 @@ public class CasCompare {
         if (IS_SHOW_PROGRESS) {
           int done = Math.max(i1, i2);
           if (done - prev_done >= fsz100) {
-            System.out.format("percent done: %d%n", (int) Math.round((done * 100F) / fsz));
+            System.out.format("percent done: %d%n", Math.round((done * 100F) / fsz));
             prev_done = done;
           }
         }

@@ -54,9 +54,9 @@ public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
    */
   @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
-    if (aCAS instanceof CAS) {
-      checkTypeSystemChange((CAS) aCAS);
-      process((CAS) aCAS);
+    if (aCAS instanceof CAS cas) {
+      checkTypeSystemChange(cas);
+      process(cas);
     } else {
       throw new AnalysisEngineProcessException(
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,

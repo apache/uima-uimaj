@@ -42,7 +42,7 @@ import org.apache.uima.util.impl.Constants;
 public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
         implements CapabilityLanguageFlow {
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capabilityLanguageFlow",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capabilityLanguageFlow",
           new PropertyXmlInfo[] {
               new PropertyXmlInfo("capabilityLanguageFlow", null, true, "node") });
 

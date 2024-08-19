@@ -5714,8 +5714,7 @@ public class CASImpl extends AbstractCas_ImplBase
             : (isAddbackOrSkipBag ? "rmv_auto_idx " : "rmv_norm_idx "));
     // b.append(fs.toString());
     b.append(fs._getTypeImpl().getShortName()).append(":").append(fs._id);
-    if (fs instanceof Annotation) {
-      Annotation ann = (Annotation) fs;
+    if (fs instanceof Annotation ann) {
       b.append(" begin: ").append(ann.getBegin());
       b.append(" end: ").append(ann.getEnd());
       b.append(" txt: \"").append(Misc.elide(ann.getCoveredText(), 10)).append("\"");
@@ -6102,20 +6101,20 @@ public class CASImpl extends AbstractCas_ImplBase
 
     for (int i = 0; i < a.length; i++) {
       Object ao = a[i];
-      if (ao instanceof TOP) {
-        a[i] = pearConvert((TOP) ao);
+      if (ao instanceof TOP top) {
+        a[i] = pearConvert(top);
       }
     }
   }
 
   public Collection<?> collectNonPearVersions(Collection<?> c) {
-    if (c.size() == 0 || !inPearContext()) {
+    if (c.isEmpty() || !inPearContext()) {
       return c;
     }
     ArrayList<Object> items = new ArrayList<>(c.size());
     for (Object o : c) {
-      if (o instanceof TOP) {
-        items.add(pearConvert((TOP) o));
+      if (o instanceof TOP top) {
+        items.add(pearConvert(top));
       }
     }
     return items;

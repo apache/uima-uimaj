@@ -78,8 +78,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
         if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
           resource = new UimacppAnalysisEngineImpl();
         } else if (frameworkImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
-          if (spec instanceof AnalysisEngineDescription
-                  && !((AnalysisEngineDescription) spec).isPrimitive()) {
+          if (spec instanceof AnalysisEngineDescription aeSpec && !aeSpec.isPrimitive()) {
             resource = new AggregateAnalysisEngine_impl();
           } else {
             resource = new PrimitiveAnalysisEngine_impl();

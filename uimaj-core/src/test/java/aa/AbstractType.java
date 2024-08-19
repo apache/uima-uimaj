@@ -42,18 +42,18 @@ public class AbstractType extends TOP {
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "aa.AbstractType";
+  public static final String _TypeName = "aa.AbstractType";
   
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(AbstractType.class);
+  public static final int typeIndexID = JCasRegistry.register(AbstractType.class);
   /** @generated
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -65,12 +65,12 @@ public class AbstractType extends TOP {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_abstractInt = "abstractInt";
+  public static final String _FeatName_abstractInt = "abstractInt";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_abstractInt = TypeSystemImpl.createCallSite(AbstractType.class, "abstractInt");
-  private final static MethodHandle _FH_abstractInt = _FC_abstractInt.dynamicInvoker();
+  private static final CallSite _FC_abstractInt = TypeSystemImpl.createCallSite(AbstractType.class, "abstractInt");
+  private static final MethodHandle _FH_abstractInt = _FC_abstractInt.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

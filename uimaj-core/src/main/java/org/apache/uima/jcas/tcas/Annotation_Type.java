@@ -30,8 +30,9 @@ import org.apache.uima.jcas.JCasRegistry;
 //*   for old v2 style _Type classes
 /**
  * @deprecated
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
   @Override
   protected FSGenerator<?> getFSGenerator() {
@@ -56,9 +57,9 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   // }
   // };
 
-  public final static int typeIndexID = -1;
+  public static final int typeIndexID = -1;
 
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.tcas.Annotation");
+  public static final boolean featOkTst = JCasRegistry.getFeatOkTst("uima.tcas.Annotation");
 
   final Feature casFeat_begin = null;
 
@@ -135,5 +136,4 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
     // casFeatCode_end = JCas.INVALID_FEATURE_CODE;
     // throw new RuntimeException("Internal Error-this constructor should never be called.");
   }
-
 }

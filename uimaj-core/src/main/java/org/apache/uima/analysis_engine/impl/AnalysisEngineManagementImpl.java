@@ -347,7 +347,7 @@ public class AnalysisEngineManagementImpl
   private static String escapeValue(String value) {
     if (RESERVED_CHAR_PATTERN.matcher(value).find()) {
       // must quote the value
-      StringBuffer buf = new StringBuffer();
+      var buf = new StringBuilder();
       buf.append('\"');
       // must escape special characters inside the quoted value
       for (int i = 0; i < value.length(); i++) {

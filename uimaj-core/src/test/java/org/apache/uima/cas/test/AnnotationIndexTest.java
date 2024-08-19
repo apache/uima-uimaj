@@ -43,9 +43,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
- * 
  */
-public class AnnotationIndexTest {
+class AnnotationIndexTest {
 
   // static class Miter {
   // final int outerIter;
@@ -138,7 +137,7 @@ public class AnnotationIndexTest {
    * 
    */
   @Test
-  public void testInsert() {
+  void testInsert() {
     insert1(0);
     valTime = 0L;
     long startTime = System.nanoTime();
@@ -331,5 +330,4 @@ public class AnnotationIndexTest {
     }
     return b;
   }
-
 }

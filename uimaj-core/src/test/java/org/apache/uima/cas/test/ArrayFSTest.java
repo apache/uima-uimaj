@@ -19,10 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -35,102 +31,97 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ArrayFSTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ArrayFSTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
   @BeforeEach
-  public void setUp() {
-    try {
-      cas = CASInitializer.initCas(new CASTestSetup(), null);
-      ts = cas.getTypeSystem();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+  void setUp() {
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
+    ts = cas.getTypeSystem();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
     ts = null;
   }
 
   @Test
-  public void testSet() {
+  void testSet() {
     // Check that we can't create arrays of size smaller than 0.
     boolean exceptionCaught = false;
     try {
       ArrayFS array = cas.createArrayFS(-1);
-      assertTrue(array != null);
+      assertThat(array).isNotNull();
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
-      assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
+      assertThat(e.getMessageKey()).isEqualTo(CASRuntimeException.ILLEGAL_ARRAY_SIZE);
     }
-    assertTrue(exceptionCaught);
+    assertThat(exceptionCaught).isTrue();
     ArrayFS array = cas.createArrayFS(0);
-    assertTrue(array.size() == 0);
-    assertTrue(array != null);
-    assertTrue(array.size() == 0);
+    assertThat(array.size()).isEqualTo(0);
+    assertThat(array).isNotNull();
+    assertThat(array.size()).isEqualTo(0);
     exceptionCaught = false;
     try {
       array.get(0);
     } catch (ArrayIndexOutOfBoundsException e) {
       exceptionCaught = true;
     }
-    assertTrue(exceptionCaught);
+    assertThat(exceptionCaught).isTrue();
     FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
     array = cas.createArrayFS(3);
-    try {
-      array.set(0, fs1);
-      array.set(1, fs2);
-      array.set(2, fs3);
-      String[] stringArray = array.toStringArray();
-      assertTrue(stringArray.length == 3);
-      for (int i = 0; i < array.size(); i++) {
-        assertNotNull(stringArray[i]);
-      }
-    } catch (ArrayIndexOutOfBoundsException e) {
-      assertTrue(false);
+    array.set(0, fs1);
+    array.set(1, fs2);
+    array.set(2, fs3);
+    String[] stringArray = array.toStringArray();
+    assertThat(stringArray.length).isEqualTo(3);
+    for (int i = 0; i < array.size(); i++) {
+      assertThat(stringArray[i]).isNotNull();
     }
+
     exceptionCaught = false;
     try {
       array.set(-1, fs1);
     } catch (ArrayIndexOutOfBoundsException e) {
       exceptionCaught = true;
     }
-    assertTrue(exceptionCaught);
+    assertThat(exceptionCaught).isTrue();
     exceptionCaught = false;
     try {
       array.set(4, fs1);
     } catch (ArrayIndexOutOfBoundsException e) {
       exceptionCaught = true;
     }
-    assertTrue(exceptionCaught);
-    assertTrue(array.get(0).equals(fs1));
-    assertTrue(array.get(1).equals(fs2));
-    assertTrue(array.get(2).equals(fs3));
+    assertThat(exceptionCaught).isTrue();
+    assertThat(fs1).isEqualTo(array.get(0));
+    assertThat(fs2).isEqualTo(array.get(1));
+    assertThat(fs3).isEqualTo(array.get(2));
     exceptionCaught = false;
     try {
       array.get(-1);
     } catch (ArrayIndexOutOfBoundsException e) {
       exceptionCaught = true;
     }
-    assertTrue(exceptionCaught);
+    assertThat(exceptionCaught).isTrue();
     exceptionCaught = false;
     try {
       array.get(4);
     } catch (ArrayIndexOutOfBoundsException e) {
       exceptionCaught = true;
     }
-    assertTrue(exceptionCaught);
+    assertThat(exceptionCaught).isTrue();
   }
 
   @Test
-  public void testToArray() {
+  void testToArray() {
     // From CAS array to Java array.
     FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
@@ -138,34 +129,34 @@ public class ArrayFSTest {
     ArrayFS array = cas.createArrayFS(3);
     FeatureStructure[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
-      assertTrue(fsArray[i] == null);
+      assertThat(fsArray[i]).isNull();
     }
     array.set(0, fs1);
     array.set(1, fs2);
     array.set(2, fs3);
     fsArray = array.toArray();
-    assertTrue(fsArray.length == 3);
-    assertTrue(fsArray[0].equals(fs1));
-    assertTrue(fsArray[1].equals(fs2));
-    assertTrue(fsArray[2].equals(fs3));
+    assertThat(fsArray.length).isEqualTo(3);
+    assertThat(fs1).isEqualTo(fsArray[0]);
+    assertThat(fs2).isEqualTo(fsArray[1]);
+    assertThat(fs3).isEqualTo(fsArray[2]);
 
     // From Java array to CAS array.
     array = cas.createArrayFS(3);
-    assertTrue(array.get(0) == null);
-    assertTrue(array.get(1) == null);
-    assertTrue(array.get(2) == null);
+    assertThat(array.get(0)).isNull();
+    assertThat(array.get(1)).isNull();
+    assertThat(array.get(2)).isNull();
     for (int i = 0; i < 3; i++) {
       array.set(i, fsArray[i]);
     }
-    assertTrue(array.get(0).equals(fs1));
-    assertTrue(array.get(1).equals(fs2));
-    assertTrue(array.get(2).equals(fs3));
+    assertThat(fs1).isEqualTo(array.get(0));
+    assertThat(fs2).isEqualTo(array.get(1));
+    assertThat(fs3).isEqualTo(array.get(2));
     array.set(0, null);
-    assertTrue(array.get(0) == null);
+    assertThat(array.get(0)).isNull();
   }
 
   @Test
-  public void testCopyToArray() {
+  void testCopyToArray() {
     FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
@@ -182,22 +173,22 @@ public class ArrayFSTest {
     // This must not throw an NPE, see UIMA-726
     array.copyToArray(1, fsArray, destinationOffset, array.size() - 1);
     array.copyToArray(1, stringArray, destinationOffset, array.size() - 1);
-    assertTrue(fs2.equals(fsArray[destinationOffset]));
-    assertTrue(fs3.equals(fsArray[destinationOffset + 1]));
-    assertNotNull(stringArray[destinationOffset]);
-    assertNotNull(stringArray[destinationOffset + 1]);
+    assertThat(fsArray[destinationOffset]).isEqualTo(fs2);
+    assertThat(fsArray[destinationOffset + 1]).isEqualTo(fs3);
+    assertThat(stringArray[destinationOffset]).isNotNull();
+    assertThat(stringArray[destinationOffset + 1]).isNotNull();
     for (int i = 0; i < destinationOffset; i++) {
-      assertNull(fsArray[i]);
-      assertNull(stringArray[i]);
+      assertThat(fsArray[i]).isNull();
+      assertThat(stringArray[i]).isNull();
     }
     for (int i = (destinationOffset + 2); i < destiniationSize; i++) {
-      assertNull(fsArray[i]);
-      assertNull(stringArray[i]);
+      assertThat(fsArray[i]).isNull();
+      assertThat(stringArray[i]).isNull();
     }
   }
 
   @Test
-  public void testArraysOfArrays() {
+  void testArraysOfArrays() {
     Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = cas.createAnnotation(annotationType, 0, 5);
     IntArrayFS intArray = cas.createIntArrayFS(3);
@@ -212,15 +203,14 @@ public class ArrayFSTest {
     superArray.set(0, subArray1);
     superArray.set(1, subArray2);
     superArray.set(2, intArray);
-    assertTrue(superArray.get(0).equals(subArray1));
-    assertTrue(superArray.get(1).equals(subArray2));
-    assertTrue(superArray.get(2).equals(intArray));
-    assertTrue(((ArrayFS) superArray.get(0)).get(0).equals(subArray2));
-    assertTrue(((ArrayFS) superArray.get(1)).get(0) == null);
-    assertTrue(((ArrayFS) superArray.get(1)).get(1).equals(annot));
-    assertTrue(((IntArrayFS) superArray.get(2)).get(0) == 1);
-    assertTrue(((IntArrayFS) superArray.get(2)).get(1) == 2);
-    assertTrue(((IntArrayFS) superArray.get(2)).get(2) == -10);
+    assertThat(subArray1).isEqualTo(superArray.get(0));
+    assertThat(subArray2).isEqualTo(superArray.get(1));
+    assertThat(intArray).isEqualTo(superArray.get(2));
+    assertThat(subArray2).isEqualTo(((ArrayFS) superArray.get(0)).get(0));
+    assertThat(((ArrayFS) superArray.get(1)).get(0)).isNull();
+    assertThat(annot).isEqualTo(((ArrayFS) superArray.get(1)).get(1));
+    assertThat(((IntArrayFS) superArray.get(2)).get(0)).isEqualTo(1);
+    assertThat(((IntArrayFS) superArray.get(2)).get(1)).isEqualTo(2);
+    assertThat(((IntArrayFS) superArray.get(2)).get(2)).isEqualTo(-10);
   }
-
 }

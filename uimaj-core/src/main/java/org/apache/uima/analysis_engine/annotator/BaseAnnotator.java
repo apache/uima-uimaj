@@ -43,6 +43,7 @@ public interface BaseAnnotator {
    * @throws AnnotatorConfigurationException
    *           if the configuration specified for this annotator is invalid.
    * @forRemoval 4.0.0
+   * @deprecated To be removed without replacement
    */
   @Deprecated(since = "3.6.0")
   void initialize(AnnotatorContext aContext)

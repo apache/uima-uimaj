@@ -279,14 +279,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE", resourceName);
       return iterator;
+    } catch (AnalysisEngineProcessException e) {
+      // log and rethrow exception
+      logger.log(Level.SEVERE, "", e);
+      throw e;
     } catch (Exception e) {
       // log and rethrow exception
       logger.log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException) {
-        throw (AnalysisEngineProcessException) e;
-      } else {
-        throw new AnalysisEngineProcessException(e);
-      }
+      throw new AnalysisEngineProcessException(e);
     }
   }
 
@@ -339,16 +339,16 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       if (flow != null) {
         if (flow instanceof FixedFlow) {
           orderedNodes = ((FixedFlow) flow).getFixedFlow();
-        } else if (flow instanceof CapabilityLanguageFlow) {
-          orderedNodes = ((CapabilityLanguageFlow) flow).getCapabilityLanguageFlow();
+        } else if (flow instanceof CapabilityLanguageFlow capabilityLanguageFlow) {
+          orderedNodes = capabilityLanguageFlow.getCapabilityLanguageFlow();
         }
       }
       // call components in the order specified in the flow
       if (orderedNodes != null) {
-        for (int i = 0; i < orderedNodes.length; i++) {
-          AnalysisEngine component = components.remove(orderedNodes[i]);
-          component.collectionProcessComplete();
-        }
+          for (var orderedNode : orderedNodes) {
+              var component = components.remove(orderedNode);
+              component.collectionProcessComplete();
+          }
       }
       // now call remaining components in arbitrary order
       Iterator<AnalysisEngine> iter = components.values().iterator();

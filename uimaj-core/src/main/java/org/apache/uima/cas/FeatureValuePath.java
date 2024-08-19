@@ -81,8 +81,9 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * </ol>
  * 
  * @deprecated use {@link org.apache.uima.cas.FeaturePath FeaturePath}
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.1")
 public interface FeatureValuePath {
 
   Object evaluate(int currentFS, LowLevelCAS cas);

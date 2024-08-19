@@ -66,9 +66,10 @@ public abstract class CASFactory {
    * @param useJcasCache
    *          - ignored in v3
    * @return A new CASMgr object.
-   * @deprecated use createCas(int initialHeapSize)
+   * @deprecated use {@link #createCAS(int)}
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   public static CASMgr createCAS(int initialHeapSize, boolean useJcasCache) {
     return createCAS(initialHeapSize);
   }

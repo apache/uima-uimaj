@@ -46,14 +46,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ArrayIndexTest implements TextAnnotator {
+class ArrayIndexTest implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";
 
   private AnalysisEngine ae = null;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     // Start up TAE
     XMLInputSource input = new XMLInputSource(
             JUnitExtension.getFile("CASTests/desc/ArrayIndexTest.xml"));
@@ -64,27 +64,23 @@ public class ArrayIndexTest implements TextAnnotator {
   }
 
   @Test
-  public void testArrayIndex() {
-    try {
-      CAS cas = ae.newCAS();
-      FSIndexRepository ir = cas.getIndexRepository();
-      TypeSystem ts = cas.getTypeSystem();
-      Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-      Type annotArrayType = ts.getArrayType(annotationType);
+  void testArrayIndex() throws Exception {
+    CAS cas = ae.newCAS();
+    FSIndexRepository ir = cas.getIndexRepository();
+    TypeSystem ts = cas.getTypeSystem();
+    Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Type annotArrayType = ts.getArrayType(annotationType);
 
-      FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
-      assertEquals(countIndexMembers(arrayIndexAll), 0);
-      FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId,
-              ts.getType(CAS.TYPE_NAME_FS_ARRAY));
-      assertEquals(countIndexMembers(arrayIndexFSArray), 0);
-      FSIndex<FeatureStructure> arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
-      assertNull(arrayIndexAnnotArray);
-    } catch (ResourceInitializationException e) {
-      assertTrue(false);
-    }
+    FSIndex<FeatureStructure> arrayIndexAll = ir.getIndex(idxId);
+    assertEquals(countIndexMembers(arrayIndexAll), 0);
+    FSIndex<FeatureStructure> arrayIndexFSArray = ir.getIndex(idxId,
+            ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+    assertEquals(countIndexMembers(arrayIndexFSArray), 0);
+    FSIndex<FeatureStructure> arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
+    assertNull(arrayIndexAnnotArray);
   }
 
-  private static final int countIndexMembers(FSIndex<? extends FeatureStructure> idx) {
+  private static int countIndexMembers(FSIndex<? extends FeatureStructure> idx) {
     FSIterator<? extends FeatureStructure> it = idx.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
@@ -103,6 +99,7 @@ public class ArrayIndexTest implements TextAnnotator {
     // Do nothing.
   }
 
+  @Deprecated(since = "3.6.0")
   @Override
   public void initialize(AnnotatorContext aContext)
           throws AnnotatorInitializationException, AnnotatorConfigurationException {

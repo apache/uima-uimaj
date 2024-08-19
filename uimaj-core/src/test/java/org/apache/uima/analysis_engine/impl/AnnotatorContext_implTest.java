@@ -19,8 +19,7 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,10 +43,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * @forRemoval 4.0.0
+ * @forRemoval 4.0.0 (Check if tests need to be migrated to UIMAContext)
  */
 @Deprecated(since = "3.6.0")
-public class AnnotatorContext_implTest {
+class AnnotatorContext_implTest {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
@@ -139,7 +138,7 @@ public class AnnotatorContext_implTest {
    * Test for Object getConfigParameterValue(String)
    */
   @Test
-  public void testGetConfigParameterValueString() throws Exception {
+  void testGetConfigParameterValueString() throws Exception {
     // this method should get parameter values from the default "en" group
     String str = (String) mAC1.getConfigParameterValue("StringParam");
     assertThat(str).isEqualTo("en");
@@ -175,7 +174,7 @@ public class AnnotatorContext_implTest {
    * Test for Object getConfigParameterValue(String, String)
    */
   @Test
-  public void testGetConfigParameterValueStringString() throws Exception {
+  void testGetConfigParameterValueStringString() throws Exception {
     // en-US group
     // language fallback
     assertThat((String) mAC1.getConfigParameterValue("en-US", "StringParam")).isEqualTo("en");
@@ -240,7 +239,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetConfigurationGroupNames() {
+  void testGetConfigurationGroupNames() {
     assertThat(mAC1.getConfigurationGroupNames()).containsExactlyInAnyOrder("en", "en-US", "de",
             "zh", "x-unspecified");
 
@@ -249,7 +248,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetConfigParameterNames() {
+  void testGetConfigParameterNames() {
     assertThat(mAC5.getConfigParameterNames()).containsExactly("StringParam", "StringArrayParam",
             "IntegerParam", "IntegerArrayParam", "FloatParam", "FloatArrayParam");
 
@@ -258,7 +257,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetConfigParameterNamesString() {
+  void testGetConfigParameterNamesString() {
     assertThat(mAC1.getConfigParameterNames("en")).containsExactlyInAnyOrder("StringParam",
             "StringArrayParam", "IntegerParam", "IntegerArrayParam");
 
@@ -270,17 +269,17 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceObjectString() throws Exception {
+  void testGetResourceObjectString() throws Exception {
     try {
       // custom object
       Object r = mAC3.getResourceObject("TestResourceObject");
       assertThat(r).isNotNull();
-      assertThat(r instanceof TestResourceInterface).isTrue();
+      assertThat(r).isInstanceOf(TestResourceInterface.class);
 
       // standard data resource
       Object r2 = mAC3.getResourceObject("TestFileResource");
       assertThat(r2).isNotNull();
-      assertThat(r2 instanceof DataResource).isTrue();
+      assertThat(r2).isInstanceOf(DataResource.class);
 
       // parameterized resources (should fail)
       AnnotatorContextException ex = null;
@@ -308,7 +307,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceURLString() throws Exception {
+  void testGetResourceURLString() throws Exception {
     try {
       // standard data resource (should succeed)
       assertThat(mAC3.getResourceURL("TestFileResource")).isNotNull();
@@ -358,7 +357,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceURIString() throws Exception {
+  void testGetResourceURIString() throws Exception {
     try {
       // standard data resource (should succeed)
       assertThat(mAC3.getResourceURI("TestFileResource")).isNotNull();
@@ -408,7 +407,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceFilePathString() throws Exception {
+  void testGetResourceFilePathString() throws Exception {
     try {
       // standard data resource (should succeed)
       assertThat(mAC3.getResourceFilePath("TestFileResource")).isNotNull();
@@ -459,7 +458,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceAsStreamString() throws Exception {
+  void testGetResourceAsStreamString() throws Exception {
     try {
       // standard data resource (should succeed)
       assertThat(mAC3.getResourceAsStream("TestFileResource")).isNotNull();
@@ -505,59 +504,51 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceObjectStringStringArray() throws Exception {
+  void testGetResourceObjectStringStringArray() throws Exception {
     try {
       // standard data resource
       Object r = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en" });
-      assertThat(r).isNotNull();
-      assertThat(r instanceof DataResource).isTrue();
+      assertThat(r) //
+          .isNotNull() //
+          .isInstanceOf(DataResource.class);
       Object r2 = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "de" });
-      assertThat(r2).isNotNull();
-      assertThat(r2 instanceof DataResource).isTrue();
-      assertThat(r2.equals(r)).isFalse();
+      assertThat(r2) //
+          .isNotNull() //
+          .isInstanceOf(DataResource.class) //
+          .isNotEqualTo(r);
 
       // custom object
       Object r3 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "en" });
-      assertThat(r3).isNotNull();
-      assertThat(r3 instanceof TestResourceInterface).isTrue();
+      assertThat(r3) //
+          .isNotNull() //
+          .isInstanceOf(TestResourceInterface.class);
       Object r4 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "de" });
-      assertThat(r4).isNotNull();
-      assertThat(r4 instanceof TestResourceInterface).isTrue();
-      assertThat(r4.equals(r3)).isFalse();
+      assertThat(r4) //
+          .isNotNull() //
+          .isInstanceOf(TestResourceInterface.class) //
+          .isNotEqualTo(r3);
 
       // parameter values for which no resource exists (should fail)
-      AnnotatorContextException ex = null;
-      try {
-        mAC3.getResourceObject("TestFileLanguageResource", new String[] { "zh" });
-      } catch (AnnotatorContextException e) {
-        ex = e;
-      }
-      assertThat(ex).isNotNull();
+      assertThatExceptionOfType(AnnotatorContextException.class) //
+          .isThrownBy(() -> {
+            mAC3.getResourceObject("TestFileLanguageResource", new String[] { "zh" });
+          });
 
-      ex = null;
-      try {
-        mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en", "p2" });
-      } catch (AnnotatorContextException e) {
-        ex = e;
-      }
-      assertThat(ex).isNotNull();
+      assertThatExceptionOfType(AnnotatorContextException.class) //
+          .isThrownBy(() -> {
+            mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en", "p2" });
+          });
 
       // non-parameterized resources (should fail)
-      ex = null;
-      try {
-        mAC3.getResourceObject("TestFileResource", new String[] { "en" });
-      } catch (AnnotatorContextException e) {
-        ex = e;
-      }
-      assertThat(ex).isNotNull();
+      assertThatExceptionOfType(AnnotatorContextException.class) //
+          .isThrownBy(() -> {
+            mAC3.getResourceObject("TestFileResource", new String[] { "en" });
+          });
 
-      ex = null;
-      try {
-        mAC3.getResourceObject("TestResourceObject", new String[] { "de" });
-      } catch (AnnotatorContextException e) {
-        ex = e;
-      }
-      assertThat(ex).isNotNull();
+      assertThatExceptionOfType(AnnotatorContextException.class) //
+          .isThrownBy(() -> {
+            mAC3.getResourceObject("TestResourceObject", new String[] { "de" });
+          });
 
       // nonexistent resource (should return null)
       Object r5 = mAC3.getResourceObject("Unknown", new String[] { "en" });
@@ -568,7 +559,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceAsStreamStringStringArray() throws Exception {
+  void testGetResourceAsStreamStringStringArray() throws Exception {
     try {
       // standard data resource
       InputStream strm = mAC3.getResourceAsStream("TestFileLanguageResource",
@@ -577,8 +568,9 @@ public class AnnotatorContext_implTest {
 
       InputStream strm2 = mAC3.getResourceAsStream("TestFileLanguageResource",
               new String[] { "de" });
-      assertThat(strm2).isNotNull();
-      assertThat(strm2.equals(strm)).isFalse();
+      assertThat(strm2) //
+          .isNotNull() //
+          .isNotEqualTo(strm);
 
       // custom object (should return null)
       InputStream strm3 = mAC3.getResourceAsStream("TestLanguageResourceObject",
@@ -628,7 +620,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceURLStringStringArray() throws Exception {
+  void testGetResourceURLStringStringArray() throws Exception {
     try {
       // standard data resource
       URL url = mAC3.getResourceURL("TestFileLanguageResource", new String[] { "en" });
@@ -685,7 +677,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceURIStringStringArray() throws Exception {
+  void testGetResourceURIStringStringArray() throws Exception {
     try {
       // standard data resource
       URI uri = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en" });
@@ -742,7 +734,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetResourceFilePathStringStringArray() throws Exception {
+  void testGetResourceFilePathStringStringArray() throws Exception {
     try {
       // standard data resource
       String path = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
@@ -799,7 +791,7 @@ public class AnnotatorContext_implTest {
   }
 
   @Test
-  public void testGetDataPath() throws Exception {
+  void testGetDataPath() throws Exception {
     try {
       assertThat(mAC1.getDataPath()).isEqualTo(TEST_DATAPATH);
       assertThat(mAC4.getDataPath()).isEqualTo(System.getProperty("user.dir"));

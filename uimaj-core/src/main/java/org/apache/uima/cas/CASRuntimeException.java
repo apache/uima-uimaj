@@ -128,8 +128,8 @@ public class CASRuntimeException extends UIMARuntimeException {
   public static final String JCAS_TYPE_NOT_IN_CAS = "JCAS_TYPE_NOT_IN_CAS";
 
   /**
-   * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas class has range
-   * "{3}".
+   * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method is returning "{3}" which
+   * is not a subtype of the declared range.
    */
   public static final String JCAS_TYPE_RANGE_MISMATCH = "JCAS_TYPE_RANGE_MISMATCH";
 

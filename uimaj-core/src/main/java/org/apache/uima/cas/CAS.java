@@ -312,8 +312,9 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, this is replaced by {@link #NAME_DEFAULT_SOFA}, and the value has
    *             changed. In general, user code should not need to refer to this name.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   String NAME_DEFAULT_TEXT_SOFA = "_InitialView";
 
   /**
@@ -649,8 +650,9 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaFS getSofa(SofaID sofaID);
 
   /**
@@ -705,8 +707,9 @@ public interface CAS extends AbstractCas {
    *           if no Sofa with the given ID exists in this CAS
    * 
    * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   JCas getJCas(SofaID aSofaID) throws CASException;
 
   /**
@@ -876,8 +879,9 @@ public interface CAS extends AbstractCas {
    * @return The sofaFS.
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaFS createSofa(SofaID sofaID, String mimeType);
 
   /**
@@ -973,6 +977,8 @@ public interface CAS extends AbstractCas {
    * @return Feature-value path object.
    * @throws CASRuntimeException
    *           If the input string is not well-formed.
+   * @deprecated Use {@link #createFeaturePath()} instead.
+   * @forRemoval 4.0.0
    */
   FeatureValuePath createFeatureValuePath(String featureValuePath) throws CASRuntimeException;
 

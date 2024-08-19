@@ -1329,19 +1329,19 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // the range of all the features must match the getters
 
     for (Method m : clazz.getDeclaredMethods()) {
-
       String mname = m.getName();
       if (mname.length() <= 3 || !mname.startsWith("get")) {
         continue;
       }
-      String suffix = (mname.length() == 4) ? "" : mname.substring(4); // one char past 1st letter
-                                                                       // of feature
-      String fname = Character.toLowerCase(mname.charAt(3)) + suffix; // entire name, with first
-                                                                      // letter lower cased
+
+      // one char past 1st letter of feature
+      String suffix = (mname.length() == 4) ? "" : mname.substring(4);
+      // entire name, with first letter lower cased
+      String fname = Character.toLowerCase(mname.charAt(3)) + suffix;
       FeatureImpl fi = ti.getFeatureByBaseName(fname);
       if (fi == null) {
-        fname = mname.charAt(3) + suffix; // no feature, but look for one with captialized first
-                                          // letter
+        // no feature, but look for one with capitalized first letter
+        fname = mname.charAt(3) + suffix;
         fi = ti.getFeatureByBaseName(fname);
         if (fi == null) {
           continue;
@@ -1366,26 +1366,19 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
-      if (!rangeClass.isAssignableFrom(returnClass)) { // can return subclass of TOP, OK if range is
-                                                       // TOP
-        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") && // exception: for
-                                                                            // backwards compat
-                                                                            // reasons, sofaRef
-                                                                            // returns SofaFS, not
-                                                                            // Sofa.
+
+      // can return subclass of TOP, OK if range is TOP
+      if (!rangeClass.isAssignableFrom(returnClass)) {
+        // exception: for backwards compat reasons, sofaRef returns SofaFS, not Sofa.
+        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") &&
                 returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
           // empty
         } else {
-
-          /**
-           * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method
-           * is returning "{3}" which is not a subtype of the declared range.
-           */
+          // should throw, but some code breaks!
+          // CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method
+          // is returning "{3}" which is not a subtype of the declared range.
           add2errors(errorSet, new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH,
-                  ti.getName(), fi.getShortName(), rangeClass, returnClass), false); // should
-                                                                                     // throw, but
-                                                                                     // some code
-                                                                                     // breaks!
+                  ti.getName(), fi.getShortName(), rangeClass, returnClass), false);
         }
       }
     } // end of checking methods
@@ -1400,8 +1393,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         FeatureImpl fi = ti.getFeatureByBaseName(featName);
         if (fi == null) {
           add2errors(errorSet,
-                  /**
-                   * JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn''t define
+                  /*
+                   * JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn't define
                    * that field.
                    */
                   new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM,
