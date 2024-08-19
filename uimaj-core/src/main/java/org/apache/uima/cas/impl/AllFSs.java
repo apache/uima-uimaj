@@ -41,12 +41,12 @@ import org.apache.uima.util.IteratorNvc;
 class AllFSs {
 
   final CASImpl cas;
-  final private MarkerImpl mark;
-  final private PositiveIntSet foundFSs = new PositiveIntSet_impl(4096, 1, 4096);
-  final private PositiveIntSet foundFSsBelowMark;
-  final private ArrayList<TOP> toBeScanned = new ArrayList<>();
-  final private Predicate<TOP> includeFilter;
-  final private CasTypeSystemMapper typeMapper;
+  private final MarkerImpl mark;
+  private final PositiveIntSet foundFSs = new PositiveIntSet_impl(4096, 1, 4096);
+  private final PositiveIntSet foundFSsBelowMark;
+  private final ArrayList<TOP> toBeScanned = new ArrayList<>();
+  private final Predicate<TOP> includeFilter;
+  private final CasTypeSystemMapper typeMapper;
 
   AllFSs(CASImpl cas, MarkerImpl mark, Predicate<TOP> includeFilter,
           CasTypeSystemMapper typeMapper) {
@@ -89,7 +89,7 @@ class AllFSs {
   }
 
   private AllFSs getAllFSsAllViews_sofas() {
-    cas.forAllSofas(sofa -> enqueueFS(sofa));
+    cas.forAllSofas(this::enqueueFS);
     cas.forAllViews(view -> getFSsForView(view.indexRepository.getIndexedFSs()));
     return this;
   }
@@ -143,8 +143,8 @@ class AllFSs {
   }
 
   private void enqueueFeatures(TOP fs) {
-    if (fs instanceof FSArray) {
-      for (TOP item : ((FSArray) fs)._getTheArray()) {
+    if (fs instanceof FSArray fsArray) {
+      for (TOP item : fsArray._getTheArray()) {
         enqueueFS(item);
       }
       return;

@@ -91,8 +91,9 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link #initialize(ResourceSpecifier,Map)} method.
    * 
    * @deprecated use {@link Resource#PARAM_RESOURCE_MANAGER}
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.5.0")
   String PARAM_RESOURCE_MANAGER = Resource.PARAM_RESOURCE_MANAGER;
 
   /**
@@ -103,8 +104,9 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link #initialize(ResourceSpecifier,Map)} method.
    * 
    * @deprecated use {@link Resource#PARAM_CONFIG_PARAM_SETTINGS}
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.5.0")
   String PARAM_CONFIG_PARAM_SETTINGS = Resource.PARAM_CONFIG_PARAM_SETTINGS;
 
   /**
@@ -372,8 +374,9 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * 
    * @deprecated This is no longer used by the framework and was never intended for users to call.
    *             Use {#link #process(CAS)} instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 

@@ -274,7 +274,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testMulticoreInitialize() throws Exception {
+  void testMulticoreInitialize() throws Exception {
     var resourceManager = newDefaultResourceManager();
     var configManager = newConfigurationManager();
     var logger = UIMAFramework.getLogger(this.getClass());
@@ -332,7 +332,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatComplexDescriptorCanBeXMLized() throws Exception {
+  void thatComplexDescriptorCanBeXMLized() throws Exception {
     // test a complex descriptor
     var desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
             getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml")));
@@ -349,7 +349,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatDescriptorWithCasConsumerCanBeXMLized() throws Exception {
+  void thatDescriptorWithCasConsumerCanBeXMLized() throws Exception {
     // test a descriptor that includes a CasConsumer
     var desc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
@@ -360,7 +360,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatPrimitiveDescriptorCanBeXMLized() throws Exception {
+  void thatPrimitiveDescriptorCanBeXMLized() throws Exception {
     // write objects to XML
     String primitiveDescXml = toXmlString(primitiveDesc);
 
@@ -372,7 +372,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatAggregateDescriptorCanBeXMLized() throws Exception {
+  void thatAggregateDescriptorCanBeXMLized() throws Exception {
     String aggregateDescXml = toXmlString(aggregateDesc);
     try (var is = new ByteArrayInputStream(aggregateDescXml.getBytes(UTF_8))) {
       var newAggregateDesc = xmlParser.parseAnalysisEngineDescription(new XMLInputSource(is));
@@ -429,7 +429,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatCloneDoesNotResolveDelegateImports() throws Exception {
+  void thatCloneDoesNotResolveDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
@@ -469,7 +469,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatHiddenStateIsCloned() throws Exception {
+  void thatHiddenStateIsCloned() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
@@ -494,7 +494,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testDoFullValidation() throws Exception {
+  void testDoFullValidation() throws Exception {
     // try some descriptors that are invalid due to config. param problems
     for (int i = 1; i <= 13; i++) {
       assertDescriptorIsNotValid("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml");
@@ -540,7 +540,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void thatAggregateWithImportByNameAndConfigParameterOverridesValidates() throws Exception {
+  void thatAggregateWithImportByNameAndConfigParameterOverridesValidates() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
     var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
@@ -552,7 +552,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testValidate() throws Exception {
+  void testValidate() throws Exception {
     // test aggregate with import by name and configuration parameter overrides
     var in = new XMLInputSource(
             getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
@@ -578,7 +578,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testGetAllComponentSpecifiers() throws Exception {
+  void testGetAllComponentSpecifiers() throws Exception {
     Map<String, ResourceSpecifier> allSpecs = aggregateDesc.getAllComponentSpecifiers(null);
 
     assertThat((FlowControllerDescription) allSpecs.get("TestFlowController")) //
@@ -591,7 +591,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testDocumentAnnotationRedefine() throws Exception {
+  void testDocumentAnnotationRedefine() throws Exception {
     File file = getFile(
             "org/apache/uima/analysis_engine/impl/documentAnnotationRedefinitionTS.xml");
     TypeSystemDescription tsd = xmlParser.parseTypeSystemDescription(new XMLInputSource(file));
@@ -601,7 +601,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testNoDelegatesToResolve() throws Exception {
+  void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
 
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
@@ -625,7 +625,7 @@ class AnalysisEngineDescription_implTest {
     desc.doFullValidation();
   }
 
-  private void assertDescriptorIsNotValid(String aPath) throws IOException {
+  private void assertDescriptorIsNotValid(String aPath) {
     File file = getFile(aPath);
 
     assertThat(file).exists();

@@ -45,12 +45,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AnalysisEnginePoolTest {
+class AnalysisEnginePoolTest {
 
   private TypeSystem mLastTypeSystem;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     try {
       mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
@@ -70,7 +70,7 @@ public class AnalysisEnginePoolTest {
   }
 
   @Test
-  public void testGetAnalysisEngineMetaData() throws Exception {
+  void testGetAnalysisEngineMetaData() throws Exception {
     AnalysisEnginePool pool = null;
     try {
       // create pool
@@ -90,7 +90,7 @@ public class AnalysisEnginePoolTest {
   }
 
   @Test
-  public void testProcess() throws Exception {
+  void testProcess() throws Exception {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
@@ -135,21 +135,20 @@ public class AnalysisEnginePoolTest {
       // Check TestAnnotator fields only at the very end of processing,
       // we can't test from the threads themsleves since the state of
       // these fields is nondeterministic during the multithreaded processing.
-      assertEquals("testing...", TestAnnotator.getLastDocument());
+      assertThat(TestAnnotator.getLastDocument()).isEqualTo("testing...");
       ResultSpecification resultSpec = new ResultSpecification_impl(
               TestAnnotator.getLastResultSpec().getTypeSystem());
       resultSpec.addResultType("NamedEntity", true);
-      assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
+      assertThat(TestAnnotator.getLastResultSpec()).isEqualTo(resultSpec);
 
       MultiThreadUtils.terminateThreads(threads);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-
   }
 
   @Test
-  public void testReconfigure() throws Exception {
+  void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -172,14 +171,14 @@ public class AnalysisEnginePoolTest {
       AnalysisEngine tae = pool.getAnalysisEngine();
       try {
         // check value of string param (TestAnnotator saves it in a static field)
-        assertEquals("Test1", TestAnnotator.stringParamValue);
+        assertThat( TestAnnotator.stringParamValue).isEqualTo("Test1");
 
         // reconfigure
         tae.setConfigParameterValue("StringParam", "Test2");
         tae.reconfigure();
 
         // test again
-        assertEquals("Test2", TestAnnotator.stringParamValue);
+        assertThat(TestAnnotator.stringParamValue).isEqualTo("Test2");
 
         // check pool metadata
         pool.getMetaData().setUUID(tae.getMetaData().getUUID());

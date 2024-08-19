@@ -58,19 +58,18 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
             && aAdditionalParams.containsKey(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
 
     Resource resource = null;
-    if (aSpecifier instanceof ResourceCreationSpecifier
+    if (aSpecifier instanceof ResourceCreationSpecifier spec
             && aResourceClass.isAssignableFrom(TextAnalysisEngine.class))
     // NOTE: for backwards-compatibility, we have to check TextAnalysisEngine,
     // not AnalysisEngine. Otherwise produceTAE would fail becasue
     // TextAnalysisEngien.class.isAssignableFrom(AnalysisEngine.class) is false.
     {
-      ResourceCreationSpecifier spec = (ResourceCreationSpecifier) aSpecifier;
       if (multiprocessing) {
         resource = new MultiprocessingAnalysisEngine_impl();
       } else {
 
         String frameworkImpl = spec.getFrameworkImplementation();
-        if (frameworkImpl == null || frameworkImpl.length() == 0) {
+        if (frameworkImpl == null || frameworkImpl.isEmpty()) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.MISSING_FRAMEWORK_IMPLEMENTATION,
                   new Object[] { aSpecifier.getSourceUrlString() });

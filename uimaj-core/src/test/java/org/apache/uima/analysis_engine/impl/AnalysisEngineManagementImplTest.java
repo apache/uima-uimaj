@@ -18,9 +18,6 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
@@ -30,13 +27,15 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.junit.jupiter.api.Test;
 
-public class AnalysisEngineManagementImplTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class AnalysisEngineManagementImplTest {
 
   @Test
-  public void testNameGenerate() throws Exception {
-    assertEquals("foo", AnalysisEngineManagementImpl.getRootName("foo"));
-    assertEquals("foo2", AnalysisEngineManagementImpl.getRootName("foo"));
-    assertEquals("foo3", AnalysisEngineManagementImpl.getRootName("foo"));
+  void testNameGenerate() throws Exception {
+    assertThat(AnalysisEngineManagementImpl.getRootName("foo")).isEqualTo("foo");
+    assertThat(AnalysisEngineManagementImpl.getRootName("foo")).isEqualTo("foo2");
+    assertThat(AnalysisEngineManagementImpl.getRootName("foo")).isEqualTo("foo3");
 
     // Try multi-threaded
     final Random random = new Random();
@@ -52,7 +51,7 @@ public class AnalysisEngineManagementImplTest {
       public void call(int threadNbr, int repeatNbr, StringBuilder sb) throws Exception {
         // Random random = new Random();
         for (int j = 0; j < 2; j++) {
-          assertTrue(s.add(AnalysisEngineManagementImpl.getRootName("bar")));
+          assertThat(s.add(AnalysisEngineManagementImpl.getRootName("bar"))).isTrue();
           // Thread.sleep(10, random.nextInt(2000));
           if ((threadNbr % 2) == 0) {
             Thread.sleep(0, random.nextInt(2000)); // sleep for 2 microseconds

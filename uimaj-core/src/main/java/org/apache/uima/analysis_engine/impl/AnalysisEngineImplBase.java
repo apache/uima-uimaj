@@ -40,6 +40,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.Language;
@@ -71,6 +72,7 @@ import org.slf4j.MDC;
 public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase
         implements TextAnalysisEngine {
 
+  @SuppressWarnings("java:S1185")
   @Override
   protected void setMetaData(ResourceMetaData aMetaData) {
     // *****************************************************************************************
@@ -262,7 +264,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
           ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
@@ -320,7 +322,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
     TypeImpl t = ts.getType(aTypeName);
     return (t == null) ? null
-            : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
+            : t.getFeaturesAsStream().map(FeatureImpl::getShortName).toArray(String[]::new);
   }
 
   @Override
