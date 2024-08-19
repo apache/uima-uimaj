@@ -64,8 +64,7 @@ public class ResourceServiceAdapter_implTest {
       p1.setDescription("multi-valued parameter with Integer data type");
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
-      md.getConfigurationParameterDeclarations()
-              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+      md.getConfigurationParameterDeclarations().setConfigurationParameters(p1);
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();

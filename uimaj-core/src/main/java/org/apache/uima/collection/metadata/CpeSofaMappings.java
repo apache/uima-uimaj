@@ -35,6 +35,5 @@ public interface CpeSofaMappings extends MetaDataObject {
    * @param sofaMappings
    *          an array of sofaMappings
    */
-  void setSofaNameMappings(CpeSofaMapping[] sofaMappings);
-
+  void setSofaNameMappings(CpeSofaMapping... sofaMappings);
 }

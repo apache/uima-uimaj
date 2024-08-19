@@ -29,8 +29,6 @@ import org.apache.uima.util.InvalidXMLException;
  * <p>
  * As with all {@link MetaDataObject}s, a <code>ProcessingResourceMetaData</code> may or may not be
  * modifiable. An application can find out by calling the {@link #isModifiable()} method.
- * 
- * 
  */
 public interface ProcessingResourceMetaData extends ResourceMetaData {
 
@@ -122,7 +120,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setFsIndexes(FsIndexDescription[] aFSIndexes);
+  void setFsIndexes(FsIndexDescription... aFSIndexes);
 
   /**
    * Retrieves this Processing Resource's {@link Capability Capabilities}. Each capability consists
@@ -144,7 +142,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @throws UIMA_UnsupportedOperationException
    *           if this <code>MetaDataObject</code> is not modifiable.
    */
-  void setCapabilities(Capability[] aCapabilities);
+  void setCapabilities(Capability... aCapabilities);
 
   /**
    * Gets this Processing Resource's {@link OperationalProperties}. This includes information such
@@ -189,7 +187,7 @@ public interface ProcessingResourceMetaData extends ResourceMetaData {
    * @param aResourceManager
    *          the Resource Manager used to locate descriptors imported by name. For example, the
    *          path in which to locate these descriptors can be set via the
-   *          {@link ResourceManager#setDataPath(String)} method.
+   *          {@link ResourceManager#setDataPathElements} method.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid

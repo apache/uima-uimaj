@@ -98,7 +98,7 @@ public interface FsIndexDescription extends MetaDataObject {
    * @param aKeys
    *          the keys for this index
    */
-  void setKeys(FsIndexKeyDescription[] aKeys);
+  void setKeys(FsIndexKeyDescription... aKeys);
 
   /**
    * Identifies a Sorted index.

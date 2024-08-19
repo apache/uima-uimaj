@@ -39,9 +39,6 @@ import org.apache.uima.util.XMLizable;
  * An application should check the {@link #isModifiable()} method to determine if attribute values
  * can be modified. Calling {@link #setAttributeValue(String,Object)} on an unmodifiable object will
  * result in a {@link org.apache.uima.UIMA_UnsupportedOperationException}.
- * 
- * 
- * 
  */
 public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizable {
 
@@ -53,8 +50,9 @@ public interface MetaDataObject extends Cloneable, java.io.Serializable, XMLizab
    *         wrapper classes will be returned (e.g. <code>java.lang.Integer</code> instead of int).
    * @deprecated - use getAttributes() instead, don't override it, use getAdditionalAttributes to
    *             specify additional ones
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   List<NameClassPair> listAttributes();
 
   /**

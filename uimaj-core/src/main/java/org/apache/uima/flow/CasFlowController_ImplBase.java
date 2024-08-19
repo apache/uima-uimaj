@@ -30,11 +30,6 @@ import org.apache.uima.cas.TypeSystem;
 public abstract class CasFlowController_ImplBase extends FlowController_ImplBase {
   private TypeSystem mLastTypeSystem;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
-   */
   @Override
   public Class<CAS> getRequiredCasInterface() {
     return CAS.class;

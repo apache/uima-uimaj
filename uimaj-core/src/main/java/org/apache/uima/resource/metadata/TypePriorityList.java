@@ -29,7 +29,6 @@ package org.apache.uima.resource.metadata;
  * element.
  * 
  * @see TypePriorities
- * 
  */
 public interface TypePriorityList extends MetaDataObject {
 
@@ -48,7 +47,7 @@ public interface TypePriorityList extends MetaDataObject {
    * @param aTypeNames
    *          an array type names, in order of their priority
    */
-  void setTypes(String[] aTypeNames);
+  void setTypes(String... aTypeNames);
 
   /**
    * Adds a type at the end of the priority list.

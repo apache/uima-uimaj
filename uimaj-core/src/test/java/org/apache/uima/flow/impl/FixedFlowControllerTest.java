@@ -67,7 +67,7 @@ public class FixedFlowControllerTest {
 
     AnalysisEngineMetaData aggregateMd = new AnalysisEngineMetaData_impl();
     FixedFlow fixedFlow = new FixedFlow_impl();
-    fixedFlow.setFixedFlow(new String[] { "key1", "key2", "key3" });
+    fixedFlow.setFixedFlow("key1", "key2", "key3");
     aggregateMd.setFlowConstraints(fixedFlow);
     OperationalProperties opProps = new OperationalProperties_impl();
     aggregateMd.setOperationalProperties(opProps);

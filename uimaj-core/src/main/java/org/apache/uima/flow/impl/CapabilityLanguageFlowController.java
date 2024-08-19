@@ -42,7 +42,6 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
-import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
  * FlowController for the CapabilityLanguageFlow, which uses a linear flow but may skip some of the
@@ -259,12 +258,11 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   }
 
   public static FlowControllerDescription getDescription() {
-    FlowControllerDescription desc = getResourceSpecifierFactory()
-            .createFlowControllerDescription();
+    var desc = getResourceSpecifierFactory().createFlowControllerDescription();
 
     desc.setImplementationName(CapabilityLanguageFlowController.class.getName());
 
-    ProcessingResourceMetaData metaData = desc.getFlowControllerMetaData();
+    var metaData = desc.getFlowControllerMetaData();
     metaData.setName("Capability Language Flow Controller");
     metaData.setDescription("Simple FlowController that uses a linear fow but may skip\n"
             + "\t\tsome of the AEs in the flow if they do not handle the language\n"
@@ -273,8 +271,8 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     metaData.setVendor("The Apache Software Foundation");
     metaData.setVersion("1.0");
 
-    Capability capability = getResourceSpecifierFactory().createCapability();
-    metaData.setCapabilities(new Capability[] { capability });
+    var capability = getResourceSpecifierFactory().createCapability();
+    metaData.setCapabilities(capability);
 
     return desc;
   }

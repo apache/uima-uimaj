@@ -23,8 +23,6 @@ package org.apache.uima.resource.metadata;
  * A description of a CAS Type. This implements <code>MetaDataObject</code>, which implements
  * {@link org.apache.uima.util.XMLizable}, so it can be serialized to and deserialized from an XML
  * element.
- * 
- * 
  */
 public interface TypeDescription extends MetaDataObject {
 
@@ -88,7 +86,7 @@ public interface TypeDescription extends MetaDataObject {
    * @param aFeatures
    *          descriptions of the features for this Type.
    */
-  void setFeatures(FeatureDescription[] aFeatures);
+  void setFeatures(FeatureDescription... aFeatures);
 
   /**
    * Gets the allowed values for instances of this Type. This is used only for special "enumerated
@@ -109,7 +107,7 @@ public interface TypeDescription extends MetaDataObject {
    * @param aAllowedValues
    *          the allowed values for instances of this Type
    */
-  void setAllowedValues(AllowedValue[] aAllowedValues);
+  void setAllowedValues(AllowedValue... aAllowedValues);
 
   /**
    * Convenience method which adds a FeatureDescription to this TypeDescription.

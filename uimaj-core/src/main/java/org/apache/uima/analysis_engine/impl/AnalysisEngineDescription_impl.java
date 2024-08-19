@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
 public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl
         implements AnalysisEngineDescription {
 
-  static final private Method getterForAEwImports;
+  private static final Method getterForAEwImports;
   static {
     try {
       getterForAEwImports = AnalysisEngineDescription_impl.class
@@ -98,18 +98,18 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" property. Change this if interface changes.
    */
-  final protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
+  protected final String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
 
   /**
    * Name of the "delegateAnalysisEngineSpecifiersWithImports" property. Change this if interface
    * changes.
    */
-  final protected String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS = "delegateAnalysisEngineSpecifiersWithImports";
+  protected final String PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS = "delegateAnalysisEngineSpecifiersWithImports";
 
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" XML Element. Change this if schema changes.
    */
-  final protected String ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
+  protected final String ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS = "delegateAnalysisEngineSpecifiers";
 
   private String mFrameworkImplementation;
 
@@ -401,7 +401,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
                 ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE, new Object[] {
                     aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
       } else if (overrides.length == 0 && !isPrimitive()) {
-        // Were deprecated for many years ... now no longer supported.
+        // Were deprecated for many years - now no longer supported.
         throw new ResourceInitializationException(
                 ResourceInitializationException.INVALID_PARAM_OVERRIDE_NO_OVERRIDES, new Object[] {
                     aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
@@ -1051,7 +1051,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "analysisEngineDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("primitive"), new PropertyXmlInfo("annotatorImplementationName"),

@@ -35,10 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.helpers.AttributesImpl;
 
-/**
- * 
- * 
- */
 public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         implements ConfigurationParameterDeclarations {
 
@@ -61,17 +57,11 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   /** Configuration parameter search strategy */
   private String mSearchStrategy;
 
-  /**
-   * @see ConfigurationParameterDeclarations#getConfigurationParameters()
-   */
   @Override
   public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#setConfigurationParameters(ConfigurationParameter[])
-   */
   @Override
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
@@ -81,43 +71,28 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     mConfigurationParameters = aParams;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getCommonParameters()
-   */
   @Override
   public ConfigurationParameter[] getCommonParameters() {
     return mCommonParameters;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getConfigurationGroups()
-   */
   @Override
   public ConfigurationGroup[] getConfigurationGroups() {
     return mConfigurationGroups;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getDefaultGroupName()
-   */
   @Override
   public String getDefaultGroupName() {
     return mDefaultGroupName;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getSearchStrategy()
-   */
   @Override
   public String getSearchStrategy() {
     return mSearchStrategy;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#setCommonParameters(ConfigurationParameter[])
-   */
   @Override
-  public void setCommonParameters(ConfigurationParameter[] aParams) {
+  public void setCommonParameters(ConfigurationParameter... aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aParams", "setCommonParameters" });
@@ -125,11 +100,8 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     mCommonParameters = aParams;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#setConfigurationGroups(ConfigurationGroup[])
-   */
   @Override
-  public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
+  public void setConfigurationGroups(ConfigurationGroup... aGroups) {
     if (aGroups == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aGroups", "setConfigurationGroups" });
@@ -137,25 +109,16 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     mConfigurationGroups = aGroups;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#setDefaultGroupName(String)
-   */
   @Override
   public void setDefaultGroupName(String aGroupName) {
     mDefaultGroupName = aGroupName;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#setSearchStrategy(java.lang.String)
-   */
   @Override
   public void setSearchStrategy(String aStrategy) {
     mSearchStrategy = aStrategy;
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getConfigurationParameter(String, String)
-   */
   @Override
   public ConfigurationParameter getConfigurationParameter(String aGroupName, String aParamName) {
     if (aGroupName == null) {
@@ -181,9 +144,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#getConfigurationGroupDeclarations(String)
-   */
   @Override
   public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
     List<ConfigurationGroup> results = new ArrayList<>();
@@ -204,10 +164,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     return resultArr;
   }
 
-  /**
-   * 
-   * @see ConfigurationParameterDeclarations#addConfigurationParameter(ConfigurationParameter)
-   */
   @Override
   public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -217,10 +173,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setConfigurationParameters(newArr);
   }
 
-  /**
-   * 
-   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(ConfigurationParameter)
-   */
   @Override
   public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getConfigurationParameters();
@@ -235,9 +187,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#addConfigurationParameter(ConfigurationParameter)
-   */
   @Override
   public void addCommonParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getCommonParameters();
@@ -247,9 +196,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setCommonParameters(newArr);
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(ConfigurationParameter)
-   */
   @Override
   public void removeCommonParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getCommonParameters();
@@ -264,9 +210,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#addConfigurationGroup(ConfigurationGroup)
-   */
   @Override
   public void addConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
     ConfigurationGroup[] current = getConfigurationGroups();
@@ -276,9 +219,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     setConfigurationGroups(newArr);
   }
 
-  /**
-   * @see ConfigurationParameterDeclarations#removeConfigurationGroup(ConfigurationGroup)
-   */
   @Override
   public void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
     ConfigurationGroup[] current = getConfigurationGroups();
@@ -386,9 +326,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     return buf.toString();
   }
 
-  /**
-   * @see MetaDataObject_impl#getXMLAttributes()
-   */
   @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = new AttributesImpl();
@@ -401,9 +338,6 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     return attrs;
   }
 
-  /**
-   * @see MetaDataObject_impl#getXmlizationInfo()
-   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     // NOTE: custom XMLization is used for reading. This information

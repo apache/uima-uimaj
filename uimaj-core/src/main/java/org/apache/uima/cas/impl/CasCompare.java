@@ -1091,9 +1091,7 @@ public class CasCompare {
     TOP[] a = fsArray._getTheArray().clone();
     clearPrevFss();
     inSortContext = true;
-    Arrays.sort(a, (TOP afs1, TOP afs2) -> {
-      return compareRefs(afs1, afs2, null, null);
-    });
+    Arrays.sort(a, (TOP afs1, TOP afs2) -> compareRefs(afs1, afs2, null, null));
     return () -> System.arraycopy(a, 0, fsArray._getTheArray(), 0, fsArray.size());
   }
 
@@ -1116,9 +1114,7 @@ public class CasCompare {
     TOP[] a = fsArray._getTheArray().clone();
     clearPrevFss();
     inSortContext = true;
-    Arrays.sort(a, (TOP afs1, TOP afs2) -> {
-      return compareRefs(afs1, afs2, null, null);
-    });
+    Arrays.sort(a, (TOP afs1, TOP afs2) -> compareRefs(afs1, afs2, null, null));
     ArrayList<TOP> dedup = new ArrayList<>(a.length);
     TOP prev = null;
     for (TOP top : a) {
@@ -1473,7 +1469,8 @@ public class CasCompare {
   private int compareFeature(TOP fs1, TOP fs2, TypeImpl ti1, FeatureImpl fi1) {
     int r = 0;
     if (inSortContext && isTypeMapping) {
-      if ((isSrcCas && typeMapper.getTgtFeature(ti1, fi1) == null) || (!isSrcCas && typeMapper.getSrcFeature(ti1, fi1) == null)) {
+      if ((isSrcCas && typeMapper.getTgtFeature(ti1, fi1) == null)
+              || (!isSrcCas && typeMapper.getSrcFeature(ti1, fi1) == null)) {
         return 0; // types/features belong to target in this case
       }
     }
@@ -1511,7 +1508,8 @@ public class CasCompare {
 
         // probably not executed, since types discovered on first sort
         // except for a type that exists only the the target
-        if ((isSrcCas && typeMapper.getTgtFeature(ti, fi) == null) || (!isSrcCas && typeMapper.getSrcFeature(ti, fi) == null)) {
+        if ((isSrcCas && typeMapper.getTgtFeature(ti, fi) == null)
+                || (!isSrcCas && typeMapper.getSrcFeature(ti, fi) == null)) {
           continue; // types/features belong to target in this case
         }
 
@@ -1920,7 +1918,8 @@ public class CasCompare {
   private int compareRefResult(TOP rfs1, TOP rfs2) {
 
     // exception: treat canonical empty lists
-    if ((!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList) || (prev1.size() <= 0)) {
+    if ((!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList)
+            || (prev1.size() <= 0)) {
       return 0; // no recursion case
     }
 

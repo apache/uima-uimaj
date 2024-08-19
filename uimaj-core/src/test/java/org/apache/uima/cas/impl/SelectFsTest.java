@@ -46,8 +46,6 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.metadata.TypePriorities;
-import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -90,8 +88,8 @@ public class SelectFsTest {
     typeSystemDescription = UIMAFramework.getXMLParser()
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
 
-    TypePriorities prios = getResourceSpecifierFactory().createTypePriorities();
-    TypePriorityList typePrioList = prios.addPriorityList();
+    var prios = getResourceSpecifierFactory().createTypePriorities();
+    var typePrioList = prios.addPriorityList();
     Arrays.stream(aPrioTypeNames).forEachOrdered(typePrioList::addType);
 
     cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, prios, null);
@@ -302,10 +300,10 @@ public class SelectFsTest {
           throws Exception {
     setup(aMode, aPrioTypeNames);
 
-    TypeSystemDescription tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    var tsd = getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType("test.Type1", "", "uima.tcas.Annotation");
 
-    CAS cas = CasCreationUtils.createCas(tsd, null, null, null);
+    var cas = CasCreationUtils.createCas(tsd, null, null, null);
 
     Type type1 = cas.getTypeSystem().getType("test.Type1");
 
@@ -1815,6 +1813,23 @@ public class SelectFsTest {
             .isThrownBy(() -> localCas.select(Token._TypeName))
             .as("Select non-existing type by type name");
 
+  }
+
+  @Test
+  void thatSelectAnnotationBaseFsCountWorks() throws Exception {
+    var tsd = getResourceSpecifierFactory().createTypeSystemDescription();
+    tsd.addType("test.Type1", "", CAS.TYPE_NAME_ANNOTATION_BASE);
+
+    var cas = CasCreationUtils.createCas(tsd, null, null, null);
+
+    var type1 = cas.getTypeSystem().getType("test.Type1");
+
+    assertThat(cas.select(type1).count()).isEqualTo(0);
+
+    var y = cas.createFS(type1);
+    cas.addFsToIndexes(y);
+
+    assertThat(cas.select(type1).count()).isEqualTo(1);
   }
 
   @SuppressWarnings("unchecked")

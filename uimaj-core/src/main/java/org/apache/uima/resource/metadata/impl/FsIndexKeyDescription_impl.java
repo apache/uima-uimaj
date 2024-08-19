@@ -28,10 +28,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-/**
- * 
- * 
- */
 public class FsIndexKeyDescription_impl extends MetaDataObject_impl
         implements FsIndexKeyDescription {
 
@@ -48,49 +44,31 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl
 
   private int mComparator;
 
-  /**
-   * @see FsIndexKeyDescription#isTypePriority()
-   */
   @Override
   public boolean isTypePriority() {
     return mTypePriority;
   }
 
-  /**
-   * @see FsIndexKeyDescription#setTypePriority(boolean)
-   */
   @Override
   public void setTypePriority(boolean aTypePriority) {
     mTypePriority = aTypePriority;
   }
 
-  /**
-   * @see FsIndexKeyDescription#getFeatureName()
-   */
   @Override
   public String getFeatureName() {
     return mFeatureName;
   }
 
-  /**
-   * @see FsIndexKeyDescription#setFeatureName(String)
-   */
   @Override
   public void setFeatureName(String aName) {
     mFeatureName = aName;
   }
 
-  /**
-   * @see FsIndexKeyDescription#getComparator()
-   */
   @Override
   public int getComparator() {
     return mComparator;
   }
 
-  /**
-   * @see FsIndexKeyDescription#setComparator(int)
-   */
   @Override
   public void setComparator(int aComparator) {
     mComparator = aComparator;

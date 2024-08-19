@@ -26,8 +26,6 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 
 /**
  * Reference implementation of {@link TypePriorityList}.
- * 
- * 
  */
 public class TypePriorityList_impl extends MetaDataObject_impl implements TypePriorityList {
 
@@ -35,9 +33,6 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
 
   private List<String> mTypeNames = new ArrayList<>();
 
-  /**
-   * @see TypePriorityList#getTypes() synchronized to prevent concurrent modification exceptions
-   */
   @Override
   public synchronized String[] getTypes() {
     String[] result = new String[mTypeNames.size()];
@@ -45,28 +40,19 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
     return result;
   }
 
-  /**
-   * @see TypePriorityList#setTypes(java.lang.String[])
-   */
   @Override
-  public synchronized void setTypes(String[] aTypeNames) {
+  public synchronized void setTypes(String... aTypeNames) {
     mTypeNames.clear();
     for (int i = 0; i < aTypeNames.length; i++) {
       mTypeNames.add(aTypeNames[i]);
     }
   }
 
-  /**
-   * @see TypePriorityList#addType(java.lang.String)
-   */
   @Override
   public synchronized void addType(String aTypeName) {
     mTypeNames.add(aTypeName);
   }
 
-  /**
-   * @see TypePriorityList#removeType(java.lang.String)
-   */
   @Override
   public synchronized void removeType(String aTypeName) {
     mTypeNames.remove(aTypeName);
@@ -88,9 +74,6 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
     return clone;
   }
 
-  /**
-   * @see MetaDataObject_impl#getXmlizationInfo()
-   */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("priorityList",

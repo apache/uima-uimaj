@@ -67,8 +67,9 @@ public interface CpeDescription extends MetaDataObject {
    *           tbd
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   CpeCollectionReaderCasInitializer addCasInitializer(String aCasInitializerPath)
           throws CpeDescriptorException;
 

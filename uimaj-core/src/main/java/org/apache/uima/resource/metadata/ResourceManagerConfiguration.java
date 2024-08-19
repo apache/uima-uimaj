@@ -46,8 +46,6 @@ import org.apache.uima.util.InvalidXMLException;
  */
 public interface ResourceManagerConfiguration extends MetaDataObject {
   /**
-   * Gets the name of this Resource Manager Configuration.
-   * 
    * @return the name of this Resource Manager Configuration, null if none has been specified.
    */
   String getName();
@@ -64,8 +62,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   void setName(String aName);
 
   /**
-   * Gets the version number of this Resource Manager Configuration.
-   * 
    * @return the version number of this Resource Manager Configuration, as a String, null if none
    *         has been specified.
    */
@@ -83,8 +79,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   void setVersion(String aVersion);
 
   /**
-   * Gets the description of this Resource Manager Configuration.
-   * 
    * @return the description of this Resource Manager Configuration, null if none has been
    *         specified.
    */
@@ -102,8 +96,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   void setDescription(String aDescription);
 
   /**
-   * Gets the vendor of this Resource Manager Configuration.
-   * 
    * @return the vendor of this Resource Manager Configuration, as a String
    */
   String getVendor();
@@ -121,8 +113,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
   void setVendor(String aVendor);
 
   /**
-   * Gets the imports declared by this Resource Manager Configuration.
-   * 
    * @return an array of imports declared by this Resource Manager Configuration.
    */
   Import[] getImports();
@@ -133,7 +123,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    * @param aImports
    *          an array of imports declared by this Resource Manager Configuration.
    */
-  void setImports(Import[] aImports);
+  void setImports(Import... aImports);
 
   /**
    * Gets the import declared by this Resource Manager Configuration, if any.
@@ -174,7 +164,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          an array of {@link org.apache.uima.resource.ExternalResourceDescription} objects that
    *          describe the external resources.
    */
-  void setExternalResources(ExternalResourceDescription[] aDescriptions);
+  void setExternalResources(ExternalResourceDescription... aDescriptions);
 
   /**
    * Adds a External Resource to this configuration
@@ -220,7 +210,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *          an array of {@link org.apache.uima.resource.metadata.ExternalResourceBinding} objects
    *          that bind dependencies to resources.
    */
-  void setExternalResourceBindings(ExternalResourceBinding[] aBindings);
+  void setExternalResourceBindings(ExternalResourceBinding... aBindings);
 
   /**
    * Adds a External ResourceBinding to this configuration
@@ -265,7 +255,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    * @param aResourceManager
    *          the Resource Manager used to locate the XML file imported by name. For example, the
    *          path in which to locate the imported files can be set via the
-   *          {@link ResourceManager#setDataPath(String)} method.
+   *          {@link ResourceManager#setDataPathElements} method.
    * 
    * @throws InvalidXMLException
    *           if either the import target does not exist or is invalid
@@ -283,7 +273,7 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    * @param aResourceManager
    *          the Resource Manager used to locate the XML file imported by name. For example, the
    *          path in which to locate the imported files can be set via the
-   *          {@link ResourceManager#setDataPath(String)} method.
+   *          {@link ResourceManager#setDataPathElements} method.
    * @param aAlreadyImportedURLs
    *          names of already imported URLs, so we don't import them again.
    * 

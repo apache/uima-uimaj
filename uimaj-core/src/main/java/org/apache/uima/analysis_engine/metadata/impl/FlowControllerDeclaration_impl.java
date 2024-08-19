@@ -52,72 +52,36 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
 
   private ResourceSpecifier mSpecifier;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#getKey()
-   */
   @Override
   public String getKey() {
     return mKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#setKey(java.lang.String)
-   */
   @Override
   public void setKey(String aKey) {
     mKey = aKey;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see FlowControllerDeclaration#getImport()
-   */
   @Override
   public Import getImport() {
     return mImport;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see FlowControllerDeclaration#setImport(org.apache.uima.resource.metadata.Import)
-   */
   @Override
   public void setImport(Import aImport) {
     mImport = aImport;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see FlowControllerDeclaration#getSpecifier()
-   */
   @Override
   public ResourceSpecifier getSpecifier() {
     return mSpecifier;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see FlowControllerDeclaration#setSpecifier(org.apache.uima.resource.ResourceSpecifier)
-   */
   @Override
   public void setSpecifier(ResourceSpecifier aSpecifier) {
     mSpecifier = aSpecifier;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see FlowControllerDeclaration#resolveImports()
-   */
   @Override
   public void resolveImports() throws InvalidXMLException {
     if (getImport() != null) {
@@ -126,8 +90,6 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
   }
 
   /*
-   * (non-Javadoc)
-   * 
    * @see FlowControllerDeclaration#resolveImports(org.apache.uima.resource.ResourceManager)
    * Synchronized to support parallel initialization calls on primitive AEs, sharing a common
    * Resource Manager, and perhaps common UIMA Contexts
@@ -159,13 +121,6 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.
-   * Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-   */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
@@ -174,11 +129,6 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
     mKey = aElement.getAttribute("key");
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
-   */
   @Override
   protected AttributesImpl getXMLAttributes() {
     // write key as attribute

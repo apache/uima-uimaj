@@ -32,9 +32,10 @@ import org.apache.uima.util.Logger;
  * This interface is maintained only for backwards compatibility with annotators developed in UIMA
  * SDK v1.x. New code should use {@link UimaContext} instead.
  * 
- * @deprecated As of release 2.3.0, use UimaContext instead
+ * @deprecated As of release 2.3.0, use {link UimaContext} instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public interface AnnotatorContext {
   /**
    * Retrieves the value for a configuration parameter that is not defined in any group or is

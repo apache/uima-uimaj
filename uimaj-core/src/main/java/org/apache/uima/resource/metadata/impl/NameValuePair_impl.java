@@ -23,8 +23,6 @@ import org.apache.uima.resource.metadata.NameValuePair;
 
 /**
  * Reference implementation of {@link NameValuePair}.
- * 
- * 
  */
 public class NameValuePair_impl extends MetaDataObject_impl implements NameValuePair {
 
@@ -56,8 +54,6 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
   }
 
   /**
-   * Gets the name.
-   * 
    * @return the name
    */
   @Override
@@ -77,8 +73,6 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
   }
 
   /**
-   * Gets the value.
-   * 
    * @return the value
    */
   @Override

@@ -71,7 +71,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl
    * @see org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow#setCapabilityLanguageFlow(String[])
    */
   @Override
-  public void setCapabilityLanguageFlow(String[] aFlow) {
+  public void setCapabilityLanguageFlow(String... aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aFlow", "setCapabilityLanguageFlow" });

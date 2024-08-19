@@ -25,9 +25,7 @@ package org.apache.uima.collection.metadata;
 public interface NameValuePair {
 
   /**
-   * Gets the name.
-   * 
-   * @return the name
+   * @return the name.
    */
   String getName();
 
@@ -40,9 +38,7 @@ public interface NameValuePair {
   void setName(String aName);
 
   /**
-   * Gets the value.
-   * 
-   * @return the value
+   * @return the value.
    */
   Object getValue();
 

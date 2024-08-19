@@ -70,26 +70,18 @@ public abstract class AnalysisEngineProcessorAdapter extends AnalysisEngineImplB
   }
 
   /**
-   * Gets the stub to be used to communicate with the remote service.
-   * 
-   * @return the stub for the remote service
+   * @return the stub to be used to communicate with the remote service.
    */
   protected AnalysisEngineProcessorStub getStub() {
     return mStub;
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#getMetaData()
-   */
   @Override
   public ResourceMetaData getMetaData() {
 
     return getStub() != null ? getStub().getMetaData() : null;
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#destroy()
-   */
   @Override
   public void destroy() {
     if (getStub() != null) {
@@ -126,47 +118,29 @@ public abstract class AnalysisEngineProcessorAdapter extends AnalysisEngineImplB
     }
   }
 
-  /**
-   * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
-   */
   @Override
   public void reconfigure() throws ResourceConfigurationException {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 
-  /**
-   * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String,
-   *      java.lang.String)
-   */
   @Override
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getMetaData().getConfigurationParameterSettings().getParameterValue(aGroupName,
             aParamName);
   }
 
-  /**
-   * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String)
-   */
   @Override
   public Object getConfigParameterValue(String aParamName) {
     return getMetaData().getConfigurationParameterSettings().getParameterValue(aParamName);
   }
 
-  /**
-   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
-   *      java.lang.Object)
-   */
   @Override
   public void setConfigParameterValue(String aParamName, Object aValue) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 
-  /**
-   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
-   *      java.lang.String, java.lang.Object)
-   */
   @Override
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     throw new UIMA_UnsupportedOperationException(

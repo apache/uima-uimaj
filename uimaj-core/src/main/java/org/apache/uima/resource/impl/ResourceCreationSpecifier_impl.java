@@ -131,7 +131,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#setExternalResourceDependencies(ExternalResourceDependency[])
    */
   @Override
-  public void setExternalResourceDependencies(ExternalResourceDependency[] aDependencies) {
+  public void setExternalResourceDependencies(ExternalResourceDependency... aDependencies) {
     // can't just clear the ArrayList since that breaks clone(). Create a new list.
     mExternalResourceDependencies = new ArrayList<>();
     if (aDependencies != null) {
@@ -147,8 +147,9 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl
   @Override
   public ExternalResourceDependency getExternalResourceDependency(String aKey) {
     for (ExternalResourceDependency dep : mExternalResourceDependencies) {
-      if (aKey.equals(dep.getKey()))
+      if (aKey.equals(dep.getKey())) {
         return dep;
+      }
     }
     return null;
   }

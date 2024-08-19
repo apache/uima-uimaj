@@ -26,8 +26,6 @@ import org.apache.uima.resource.metadata.MimeTypePrecondition;
 
 /**
  * Precondition that tests the MIME type of the Entity's content.
- * 
- * 
  */
 public class MimeTypePrecondition_impl extends SimplePrecondition_impl
         implements MimeTypePrecondition {
@@ -38,25 +36,16 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
     super.setPredicate(ELEMENT_OF);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.MimeTypePrecondition#getMimeTypes()
-   */
   @Override
   public String[] getMimeTypes() {
     return (String[]) getComparisonValue();
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.MimeTypePrecondition#setMimeTypes(java.lang.String[])
-   */
   @Override
-  public void setMimeTypes(String[] aMimeTypes) {
+  public void setMimeTypes(String... aMimeTypes) {
     setComparisonValue(aMimeTypes);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setComparisonValue(java.lang.Object)
-   */
   @Override
   public void setComparisonValue(Object aValue) {
     // value must be a string array
@@ -67,9 +56,6 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
     super.setComparisonValue(aValue);
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
-   */
   @Override
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
@@ -77,9 +63,6 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setFeatureName" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
-   */
   @Override
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
@@ -87,9 +70,6 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setFsIndexName" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
-   */
   @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
@@ -111,14 +91,10 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
             new Object[] { this.getClass().getName(), "setMetaDataKeyName" });
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setPredicate(java.lang.String)
-   */
   @Override
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
             UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
             new Object[] { this.getClass().getName(), "setPredicate" });
   }
-
 }

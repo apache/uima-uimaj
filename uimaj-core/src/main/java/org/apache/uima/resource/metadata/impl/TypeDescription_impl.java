@@ -26,8 +26,6 @@ import org.apache.uima.resource.metadata.TypeDescription;
 
 /**
  * Reference implementation of {@link TypeDescription}. Under construction.
- * 
- * 
  */
 public class TypeDescription_impl extends MetaDataObject_impl implements TypeDescription {
 
@@ -74,67 +72,43 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     setSupertypeName(aSupertypeName);
   }
 
-  /**
-   * @see TypeDescription#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see TypeDescription#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see TypeDescription#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see TypeDescription#setDescription(java.lang.String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see TypeDescription#getSupertypeName()
-   */
   @Override
   public String getSupertypeName() {
     return mSupertypeName;
   }
 
-  /**
-   * @see TypeDescription#setSupertypeName(String)
-   */
   @Override
   public void setSupertypeName(String aTypeName) {
     mSupertypeName = aTypeName;
   }
 
-  /**
-   * @see TypeDescription#getFeatures()
-   */
   @Override
   public FeatureDescription[] getFeatures() {
     return mFeatures;
   }
 
-  /**
-   * @see TypeDescription#setFeatures(FeatureDescription[])
-   */
   @Override
-  public void setFeatures(FeatureDescription[] aFeatures) {
+  public void setFeatures(FeatureDescription... aFeatures) {
     if (aFeatures == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
               new Object[] { "null", "aFeatures", "setFeatures" });
@@ -142,34 +116,22 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     mFeatures = aFeatures;
   }
 
-  /**
-   * @see TypeDescription#getAllowedValues()
-   */
   @Override
   public AllowedValue[] getAllowedValues() {
     return mAllowedValues;
   }
 
-  /**
-   * @see TypeDescription#setAllowedValues(AllowedValue[])
-   */
   @Override
-  public void setAllowedValues(AllowedValue[] aAllowedValues) {
+  public void setAllowedValues(AllowedValue... aAllowedValues) {
     mAllowedValues = aAllowedValues;
   }
 
-  /**
-   * @see TypeDescription#addFeature(String, String, String)
-   */
   @Override
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
   }
 
-  /**
-   * @see TypeDescription#addFeature(String, String, String, String, Boolean)
-   */
   @Override
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
           String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
@@ -180,7 +142,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     // add to array
     FeatureDescription[] features = getFeatures();
     if (features == null) {
-      setFeatures(new FeatureDescription[] { newFeature });
+      setFeatures(newFeature);
     } else {
       FeatureDescription[] newArray = new FeatureDescription[features.length + 1];
       System.arraycopy(features, 0, newArray, 0, features.length);
@@ -197,7 +159,11 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-              new PropertyXmlInfo("description", false), new PropertyXmlInfo("supertypeName"),
-              new PropertyXmlInfo("features"), new PropertyXmlInfo("allowedValues") });
+          new PropertyXmlInfo[] { //
+              new PropertyXmlInfo("name"), //
+              new PropertyXmlInfo("description", false), //
+              new PropertyXmlInfo("supertypeName"), //
+              new PropertyXmlInfo("features"), //
+              new PropertyXmlInfo("allowedValues") //
+          });
 }

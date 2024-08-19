@@ -43,50 +43,25 @@ import org.apache.uima.util.Logger;
 public abstract class FlowController_ImplBase implements FlowController {
   private FlowControllerContext mContext = null;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#initialize(org.apache.uima.flow.FlowControllerContext)
-   */
   @Override
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     mContext = aContext;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#reconfigure()
-   */
   @Override
   public void reconfigure() throws ResourceInitializationException, ResourceConfigurationException {
     destroy();
     initialize(mContext);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#batchProcessComplete()
-   */
   @Override
   public void batchProcessComplete() throws AnalysisEngineProcessException {
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#collectionProcessComplete()
-   */
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.flow.FlowController#destroy()
-   */
   @Override
   public void destroy() {
   }

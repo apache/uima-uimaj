@@ -414,7 +414,7 @@ public class CasCreationUtilsTest {
               casMgr.getTypeSystemMgr().getType("test.Super").getFeatureByBaseName("testfeat"));
 
       TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
-      tsd2.setTypes(new TypeDescription[] { subtype, supertype });
+      tsd2.setTypes(subtype, supertype);
 
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, tsd2);

@@ -57,6 +57,6 @@ public interface CustomResourceSpecifier extends ResourceSpecifier {
    * @param parameters
    *          the Parameters to set.
    */
-  void setParameters(Parameter[] parameters);
+  void setParameters(Parameter... parameters);
 
 }

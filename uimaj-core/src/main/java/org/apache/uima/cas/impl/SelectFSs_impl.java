@@ -854,10 +854,8 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         // covering the zero-width annotation
         int startingFSStart = ((Annotation) startingFs).getBegin();
         int startingFSEnd = ((Annotation) startingFs).getEnd();
-        it = new FilteredIterator<>(it, fs -> {
-          return fs._id() != startingFs._id && AnnotationPredicates.preceding((Annotation) fs,
-                  startingFSStart, startingFSEnd);
-        });
+        it = new FilteredIterator<>(it, fs -> fs._id() != startingFs._id
+                && AnnotationPredicates.preceding((Annotation) fs, startingFSStart, startingFSEnd));
       }
 
       if (isFollowing) {
@@ -866,10 +864,8 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         // considered to be covered and not following
         int startingFSStart = ((Annotation) startingFs).getBegin();
         int startingFSEnd = ((Annotation) startingFs).getEnd();
-        it = new FilteredIterator<>(it, fs -> {
-          return fs._id() != startingFs._id && AnnotationPredicates.following((Annotation) fs,
-                  startingFSStart, startingFSEnd);
-        });
+        it = new FilteredIterator<>(it, fs -> fs._id() != startingFs._id
+                && AnnotationPredicates.following((Annotation) fs, startingFSStart, startingFSEnd));
       }
 
       return it;
@@ -927,16 +923,15 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
       filtered = filteredItems
               .toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));
     } else {
-
       // skip filtering if nullOK and no subsumption test needed because type = TOP or higher
       boolean noTypeFilter = ti == view.getTypeSystemImpl().topType;
       if (!isNullOK && noTypeFilter) {
         return new FsIterator_subtypes_snapshot<>((T[]) sourceFSArray, null, IS_UNORDERED, null);
       }
 
-      List<T> filteredItems = new ArrayList<>();
+      var filteredItems = new ArrayList<T>();
       boolean noNullsWereFiltered = true;
-      for (FeatureStructure item : sourceFSArray) {
+      for (var item : sourceFSArray) {
         if (!isNullOK && null == item) {
           noNullsWereFiltered = false;
           continue; // null items may be skipped
@@ -951,11 +946,11 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
         return new FsIterator_subtypes_snapshot<>((T[]) sourceFSArray, null, IS_UNORDERED, null);
       }
 
-      filtered = filteredItems
-              .toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));
+      filtered = (T[]) filteredItems.toArray(FeatureStructure[]::new);
     }
-    return new FsIterator_subtypes_snapshot<>(filtered, null, IS_UNORDERED, null); // items not
-                                                                                   // sorted
+
+    // items not sorted
+    return new FsIterator_subtypes_snapshot<>(filtered, null, IS_UNORDERED, null);
   }
 
   @Override
@@ -1094,9 +1089,15 @@ public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> 
 
       @Override
       public long estimateSize() {
-        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED && localIndex != null)
-                ? localIndex.size()
-                : Long.MAX_VALUE;
+        if ((characteristics & Spliterator.SIZED) == Spliterator.SIZED && localIndex != null) {
+          return localIndex.size();
+        }
+
+        if (isAltSource) {
+          return altSourceIterator().size();
+        }
+
+        return fsIterator().size();
       }
 
       @Override

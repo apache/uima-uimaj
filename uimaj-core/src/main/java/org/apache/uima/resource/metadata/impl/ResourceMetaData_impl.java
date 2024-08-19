@@ -40,10 +40,7 @@ import org.w3c.dom.Element;
 
 /**
  * Reference implementation of {@link ResourceMetaData}.
- * 
- * 
  */
-
 public class ResourceMetaData_impl extends MetaDataObject_impl implements ResourceMetaData {
 
   private static final long serialVersionUID = 3408359518094534817L;
@@ -72,18 +69,12 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   /** Configuration Parameter Settings for the Resource */
   private ConfigurationParameterSettings mConfigurationParameterSettings = new ConfigurationParameterSettings_impl();
 
-  /**
-   * @see ResourceMetaData#resolveImports()
-   */
   @Override
   public void resolveImports() throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
 
   }
 
-  /**
-   * @see ResourceMetaData#resolveImports(ResourceManager)
-   */
   @Override
   public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     // does nothing by default; may be overriden in subclasses
@@ -95,129 +86,81 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   public ResourceMetaData_impl() {
   }
 
-  /**
-   * @see ResourceMetaData#getUUID()
-   */
   @Override
   public String getUUID() {
     return mUUID;
   }
 
-  /**
-   * @see ResourceMetaData#setUUID(String)
-   */
   @Override
   public void setUUID(String aUUID) {
     mUUID = aUUID;
   }
 
-  /**
-   * @see ResourceMetaData#getName()
-   */
   @Override
   public String getName() {
     return mName;
   }
 
-  /**
-   * @see ResourceMetaData#setName(String)
-   */
   @Override
   public void setName(String aName) {
     mName = aName;
   }
 
-  /**
-   * @see ResourceMetaData#getVersion()
-   */
   @Override
   public String getVersion() {
     return mVersion;
   }
 
-  /**
-   * @see ResourceMetaData#setVersion(String)
-   */
   @Override
   public void setVersion(String aVersion) {
     mVersion = aVersion;
   }
 
-  /**
-   * @see ResourceMetaData#getDescription()
-   */
   @Override
   public String getDescription() {
     return mDescription;
   }
 
-  /**
-   * @see ResourceMetaData#setDescription(String)
-   */
   @Override
   public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
-  /**
-   * @see ResourceMetaData#getVendor()
-   */
   @Override
   public String getVendor() {
     return mVendor;
   }
 
-  /**
-   * @see ResourceMetaData#setVendor(String)
-   */
   @Override
   public void setVendor(String aVendor) {
     mVendor = aVendor;
   }
 
-  /**
-   * @see ResourceMetaData#getCopyright()
-   */
   @Override
   public String getCopyright() {
     return mCopyright;
   }
 
-  /**
-   * @see ResourceMetaData#setCopyright(String)
-   */
   @Override
   public void setCopyright(String aCopyright) {
     mCopyright = aCopyright;
   }
 
-  /**
-   * @see ResourceMetaData#getConfigurationParameterSettings()
-   */
   @Override
   public ConfigurationParameterSettings getConfigurationParameterSettings() {
     return mConfigurationParameterSettings;
   }
 
-  /**
-   * @see ResourceMetaData#setConfigurationParameterSettings(ConfigurationParameterSettings)
-   */
   @Override
   public void setConfigurationParameterSettings(ConfigurationParameterSettings aSettings) {
     mConfigurationParameterSettings = aSettings;
   }
 
-  /**
-   * @see ResourceMetaData#getConfigurationParameterDeclarations()
-   */
   @Override
   public ConfigurationParameterDeclarations getConfigurationParameterDeclarations() {
     return mConfigurationParameterDeclarations;
   }
 
-  /**
-   * @see ResourceMetaData#setConfigurationParameterDeclarations(ConfigurationParameterDeclarations)
-   */
   @Override
   public void setConfigurationParameterDeclarations(
           ConfigurationParameterDeclarations aDeclarations) {
@@ -441,10 +384,14 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("resourceMetaData",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("name", false),
-              new PropertyXmlInfo("description"), new PropertyXmlInfo("version"),
-              new PropertyXmlInfo("vendor"), new PropertyXmlInfo("copyright"),
-              new PropertyXmlInfo("configurationParameterDeclarations", null),
-              new PropertyXmlInfo("configurationParameterSettings", null) });
+          new PropertyXmlInfo[] { //
+              new PropertyXmlInfo("name", false), //
+              new PropertyXmlInfo("description"), //
+              new PropertyXmlInfo("version"), //
+              new PropertyXmlInfo("vendor"), //
+              new PropertyXmlInfo("copyright"), //
+              new PropertyXmlInfo("configurationParameterDeclarations", null), //
+              new PropertyXmlInfo("configurationParameterSettings", null) //
+          });
 
 }

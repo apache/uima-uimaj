@@ -84,8 +84,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     // just null it out.
     // BUT do this in a clone, so we don't affect Java!
     resourceDescription = (ResourceCreationSpecifier) aeDescription.clone();
-    ((ProcessingResourceMetaData) resourceDescription.getMetaData())
-            .setFsIndexCollection(null);
+    ((ProcessingResourceMetaData) resourceDescription.getMetaData()).setFsIndexCollection(null);
     tsReinit = true;
     // System.out.println("Data path: " + dataPath);
   }
@@ -369,11 +368,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#finalize()
-   */
+  @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
     destroy();
@@ -418,10 +413,11 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     } else if (msglevel == TAF_LOGLEVEL_ERROR) {
       level = Level.SEVERE;
     }
-    if (sourceMethod.length() > 0)
+    if (sourceMethod.length() > 0) {
       uimacppLogger.log(level, sourceClass + "::" + sourceMethod + ": " + message);
-    else
+    } else {
       uimacppLogger.log(level, sourceClass + ": " + message);
+    }
 
     // TODO: add Logger method log(level, sourceClass, sourceMethod, message);
   }

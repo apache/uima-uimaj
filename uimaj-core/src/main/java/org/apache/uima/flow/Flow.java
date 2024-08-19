@@ -99,5 +99,4 @@ public interface Flow {
    * could be used to allow the FlowController to reuse a Flow object if desired.
    */
   void aborted();
-
 }

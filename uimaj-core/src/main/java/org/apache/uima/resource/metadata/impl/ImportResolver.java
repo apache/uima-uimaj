@@ -84,9 +84,9 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
    *           if an import could not be processed.
    * @deprecated Exists only to support a deprecated methods like
    *             {@link TypeSystemDescription#resolveImports(Collection, ResourceManager)}.
-   *             Scheduled for removal in UIMA 4.0.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   void resolveImports(DESCRIPTOR aDesc, Collection<String> aAlreadyImportedURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> wrapper = adapterFactory.apply(aDesc);

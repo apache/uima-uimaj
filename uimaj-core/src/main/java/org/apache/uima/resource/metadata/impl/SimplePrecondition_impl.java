@@ -22,13 +22,10 @@ package org.apache.uima.resource.metadata.impl;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSMatchConstraint;
-import org.apache.uima.resource.metadata.Precondition;
 import org.apache.uima.resource.metadata.SimplePrecondition;
 
 /**
  * Reference implementation of {@link SimplePrecondition}.
- * 
- * 
  */
 public class SimplePrecondition_impl extends MetaDataObject_impl implements SimplePrecondition {
 
@@ -52,114 +49,72 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
 
   private boolean mDefault;
 
-  /**
-   * @see Precondition#getPreconditionType()
-   */
   @Override
   public String getPreconditionType() {
     return PRECONDITION_TYPE;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#getDefault()
-   */
   @Override
   public boolean getDefault() {
     return mDefault;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#getFeatureName()
-   */
   @Override
   public String getFeatureName() {
     return mFeatureName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#getFsIndexName()
-   */
   @Override
   public String getFsIndexName() {
     return mFsIndexName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#getFsMatchConstraint()
-   */
   @Override
   public FSMatchConstraint getFsMatchConstraint() {
     return mFsMatchConstraint;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setDefault(boolean)
-   */
   @Override
   public void setDefault(boolean aDefault) {
     mDefault = aDefault;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
-   */
   @Override
   public void setFeatureName(String aFeatureName) {
     mFeatureName = aFeatureName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
-   */
   @Override
   public void setFsIndexName(String aIndexName) {
     mFsIndexName = aIndexName;
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
-   */
   @Override
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     mFsMatchConstraint = aConstraint;
 
   }
 
-  /**
-   * @see org.apache.uima.resource.metadata.Precondition#evaluate(org.apache.uima.cas.CAS)
-   */
   @Override
   public boolean evaluate(CAS aCAS) {
     return false;
   }
 
-  /**
-   * @see SimplePrecondition#getComparisonValue()
-   */
   @Override
   public Object getComparisonValue() {
     return mComparisonValue;
   }
 
-  /**
-   * @see SimplePrecondition#setComparisonValue(Object)
-   */
   @Override
   public void setComparisonValue(Object aValue) {
     mComparisonValue = aValue;
   }
 
-  /**
-   * @see SimplePrecondition#getPredicate()
-   */
   @Override
   public String getPredicate() {
     return mPredicate;
   }
 
-  /**
-   * @see SimplePrecondition#setPredicate(String)
-   */
   @Override
   public void setPredicate(String aPredicate) {
     // check to make sure value is legal
@@ -192,7 +147,9 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
-              new PropertyXmlInfo("comparisonValue"),
-              new PropertyXmlInfo("predicate", "predicate") });
+          new PropertyXmlInfo[] { //
+              new PropertyXmlInfo("featureDescription", null), //
+              new PropertyXmlInfo("comparisonValue"), //
+              new PropertyXmlInfo("predicate", "predicate") //
+          });
 }
