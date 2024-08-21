@@ -345,10 +345,10 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
       // call components in the order specified in the flow
       if (orderedNodes != null) {
-          for (var orderedNode : orderedNodes) {
-              var component = components.remove(orderedNode);
-              component.collectionProcessComplete();
-          }
+        for (var orderedNode : orderedNodes) {
+          var component = components.remove(orderedNode);
+          component.collectionProcessComplete();
+        }
       }
       // now call remaining components in arbitrary order
       Iterator<AnalysisEngine> iter = components.values().iterator();

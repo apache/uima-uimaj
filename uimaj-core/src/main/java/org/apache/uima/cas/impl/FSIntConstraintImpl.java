@@ -158,8 +158,7 @@ class FSIntConstraintImpl implements FSIntConstraint {
   @Override
   public String toString() {
     if (codes.size() == 1) {
-      return FSFloatConstraintImpl.toString(codes.get(0)) + " "
-              + Integer.toString(values.get(0));
+      return FSFloatConstraintImpl.toString(codes.get(0)) + " " + Integer.toString(values.get(0));
     }
     StringBuffer buf = new StringBuffer();
     buf.append("( ");

@@ -260,8 +260,10 @@ class AnnotationIteratorTest {
     assertCount("Normal ambiguous select annot iterator (type priorities)", annotCount,
             annotIndex.select().typePriority());
     assertThat(annotIndex.select().toArray().length).isEqualTo(annotCount); // stream op
-    assertThat(annotIndex.select().asArray(Annotation.class).length).isEqualTo(annotCount); // select op
-    assertThat(annotIndex.select().startAt(2).asArray(Annotation.class).length).isEqualTo(annotCount - 5);
+    assertThat(annotIndex.select().asArray(Annotation.class).length).isEqualTo(annotCount); // select
+                                                                                            // op
+    assertThat(annotIndex.select().startAt(2).asArray(Annotation.class).length)
+            .isEqualTo(annotCount - 5);
 
     FSArray<Annotation> fsa = FSArray.create(jcas, annotIndex.select().asArray(Annotation.class));
     assertCount("fsa ambiguous select annot iterator", annotCount, fsa.select());
@@ -696,7 +698,7 @@ class AnnotationIteratorTest {
     try {
       cas.getAnnotationIndex(tokenType);
     } catch (CASRuntimeException e) {
-        fail();
+      fail();
     }
   }
 
@@ -717,7 +719,7 @@ class AnnotationIteratorTest {
       // @formatter:on
       cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
-        fail();
+      fail();
     }
     AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
 
@@ -732,7 +734,8 @@ class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertThat(t.getBegin() < sa.getEnd()).as("Subiterator returned annotation outside boundaries").isTrue();
+        assertThat(t.getBegin() < sa.getEnd())
+                .as("Subiterator returned annotation outside boundaries").isTrue();
       }
     }
 
@@ -744,7 +747,8 @@ class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertThat(t.getBegin() < sa.getEnd()).as("Subiterator returned annotation outside boundaries").isTrue();
+        assertThat(t.getBegin() < sa.getEnd())
+                .as("Subiterator returned annotation outside boundaries").isTrue();
       }
     }
   }

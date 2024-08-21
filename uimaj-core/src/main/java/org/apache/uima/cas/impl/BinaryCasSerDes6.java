@@ -1588,7 +1588,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         final TypeImpl srcType = fs._getTypeImpl();
         // probably don't need this test, because change logging is done when a mark is set,
         // only for items below the line
-        if ((isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) || !foundFSsBelowMark.contains(fs._id)) {
+        if ((isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType))
+                || !foundFSsBelowMark.contains(fs._id)) {
           // System.out.format(" skipping heap addr %,d%n", currentFsId);
           continue;
         }

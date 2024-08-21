@@ -144,8 +144,7 @@ public class IndexRepositoryTest {
     // Annotation is supertype of token
     // test if set observes implicit key of type
     Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
-    Feature annotBeginFeat = typeSystem
-            .getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
+    Feature annotBeginFeat = typeSystem.getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
     cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
 
     FeatureStructure annotTypeFs3 = cas.createFS(annotType);

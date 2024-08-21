@@ -776,7 +776,8 @@ public class FileUtil {
     while (jarList.hasMoreElements()) {
       JarEntry jarEntry = jarList.nextElement();
       // check that file is accepted
-      if (jarEntry.isDirectory() || (filter != null && !filter.accept(new File(jarEntry.getName())))) {
+      if (jarEntry.isDirectory()
+              || (filter != null && !filter.accept(new File(jarEntry.getName())))) {
         continue;
       }
 

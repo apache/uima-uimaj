@@ -100,8 +100,7 @@ public class UIMAClassLoaderTest {
 
   @Test
   public void testParallelClassLoading() throws Exception {
-    final UIMAClassLoader cl = new UIMAClassLoader(testClassPath,
-            this.getClass().getClassLoader());
+    final UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     final Class<?>[] loadedClasses = new Class<?>[Misc.numberOfCores];
 
     MultiThreadUtils.Run2isb callable = new MultiThreadUtils.Run2isb() {

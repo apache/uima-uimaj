@@ -197,28 +197,18 @@ public class TypeOrderTest {
             UTF_8);
 
     for (int i = 0; i < 10; i++) {
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     }
     for (int i = 19; i >= 10; i--) {
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     }
 
     FSIterator<FeatureStructure> it = cas.getIndexRepository().getIndex(TYPE_ORDER_INDEX)

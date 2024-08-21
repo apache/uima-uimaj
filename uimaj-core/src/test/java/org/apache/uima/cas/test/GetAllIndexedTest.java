@@ -219,8 +219,7 @@ public class GetAllIndexedTest {
     // test getAllIndexed(Type)
     Type tokenType = cas.getTypeSystem().getType(TOKEN_TYPE);
     assertNotNull(tokenType);
-    FSIterator<FeatureStructure> tokenIter = cas.getIndexRepository()
-            .getAllIndexedFS(tokenType);
+    FSIterator<FeatureStructure> tokenIter = cas.getIndexRepository().getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
     Iterator<TOP> tokenIter2 = cas.getIndexedFSs(tokenType).iterator();
     assertFalse(tokenIter2.hasNext());

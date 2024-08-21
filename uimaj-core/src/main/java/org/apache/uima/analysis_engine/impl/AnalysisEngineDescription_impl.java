@@ -358,13 +358,13 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       keys = capabilityLanguageFlow.getCapabilityLanguageFlow();
     }
     if (keys != null) {
-        for (String key : keys) {
-            if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(key)) {
-                throw new ResourceInitializationException(
-                        ResourceInitializationException.UNDEFINED_KEY_IN_FLOW, new Object[]{
-                        getAnalysisEngineMetaData().getName(), key, getSourceUrlString()});
-            }
+      for (String key : keys) {
+        if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(key)) {
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.UNDEFINED_KEY_IN_FLOW, new Object[] {
+                      getAnalysisEngineMetaData().getName(), key, getSourceUrlString() });
         }
+      }
     }
   }
 

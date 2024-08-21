@@ -782,9 +782,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       case FSIndex.SET_INDEX:
         ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs); // false
-                                                                                                   // =
-                                                                                                   // is
-                                                                                                   // set
+                                                                                              // =
+                                                                                              // is
+                                                                                              // set
         break;
 
       // case FSIndex.FLAT_INDEX:
@@ -793,15 +793,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       case FSIndex.BAG_INDEX:
       case FSIndex.DEFAULT_BAG_INDEX:
-        ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy,
-                comparatorForIndexSpecs);
+        ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy, comparatorForIndexSpecs);
         break;
 
       default:
         // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just
         // create a sorted index.
-        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX,
-                comparatorForIndexSpecs); // true = is sorted
+        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs); // true
+                                                                                                  // =
+                                                                                                  // is
+                                                                                                  // sorted
         break;
 
     }
@@ -1473,7 +1474,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   //@formatter:on
     if (i4t.aSortedIndex < 0) {
       int bi = i4t.aBagIndex; // >= 0 if there is a bag index
-      if ((bi < 0 && !i4t.hasSetIndex) || (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs))) {
+      if ((bi < 0 && !i4t.hasSetIndex)
+              || (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs))) {
         return false; // not in defined bag index
       }
     }

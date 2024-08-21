@@ -365,8 +365,7 @@ public class IntArrayRBTcommon {
 
   // times 32 to have the same tuning for expanding that int arrays do, for booleans
   private final boolean[] ensureBooleanArraySize(boolean[] array, int newSize) {
-    return IntArrayUtils.ensure_size(array, newSize, growth_factor,
-            multiplication_limit * 32);
+    return IntArrayUtils.ensure_size(array, newSize, growth_factor, multiplication_limit * 32);
   }
 
   protected final void leftRotate(final int x) {

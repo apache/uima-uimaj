@@ -18,6 +18,8 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
@@ -26,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AnalysisEngineManagementImplTest {
 

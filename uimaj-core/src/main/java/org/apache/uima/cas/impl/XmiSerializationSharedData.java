@@ -231,8 +231,7 @@ public class XmiSerializationSharedData {
    *          given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
-    List<String> membersList = ootsViewMembers.computeIfAbsent(sofaXmiId,
-            k -> new ArrayList<>());
+    List<String> membersList = ootsViewMembers.computeIfAbsent(sofaXmiId, k -> new ArrayList<>());
     membersList.add(memberXmiId);
   }
 
@@ -349,8 +348,7 @@ public class XmiSerializationSharedData {
    *          xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
-    List<XmiArrayElement> list = ootsArrayElements.computeIfAbsent(fsarray,
-            k -> new ArrayList<>());
+    List<XmiArrayElement> list = ootsArrayElements.computeIfAbsent(fsarray, k -> new ArrayList<>());
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
 

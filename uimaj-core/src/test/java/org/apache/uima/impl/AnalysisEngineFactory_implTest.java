@@ -42,13 +42,11 @@ class AnalysisEngineFactory_implTest {
     AnalysisEngineDescription desc = new AnalysisEngineDescription_impl();
     desc.setFrameworkImplementation("foo");
 
-    Assertions.assertThatExceptionOfType(ResourceInitializationException.class)
-      .isThrownBy(() -> {
-        aeFactory.produceResource(AnalysisEngine.class, desc, Collections.emptyMap());
-      })
-      .withMessageNotContaining("EXCEPTION MESSAGE LOCALIZATION FAILED")
-      .satisfies(ex -> {
-        Assertions.assertThat(ex.getMessageKey()).isEqualTo(ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
-      });
+    Assertions.assertThatExceptionOfType(ResourceInitializationException.class).isThrownBy(() -> {
+      aeFactory.produceResource(AnalysisEngine.class, desc, Collections.emptyMap());
+    }).withMessageNotContaining("EXCEPTION MESSAGE LOCALIZATION FAILED").satisfies(ex -> {
+      Assertions.assertThat(ex.getMessageKey())
+              .isEqualTo(ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
+    });
   }
 }

@@ -527,8 +527,7 @@ public class IntVector implements Serializable {
   }
 
   public IntVector copy() {
-    IntVector copy = new IntVector(array.length, growth_factor,
-            multiplication_limit);
+    IntVector copy = new IntVector(array.length, growth_factor, multiplication_limit);
     copy.pos = pos;
     // for (int i = 0; i < this.pos; i++) {
     // copy.array[i] = this.array[i];
@@ -569,8 +568,7 @@ public class IntVector implements Serializable {
   }
 
   public void ensure_size(int req) {
-    array = IntArrayUtils.ensure_size(array, req, growth_factor,
-            multiplication_limit);
+    array = IntArrayUtils.ensure_size(array, req, growth_factor, multiplication_limit);
     if (pos < req) {
       pos = req;
     }

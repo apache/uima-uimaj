@@ -142,18 +142,22 @@ public class AnalysisEnginePerformanceReports {
     var buf = new StringBuilder();
     buf.append("Total Analysis Engine Time: ").append(total).append("ms\n");
     if (analysis > 0) {
-      buf.append("Annotator Time: ").append(getAnalysisTime()).append("ms (").append(toPct(analysis, total)).append(")\n");
+      buf.append("Annotator Time: ").append(getAnalysisTime()).append("ms (")
+              .append(toPct(analysis, total)).append(")\n");
     } else {
       buf.append("Analysis: <10ms\n");
     }
     if (frameworkOver > 0) {
-      buf.append("Framework Overhead: ").append(frameworkOver).append("ms (").append(toPct(frameworkOver, total)).append(")\n");
+      buf.append("Framework Overhead: ").append(frameworkOver).append("ms (")
+              .append(toPct(frameworkOver, total)).append(")\n");
     } else {
       buf.append("Framework Overhead: <10ms\n");
     }
     if (serviceCallOver > 0) {
-      buf.append("Service Wrapper Overhead: ").append(serviceWrapperOver).append("ms (").append(toPct(serviceWrapperOver, total)).append(")\n");
-      buf.append("Service Call Overhead: ").append(serviceCallOver).append("ms (").append(toPct(serviceCallOver, total)).append(")\n");
+      buf.append("Service Wrapper Overhead: ").append(serviceWrapperOver).append("ms (")
+              .append(toPct(serviceWrapperOver, total)).append(")\n");
+      buf.append("Service Call Overhead: ").append(serviceCallOver).append("ms (")
+              .append(toPct(serviceCallOver, total)).append(")\n");
     }
 
     return buf.toString();

@@ -104,8 +104,8 @@ class FeaturePathImpl implements FeaturePath {
     // if current featurePath was already initialized we cannot guarantee that
     // the path is still ever valid so we have to evaluate the path on the
     // fly.
-    if (boundBaseType != null && PathValid.NEVER == TypeSystemUtils
-            .isPathValid(boundBaseType, featurePathElementNames)) {
+    if (boundBaseType != null && PathValid.NEVER == TypeSystemUtils.isPathValid(boundBaseType,
+            featurePathElementNames)) {
       boundBaseType = null; // can't be used for this path
     }
   }

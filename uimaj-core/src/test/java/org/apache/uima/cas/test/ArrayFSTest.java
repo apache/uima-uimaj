@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -30,8 +32,6 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ArrayFSTest {
 

@@ -91,7 +91,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     Precondition[] preconditions = getPreconditions();
     for (int i = 0; i < preconditions.length; i++) {
       if (preconditions[i] instanceof LanguagePrecondition languagePrecondition) {
-        return (languagePrecondition.getLanguages();
+        return languagePrecondition.getLanguages();
       }
     }
 

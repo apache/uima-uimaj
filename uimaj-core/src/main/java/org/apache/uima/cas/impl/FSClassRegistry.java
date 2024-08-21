@@ -1370,8 +1370,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       // can return subclass of TOP, OK if range is TOP
       if (!rangeClass.isAssignableFrom(returnClass)) {
         // exception: for backwards compat reasons, sofaRef returns SofaFS, not Sofa.
-        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") &&
-                returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
+        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa")
+                && returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
           // empty
         } else {
           // should throw, but some code breaks!

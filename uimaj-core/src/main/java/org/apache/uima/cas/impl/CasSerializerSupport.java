@@ -1337,17 +1337,18 @@ public class CasSerializerSupport {
     }
 
     public int getXmiIdAsInt(TOP fs) {
-      if ((fs == null) || (isFiltering && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName()))) { // return
-                                                                                                // as
-                                                                                                // null
-                                                                                                // any
-                                                                                                // references
-                                                                                                // to
-                                                                                                // types
-                                                                                                // not
-                                                                                                // in
-                                                                                                // target
-                                                                                                // TS
+      if ((fs == null) || (isFiltering
+              && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName()))) { // return
+        // as
+        // null
+        // any
+        // references
+        // to
+        // types
+        // not
+        // in
+        // target
+        // TS
         return 0;
       }
 

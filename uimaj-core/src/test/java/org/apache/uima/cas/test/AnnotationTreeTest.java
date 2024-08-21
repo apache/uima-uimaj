@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 
 import javax.xml.parsers.SAXParser;
@@ -35,8 +37,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AnnotationTreeTest {
 
@@ -76,7 +76,8 @@ class AnnotationTreeTest {
     parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
     var root = cas.getAnnotationIndex().tree(cas.getDocumentAnnotation()).getRoot();
     // There are 7 paragraph annotations in the CAS.
-    assertThat(root.getChildCount()).as("There should be 7 paragraphs, but are: " + root.getChildCount()).isEqualTo(7);
+    assertThat(root.getChildCount())
+            .as("There should be 7 paragraphs, but are: " + root.getChildCount()).isEqualTo(7);
     // The first paragraph contains 19 sentences, each subsequent one
     // contains only one sentence.
     assertThat(root.getChild(0).getChildCount()).isEqualTo(19);

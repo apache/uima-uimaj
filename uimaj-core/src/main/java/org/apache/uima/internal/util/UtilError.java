@@ -90,8 +90,7 @@ public class UtilError extends RuntimeException {
     }
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
-    return (new MessageFormat(resource.getString(identifiers[error])))
-            .format(arguments);
+    return (new MessageFormat(resource.getString(identifiers[error]))).format(arguments);
   }
 
   /**

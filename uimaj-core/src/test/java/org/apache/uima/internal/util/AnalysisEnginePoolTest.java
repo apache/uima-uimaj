@@ -170,7 +170,7 @@ class AnalysisEnginePoolTest {
       AnalysisEngine tae = pool.getAnalysisEngine();
       try {
         // check value of string param (TestAnnotator saves it in a static field)
-        assertThat( TestAnnotator.stringParamValue).isEqualTo("Test1");
+        assertThat(TestAnnotator.stringParamValue).isEqualTo("Test1");
 
         // reconfigure
         tae.setConfigParameterValue("StringParam", "Test2");

@@ -112,8 +112,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // as well as AnalysisEngine descriptors.
 
       // BUT, for AnalysisEngineDescriptions, must not be an aggregate
-      if (!(aSpecifier instanceof ResourceCreationSpecifier) || (aSpecifier instanceof AnalysisEngineDescription
-              && !((AnalysisEngineDescription) aSpecifier).isPrimitive())) {
+      if (!(aSpecifier instanceof ResourceCreationSpecifier)
+              || (aSpecifier instanceof AnalysisEngineDescription
+                      && !((AnalysisEngineDescription) aSpecifier).isPrimitive())) {
         return false;
       }
 
@@ -363,8 +364,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
             mLastTypeSystem = view.getTypeSystem();
             mCurrentResultSpecification.setTypeSystem(mLastTypeSystem);
             rsFromOutputCapabilities = new ResultSpecification_impl(mLastTypeSystem);
-            rsFromOutputCapabilities
-                    .addCapabilities(getAnalysisEngineMetaData().getCapabilities());
+            rsFromOutputCapabilities.addCapabilities(getAnalysisEngineMetaData().getCapabilities());
           }
           // the actual ResultSpec we send to the component is formed by
           // looking at this primitive AE's declared output types and eliminating
@@ -377,8 +377,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
         // insure view is passed to switch / restore class loader
         // https://issues.apache.org/jira/browse/UIMA-2211
-        ((CASImpl) view)
-                .switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
+        ((CASImpl) view).switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
 
         callProcessMethod(mAnalysisComponent, casToPass);
         // // call the process method

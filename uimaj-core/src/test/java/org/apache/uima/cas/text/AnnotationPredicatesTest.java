@@ -180,7 +180,7 @@ class AnnotationPredicatesTest {
   }
 
   @Test
-  void thatAxiomaticFollowingWorks()  {
+  void thatAxiomaticFollowingWorks() {
     assertPosition(softly, FOLLOWING, AxiomaticAnnotationPredicates::following, testCases);
   }
 

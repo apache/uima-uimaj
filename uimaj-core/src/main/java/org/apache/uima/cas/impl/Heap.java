@@ -194,8 +194,7 @@ public final class Heap {
     final int start = heap.length;
     // This will grow the heap by doubling its size if it's smaller than
     // MULTIPLICATION_LIMIT, and by MULTIPLICATION_LIMIT if it's larger.
-    heap = IntArrayUtils.ensure_size(heap, start + initialSize, 2,
-            MULTIPLICATION_LIMIT);
+    heap = IntArrayUtils.ensure_size(heap, start + initialSize, 2, MULTIPLICATION_LIMIT);
     max = heap.length;
   }
 

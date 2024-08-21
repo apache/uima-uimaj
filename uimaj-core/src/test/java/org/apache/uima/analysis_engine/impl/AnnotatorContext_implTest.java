@@ -19,7 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -509,46 +511,46 @@ class AnnotatorContext_implTest {
       // standard data resource
       Object r = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en" });
       assertThat(r) //
-          .isNotNull() //
-          .isInstanceOf(DataResource.class);
+              .isNotNull() //
+              .isInstanceOf(DataResource.class);
       Object r2 = mAC3.getResourceObject("TestFileLanguageResource", new String[] { "de" });
       assertThat(r2) //
-          .isNotNull() //
-          .isInstanceOf(DataResource.class) //
-          .isNotEqualTo(r);
+              .isNotNull() //
+              .isInstanceOf(DataResource.class) //
+              .isNotEqualTo(r);
 
       // custom object
       Object r3 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "en" });
       assertThat(r3) //
-          .isNotNull() //
-          .isInstanceOf(TestResourceInterface.class);
+              .isNotNull() //
+              .isInstanceOf(TestResourceInterface.class);
       Object r4 = mAC3.getResourceObject("TestLanguageResourceObject", new String[] { "de" });
       assertThat(r4) //
-          .isNotNull() //
-          .isInstanceOf(TestResourceInterface.class) //
-          .isNotEqualTo(r3);
+              .isNotNull() //
+              .isInstanceOf(TestResourceInterface.class) //
+              .isNotEqualTo(r3);
 
       // parameter values for which no resource exists (should fail)
       assertThatExceptionOfType(AnnotatorContextException.class) //
-          .isThrownBy(() -> {
-            mAC3.getResourceObject("TestFileLanguageResource", new String[] { "zh" });
-          });
+              .isThrownBy(() -> {
+                mAC3.getResourceObject("TestFileLanguageResource", new String[] { "zh" });
+              });
 
       assertThatExceptionOfType(AnnotatorContextException.class) //
-          .isThrownBy(() -> {
-            mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en", "p2" });
-          });
+              .isThrownBy(() -> {
+                mAC3.getResourceObject("TestFileLanguageResource", new String[] { "en", "p2" });
+              });
 
       // non-parameterized resources (should fail)
       assertThatExceptionOfType(AnnotatorContextException.class) //
-          .isThrownBy(() -> {
-            mAC3.getResourceObject("TestFileResource", new String[] { "en" });
-          });
+              .isThrownBy(() -> {
+                mAC3.getResourceObject("TestFileResource", new String[] { "en" });
+              });
 
       assertThatExceptionOfType(AnnotatorContextException.class) //
-          .isThrownBy(() -> {
-            mAC3.getResourceObject("TestResourceObject", new String[] { "de" });
-          });
+              .isThrownBy(() -> {
+                mAC3.getResourceObject("TestResourceObject", new String[] { "de" });
+              });
 
       // nonexistent resource (should return null)
       Object r5 = mAC3.getResourceObject("Unknown", new String[] { "en" });
@@ -569,8 +571,8 @@ class AnnotatorContext_implTest {
       InputStream strm2 = mAC3.getResourceAsStream("TestFileLanguageResource",
               new String[] { "de" });
       assertThat(strm2) //
-          .isNotNull() //
-          .isNotEqualTo(strm);
+              .isNotNull() //
+              .isNotEqualTo(strm);
 
       // custom object (should return null)
       InputStream strm3 = mAC3.getResourceAsStream("TestLanguageResourceObject",

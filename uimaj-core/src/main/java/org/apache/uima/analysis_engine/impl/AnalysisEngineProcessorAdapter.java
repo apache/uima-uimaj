@@ -50,6 +50,7 @@ public abstract class AnalysisEngineProcessorAdapter extends AnalysisEngineImplB
   /**
    * The resource metadata, cached so that service does not have to be called each time metadata is
    * needed.
+   * 
    * @deprecated Field no longer used
    * @forRemoval 4.0.0
    */

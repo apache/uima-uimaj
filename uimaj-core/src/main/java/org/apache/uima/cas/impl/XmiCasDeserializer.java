@@ -321,8 +321,7 @@ public class XmiCasDeserializer {
       views = new ArrayList<>();
       indexRepositories.add(casBeingFilled.getBaseIndexRepository());
       // There should always be another index for the Initial View
-      indexRepositories
-              .add(casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
+      indexRepositories.add(casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       // add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
       // a mergePoint was specified)
       FSIterator<Sofa> sofaIter = casBeingFilled.getSofaIterator();
@@ -407,7 +406,7 @@ public class XmiCasDeserializer {
               int idInt = Integer.parseInt(id);
               if (idInt > 0 && !isNewFS(idInt)) { // preexisting FS
                 if (allowPreexistingFS == AllowPreexistingFS.ignore) { // skip elements whose
-                                                                            // ID is <= mergePoint
+                                                                       // ID is <= mergePoint
                   state = IGNORING_XMI_ELEMENTS_STATE;
                   ignoreDepth++;
                   return;
@@ -1736,8 +1735,7 @@ public class XmiCasDeserializer {
           // encoded as subelements
           if (outOfTypeSystemElement != null || deferredFsElement != null) {
             if (!multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures
-                      .entrySet()) {
+              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
                 ArrayList<String> featVals = entry.getValue();
                 XmiSerializationSharedData.addOutOfTypeSystemFeature(
@@ -1766,8 +1764,7 @@ public class XmiCasDeserializer {
               createOrUpdateArray(currentType, currentArrayElements, currentArrayId, null);
 
             } else if (!multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures
-                      .entrySet()) {
+              for (Map.Entry<String, ArrayList<String>> entry : multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
                 ArrayList<String> featVals = entry.getValue();
                 int featcode = handleFeatMultiValueFromName(currentType, currentFs, featName,
@@ -1868,8 +1865,7 @@ public class XmiCasDeserializer {
         } else {
           // the element may be out of typesystem. In that case set it
           // to null, but record the id so we can add it back on next serialization.
-          sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(),
-                  Integer.toString(xmiId));
+          sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(), Integer.toString(xmiId));
           CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
         }
       } else {

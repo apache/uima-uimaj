@@ -444,7 +444,7 @@ public class XCASDeserializer {
           CAS casView;
           if (extSofaNum != null) {
             casView = cas.getView((indexMap.size() == 1) ? 1 // case of no Sofa, but view ref =
-                                                                  // 1 = _InitialView
+                                                             // 1 = _InitialView
                     : indexMap.get(Integer.parseInt(extSofaNum)));
           } else {
             String extSofaRefString = attrs

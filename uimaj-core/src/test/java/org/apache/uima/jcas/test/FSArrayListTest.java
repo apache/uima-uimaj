@@ -52,7 +52,7 @@ public class FSArrayListTest {
   @BeforeEach
   public void setUp() throws Exception {
     cas = CASInitializer.initCas(new CASTestSetup(), null // FsArrayList type setup in
-                                                               // CASTestSetup's initTypeSystem
+                                                          // CASTestSetup's initTypeSystem
     // (tsm -> {
     // Type fsat = tsm.addType("org.apache.uima.jcas.cas.FSArrayList", tsm.getTopType());
     // tsm.addFeature("fsArray", fsat, tsm.getType("uima.cas.FSArray"));

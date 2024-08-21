@@ -202,13 +202,13 @@ class AnalysisEngine_implTest {
 
       String[] strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      assertThat(Arrays.asList(strArrVal1)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal1)).isEqualTo(Arrays.asList(new String[] { "override" }));
       String[] strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      assertThat(Arrays.asList(strArrVal2)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal2)).isEqualTo(Arrays.asList(new String[] { "override" }));
       String[] strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      assertThat(Arrays.asList(strArrVal3)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal3)).isEqualTo(Arrays.asList(new String[] { "override" }));
 
       // anotherdescriptor with configuration parameter overrides (this time no groups)
       in = new XMLInputSource(JUnitExtension
@@ -240,13 +240,13 @@ class AnalysisEngine_implTest {
 
       strArrVal1 = (String[]) delegate1.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      assertThat(Arrays.asList(strArrVal1)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal1)).isEqualTo(Arrays.asList(new String[] { "override" }));
       strArrVal2 = (String[]) delegate2.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      assertThat(Arrays.asList(strArrVal2)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal2)).isEqualTo(Arrays.asList(new String[] { "override" }));
       strArrVal3 = (String[]) flowController.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      assertThat(Arrays.asList(strArrVal3)).isEqualTo(Arrays.asList(new String[]{"override"}));
+      assertThat(Arrays.asList(strArrVal3)).isEqualTo(Arrays.asList(new String[] { "override" }));
 
       // try a descriptor that's invalid due to an unsatisfied resource dependency
       _testInvalidDescriptor(JUnitExtension
@@ -272,8 +272,10 @@ class AnalysisEngine_implTest {
               .get("Annotator");
       delegate2 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines()
               .get("CasConsumer");
-      assertThat(delegate1.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas()).isTrue();
-      assertThat(delegate2.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas()).isFalse();
+      assertThat(delegate1.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas())
+              .isTrue();
+      assertThat(delegate2.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas())
+              .isFalse();
       ae.destroy();
 
       // try an aggregate with no components (tests that empty flow works)
@@ -678,8 +680,7 @@ class AnalysisEngine_implTest {
   }
 
   @Test
-  void thatConfigurationManagerSessionIsValidAfterInitializingDelegateComponent()
-          throws Exception {
+  void thatConfigurationManagerSessionIsValidAfterInitializingDelegateComponent() throws Exception {
     AnalysisEngineDescription pseudoAggregateDesc = UIMAFramework.getResourceSpecifierFactory()
             .createAnalysisEngineDescription();
     pseudoAggregateDesc.setPrimitive(true);
@@ -915,8 +916,8 @@ class AnalysisEngine_implTest {
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       assertThat((list0.length == 2 && list1.length == 2 && list2.length == 3)
-          || (list0.length == 2 && list1.length == 3 && list2.length == 2)
-          || (list0.length == 3 && list1.length == 2 && list2.length == 2)).isTrue();
+              || (list0.length == 2 && list1.length == 3 && list2.length == 2)
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2)).isTrue();
 
       // Indexes
       FsIndexDescription[] indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
@@ -926,11 +927,12 @@ class AnalysisEngine_implTest {
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
       assertThat(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
-          || label2.equals("DocStructIndex")).isTrue();
+              || label2.equals("DocStructIndex")).isTrue();
       assertThat(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
-          || label2.equals("PlaceIndex")).isTrue();
-      assertThat(label0.equals("FlowControllerTestIndex") || label1.equals("FlowControllerTestIndex")
-          || label2.equals("FlowControllerTestIndex")).isTrue();
+              || label2.equals("PlaceIndex")).isTrue();
+      assertThat(
+              label0.equals("FlowControllerTestIndex") || label1.equals("FlowControllerTestIndex")
+                      || label2.equals("FlowControllerTestIndex")).isTrue();
 
       // test that we can create a CAS
       CAS cas = ae.newCAS();
@@ -1282,7 +1284,9 @@ class AnalysisEngine_implTest {
         // segment's flow and once for the complete document's flow
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(2);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR")).isTrue();
+        assertThat(
+                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
+                        .isTrue();
 
         cas.reset();
       }
@@ -1320,9 +1324,13 @@ class AnalysisEngine_implTest {
         // in each aggregate)
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR")).isTrue();
+        assertThat(
+                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
+                        .isTrue();
         FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR")).isTrue();
+        assertThat(
+                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
+                        .isTrue();
 
         cas.reset();
       }
@@ -1363,7 +1371,8 @@ class AnalysisEngine_implTest {
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Three\tERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("One\tTwo\nThree\tERROR")).isTrue();
+        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("One\tTwo\nThree\tERROR"))
+                .isTrue();
 
         cas.reset();
       }
@@ -1417,7 +1426,7 @@ class AnalysisEngine_implTest {
       }
       assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(1);
       assertThat(FlowControllerForErrorTest.abortedDocuments
-          .contains("Line one\nLine two\nLine three")).isTrue();
+              .contains("Line one\nLine two\nLine three")).isTrue();
       assertThat(FlowControllerForErrorTest.failedAEs.size()).isEqualTo(1);
       assertThat(FlowControllerForErrorTest.failedAEs.contains("Segmenter")).isTrue();
 
@@ -1721,7 +1730,8 @@ class AnalysisEngine_implTest {
     // NOTE: This fails with Saxon as it omits the xmlns attribute (why?) and omits the newlines
     // between adjacent comments.
     // It also produces many differences in indentation if the input is not indented by 3
-    assertThat(diff >= -2 && diff <= 2).as("File size changed by " + diff + " should be no more than 2").isTrue();
+    assertThat(diff >= -2 && diff <= 2)
+            .as("File size changed by " + diff + " should be no more than 2").isTrue();
 
     // Initialize all delegates and check the initialization order (should be declaration order)
     TestAnnotator2.allContexts = "";

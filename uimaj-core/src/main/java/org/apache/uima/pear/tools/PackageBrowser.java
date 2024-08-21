@@ -419,9 +419,8 @@ public class PackageBrowser {
       return null;
     } else {
       // get pear descriptor file and return it as file path
-      File pearDescFile = new File(_rootDir,
-              getInstallationDescriptor().getMainComponentId()
-                      + InstallationController.PEAR_DESC_FILE_POSTFIX);
+      File pearDescFile = new File(_rootDir, getInstallationDescriptor().getMainComponentId()
+              + InstallationController.PEAR_DESC_FILE_POSTFIX);
       return pearDescFile.getAbsolutePath();
     }
   }

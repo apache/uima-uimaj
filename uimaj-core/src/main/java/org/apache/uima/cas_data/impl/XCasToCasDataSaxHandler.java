@@ -411,8 +411,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
       case FLOAT_TYPE: {
         if (!emptyVal(content)) {
           try {
-            ((PrimitiveArrayFS) currentFS).toFloatArray()[arrayPos] = Float
-                    .parseFloat(content);
+            ((PrimitiveArrayFS) currentFS).toFloatArray()[arrayPos] = Float.parseFloat(content);
           } catch (NumberFormatException e) {
             throw createException(XCASParsingException.FLOAT_EXPECTED, content);
           }

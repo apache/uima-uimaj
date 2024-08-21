@@ -98,8 +98,7 @@ public class PearInstallerTest {
 
     // check PEAR datapath setting
     // pear file contains (uima.datapath = $main_root/my/test/data/path)
-    File datapath = new File(tempInstallDir,
-            "uima.example.DateTimeAnnotator/my/test/data/path");
+    File datapath = new File(tempInstallDir, "uima.example.DateTimeAnnotator/my/test/data/path");
     File pearDatapath = new File(instPear.getComponentDataPath());
     assertThat(pearDatapath).isEqualTo(datapath);
 
