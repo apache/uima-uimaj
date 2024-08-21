@@ -1366,26 +1366,22 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
-      if (!rangeClass.isAssignableFrom(returnClass)) { // can return subclass of TOP, OK if range is
-                                                       // TOP
-        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") && // exception: for
-                                                                            // backwards compat
-                                                                            // reasons, sofaRef
-                                                                            // returns SofaFS, not
-                                                                            // Sofa.
-                returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
+
+      // can return subclass of TOP, OK if range is TOP
+      if (!rangeClass.isAssignableFrom(returnClass)) {
+        // exception: for backwards compatibility reasons, sofaRef returns SofaFS, not Sofa.
+        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa")
+                && returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
           // empty
         } else {
-
-          /**
-           * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method
-           * is returning "{3}" which is not a subtype of the declared range.
-           */
+          // CAS type system type "{0}" (loaded by {1}) defines field "{2}" with range "{3}" (loaded
+          // by {4}), but JCas getter method is returning "{5}" (loaded by {6}) which is not a
+          // subtype of the declared range.
+          //
+          // should throw, but some code breaks!
           add2errors(errorSet, new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH,
-                  ti.getName(), fi.getShortName(), rangeClass, returnClass), false); // should
-                                                                                     // throw, but
-                                                                                     // some code
-                                                                                     // breaks!
+                  ti.getName(), ti.getJavaClass().getClassLoader(), fi.getShortName(), rangeClass,
+                  rangeClass.getClassLoader(), returnClass, returnClass.getClassLoader()), false);
         }
       }
     } // end of checking methods
