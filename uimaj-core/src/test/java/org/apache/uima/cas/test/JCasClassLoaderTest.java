@@ -449,14 +449,15 @@ public class JCasClassLoaderTest {
   @Test
   void thatFeatureRangeClassRedefinedInPearDoesNotCauseProblems(@TempDir File aTemp)
           throws Exception {
+    var tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource("src/test/java/org/apache/uima/jcas/test/generatedx.xml"));
+
     LOG.info("-- Base runtime context --------------------------------------------------");
     LOG.info("{} loaded using {}", Token.class, Token.class.getClassLoader());
     LOG.info("{} loaded using {}", TokenType.class, TokenType.class.getClassLoader());
 
-    var tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource("src/test/java/org/apache/uima/jcas/test/generatedx.xml"));
-
-    LOG.info("-- JCas classloader context ----------------------------------------------");
+    LOG.info(
+            "-- JCas/PEAR-like classloader context ----------------------------------------------");
     var rootCl = getClass().getClassLoader();
     var clForCas = new IsolatingClassloader("CAS Classloader", rootCl) //
             .redefining(TokenType.class) //
@@ -479,6 +480,8 @@ public class JCasClassLoaderTest {
 
     assertThat(tt.getClass().getClassLoader()) //
             .isSameAs(clForCas);
+
+    t.setFeatureValue(t.getType().getFeatureByBaseName(Token._FeatName_ttype), tt);
   }
 
   public static Class<?> loadTokenClass(ClassLoader cl) {

@@ -581,20 +581,18 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // this is done even after the class is first loaded, in case the type system changed.
     // don't set anything if copy down - otherwise was setting the copyed-down typeId ref to the
     // new ti
-    // System.out.println("debug set jcas regisered type " + jcci.jcasType + ", type = " +
+    // System.out.println("debug set JCas registered type " + jcci.jcasType + ", type = " +
     // ti.getName());
 
     JCasClassInfo jcci_or_copyDown = (jcci == null) ? copyDownDefault_jcasClassInfo : jcci;
 
-    if (!ti.isPrimitive()) { // bypass this for primitives because the jcasClassInfo is the
-                             // "inherited one" of TOP
-      /**
-       * Note: this value sets into the shared TypeImpl (maybe shared among many JCas impls) the
-       * "latest" jcasClass It is "read" by the conformance testing, while still under the type
-       * system lock. Other uses of this may get an arbitrary (the latest) version of the class
-       * Currently the only other use is in backwards compatibility with low level type system
-       * "switching" an existing type.
-       */
+    // bypass this for primitives because the jcasClassInfo is the "inherited one" of TOP
+    if (!ti.isPrimitive()) {
+      // NOTE: this value sets into the shared TypeImpl (maybe shared among many JCas instances) the
+      // "latest" jcasClass It is "read" by the conformance testing, while still under the type
+      // system lock. Other uses of this may get an arbitrary (the latest) version of the class
+      // Currently the only other use is in backwards compatibility with low level type system
+      // "switching" an existing type.
       ti.setJavaClass(jcci_or_copyDown.jcasClass);
     }
 

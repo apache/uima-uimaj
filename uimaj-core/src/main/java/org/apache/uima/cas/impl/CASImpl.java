@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import static java.lang.String.format;
 import static java.lang.System.identityHashCode;
+import static org.apache.uima.cas.impl.FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -3547,7 +3548,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return svd.lllongSet.getCodeForLong(s); // avoids adding duplicates
   }
 
-  private void switchFsType(TOP fs, int value) {
+  private void switchFsType(TOP fs, int aTypeCode) {
     // throw new UnsupportedOperationException();
     // case where the type is being changed
     // if the new type is a sub/super type of the existing type,
@@ -3560,27 +3561,26 @@ public class CASImpl extends AbstractCas_ImplBase
     // the indexing didn't change
     // all the slots were the same
 
-    //
-
-    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(),
-            FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
+    var wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), INCLUDE_BAG_INDEXES);
     if (!wasRemoved) {
       svd.fsTobeAddedbackSingleInUse = false;
     }
-    TypeImpl newType = getTypeFromCode_checked(value);
-    Class<?> newClass = newType.getJavaClass();
+
+    var newType = getTypeFromCode_checked(aTypeCode);
+    var newClass = newType.getJavaClass();
     if ((fs instanceof UimaSerializable) || UimaSerializable.class.isAssignableFrom(newClass)) {
+      // REC 2024-08-22: I wonder if it would be valid to switch from a UimaSerializable to another
+      // UimaSerializable - currently this seems to be forbidden.
       throw new UnsupportedOperationException("can't switch type to/from UimaSerializable");
     }
 
-    // Measurement - record which type gets switched to which other type
-    // count how many times
+    // Measurement - record which type gets switched to which other type count how many times
     // record which JCas cover class goes with each type
     // key = old type, new type, old jcas cover class, new jcas cover class
     // value = count
     MeasureSwitchType mst = null;
     if (MEASURE_SETINT) {
-      MeasureSwitchType key = new MeasureSwitchType(fs._getTypeImpl(), newType);
+      var key = new MeasureSwitchType(fs._getTypeImpl(), newType);
       synchronized (measureSwitches) { // map access / updating must be synchronized
         mst = measureSwitches.get(key);
         if (null == mst) {

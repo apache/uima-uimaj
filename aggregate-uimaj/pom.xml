@@ -54,5 +54,7 @@
     <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>
     <module>../uimaj-documentation</module>
+    
+    <module>../uimaj-it-pear-with-typesystem</module>
   </modules>
 </project>

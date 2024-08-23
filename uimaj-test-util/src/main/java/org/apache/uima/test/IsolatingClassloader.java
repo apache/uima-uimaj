@@ -29,13 +29,17 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Special ClassLoader that helps us modeling different class loader topologies.
  */
 public class IsolatingClassloader extends ClassLoader {
+
+  private final Logger log;
 
   private final Set<String> hideClassesPatterns = new HashSet<>();
   private final Set<String> redefineClassesPatterns = new HashSet<>();
@@ -45,8 +49,13 @@ public class IsolatingClassloader extends ClassLoader {
   private Map<String, Class<?>> loadedClasses = new HashMap<>();
 
   public IsolatingClassloader(String name, ClassLoader parent) {
+    this(name, null, parent);
+  }
+
+  public IsolatingClassloader(String name, Logger aLog, ClassLoader parent) {
     super(parent);
 
+    log = aLog != null ? aLog : LoggerFactory.getLogger(getClass());
     id = name;
   }
 
@@ -107,14 +116,16 @@ public class IsolatingClassloader extends ClassLoader {
   @Override
   protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
     synchronized (getClassLoadingLock(name)) {
-      Optional<ClassLoader> delegate = delegates.entrySet().stream()
-              .filter(e -> name.matches(e.getKey())).map(Entry::getValue).findFirst();
+      var delegate = delegates.entrySet().stream() //
+              .filter(e -> name.matches(e.getKey())) //
+              .map(Entry::getValue) //
+              .findFirst();
       if (delegate.isPresent()) {
         return delegate.get().loadClass(name);
       }
 
       if (hideClassesPatterns.stream().anyMatch(name::matches)) {
-        System.out.printf("[%s] prevented access to hidden class: %s%n", id, name);
+        log.debug("[{}] prevented access to hidden class: {}", id, name);
         throw new ClassNotFoundException(name);
       }
 
@@ -124,7 +135,7 @@ public class IsolatingClassloader extends ClassLoader {
           return loadedClass;
         }
 
-        System.out.printf("[%s] redefining class: %s%n", id, name);
+        log.debug("[{}] redefining class: {}", id, name);
 
         String internalName = name.replace(".", "/") + ".class";
         InputStream is = getParent().getResourceAsStream(internalName);
