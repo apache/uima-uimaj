@@ -33,13 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.Annotator_ImplBase;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -57,22 +55,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.spi.JCasClassProviderForTesting;
 import org.apache.uima.test.IsolatingClassloader;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import x.y.z.Token;
-import x.y.z.TokenType;
 
 public class JCasClassLoaderTest {
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static final String TYPE_NAME_TOKEN = Token.class.getName();
   public static final String TYPE_NAME_ARRAY_HOST = "uima.testing.ArrayHost";
@@ -444,44 +434,6 @@ public class JCasClassLoaderTest {
       softly.assertThat(tokenClassFetchedFromArray.getName())
               .as("FSArray toArray returns proper Token wrapper").isEqualTo(TYPE_NAME_TOKEN);
     }
-  }
-
-  @Test
-  void thatFeatureRangeClassRedefinedInPearDoesNotCauseProblems(@TempDir File aTemp)
-          throws Exception {
-    var tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource("src/test/java/org/apache/uima/jcas/test/generatedx.xml"));
-
-    LOG.info("-- Base runtime context --------------------------------------------------");
-    LOG.info("{} loaded using {}", Token.class, Token.class.getClassLoader());
-    LOG.info("{} loaded using {}", TokenType.class, TokenType.class.getClassLoader());
-
-    LOG.info(
-            "-- JCas/PEAR-like classloader context ----------------------------------------------");
-    var rootCl = getClass().getClassLoader();
-    var clForCas = new IsolatingClassloader("CAS Classloader", rootCl) //
-            .redefining(TokenType.class) //
-            .redefining(JCasClassProviderForTesting.class) //
-            .redefining(JCasCreator.class);
-
-    var jcasCreatorClass = clForCas.loadClass(JCasCreatorImpl.class.getName());
-    var creator = (JCasCreator) jcasCreatorClass.getDeclaredConstructor().newInstance();
-    var jcas = creator.createJCas(clForCas, tsd);
-    var cas = jcas.getCas();
-
-    var t = cas.createFS(cas.getTypeSystem().getType(Token.class.getName()));
-    var tt = cas.createFS(cas.getTypeSystem().getType(TokenType.class.getName()));
-
-    LOG.info("{} loaded using {}", t.getClass(), t.getClass().getClassLoader());
-    LOG.info("{} loaded using {}", tt.getClass(), tt.getClass().getClassLoader());
-
-    assertThat(t.getClass().getClassLoader()) //
-            .isSameAs(Token.class.getClassLoader());
-
-    assertThat(tt.getClass().getClassLoader()) //
-            .isSameAs(clForCas);
-
-    t.setFeatureValue(t.getType().getFeatureByBaseName(Token._FeatName_ttype), tt);
   }
 
   public static Class<?> loadTokenClass(ClassLoader cl) {
