@@ -449,6 +449,19 @@
             </dependency>
           </dependencies>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <tags combine.children="append">
+              <tag>
+                <name>forRemoval</name>
+                <placement>a</placement>
+                <head>To be removed in version:</head>
+              </tag>
+            </tags>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 

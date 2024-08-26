@@ -54,6 +54,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.internal.util.Class_TCCL;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.it.pear_with_typesystem.spi.JCasClassProviderForTesting;
 import org.apache.uima.it.pear_with_typesystem.type.ComplexAnnotation;
@@ -107,8 +108,8 @@ public class PearIT
     }
 
     /**
-     * PEAR  use {@link ComplexAnnotation} directly - we assume it is in the PEAR's local
-     * classpath and available at compile time.
+     * PEAR use {@link ComplexAnnotation} directly - we assume it is in the PEAR's local classpath
+     * and available at compile time.
      */
     @Test
     void testScenario1(@TempDir File aTemp) throws Exception
@@ -131,6 +132,8 @@ public class PearIT
                 .hasSize(1) //
                 .allSatisfy(complexAnnotation -> assertThat(complexAnnotation)
                         .isInstanceOf(ComplexAnnotation.class));
+
+        pearAnnotator.getUimaContextAdmin().getResourceManager().destroy();
     }
 
     /**
@@ -161,14 +164,16 @@ public class PearIT
                 .hasSize(1) //
                 .allSatisfy(complexAnnotation -> assertThat(complexAnnotation)
                         .isInstanceOf(ComplexAnnotation.class));
+
+        pearAnnotator.getUimaContextAdmin().getResourceManager().destroy();
     }
 
     /**
      * PEAR can use {@link ComplexAnnotation} directly - we assume it is in the PEAR's local
      * classpath and available at compile time.
      * <p>
-     * However, PEAR does not know about {@link ComplexAnnotationSubtype}. Yet, it will find
-     * that the CAS contains an annotation of that type.
+     * However, PEAR does not know about {@link ComplexAnnotationSubtype}. Yet, it will find that
+     * the CAS contains an annotation of that type.
      */
     @Test
     void testScenario3(@TempDir File aTemp) throws Exception
@@ -190,6 +195,8 @@ public class PearIT
         assertThatExceptionOfType(AnalysisEngineProcessException.class) //
                 .isThrownBy(() -> pearAnnotator.process(cas)) //
                 .withRootCauseInstanceOf(ClassCastException.class);
+
+        pearAnnotator.getUimaContextAdmin().getResourceManager().destroy();
     }
 
     private AnalysisEngine installPear(File aTemp,
@@ -245,15 +252,13 @@ public class PearIT
                     aParameterizedResourceInstanceMap);
         }
 
-        @SuppressWarnings("resource")
         @Override
         public synchronized void setExtensionClassPath(String aClasspath, boolean aResolveResource)
             throws MalformedURLException
         {
             var parentCL = Class_TCCL.get_parent_cl();
-            var uimaCL = new UIMAClassLoader(aClasspath, Class_TCCL.get_parent_cl());
-            uimaCL = clConfigurer.apply(parentCL,
-                    new IsolatingUIMAClassloader("PEAR Classloader", uimaCL));
+            var uimaCL = clConfigurer.apply(parentCL, new IsolatingUIMAClassloader(
+                    "PEAR Classloader", parentCL, Misc.classpath2urls(aClasspath)));
             setExtensionClassLoader(uimaCL, aResolveResource);
         }
 
@@ -331,6 +336,16 @@ public class PearIT
         {
             super(aClasspath, aParent);
             id = aName;
+        }
+
+        @Override
+        public void close() throws IOException
+        {
+            if (getParent() instanceof UIMAClassLoader uimaClassLoader) {
+                uimaClassLoader.close();
+            }
+
+            super.close();
         }
 
         @SafeVarargs
@@ -513,26 +528,32 @@ public class PearIT
                     LOG.debug("[{}] redefining class: {}", id, aName);
 
                     String internalName = aName.replace(".", "/") + ".class";
-                    InputStream is = getParent().getResourceAsStream(internalName);
-                    if (is == null) {
+                    URL url = getParent().getResource(internalName);
+                    if (url == null) {
                         throw new ClassNotFoundException(aName);
                     }
 
                     try {
-                        var buffer = new ByteArrayOutputStream();
-                        is.transferTo(buffer);
-                        byte[] bytes = buffer.toByteArray();
-                        Class<?> cls = defineClass(aName, bytes, 0, bytes.length);
-                        if (cls.getPackage() == null) {
-                            int packageSeparator = aName.lastIndexOf('.');
-                            if (packageSeparator != -1) {
-                                String packageName = aName.substring(0, packageSeparator);
-                                definePackage(packageName, null, null, null, null, null, null,
-                                        null);
+                        // Disable JAR cache so JUnit can delete the temporary folder after the test
+                        var urlConnection = url.openConnection();
+                        urlConnection.setDefaultUseCaches(false);
+
+                        try (InputStream is = urlConnection.getInputStream()) {
+                            var buffer = new ByteArrayOutputStream();
+                            is.transferTo(buffer);
+                            byte[] bytes = buffer.toByteArray();
+                            Class<?> cls = defineClass(aName, bytes, 0, bytes.length);
+                            if (cls.getPackage() == null) {
+                                int packageSeparator = aName.lastIndexOf('.');
+                                if (packageSeparator != -1) {
+                                    String packageName = aName.substring(0, packageSeparator);
+                                    definePackage(packageName, null, null, null, null, null, null,
+                                            null);
+                                }
                             }
+                            loadedClasses.put(aName, cls);
+                            return cls;
                         }
-                        loadedClasses.put(aName, cls);
-                        return cls;
                     }
                     catch (IOException ex) {
                         throw new ClassNotFoundException(
