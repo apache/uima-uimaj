@@ -297,6 +297,7 @@
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
                   <exclude>uimaj-v3migration-jcas/**</exclude>
+                  <exclude>uimaj-it-pear-with-typesystem/**</exclude>
                 </excludes>
               </configuration>
             </execution>

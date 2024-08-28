@@ -606,14 +606,14 @@ public abstract class FSClassRegistry {
     // this is done even after the class is first loaded, in case the type system changed.
     // don't set anything if copy down - otherwise was setting the copyed-down typeId ref to the
     // new ti
-    // System.out.println("debug set jcas registered type " + jcci.jcasType + ", type = " +
+    // System.out.println("debug set JCas registered type " + jcci.jcasType + ", type = " +
     // ti.getName());
 
     var jcci_or_copyDown = (jcci == null) ? copyDownDefault_jcasClassInfo : jcci;
 
     // bypass this for primitives because the jcasClassInfo is the "inherited one" of TOP
     if (!ti.isPrimitive()) {
-      // Note: this value sets into the shared TypeImpl (maybe shared among many JCas impls) the
+      // NOTE: this value sets into the shared TypeImpl (maybe shared among many JCas instances) the
       // "latest" jcasClass It is "read" by the conformance testing, while still under the type
       // system lock. Other uses of this may get an arbitrary (the latest) version of the class
       // Currently the only other use is in backwards compatibility with low level type system
@@ -1350,26 +1350,47 @@ public abstract class FSClassRegistry {
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
-      if (!rangeClass.isAssignableFrom(returnClass)) { // can return subclass of TOP, OK if range is
-                                                       // TOP
-        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") && // exception: for
-                                                                            // backwards compat
-                                                                            // reasons, sofaRef
-                                                                            // returns SofaFS, not
-                                                                            // Sofa.
-                returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
-          // empty
-        } else {
 
-          /**
-           * CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method
-           * is returning "{3}" which is not a subtype of the declared range.
-           */
+      // can return subclass of TOP, OK if range is TOP
+      if (!rangeClass.isAssignableFrom(returnClass)) {
+        // exception: for backwards compatibility reasons, sofaRef returns SofaFS, not Sofa.
+        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa")
+                && returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
+          // empty
+        } else if (rangeClass.getClassLoader() instanceof UIMAClassLoader) {
+          // This can happen if:
+          //
+          // * we are in a PEAR which contains a local JCas wrapper for type X
+          // * -AND- additionally the type X also exists at a global level
+          // * -AND- there is another global type Y with a field x of type X
+          // * -AND- the PEAR does -NOT- have a local JCas wrapper for Y
+          //
+          // In this case, the getter/setter range class for Y.x are not compatible with the X from
+          // the PEAR which we found in the ti.getJavaClass() because that field inconveniently
+          // always contains the latest JCas wrapper that was encountered.
+          //
+          // The thing is that the PEAR would not be able to call the Y.x getter/setter anyway
+          // because the PEAR cannot access the class Y (that is assuming the best practice
+          // that the PEAR should always locally include all JCas wrapper classes it directly uses).
+          // In order to use the Y.x getter/setter, the PEAR would need to have a compile-time
+          // dependency on Y and then it should be bundled in the PEAR. So if it is not in the PEAR,
+          // then the PEAR cannot use it and therefore the warning would be pointless.
+          //
+          // What the PEAR could do though is created instances of Y via the CAS interface and use
+          // the CAS API to get/set feature values. This is covered by the PEARs trampoline
+          // mechanism.
+          //
+          // So if the range class is defined by an UIMAClassLoader (i.e. has been locally loaded by
+          // a PEAR) then we ignore the mismatch.
+        } else {
+          // CAS type system type "{0}" (loaded by {1}) defines field "{2}" with range "{3}" (loaded
+          // by {4}), but JCas getter method is returning "{5}" (loaded by {6}) which is not a
+          // subtype of the declared range.
+          //
+          // should throw, but some code breaks!
           add2errors(errorSet, new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH,
-                  ti.getName(), fi.getShortName(), rangeClass, returnClass), false); // should
-                                                                                     // throw, but
-                                                                                     // some code
-                                                                                     // breaks!
+                  ti.getName(), ti.getJavaClass().getClassLoader(), fi.getShortName(), rangeClass,
+                  rangeClass.getClassLoader(), returnClass, returnClass.getClassLoader()), false);
         }
       }
     } // end of checking methods
