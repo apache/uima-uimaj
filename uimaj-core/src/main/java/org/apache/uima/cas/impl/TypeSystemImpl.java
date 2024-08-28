@@ -1477,7 +1477,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // }
     // }
 
-    type2jcci = FSClassRegistry.get_className_to_jcci(cl, false); // is not pear
+    type2jcci = FSClassRegistry.get_className_to_jcci(cl, false /* is not PEAR */);
     lookup = FSClassRegistry.getLookup(cl);
     cl_for_commit = cl;
 
