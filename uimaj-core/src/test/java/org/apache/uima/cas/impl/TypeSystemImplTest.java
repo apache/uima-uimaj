@@ -25,32 +25,33 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.InstanceOfAssertFactories.throwable;
 
-import java.util.Iterator;
+import java.lang.management.ManagementFactory;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import x.y.z.Sentence;
 
-public class TypeSystemImplTest {
+class TypeSystemImplTest {
   private TypeSystemDescription tsd;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     tsd = getResourceSpecifierFactory().createTypeSystemDescription();
   }
 
   @Test
-  public void thatTypeUsedInJavaAndDeclaredInTypeSytemDoesNotThrowException() throws Exception {
+  void thatTypeUsedInJavaAndDeclaredInTypeSytemDoesNotThrowException() throws Exception {
     tsd.addType(Sentence._TypeName, "", CAS.TYPE_NAME_ANNOTATION);
 
-    JCas localJcas = createCas(tsd, null, null).getJCas();
+    var localJcas = createCas(tsd, null, null).getJCas();
     localJcas.setDocumentText("This is a test.");
 
     assertThatNoException() //
@@ -58,8 +59,8 @@ public class TypeSystemImplTest {
   }
 
   @Test
-  public void thatTypeUsedInJavaButNotDeclaredInTypeSytemThrowsException() throws Exception {
-    JCas localJcas = createCas(tsd, null, null).getJCas();
+  void thatTypeUsedInJavaButNotDeclaredInTypeSytemThrowsException() throws Exception {
+    var localJcas = createCas(tsd, null, null).getJCas();
     localJcas.setDocumentText("This is a test.");
 
     assertThat(JCasRegistry.getClassForIndex(Sentence.type)).isSameAs(Sentence.class);
@@ -74,8 +75,8 @@ public class TypeSystemImplTest {
   }
 
   @Test
-  public void thatTypeNotInTypeSystemAndWithoutJCasClassThrowsException() throws Exception {
-    JCas localJcas = createCas(tsd, null, null).getJCas();
+  void thatTypeNotInTypeSystemAndWithoutJCasClassThrowsException() throws Exception {
+    var localJcas = createCas(tsd, null, null).getJCas();
     localJcas.setDocumentText("This is a test.");
 
     assertThatExceptionOfType(CASRuntimeException.class) //
@@ -87,13 +88,38 @@ public class TypeSystemImplTest {
     sanityCheckForCasConsistencyUIMA_738(localJcas);
   }
 
-  private void sanityCheckForCasConsistencyUIMA_738(JCas localJcas) {
+  void sanityCheckForCasConsistencyUIMA_738(JCas localJcas) {
     // check that this does not leave JCAS in an inconsistent state
     // (a check for bug UIMA-738)
-    Iterator<Annotation> iter = localJcas.getAnnotationIndex().iterator();
+    var iter = localJcas.getAnnotationIndex().iterator();
+
     assertThat(iter).hasNext();
     assertThat(iter.next()) //
             .extracting(Annotation::getCoveredText) //
             .isEqualTo("This is a test.");
+  }
+
+  @Test
+  void testMetaspaceExhaustion() throws Exception {
+    var threshold = 2_500;
+
+    var classLoadingMXBean = ManagementFactory.getClassLoadingMXBean();
+    var classesLoadedAtStart = classLoadingMXBean.getLoadedClassCount();
+
+    var type = tsd.addType(Sentence._TypeName, "", CAS.TYPE_NAME_ANNOTATION);
+    type.addFeature(Sentence._FeatName_sentenceLength, null, CAS.TYPE_NAME_INTEGER);
+
+    for (var i = 0; i < threshold * 2; i++) {
+      var resMgr = new ResourceManager_impl();
+      resMgr.setExtensionClassPath(".", false);
+      createCas(tsd, null, null, null, resMgr).getJCas();
+      System.runFinalization();
+      // Make sure the consolidated type system is evicted from the weak hashmap cache
+      System.gc();
+
+      assertThat(classLoadingMXBean.getLoadedClassCount()) //
+              .as("High number of new loaded classes during test indicates leak")
+              .isLessThan(classesLoadedAtStart + threshold);
+    }
   }
 }

@@ -255,10 +255,12 @@ public class PackageBrowser {
       String dirName = dir.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
               .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {
-        if (dirName.startsWith(pattern))
+        if (dirName.startsWith(pattern)) {
           foundDirList.add(dir);
-      } else if (dirName.indexOf(pattern) >= 0)
+        }
+      } else if (dirName.indexOf(pattern) >= 0) {
         foundDirList.add(dir);
+      }
     }
     if (foundDirList.size() > 0) {
       foundDirs = new File[foundDirList.size()];
@@ -287,11 +289,13 @@ public class PackageBrowser {
       String fileName = file.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
               .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {
-        if (fileName.startsWith(pattern))
+        if (fileName.startsWith(pattern)) {
           foundFileList.add(file);
+        }
       }
-      if (fileName.indexOf(pattern) >= 0)
+      if (fileName.indexOf(pattern) >= 0) {
         foundFileList.add(file);
+      }
     }
     if (foundFileList.size() > 0) {
       foundFiles = new File[foundFileList.size()];
@@ -354,9 +358,11 @@ public class PackageBrowser {
 
   /**
    * Loads the <code>INSTALLATION_DESCRIPTOR_FILE</code> file, and creates the
-   * <code>InstallationDescriptor</code> (InsD) object. <b>Note:</b> if the component package has
-   * been installed, the InsD object contains real specifications of package directories, otherwise
-   * it may contain macros like <code>$main_root</code>.
+   * <code>InstallationDescriptor</code> (InsD) object.
+   * <p>
+   * <b>Note:</b> if the component package has been installed, the InsD object contains real
+   * specifications of package directories, otherwise it may contain macros like
+   * <code>$main_root</code>.
    * 
    * @return The InsD object corresponding the installation descriptor file.
    * @throws IOException

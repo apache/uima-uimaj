@@ -21,12 +21,7 @@ package org.apache.uima.cas.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
-import java.util.Map;
-
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.spi.SpiSentence;
 import org.apache.uima.spi.SpiToken;
 import org.apache.uima.util.CasCreationUtils;
@@ -34,9 +29,10 @@ import org.apache.uima.util.Level;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FSClassRegistryTest {
+class FSClassRegistryTest {
+
   @BeforeEach
-  public void setup() {
+  void setup() {
     System.setProperty(FSClassRegistry.RECORD_JCAS_CLASSLOADERS, "true");
 
     // Calls to FSClassRegistry will fail unless the static initializer block in TypeSystemImpl
@@ -48,15 +44,15 @@ public class FSClassRegistryTest {
   }
 
   @Test
-  public void thatCreatingResourceManagersWithExtensionClassloaderDoesNotFillUpCache()
-          throws Exception {
+  void thatCreatingResourceManagersWithExtensionClassloaderDoesNotFillUpCache() throws Exception {
     int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      var resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setExtensionClassLoader(getClass().getClassLoader(), true);
-      JCas jcas = CasCreationUtils.createCas(null, null, null, resMgr).getJCas();
 
-      ClassLoader cl = jcas.getCasImpl().getJCasClassLoader();
+      var jcas = CasCreationUtils.createCas(null, null, null, resMgr).getJCas();
+
+      var cl = jcas.getCasImpl().getJCasClassLoader();
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".class")) //
               .isNotNull();
 
@@ -70,14 +66,15 @@ public class FSClassRegistryTest {
   }
 
   @Test
-  public void thatCreatingResourceManagersWithExtensionPathDoesNotFillUpCache() throws Exception {
-    int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
-    for (int i = 0; i < 5; i++) {
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      resMgr.setExtensionClassPath("src/test/java", true);
-      JCas jcas = CasCreationUtils.createCas(null, null, null, resMgr).getJCas();
+  void thatCreatingResourceManagersWithExtensionPathDoesNotFillUpCache() throws Exception {
+    var numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
 
-      ClassLoader cl = jcas.getCasImpl().getJCasClassLoader();
+    for (int i = 0; i < 5; i++) {
+      var resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setExtensionClassPath("src/test/java", true);
+      var jcas = CasCreationUtils.createCas(null, null, null, resMgr).getJCas();
+
+      var cl = jcas.getCasImpl().getJCasClassLoader();
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".java")) //
               .isNotNull();
 
@@ -91,9 +88,8 @@ public class FSClassRegistryTest {
   }
 
   @Test
-  public void thatJCasClassesCanBeLoadedThroughSPI() throws Exception {
-    Map<String, Class<? extends TOP>> jcasClasses = FSClassRegistry
-            .loadJCasClassesFromSPI(getClass().getClassLoader());
+  void thatJCasClassesCanBeLoadedThroughSPI() throws Exception {
+    var jcasClasses = FSClassRegistry.loadJCasClassesFromSPI(getClass().getClassLoader());
 
     assertThat(jcasClasses).containsOnly( //
             entry(SpiToken.class.getName(), SpiToken.class), //
