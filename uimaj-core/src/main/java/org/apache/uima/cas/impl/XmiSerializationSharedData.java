@@ -145,7 +145,7 @@ public class XmiSerializationSharedData {
    * @return the FeatureStructure corresponding to that xmi:id, null if none.
    */
   public TOP getFsForXmiId(int xmiId) {
-    return (TOP) xmiIdToFs.get(xmiId);
+    return xmiIdToFs.get(xmiId);
   }
 
   int getXmiIdAsInt(TOP fs) {

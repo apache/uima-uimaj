@@ -2015,7 +2015,8 @@ public class XmiCasDeserializerTest {
     FeatureStructure arrayFs2 = testAnnot2.getFeatureValue(arrayFeat2);
     List<OotsElementData> ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
-    List<XmiArrayElement> ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
+    List<XmiArrayElement> ootsArrayElems = sharedData
+            .getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
     assertEquals(2, ootsArrayElems.size());
     for (int i = 0; i < 2; i++) {
       OotsElementData oed = (OotsElementData) ootsElems.get(i);

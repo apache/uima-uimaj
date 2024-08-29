@@ -117,9 +117,7 @@ public class Level {
   @Override
   public boolean equals(Object o) {
     // check if current object o is an instance of Level
-    if (o instanceof Level) {
-      // cast Object to Level
-      Level r = (Level) o;
+    if (o instanceof Level r) {
       // return true if both levels are the same
       return (level == r.level);
     } else // if o is no instance of Level return false

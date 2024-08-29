@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -33,35 +32,35 @@ class CasDataToXCasTest {
 
   @Test
   void testGenerateXCasCasData() throws Exception {
-      CasData casData = new CasDataImpl();
-      FeatureStructure testFS = new FeatureStructureImpl();
-      testFS.setType("Test");
-      testFS.setId("foo");
-      testFS.setIndexed(new int[] { 1 });
-      testFS.setFeatureValue("myFeature", new PrimitiveValueImpl("myValue"));
-      testFS.setFeatureValue("value", new PrimitiveValueImpl("this should show up in XML content"));
-      casData.addFeatureStructure(testFS);
+    CasData casData = new CasDataImpl();
+    FeatureStructure testFS = new FeatureStructureImpl();
+    testFS.setType("Test");
+    testFS.setId("foo");
+    testFS.setIndexed(new int[] { 1 });
+    testFS.setFeatureValue("myFeature", new PrimitiveValueImpl("myValue"));
+    testFS.setFeatureValue("value", new PrimitiveValueImpl("this should show up in XML content"));
+    casData.addFeatureStructure(testFS);
 
-      CasDataToXCas generator = new CasDataToXCas();
-      TestContentHandler testContentHandler = new TestContentHandler("Test");
-      generator.setContentHandler(testContentHandler);
-      generator.generateXCas(casData);
-      assertThat(testContentHandler.foundTestElement).isTrue();
+    CasDataToXCas generator = new CasDataToXCas();
+    TestContentHandler testContentHandler = new TestContentHandler("Test");
+    generator.setContentHandler(testContentHandler);
+    generator.generateXCas(casData);
+    assertThat(testContentHandler.foundTestElement).isTrue();
 
-      // also try colon and dash conversions
-      casData = new CasDataImpl();
-      testFS = new FeatureStructureImpl();
-      testFS.setType("Test_colon_Foo_dash_Bar_colon_What_dash_a_dash_mess");
-      testFS.setId("foo");
-      testFS.setIndexed(new int[] { 1 });
-      testFS.setFeatureValue("myFeature", new PrimitiveValueImpl("myValue"));
-      testFS.setFeatureValue("value", new PrimitiveValueImpl("this should show up in XML content"));
-      casData.addFeatureStructure(testFS);
+    // also try colon and dash conversions
+    casData = new CasDataImpl();
+    testFS = new FeatureStructureImpl();
+    testFS.setType("Test_colon_Foo_dash_Bar_colon_What_dash_a_dash_mess");
+    testFS.setId("foo");
+    testFS.setIndexed(new int[] { 1 });
+    testFS.setFeatureValue("myFeature", new PrimitiveValueImpl("myValue"));
+    testFS.setFeatureValue("value", new PrimitiveValueImpl("this should show up in XML content"));
+    casData.addFeatureStructure(testFS);
 
-      testContentHandler = new TestContentHandler("Test:Foo-Bar:What-a-mess");
-      generator.setContentHandler(testContentHandler);
-      generator.generateXCas(casData);
-      assertThat(testContentHandler.foundTestElement).isTrue();
+    testContentHandler = new TestContentHandler("Test:Foo-Bar:What-a-mess");
+    generator.setContentHandler(testContentHandler);
+    generator.generateXCas(casData);
+    assertThat(testContentHandler.foundTestElement).isTrue();
   }
 
   public class TestContentHandler extends DefaultHandler {

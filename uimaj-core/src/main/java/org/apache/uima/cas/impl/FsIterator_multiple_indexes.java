@@ -186,7 +186,7 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
 
   private boolean empty_became_nonEmpty() {
     for (LowLevelIterator<T> it : emptyIterators) {
-      if (it.ll_getIndex().size() > 0) { // don't test changed might have had insert then delete...
+      if (!it.ll_getIndex().isEmpty()) { // don't test changed might have had insert then delete...
         return true;
       }
     }
@@ -195,8 +195,7 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
 
   @Override
   public LowLevelIndex<T> ll_getIndex() {
-    return (LowLevelIndex<T>) ((main_idx != null) ? main_idx
-            : ((LowLevelIterator<T>) allIterators[0]).ll_getIndex());
+    return (main_idx != null) ? main_idx : allIterators[0].ll_getIndex();
   }
 
   @Override

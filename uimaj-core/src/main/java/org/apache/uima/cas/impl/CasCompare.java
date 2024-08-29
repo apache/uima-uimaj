@@ -445,7 +445,7 @@ public class CasCompare {
   // private TOP fs1, fs2;
   private boolean isSrcCas; // used for sorting with a CAS, to differentiate between src and target
                             // CASes
-                            private final StringBuilder mismatchSb = new StringBuilder();
+  private final StringBuilder mismatchSb = new StringBuilder();
   private boolean inSortContext = false;
   private boolean isSkipMismatch = false;
 
@@ -1639,7 +1639,7 @@ public class CasCompare {
         // } // else compared ==
         // } else { // was in sort context
         r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs(((FSArray<?>) a1).get(i),
-            ((FSArray<?>) a2).get(i), callerTi, callerFi), callerTi, callerFi);
+                ((FSArray<?>) a2).get(i), callerTi, callerFi), callerTi, callerFi);
         // }
         break;
       }

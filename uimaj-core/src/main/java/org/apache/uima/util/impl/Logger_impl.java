@@ -113,7 +113,7 @@ public class Logger_impl extends Logger_common_impl {
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setOutputStream(OutputStream out) {
     if (out == null || out instanceof PrintStream) {
       mOut = (PrintStream) out;
@@ -128,7 +128,7 @@ public class Logger_impl extends Logger_common_impl {
    * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setOutputStream(PrintStream out) {
     mOut = out;
   }

@@ -26,7 +26,6 @@ import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.LENIENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -264,10 +263,9 @@ public class CasIOUtilsTest {
 
     try (ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes)) {
       assertThatExceptionOfType(CASRuntimeException.class) //
-          .isThrownBy(() -> CasIOUtils.load(casInputStream, cas))
-          .satisfies(e -> {
-            assertThat(e.getMessageKey()).isEqualTo("UNRECOGNIZED_SERIALIZED_CAS_FORMAT");
-          });
+              .isThrownBy(() -> CasIOUtils.load(casInputStream, cas)).satisfies(e -> {
+                assertThat(e.getMessageKey()).isEqualTo("UNRECOGNIZED_SERIALIZED_CAS_FORMAT");
+              });
 
     }
   }

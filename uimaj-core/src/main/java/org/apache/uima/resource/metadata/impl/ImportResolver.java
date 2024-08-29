@@ -158,11 +158,11 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
     collectAll(aWrapper, aAllCollectedObjects);
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
-    for (Import imp : imports) {
+    for (var imp : imports) {
       // make sure Import's relative path base is set, to allow for users who create new import
       // objects
-      if (imp instanceof Import_impl) {
-        ((Import_impl) imp).setSourceUrlIfNull(aWrapper.unwrap().getSourceUrl());
+      if (imp instanceof Import_impl importImpl) {
+        importImpl.setSourceUrlIfNull(aWrapper.unwrap().getSourceUrl());
       }
 
       // Skip self-imports

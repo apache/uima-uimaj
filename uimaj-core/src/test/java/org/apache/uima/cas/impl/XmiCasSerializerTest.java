@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 
@@ -39,10 +38,9 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -53,17 +51,15 @@ class XmiCasSerializerTest {
 
   private static boolean XML1_1_SUPPORTED = false;
 
-  static {
-    try {
-      XML1_1_SUPPORTED = SAXParserFactory.newInstance()
-              .getFeature("http://xml.org/sax/features/xml-1.1");
-    } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
-    }
-  }
-
   private TypeSystemDescription typeSystemDesc = null;
 
   private File outputFile = null;
+
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
+    XML1_1_SUPPORTED = SAXParserFactory.newInstance()
+            .getFeature("http://xml.org/sax/features/xml-1.1");
+  }
 
   @BeforeEach
   void setUp() throws Exception {

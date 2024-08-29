@@ -22,12 +22,13 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.jcas.JCas;
 
 /**
- * Interface for JCAS annotators in UIMA SDK v1.x. As of v2.0, JCAS annotators should extend
+ * Interface for JCas annotators in UIMA SDK v1.x. As of v2.0, JCAS annotators should extend
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  * 
  * @deprecated As of release 2.3.0, use JCasAnnotator_ImplBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public interface JTextAnnotator extends BaseAnnotator {
   /**
    * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure

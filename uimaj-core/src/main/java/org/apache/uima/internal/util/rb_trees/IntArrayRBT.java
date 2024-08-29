@@ -39,8 +39,9 @@ import org.apache.uima.internal.util.IntListIterator;
  * performance degrades gracefully in the presence of many identical keys.
  * 
  * @deprecated Not used anymore. Will be removed in UIMA 4.
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.3.0")
 public class IntArrayRBT extends IntArrayRBTcommon {
 
   // /**

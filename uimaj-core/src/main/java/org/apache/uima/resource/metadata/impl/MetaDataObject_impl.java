@@ -369,7 +369,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @deprecated - use getAttributes
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   public List<NameClassPair> listAttributes() {
 
     try {
@@ -657,8 +657,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       Object val = getAttributeValue(attr);
       if (val == null) {
         buf.append("NULL");
-      } else if (val instanceof Object[]) {
-        Object[] array = (Object[]) val;
+      } else if (val instanceof Object[] array) {
         buf.append("Array{");
         for (int j = 0; j < array.length; j++) {
           buf.append(j).append(": ").append(array[j].toString()).append('\n');
@@ -737,33 +736,33 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       }
       // some of this may not be necessary - it depends what kind of array values are actually used
       // The "if" statements below are in guessed order of frequency of occurance
-      if (val1 instanceof String[]) {
-        return Arrays.equals((String[]) val1, (String[]) val2);
+      if (val1 instanceof String[] strings) {
+        return Arrays.equals(strings, (String[]) val2);
       }
       // deepEquals handles arrays whose elements are arrays
-      if (val1 instanceof Object[]) {
-        return Arrays.deepEquals((Object[]) val1, (Object[]) val2);
+      if (val1 instanceof Object[] objects) {
+        return Arrays.deepEquals(objects, (Object[]) val2);
       }
-      if (val1 instanceof int[]) {
-        return Arrays.equals((int[]) val1, (int[]) val2);
+      if (val1 instanceof int[] ints) {
+        return Arrays.equals(ints, (int[]) val2);
       }
-      if (val1 instanceof float[]) {
-        return Arrays.equals((float[]) val1, (float[]) val2);
+      if (val1 instanceof float[] floats) {
+        return Arrays.equals(floats, (float[]) val2);
       }
-      if (val1 instanceof double[]) {
-        return Arrays.equals((double[]) val1, (double[]) val2);
+      if (val1 instanceof double[] doubles) {
+        return Arrays.equals(doubles, (double[]) val2);
       }
-      if (val1 instanceof boolean[]) {
-        return Arrays.equals((boolean[]) val1, (boolean[]) val2);
+      if (val1 instanceof boolean[] booleans) {
+        return Arrays.equals(booleans, (boolean[]) val2);
       }
-      if (val1 instanceof byte[]) {
-        return Arrays.equals((byte[]) val1, (byte[]) val2);
+      if (val1 instanceof byte[] bytes) {
+        return Arrays.equals(bytes, (byte[]) val2);
       }
-      if (val1 instanceof short[]) {
-        return Arrays.equals((short[]) val1, (short[]) val2);
+      if (val1 instanceof short[] shorts) {
+        return Arrays.equals(shorts, (short[]) val2);
       }
-      if (val1 instanceof long[]) {
-        return Arrays.equals((long[]) val1, (long[]) val2);
+      if (val1 instanceof long[] longs) {
+        return Arrays.equals(longs, (long[]) val2);
       }
       return Arrays.equals((char[]) val1, (char[]) val2);
     }
@@ -1433,7 +1432,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // initialize an appropriate array of the same length as the valueList,
     // and copy the values
     Class componentType = Object.class;
-    if (!(aPropClass == Object.class)) {
+    if (aPropClass != Object.class) {
       componentType = aPropClass.getComponentType();
       // verify that objects are of appropriate type
       Iterator i = valueList.iterator();
@@ -1666,8 +1665,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @throws IntrospectionException
    *           if introspection fails
    * @deprecated - use getAttributes instead
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.6.0")
   // never called, we hope. No longer caches anything.
   protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {
     return Introspector.getBeanInfo(this.getClass(), Introspector.IGNORE_ALL_BEANINFO)

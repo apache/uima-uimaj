@@ -19,9 +19,9 @@
 
 package org.apache.uima.internal.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test XML utilities.
@@ -50,9 +50,11 @@ class XmlUtilsTest {
     }
 
     // Check high surrogate followed by low surrogate (legal combination)
-    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[]{0xD800, 0xDC00}))).isNegative();
+    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[] { 0xD800, 0xDC00 })))
+            .isNegative();
 
     // Check low surrogate followed by high surrogate (illegal combination).
-    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[]{0xDC00, 0xD800}))).isZero();
+    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[] { 0xDC00, 0xD800 })))
+            .isZero();
   }
 }

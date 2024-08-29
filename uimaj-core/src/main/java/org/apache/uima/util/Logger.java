@@ -65,8 +65,9 @@ public interface Logger extends org.slf4j.Logger {
    * 
    * @param aMessage
    *          the message to be logged with message level INFO
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void log(String aMessage);
 
   /**
@@ -80,8 +81,9 @@ public interface Logger extends org.slf4j.Logger {
    *          key of message to localize with message level INFO
    * @param aArguments
    *          arguments to message (may be null if none)
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void log(String aResourceBundleName, String aMessageKey, Object[] aArguments);
 
   /**
@@ -91,8 +93,9 @@ public interface Logger extends org.slf4j.Logger {
    * 
    * @param aException
    *          the exception to be logged with message level INFO
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void logException(Exception aException);
 
   /**
@@ -103,8 +106,9 @@ public interface Logger extends org.slf4j.Logger {
    * 
    * @param aStream
    *          <code>PrintStream</code> to which log messages will be printed
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void setOutputStream(PrintStream aStream);
 
   /**
@@ -115,8 +119,9 @@ public interface Logger extends org.slf4j.Logger {
    * 
    * @param aStream
    *          <code>OutputStream</code> to which log messages will be printed
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void setOutputStream(OutputStream aStream);
 
   /**
@@ -308,8 +313,9 @@ public interface Logger extends org.slf4j.Logger {
    *             globally and in a multi-threaded/multi-classloader scenario, it is likely that
    *             different threads overwrite each others logger resource manager making it likely
    *             that in any given thread the wrong resource manager is used by the logger.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   void setResourceManager(ResourceManager resourceManager);
 
   /**

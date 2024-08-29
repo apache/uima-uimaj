@@ -18,14 +18,13 @@
  */
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Random;
 
 import org.apache.uima.util.IntEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 class Int2ObjHashMapTest {
 
@@ -56,7 +55,7 @@ class Int2ObjHashMapTest {
     assertThat(ihm.size()).isEqualTo(1);
 
     for (IntEntry<Integer> ie : ihm) {
-      assertThat(188).isEqualTo(ie.getKey());
+      assertThat(ie.getKey()).isEqualTo(188);
     }
 
     assertThat((int) ihm.remove(188)).isEqualTo(1880);
@@ -76,7 +75,7 @@ class Int2ObjHashMapTest {
       assertThat((int) ihm.remove(i)).isEqualTo(i * 10);
     }
 
-    assertThat(ihm.size()).isEqualTo(0);
+    assertThat(ihm.size()).isZero();
 
     assertThat(ihm.getCapacity()).isEqualTo(64);
 
@@ -85,7 +84,7 @@ class Int2ObjHashMapTest {
     }
 
     assertThat(ihm.getCapacity()).isEqualTo(256); // because above are different adds, likely into
-                                          // non-removed positions
+    // non-removed positions
 
     // have 100 elements, remove 100 elements
     for (int i = 1; i < 101 + REBAL; i++) {

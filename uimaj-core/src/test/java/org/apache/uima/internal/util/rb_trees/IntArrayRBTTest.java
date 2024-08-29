@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @deprecated Not used anymore. Will be removed in UIMA 4.
  * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.3.0")
 class IntArrayRBTTest {
   private final static int NIL = 0;
   static final Random rand = new Random();

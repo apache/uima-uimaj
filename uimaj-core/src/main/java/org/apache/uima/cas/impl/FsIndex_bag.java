@@ -57,16 +57,14 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType,
           FSIndexComparator comparatorForIndexSpecs) {
-    super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
+    super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs));
     index = new ObjHashSet<>(initialSize, TOP.class, TOP._singleton);
   }
 
   /**
    * Substitutes an empty comparator if one is specified - may not be needed
-   * 
-   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#init(org.apache.uima.cas.admin.FSIndexComparator)
    */
-  private static FSIndexComparator cleanUpComparator(FSIndexComparator comp, CASImpl casImpl) {
+  private static FSIndexComparator cleanUpComparator(FSIndexComparator comp) {
     // The comparator for a bag index must be empty, except for the type. If
     // it isn't, we create an empty one.
     FSIndexComparator newComp;

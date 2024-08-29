@@ -63,11 +63,6 @@ public class IntEntry<T> {
     return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -84,5 +79,4 @@ public class IntEntry<T> {
       return false;
     return true;
   }
-
 }

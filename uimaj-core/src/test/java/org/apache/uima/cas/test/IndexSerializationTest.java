@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -41,7 +41,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -107,7 +106,7 @@ class IndexSerializationTest {
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
     annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    Assertions.assertTrue(annotationType != null);
+    assertThat(annotationType != null).isTrue();
   }
 
   @AfterEach
@@ -202,16 +201,19 @@ class IndexSerializationTest {
     }
 
     AnnotationFS searchAnnot = cas.createAnnotation(annotationType, 0, 1);
-    assertTrue(cas.getAnnotationIndex().find(searchAnnot) != null);
-    assertTrue(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) != null);
+    assertThat(cas.getAnnotationIndex().find(searchAnnot) != null).isTrue();
+    assertThat(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) != null)
+            .isTrue();
     // find() does not produce useful results on bag indexes, since the comparator
     // is not defined.
     // assertTrue(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) != null);
 
     searchAnnot.setIntValue(endFeature, 4);
-    assertTrue(cas.getAnnotationIndex().find(searchAnnot) == null);
-    assertTrue(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) == null);
-    assertTrue(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) == null);
+    assertThat(cas.getAnnotationIndex().find(searchAnnot) == null).isTrue();
+    assertThat(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) == null)
+            .isTrue();
+    assertThat(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) == null)
+            .isTrue();
 
     final int ordSize = cas.getAnnotationIndex().size();
     final int setSize = cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).size();
@@ -233,22 +235,22 @@ class IndexSerializationTest {
 
     // System.out.println("After serialization\n");
     FSIndex<? extends FeatureStructure> index = cas.getAnnotationIndex();
-    assertTrue(index != null);
-    assertTrue(index.getIndexingStrategy() == FSIndex.SORTED_INDEX);
+    assertThat(index != null).isTrue();
+    assertThat(index.getIndexingStrategy() == FSIndex.SORTED_INDEX).isTrue();
     // System.out.println("Size of ordered index: " + index.size());
-    assertTrue(index.size() == ordSize);
+    assertThat(index.size() == ordSize).isTrue();
 
     index = cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX);
-    assertTrue(index != null);
-    assertTrue(index.getIndexingStrategy() == FSIndex.BAG_INDEX);
+    assertThat(index != null).isTrue();
+    assertThat(index.getIndexingStrategy() == FSIndex.BAG_INDEX).isTrue();
     // System.out.println("Size of bag index: " + index.size());
-    assertTrue(index.size() == bagSize);
+    assertThat(index.size() == bagSize).isTrue();
 
     index = cas.getIndexRepository().getIndex(ANNOT_SET_INDEX);
-    assertTrue(index != null);
-    assertTrue(index.getIndexingStrategy() == FSIndex.SET_INDEX);
+    assertThat(index != null).isTrue();
+    assertThat(index.getIndexingStrategy() == FSIndex.SET_INDEX).isTrue();
     // System.out.println("Size of set index: " + index.size());
     // System.out.println("Should be: " + setSize);
-    assertTrue(index.size() == setSize);
+    assertThat(index.size() == setSize).isTrue();
   }
 }

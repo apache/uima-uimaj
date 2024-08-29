@@ -91,9 +91,10 @@ class CasPoolTest {
       ex = e;
     }
     assertThat(ex != null && ex.getMessage().equals(
-        "Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service.")).isTrue();
+            "Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service."))
+                    .isTrue();
     c.clearCasState(CasState.UIMA_AS_WAIT_4_RESPONSE);
-    assertThatNoException().isThrownBy(() -> c.release() );
+    assertThatNoException().isThrownBy(() -> c.release());
   }
 
   @Test
@@ -161,31 +162,31 @@ class CasPoolTest {
 
   @Test
   void testPool() throws Exception {
-      casManager.defineCasPool("uniqueString", 2, null);
+    casManager.defineCasPool("uniqueString", 2, null);
 
-      CAS c1 = casManager.getCas("uniqueString");
-      CAS c2 = casManager.getCas("uniqueString");
-      c1.getJCas();
+    CAS c1 = casManager.getCas("uniqueString");
+    CAS c2 = casManager.getCas("uniqueString");
+    c1.getJCas();
 
-      CAS c1v2 = c1.createView("view2");
-      CAS c2v2 = c2.createView("view3");
-      c2v2.getJCas();
+    CAS c1v2 = c1.createView("view2");
+    CAS c2v2 = c2.createView("view3");
+    c2v2.getJCas();
 
-      TypeSystem ts = c1.getTypeSystem();
+    TypeSystem ts = c1.getTypeSystem();
 
-      assertThat(ts).isSameAs(c2.getTypeSystem());
-      assertThat(ts).isSameAs(c1v2.getTypeSystem());
-      assertThat(ts).isSameAs(c2v2.getTypeSystem());
+    assertThat(ts).isSameAs(c2.getTypeSystem());
+    assertThat(ts).isSameAs(c1v2.getTypeSystem());
+    assertThat(ts).isSameAs(c2v2.getTypeSystem());
 
-      casManager.releaseCas(c1v2);
-      casManager.releaseCas(c2);
+    casManager.releaseCas(c1v2);
+    casManager.releaseCas(c2);
 
-      c1 = casManager.getCas("uniqueString");
-      c1.createView("mappedName");
-      RootUimaContext_impl rootContext = new RootUimaContext_impl();
-      ChildUimaContext_impl context = new ChildUimaContext_impl(rootContext, "abc",
-              Collections.singletonMap(CAS.NAME_DEFAULT_SOFA, "mappedName"));
-      c1.setCurrentComponentInfo(context.getComponentInfo());
-      casManager.releaseCas(c1);
+    c1 = casManager.getCas("uniqueString");
+    c1.createView("mappedName");
+    RootUimaContext_impl rootContext = new RootUimaContext_impl();
+    ChildUimaContext_impl context = new ChildUimaContext_impl(rootContext, "abc",
+            Collections.singletonMap(CAS.NAME_DEFAULT_SOFA, "mappedName"));
+    c1.setCurrentComponentInfo(context.getComponentInfo());
+    casManager.releaseCas(c1);
   }
 }

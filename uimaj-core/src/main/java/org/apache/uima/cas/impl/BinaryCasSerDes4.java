@@ -314,11 +314,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
                                                                                                                  // indexed
                                                                                                                  // by
                                                                                                                  // SlotKind.i
-                                                                                                                 private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
-                                                                                                      // created,
-                                                                                                      // indexed
-                                                                                                      // by
-                                                                                                      // SlotKind.i
+    private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+    // created,
+    // indexed
+    // by
+    // SlotKind.i
 
     // final private int[] heap; // main heap
     /** start of heap, in v2 pseudo-addr coordinates */

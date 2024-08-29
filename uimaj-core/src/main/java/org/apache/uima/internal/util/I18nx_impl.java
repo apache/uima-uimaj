@@ -99,14 +99,14 @@ public class I18nx_impl {
     mArguments = aArguments;
     // if null message and mCause is Internationalized exception, "promote" message
     if (mResourceBundleName == null && mMessageKey == null) {
-      if (mCause instanceof InternationalizedException) {
-        mResourceBundleName = ((InternationalizedException) mCause).getResourceBundleName();
-        mMessageKey = ((InternationalizedException) mCause).getMessageKey();
-        mArguments = ((InternationalizedException) mCause).getArguments();
-      } else if (mCause instanceof InternationalizedRuntimeException) {
-        mResourceBundleName = ((InternationalizedRuntimeException) mCause).getResourceBundleName();
-        mMessageKey = ((InternationalizedRuntimeException) mCause).getMessageKey();
-        mArguments = ((InternationalizedRuntimeException) mCause).getArguments();
+      if (mCause instanceof InternationalizedException internationalizedException) {
+        mResourceBundleName = internationalizedException.getResourceBundleName();
+        mMessageKey = internationalizedException.getMessageKey();
+        mArguments = internationalizedException.getArguments();
+      } else if (mCause instanceof InternationalizedRuntimeException internationalizedRuntimeException) {
+        mResourceBundleName = internationalizedRuntimeException.getResourceBundleName();
+        mMessageKey = internationalizedRuntimeException.getMessageKey();
+        mArguments = internationalizedRuntimeException.getArguments();
       }
     }
   }

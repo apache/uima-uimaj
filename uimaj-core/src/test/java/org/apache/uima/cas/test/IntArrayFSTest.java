@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
@@ -26,90 +30,75 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class IntArrayFSTest {
+class IntArrayFSTest {
 
   private CAS cas;
 
   @BeforeEach
-  public void setUp() {
-    try {
-      cas = CASInitializer.initCas(new CASTestSetup(), null);
-    } catch (Exception e) {
-      assertThat(false).isTrue();
-    }
+  void setUp() {
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
   }
 
   @Test
-  public void testSet() {
-    IntArrayFS array = cas.createIntArrayFS(0);
-    assertThat(array != null).isTrue();
-    assertThat(array.size() == 0).isTrue();
-    boolean exceptionCaught = false;
-    try {
-      array.get(0);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertThat(exceptionCaught).isTrue();
-    array = cas.createIntArrayFS(3);
-    try {
+  void setWithIndex() {
+    var array = cas.createIntArrayFS(3);
+    assertThatNoException().isThrownBy(() -> {
       array.set(0, 1);
       array.set(1, 2);
       array.set(2, 3);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      assertThat(false).isTrue();
-    }
-    exceptionCaught = false;
-    try {
-      array.set(-1, 1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertThat(exceptionCaught).isTrue();
-    exceptionCaught = false;
-    try {
-      array.set(4, 1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertThat(exceptionCaught).isTrue();
+    });
+
     assertThat(array.get(0) == 1).isTrue();
     assertThat(array.get(1) == 2).isTrue();
     assertThat(array.get(2) == 3).isTrue();
-    exceptionCaught = false;
-    try {
-      array.get(-1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertThat(exceptionCaught).isTrue();
-    exceptionCaught = false;
-    try {
-      array.get(4);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      exceptionCaught = true;
-    }
-    assertThat(exceptionCaught).isTrue();
-    // Check that we can't create arrays smaller than 0.
-    exceptionCaught = false;
-    try {
-      array = cas.createIntArrayFS(-1);
-    } catch (CASRuntimeException e) {
-      exceptionCaught = true;
-      assertThat(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)).isTrue();
-    }
-    assertThat(exceptionCaught).isTrue();
   }
 
   @Test
-  public void testToArray() {
+  void thatSettingWithNegativeIndexThrowsException() {
+    var array = cas.createIntArrayFS(3);
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+            .isThrownBy(() -> array.set(-1, 1));
+  }
+
+  @Test
+  void thatSettingWithTooLargeIndexThrowsException() {
+    var array = cas.createIntArrayFS(3);
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+            .isThrownBy(() -> array.set(4, 1));
+  }
+
+  @Test
+  void thatGettingWithNegativeIndexThrowsException() {
+    var array = cas.createIntArrayFS(3);
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> array.get(-1));
+  }
+
+  @Test
+  void thatGettingWithTooLargeIndexThrowsException() {
+    var array = cas.createIntArrayFS(3);
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> array.get(4));
+  }
+
+  @Test
+  void thatNegativeSizedArrayCannotBeCreated() {
+    assertThatExceptionOfType(CASRuntimeException.class).isThrownBy(() -> cas.createIntArrayFS(-1));
+  }
+
+  @Test
+  void thatEmptyArrayCanBeCreated() {
+    var array = cas.createIntArrayFS(0);
+    assertThat(array).isNotNull();
+    assertThat(array.isEmpty()).isTrue();
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class).isThrownBy(() -> array.get(0));
+  }
+
+  @Test
+  void testToArray() {
     // From CAS array to Java array.
     IntArrayFS array = cas.createIntArrayFS(3);
     int[] fsArray = array.toArray();

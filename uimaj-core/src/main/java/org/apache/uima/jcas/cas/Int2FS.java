@@ -92,7 +92,7 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
    *   Feature Offsets *
    * *******************/ 
 //@formatter:on
-public static final String _FeatName_fsArray = "fsArray";
+  public static final String _FeatName_fsArray = "fsArray";
 
   /* Feature Adjusted Offsets */
   private static final CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class,

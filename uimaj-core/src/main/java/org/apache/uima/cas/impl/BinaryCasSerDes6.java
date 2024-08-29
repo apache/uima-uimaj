@@ -425,11 +425,11 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
                                                                                                                // indexed
                                                                                                                // by
                                                                                                                // SlotKind.i
-                                                                                                               private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
-                                                                                                    // created,
-                                                                                                    // indexed
-                                                                                                    // by
-                                                                                                    // SlotKind.i
+  private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+  // created,
+  // indexed
+  // by
+  // SlotKind.i
 
   // speedups
 
@@ -3406,7 +3406,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
 
   private static void setupOutputStream(int i, int size, ByteArrayOutputStream[] baosZipSources,
-                                        DataOutputStream[] dosZipSources) {
+          DataOutputStream[] dosZipSources) {
     // set up output stream
     baosZipSources[i] = new ByteArrayOutputStream(size);
     dosZipSources[i] = new DataOutputStream(baosZipSources[i]);

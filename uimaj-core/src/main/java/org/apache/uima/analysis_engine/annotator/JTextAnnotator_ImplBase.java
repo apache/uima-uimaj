@@ -23,8 +23,9 @@ package org.apache.uima.analysis_engine.annotator;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  * 
  * @deprecated As of release 2.3.0, use JCasAnnotator_ImplBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public abstract class JTextAnnotator_ImplBase extends Annotator_ImplBase implements JTextAnnotator {
   // overrides no methods
 }

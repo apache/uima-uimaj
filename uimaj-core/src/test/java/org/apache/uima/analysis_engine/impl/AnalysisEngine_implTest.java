@@ -1283,8 +1283,8 @@ class AnalysisEngine_implTest {
         // segment's flow and once for the complete document's flow
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(2);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(
-                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
+        assertThat(FlowControllerForErrorTest.abortedDocuments)
+                .contains("Line one\nLine two\nERROR");
 
         cas.reset();
       }
@@ -1322,11 +1322,11 @@ class AnalysisEngine_implTest {
         // in each aggregate)
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(
-                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
+        assertThat(FlowControllerForErrorTest.abortedDocuments)
+                .contains("Line one\nLine two\nERROR");
         FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
-        assertThat(
-                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
+        assertThat(FlowControllerForErrorTest.abortedDocuments)
+                .contains("Line one\nLine two\nERROR");
 
         cas.reset();
       }

@@ -19,22 +19,19 @@
 
 package org.apache.uima.util.impl;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.flow.FlowControllerDescription;
-import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
-import org.apache.uima.resource.PearSpecifier;
-import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
@@ -43,7 +40,6 @@ import org.apache.uima.util.XMLParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.XMLReader;
 
 class XMLParser_implTest {
 
@@ -120,15 +116,14 @@ class XMLParser_implTest {
   }
 
   @Test
-void testParseResourceSpecifier() throws Exception {
+  void testParseResourceSpecifier() throws Exception {
     // can't run this test under Sun Java 1.4 with no Xerces installed, as
     // it doesn't support schema validation. The following is a test for that.
     var factory = SAXParserFactory.newInstance();
     var parser = factory.newSAXParser();
     var reader = parser.getXMLReader();
     try {
-      reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
-              "test");
+      reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "test");
     } catch (Exception e) {
       System.err.println(
               "Skipping XMLParser_implTest.testParseResourceSpecifier() because installed XML parser doesn't support schema validation.");
@@ -137,9 +132,8 @@ void testParseResourceSpecifier() throws Exception {
 
     // test schema validation
     var invalid = JUnitExtension.getFile("XmlParserTest/NotConformingToSchema.xml");
-    assertThatExceptionOfType(InvalidXMLException.class).isThrownBy(() ->
-      mXmlParser.parseResourceSpecifier(new XMLInputSource(invalid))
-    );
+    assertThatExceptionOfType(InvalidXMLException.class)
+            .isThrownBy(() -> mXmlParser.parseResourceSpecifier(new XMLInputSource(invalid)));
   }
 
   @Test
@@ -152,8 +146,7 @@ void testParseResourceSpecifier() throws Exception {
 
   @Test
   void testParseURISpecifier() throws Exception {
-    var in = new XMLInputSource(
-            JUnitExtension.getFile("XmlParserTest/TestUriSpecifier.xml"));
+    var in = new XMLInputSource(JUnitExtension.getFile("XmlParserTest/TestUriSpecifier.xml"));
     var uriSpec = mXmlParser.parseURISpecifier(in);
     assertEquals("AnalysisEngine", uriSpec.getResourceType());
     assertEquals("Vinci", uriSpec.getProtocol());
@@ -182,8 +175,7 @@ void testParseResourceSpecifier() throws Exception {
 
   @Test
   void testParsePearSpecifier() throws Exception {
-    var in = new XMLInputSource(
-            JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
+    var in = new XMLInputSource(JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
     var pearSpec = mXmlParser.parsePearSpecifier(in);
     assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
 

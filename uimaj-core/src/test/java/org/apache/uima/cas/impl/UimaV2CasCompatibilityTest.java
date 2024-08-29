@@ -95,29 +95,25 @@ class UimaV2CasCompatibilityTest {
           throws InvalidXMLException, ResourceInitializationException, IOException {
     var cas = makeCas();
 
-    try (var is = new FileInputStream(
-            "src/test/resources/uima-v2-serialized-cas/" + aFile)) {
+    try (var is = new FileInputStream("src/test/resources/uima-v2-serialized-cas/" + aFile)) {
       cas.reset();
       CasIOUtils.load(is, null, cas, aMode);
       assertThat(cas.getAnnotationIndex()).hasSize(7);
     }
 
-    try (var is = new FileInputStream(
-            "src/test/resources/uima-v3-serialized-cas/" + aFile)) {
+    try (var is = new FileInputStream("src/test/resources/uima-v3-serialized-cas/" + aFile)) {
       cas.reset();
       CasIOUtils.load(is, null, cas, aMode);
       assertThat(cas.getAnnotationIndex()).hasSize(7);
     }
 
-    try (var is = new FileInputStream(
-            "src/test/resources/uima-v2-serialized-cas/" + aFile)) {
+    try (var is = new FileInputStream("src/test/resources/uima-v2-serialized-cas/" + aFile)) {
       cas.reset();
       CasIOUtils.load(is, null, cas, aMode);
       assertThat(cas.getAnnotationIndex()).hasSize(7);
     }
 
-    try (var is = new FileInputStream(
-            "src/test/resources/uima-v3-serialized-cas/" + aFile)) {
+    try (var is = new FileInputStream("src/test/resources/uima-v3-serialized-cas/" + aFile)) {
       cas.reset();
       CasIOUtils.load(is, null, cas, aMode);
       assertThat(cas.getAnnotationIndex()).hasSize(7);

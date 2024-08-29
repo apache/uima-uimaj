@@ -39,7 +39,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  *             org.apache.uima.examples.XmlDetagger for an example.
  * @forRemoval 4.0.0
  */
-@Deprecated( since = "2.0.0")
+@Deprecated(since = "2.0.0")
 public interface CasDataInitializer extends ConfigurableResource {
   /**
    * Reads content and metadata from an Object and creates a <code>CasData</code>.

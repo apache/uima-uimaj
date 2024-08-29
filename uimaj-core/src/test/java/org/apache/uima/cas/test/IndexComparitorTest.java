@@ -19,11 +19,7 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -49,9 +45,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test the variations possible for index compare functions
- * 
  */
-public class IndexComparitorTest {
+class IndexComparitorTest {
 
   CAS cas;
 
@@ -114,7 +109,7 @@ public class IndexComparitorTest {
    * thrid  index: value of f2 = 0 or 1
    */
   //@formatter:on
-  FeatureStructure fss[][][];
+  FeatureStructure[][][] fss;
 
   FSIndex<FeatureStructure> sortedType1;
 
@@ -253,7 +248,7 @@ public class IndexComparitorTest {
   public void setUp() throws Exception {
     try {
       cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
-      assertNotNull(cas);
+      assertThat(cas).isNotNull();
       ir = cas.getIndexRepository();
       sortedType1 = ir.getIndex("SortedType1");
       setType1 = ir.getIndex("SetType1");
@@ -378,7 +373,7 @@ public class IndexComparitorTest {
   }
 
   @Test
-  public void testFindSubtype() throws Exception {
+  void testFindSubtype() throws Exception {
     cas.reset();
 
     ir.addFS(createFs(type1, 0, 0));
@@ -387,43 +382,43 @@ public class IndexComparitorTest {
                                                             // values
 
     // https://issues.apache.org/jira/browse/UIMA-4352
-    assertTrue(sortedType1.contains(testprobe));
+    assertThat(sortedType1.contains(testprobe)).isTrue();
 
-    assertTrue(sortedType1Sub1.contains(testprobe));
+    assertThat(sortedType1Sub1.contains(testprobe)).isTrue();
 
     FeatureStructure testProbeSuper = createFs(type1, 1, 1);
 
-    assertTrue(sortedType1Sub1.contains(testProbeSuper));
+    assertThat(sortedType1Sub1.contains(testProbeSuper)).isTrue();
   }
 
   @Test
-  public void testCompare() throws Exception {
+  void testCompare() throws Exception {
     try {
-      assertTrue(0 == sortedType1.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == sortedType1.compare(fss[0][1][0], fss[0][0][0]));
+      assertThat(0 == sortedType1.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == sortedType1.compare(fss[0][1][0], fss[0][0][0])).isTrue();
       // type ignored in showing equals
-      assertTrue(0 == sortedType1.compare(fss[1][0][0], fss[0][0][0]));
-      assertTrue(0 == sortedType1.compare(fss[1][0][0], fss[2][0][0]));
+      assertThat(0 == sortedType1.compare(fss[1][0][0], fss[0][0][0])).isTrue();
+      assertThat(0 == sortedType1.compare(fss[1][0][0], fss[2][0][0])).isTrue();
       // type not ignored if type-order included
-      assertTrue(0 == sortedType1TypeOrder.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == sortedType1TypeOrder.compare(fss[1][0][0], fss[0][0][0]));
+      assertThat(0 == sortedType1TypeOrder.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == sortedType1TypeOrder.compare(fss[1][0][0], fss[0][0][0])).isTrue();
 
-      assertTrue(0 == setType1.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == setType1.compare(fss[0][1][0], fss[0][0][0]));
+      assertThat(0 == setType1.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == setType1.compare(fss[0][1][0], fss[0][0][0])).isTrue();
       // type ignored in showing equals
-      assertTrue(0 == setType1.compare(fss[1][0][0], fss[0][0][0]));
-      assertTrue(0 == setType1.compare(fss[1][0][0], fss[2][0][0]));
+      assertThat(0 == setType1.compare(fss[1][0][0], fss[0][0][0])).isTrue();
+      assertThat(0 == setType1.compare(fss[1][0][0], fss[2][0][0])).isTrue();
       // type not ignored if type-order included
-      assertTrue(0 == setType1TypeOrder.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == setType1TypeOrder.compare(fss[1][0][0], fss[0][0][0]));
+      assertThat(0 == setType1TypeOrder.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == setType1TypeOrder.compare(fss[1][0][0], fss[0][0][0])).isTrue();
 
-      assertTrue(-1 == bagType1.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == bagType1.compare(fss[0][1][0], fss[0][0][0]));
-      assertTrue(1 == bagType1.compare(fss[1][0][0], fss[0][0][0]));
-      assertTrue(-1 == bagType1.compare(fss[1][0][0], fss[2][0][0]));
+      assertThat(-1 == bagType1.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == bagType1.compare(fss[0][1][0], fss[0][0][0])).isTrue();
+      assertThat(1 == bagType1.compare(fss[1][0][0], fss[0][0][0])).isTrue();
+      assertThat(-1 == bagType1.compare(fss[1][0][0], fss[2][0][0])).isTrue();
 
-      assertTrue(-1 == bagType1TypeOrder.compare(fss[0][0][0], fss[0][0][1]));
-      assertTrue(1 == bagType1TypeOrder.compare(fss[1][0][0], fss[0][0][0]));
+      assertThat(-1 == bagType1TypeOrder.compare(fss[0][0][0], fss[0][0][1])).isTrue();
+      assertThat(1 == bagType1TypeOrder.compare(fss[1][0][0], fss[0][0][0])).isTrue();
 
       // test contains
       FeatureStructure testType1_0_0 = createFs(type1, 0, 0);
@@ -432,29 +427,29 @@ public class IndexComparitorTest {
       FeatureStructure testTypeSub1_0_x = createFs(type1Sub1, 0, 17);
       FeatureStructure testTypeSub1_0_0 = createFs(type1Sub1, 0, 0);
 
-      assertTrue(sortedType1.contains(testType1_0_0));
-      assertTrue(sortedType1.contains(testType1_0_x));
-      assertTrue(sortedType1.contains(testTypeSub1_0_x));
-      assertTrue(setType1.contains(testType1_0_0));
-      assertTrue(setType1.contains(testType1_0_x));
-      assertTrue(setType1.contains(testTypeSub1_0_x));
-      assertFalse(bagType1.contains(testType1_0_0));
-      assertFalse(bagType1.contains(testType1_0_x));
-      assertFalse(bagType1.contains(testTypeSub1_0_x));
+      assertThat(sortedType1.contains(testType1_0_0)).isTrue();
+      assertThat(sortedType1.contains(testType1_0_x)).isTrue();
+      assertThat(sortedType1.contains(testTypeSub1_0_x)).isTrue();
+      assertThat(setType1.contains(testType1_0_0)).isTrue();
+      assertThat(setType1.contains(testType1_0_x)).isTrue();
+      assertThat(setType1.contains(testTypeSub1_0_x)).isTrue();
+      assertThat(bagType1.contains(testType1_0_0)).isFalse();
+      assertThat(bagType1.contains(testType1_0_x)).isFalse();
+      assertThat(bagType1.contains(testTypeSub1_0_x)).isFalse();
 
       FeatureStructure testType1_0_0_eq = fss[0][0][0];
       FeatureStructure testType1_0_x_eq = fss[0][0][0];
       FeatureStructure testTypeSub1_0_x_eq = fss[1][0][0];
 
-      assertTrue(sortedType1TypeOrder.contains(testType1_0_0));
-      assertTrue(sortedType1TypeOrder.contains(testType1_0_x));
+      assertThat(sortedType1TypeOrder.contains(testType1_0_0)).isTrue();
+      assertThat(sortedType1TypeOrder.contains(testType1_0_x)).isTrue();
       // assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_x));
-      assertTrue(setType1TypeOrder.contains(testType1_0_0));
-      assertTrue(setType1TypeOrder.contains(testType1_0_x));
+      assertThat(setType1TypeOrder.contains(testType1_0_0)).isTrue();
+      assertThat(setType1TypeOrder.contains(testType1_0_x)).isTrue();
       // assertTrue(setType1TypeOrder.contains(testTypeSub1_0_x));
-      assertFalse(bagType1TypeOrder.contains(testType1_0_0));
-      assertFalse(bagType1TypeOrder.contains(testType1_0_x));
-      assertFalse(bagType1TypeOrder.contains(testTypeSub1_0_x));
+      assertThat(bagType1TypeOrder.contains(testType1_0_0)).isFalse();
+      assertThat(bagType1TypeOrder.contains(testType1_0_x)).isFalse();
+      assertThat(bagType1TypeOrder.contains(testTypeSub1_0_x)).isFalse();
 
       // for (Iterator it = sortedType1TypeOrder.iterator(); it.hasNext();) {
       // System.out.println(it.next().toString());
@@ -467,68 +462,68 @@ public class IndexComparitorTest {
 
       // test find
 
-      assertNotNull(sortedType1.find(testType1_0_0));
-      assertNotNull(sortedType1.find(testType1_0_x));
-      assertNotNull(sortedType1.find(testTypeSub1_0_x));
-      assertNotNull(setType1.find(testType1_0_0));
-      assertNotNull(setType1.find(testType1_0_x));
-      assertNotNull(setType1.find(testTypeSub1_0_x));
-      assertNull(bagType1.find(testType1_0_0));
-      assertNull(bagType1.find(testType1_0_x));
-      assertNull(bagType1.find(testTypeSub1_0_x));
+      assertThat(sortedType1.find(testType1_0_0)).isNotNull();
+      assertThat(sortedType1.find(testType1_0_x)).isNotNull();
+      assertThat(sortedType1.find(testTypeSub1_0_x)).isNotNull();
+      assertThat(setType1.find(testType1_0_0)).isNotNull();
+      assertThat(setType1.find(testType1_0_x)).isNotNull();
+      assertThat(setType1.find(testTypeSub1_0_x)).isNotNull();
+      assertThat(bagType1.find(testType1_0_0)).isNull();
+      assertThat(bagType1.find(testType1_0_x)).isNull();
+      assertThat(bagType1.find(testTypeSub1_0_x)).isNull();
 
-      assertNotNull(sortedType1TypeOrder.find(testType1_0_0));
-      assertNotNull(sortedType1TypeOrder.find(testType1_0_x));
+      assertThat(sortedType1TypeOrder.find(testType1_0_0)).isNotNull();
+      assertThat(sortedType1TypeOrder.find(testType1_0_x)).isNotNull();
       // assertNotNull(sortedType1TypeOrder.find(testTypeSub1_0_x));
-      assertNotNull(setType1TypeOrder.find(testType1_0_0));
-      assertNotNull(setType1TypeOrder.find(testType1_0_x));
+      assertThat(setType1TypeOrder.find(testType1_0_0)).isNotNull();
+      assertThat(setType1TypeOrder.find(testType1_0_x)).isNotNull();
       // assertNotNull(setType1TypeOrder.find(testTypeSub1_0_x));
-      assertNull(bagType1TypeOrder.find(testType1_0_0));
-      assertNull(bagType1TypeOrder.find(testType1_0_x));
-      assertNull(bagType1TypeOrder.find(testTypeSub1_0_x));
+      assertThat(bagType1TypeOrder.find(testType1_0_0)).isNull();
+      assertThat(bagType1TypeOrder.find(testType1_0_x)).isNull();
+      assertThat(bagType1TypeOrder.find(testTypeSub1_0_x)).isNull();
 
       // test iterator(fs)
-      assertTrue(sortedType1.iterator(testType1_0_0).isValid());
-      assertTrue(sortedType1.iterator(testType1_0_x).isValid());
-      assertTrue(sortedType1.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(setType1.iterator(testType1_0_0).isValid());
-      assertTrue(setType1.iterator(testType1_0_x).isValid());
-      assertTrue(setType1.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(bagType1.iterator(testType1_0_0_eq).isValid());
-      assertTrue(bagType1.iterator(testType1_0_x_eq).isValid());
-      assertTrue(bagType1.iterator(testTypeSub1_0_x_eq).isValid());
+      assertThat(sortedType1.iterator(testType1_0_0).isValid()).isTrue();
+      assertThat(sortedType1.iterator(testType1_0_x).isValid()).isTrue();
+      assertThat(sortedType1.iterator(testTypeSub1_0_x).isValid()).isTrue();
+      assertThat(setType1.iterator(testType1_0_0).isValid()).isTrue();
+      assertThat(setType1.iterator(testType1_0_x).isValid()).isTrue();
+      assertThat(setType1.iterator(testTypeSub1_0_x).isValid()).isTrue();
+      assertThat(bagType1.iterator(testType1_0_0_eq).isValid()).isTrue();
+      assertThat(bagType1.iterator(testType1_0_x_eq).isValid()).isTrue();
+      assertThat(bagType1.iterator(testTypeSub1_0_x_eq).isValid()).isTrue();
 
-      assertTrue(sortedType1TypeOrder.iterator(testType1_0_0).isValid());
-      assertTrue(sortedType1TypeOrder.iterator(testType1_0_x).isValid());
-      assertTrue(sortedType1TypeOrder.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(setType1TypeOrder.iterator(testType1_0_0).isValid());
-      assertTrue(setType1TypeOrder.iterator(testType1_0_x).isValid());
-      assertTrue(setType1TypeOrder.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testType1_0_0_eq).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testType1_0_x_eq).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testTypeSub1_0_x_eq).isValid());
-
-      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get()));
-      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_x).get()));
-      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
-      assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
+      assertThat(sortedType1TypeOrder.iterator(testType1_0_0).isValid()).isTrue();
+      assertThat(sortedType1TypeOrder.iterator(testType1_0_x).isValid()).isTrue();
+      assertThat(sortedType1TypeOrder.iterator(testTypeSub1_0_x).isValid()).isTrue();
+      assertThat(setType1TypeOrder.iterator(testType1_0_0).isValid()).isTrue();
+      assertThat(setType1TypeOrder.iterator(testType1_0_x).isValid()).isTrue();
+      assertThat(setType1TypeOrder.iterator(testTypeSub1_0_x).isValid()).isTrue();
+      assertThat(bagType1TypeOrder.iterator(testType1_0_0_eq).isValid()).isTrue();
+      assertThat(bagType1TypeOrder.iterator(testType1_0_x_eq).isValid()).isTrue();
+      assertThat(bagType1TypeOrder.iterator(testTypeSub1_0_x_eq).isValid()).isTrue();
 
       // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get()));
+      assertThat(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get())).isTrue();
       // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_x).get()));
       // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
-      assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
+      assertThat(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get())).isTrue();
+      assertThat(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get())).isTrue();
+      assertThat(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get())).isTrue();
+      assertThat(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get())).isTrue();
+      assertThat(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get())).isTrue();
+      assertThat(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get())).isTrue();
+
+      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_0).get()));
+      assertThat(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get())).isTrue();
+      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_x).get()));
+      // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testTypeSub1_0_x).get()));
+      assertThat(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get())).isTrue();
+      assertThat(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get())).isTrue();
+      assertThat(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get())).isTrue();
+      assertThat(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get())).isTrue();
+      assertThat(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get())).isTrue();
+      assertThat(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get())).isTrue();
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -546,7 +541,7 @@ public class IndexComparitorTest {
    */
   //@formatter:on
   @Test
-  public void testSetUsesType() throws Exception {
+  void testSetUsesType() throws Exception {
     cas.reset();
 
     ir.addFS(createFs(type1, 1, 1));
@@ -555,23 +550,23 @@ public class IndexComparitorTest {
                                                             // values
     FeatureStructure testprobe2 = createFs(type1, 1, 1);
 
-    assertEquals(2, sortedType1.size());
-    assertEquals(2, setType1.size());
+    assertThat(sortedType1.size()).isEqualTo(2);
+    assertThat(setType1.size()).isEqualTo(2);
 
     FSIterator<FeatureStructure> it = setType1.iterator();
     it.moveTo(testprobe);
-    assertEquals("Type1", it.get().getType().getShortName());
+    assertThat(it.get().getType().getShortName()).isEqualTo("Type1");
     it.moveTo(testprobe2);
-    assertEquals("Type1", it.get().getType().getShortName());
+    assertThat(it.get().getType().getShortName()).isEqualTo("Type1");
     it.moveToFirst();
-    assertEquals("Type1", it.next().getType().getShortName());
-    assertEquals("Type1Sub1", it.next().getType().getShortName());
+    assertThat(it.next().getType().getShortName()).isEqualTo("Type1");
+    assertThat(it.next().getType().getShortName()).isEqualTo("Type1Sub1");
 
   }
 
   // note: this test is here because the setup is done
   @Test
-  public void testProtectIndex() throws Exception {
+  void testProtectIndex() throws Exception {
     FSIterator<FeatureStructure> it = sortedType1.iterator();
     FeatureStructure fs = it.get();
     boolean ok = false;
@@ -584,6 +579,6 @@ public class IndexComparitorTest {
     } finally {
       System.clearProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
     }
-    assertTrue(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok);
+    assertThat(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok).isTrue();
   }
 }

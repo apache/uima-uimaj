@@ -69,7 +69,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   @Override
   public T getNvc() {
     // checkConcurrentModification();
-    return (T) bag.get(position);
+    return bag.get(position);
   }
 
   /*

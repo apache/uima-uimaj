@@ -18,16 +18,16 @@
  */
 package org.apache.uima.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.Collections;
 
 import org.apache.uima.collection.CasConsumer;
-import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
 
 class CasConsumerFactory_implTest {
 
@@ -43,12 +43,13 @@ class CasConsumerFactory_implTest {
     var desc = new CasConsumerDescription_impl();
     desc.setFrameworkImplementation("foo");
 
-    assertThatExceptionOfType(ResourceInitializationException.class)
-        .isThrownBy(() -> ccFactory.produceResource(CasConsumer.class, desc, Collections.emptyMap()))
-        .satisfies(e -> {
-          assertThat(e.getMessage()).isNotNull();
-          assertThat(e.getMessage()).doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
-          assertThat(e.getMessageKey()).isEqualTo(ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
-        });
+    assertThatExceptionOfType(ResourceInitializationException.class).isThrownBy(
+            () -> ccFactory.produceResource(CasConsumer.class, desc, Collections.emptyMap()))
+            .satisfies(e -> {
+              assertThat(e.getMessage()).isNotNull();
+              assertThat(e.getMessage()).doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
+              assertThat(e.getMessageKey()).isEqualTo(
+                      ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
+            });
   }
 }

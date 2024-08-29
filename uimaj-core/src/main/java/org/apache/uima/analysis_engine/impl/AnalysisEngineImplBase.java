@@ -175,7 +175,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * @deprecated Need to find a better solution since {@link Object#finalize()} has been deprecated by Java.
+   * @deprecated Need to find a better solution since {@link Object#finalize()} has been deprecated
+   *             by Java.
    */
   @Deprecated(since = "3.6.0")
   @Override

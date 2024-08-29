@@ -262,7 +262,7 @@ public class CasSerializerSupport {
     protected abstract void writeView(Sofa sofa, Collection<TOP> members) throws Exception;
 
     protected abstract void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted,
-                                      Collection<TOP> reindexed) throws Exception;
+            Collection<TOP> reindexed) throws Exception;
 
     /**
      * 

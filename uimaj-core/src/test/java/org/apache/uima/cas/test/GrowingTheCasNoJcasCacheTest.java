@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.FileUtils;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.junit.jupiter.api.AfterEach;
@@ -45,57 +44,44 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for IteratorTest.java goes here.
- * 
  */
-public class GrowingTheCasNoJcasCacheTest {
+class GrowingTheCasNoJcasCacheTest {
 
-  private final static int REPETITIONS = 1;
+  private static final int REPETITIONS = 1;
 
   private AnalysisEngine ae = null;
 
   private JCas smallHeapCas = null;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() throws Exception {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
-            descriptorFile.exists());
+    assertThat(descriptorFile.exists())
+            .as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
 
-    try {
-      XMLParser parser = UIMAFramework.getXMLParser();
-      ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(descriptorFile));
-      // Create a new properties object to hold the settings.
-      Properties performanceTuningSettings = new Properties();
-      // Set the initial CAS heap size.
-      performanceTuningSettings.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "1000000");
-      // Disable JCas cache.
-      performanceTuningSettings.setProperty(UIMAFramework.JCAS_CACHE_ENABLED, "false");
-      // Create a wrapper properties object that can
-      // be passed to the framework.
-      Map<String, Object> additionalParams = new HashMap<>();
-      // Set the performance tuning properties as value to
-      // the appropriate parameter.
-      additionalParams.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, performanceTuningSettings);
-      // Create the analysis engine with the parameters.
-      // The second, unused argument here is a custom
-      // resource manager.
-      ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
-      smallHeapCas = ae.newJCas();
-    } catch (IOException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (InvalidXMLException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (ResourceInitializationException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
-
+    XMLParser parser = UIMAFramework.getXMLParser();
+    ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(descriptorFile));
+    // Create a new properties object to hold the settings.
+    Properties performanceTuningSettings = new Properties();
+    // Set the initial CAS heap size.
+    performanceTuningSettings.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "1000000");
+    // Disable JCas cache.
+    performanceTuningSettings.setProperty(UIMAFramework.JCAS_CACHE_ENABLED, "false");
+    // Create a wrapper properties object that can
+    // be passed to the framework.
+    Map<String, Object> additionalParams = new HashMap<>();
+    // Set the performance tuning properties as value to
+    // the appropriate parameter.
+    additionalParams.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, performanceTuningSettings);
+    // Create the analysis engine with the parameters.
+    // The second, unused argument here is a custom
+    // resource manager.
+    ae = UIMAFramework.produceAnalysisEngine(spec, null, additionalParams);
+    smallHeapCas = ae.newJCas();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     if (ae != null) {
       ae.destroy();
       ae = null;
@@ -103,14 +89,14 @@ public class GrowingTheCasNoJcasCacheTest {
   }
 
   @Test
-  public void testAnnotator() {
+  void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
       text = FileUtils.file2String(textFile, "utf-8");
     } catch (IOException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     StringBuilder buf = new StringBuilder(text.length() * 10);
     for (int i = 0; i < 10; i++) {
@@ -121,7 +107,7 @@ public class GrowingTheCasNoJcasCacheTest {
       jcas = ae.newJCas();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     text = buf.toString();
     jcas.setDocumentText(text);
@@ -144,7 +130,7 @@ public class GrowingTheCasNoJcasCacheTest {
         // System.out.println(numberOfTokens);
       } catch (AnalysisEngineProcessException e) {
         e.printStackTrace();
-        assertTrue(false);
+        assertThat(false).isTrue();
       }
       smallHeapCas.setDocumentText(text);
       try {
@@ -152,17 +138,16 @@ public class GrowingTheCasNoJcasCacheTest {
         ae.process(smallHeapCas);
         // time = System.currentTimeMillis() - time;
         // System.out.println("Time for small CAS: " + new TimeSpan(time));
-        assertTrue(this.getClass().toString() + ": number of sentences does not match",
-                numberOfSentences == smallHeapCas.getAnnotationIndex(Sentence.type).size());
-        assertTrue(this.getClass().toString() + ": number of tokens does not match",
-                numberOfTokens == smallHeapCas.getAnnotationIndex(Token.type).size());
+        assertThat(numberOfSentences == smallHeapCas.getAnnotationIndex(Sentence.type).size())
+                .as(this.getClass().toString() + ": number of sentences does not match").isTrue();
+        assertThat(numberOfTokens == smallHeapCas.getAnnotationIndex(Token.type).size())
+                .as(this.getClass().toString() + ": number of tokens does not match").isTrue();
       } catch (AnalysisEngineProcessException e) {
         e.printStackTrace();
-        assertTrue(false);
+        assertThat(false).isTrue();
       }
     }
     smallHeapCas = null; // some junit runners hold onto instances of test classes after the test
                          // finishes
-
   }
 }

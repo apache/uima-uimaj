@@ -28,7 +28,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,15 +46,18 @@ class CasIOUtilsAlwaysHoldOnTest {
 
   @AfterAll
   static void tearDown() throws Exception {
-     System.setProperty(CASImpl.ALWAYS_HOLD_ONTO_FSS, oldHoldOntoFss);
+    if (oldHoldOntoFss != null) {
+      System.setProperty(CASImpl.ALWAYS_HOLD_ONTO_FSS, oldHoldOntoFss);
+    } else {
+      System.getProperties().remove(CASImpl.ALWAYS_HOLD_ONTO_FSS);
+    }
   }
 
   @Test
   void thatDocumentAnnotationIsNotResurrected() throws Exception {
     var customDocAnnoTypeName = "org.apache.uima.testing.CustomDocumentAnnotation";
 
-    var tsd = UIMAFramework.getResourceSpecifierFactory()
-            .createTypeSystemDescription();
+    var tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType(customDocAnnoTypeName, "", CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
     var cas = CasCreationUtils.createCas(tsd, null, null);

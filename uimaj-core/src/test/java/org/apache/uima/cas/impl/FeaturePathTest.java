@@ -73,7 +73,8 @@ class FeaturePathTest {
     featurePath.typeInit(cas.getDocumentAnnotation().getType());
     assertEquals("TestString", featurePath.getStringValue(cas.getDocumentAnnotation()));
     assertEquals("TestString", featurePath.getValueAsString(cas.getDocumentAnnotation()));
-    assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas.getDocumentAnnotation()));
+    assertEquals(TypeClass.TYPE_CLASS_STRING,
+            featurePath.getTypeClass(cas.getDocumentAnnotation()));
     assertEquals(stringFeat.getRange(), featurePath.getType(cas.getDocumentAnnotation()));
     assertTrue(featurePath.size() == 1);
     assertTrue(featurePath.getFeature(0) == stringFeat);
@@ -119,7 +120,8 @@ class FeaturePathTest {
     featurePath.typeInit(cas.getDocumentAnnotation().getType());
     Assertions.assertThat(featurePath.getDoubleValue(cas.getDocumentAnnotation())).isEqualTo(100.5);
     assertEquals("100.5", featurePath.getValueAsString(cas.getDocumentAnnotation()));
-    assertEquals(TypeClass.TYPE_CLASS_DOUBLE, featurePath.getTypeClass(cas.getDocumentAnnotation()));
+    assertEquals(TypeClass.TYPE_CLASS_DOUBLE,
+            featurePath.getTypeClass(cas.getDocumentAnnotation()));
     assertEquals(doubleFeat.getRange(), featurePath.getType(cas.getDocumentAnnotation()));
     assertEquals(null, featurePath.getValueAsString(null));
     assertEquals(null, featurePath.getDoubleValue(null));
@@ -236,7 +238,8 @@ class FeaturePathTest {
     featurePath.initialize(path);
     assertEquals(path, featurePath.getFeaturePath());
     featurePath.typeInit(cas.getDocumentAnnotation().getType());
-    assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas.getDocumentAnnotation()));
+    assertEquals(TypeClass.TYPE_CLASS_STRING,
+            featurePath.getTypeClass(cas.getDocumentAnnotation()));
     assertEquals(stringFeat.getRange(), featurePath.getType(cas.getDocumentAnnotation()));
 
     // test reference feature path (fast lookup - path always valid)
@@ -247,7 +250,8 @@ class FeaturePathTest {
     featurePath.initialize(path);
     assertEquals(path, featurePath.getFeaturePath());
     featurePath.typeInit(cas.getDocumentAnnotation().getType());
-    assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas.getDocumentAnnotation()));
+    assertEquals(TypeClass.TYPE_CLASS_STRING,
+            featurePath.getTypeClass(cas.getDocumentAnnotation()));
     assertEquals(stringFeat.getRange(), featurePath.getType(cas.getDocumentAnnotation()));
 
     // test reference feature

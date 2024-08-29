@@ -19,13 +19,13 @@
 
 package org.apache.uima.internal.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class IntHashSetTest {
 
@@ -66,7 +66,7 @@ class IntHashSetTest {
     ihs.add(1001);
     assertThat(ihs.getMostPositive()).isEqualTo(1001);
     sv = getSortedValues(ihs);
-    assertThat(Arrays.equals(sv, new int[]{-1000, -500, 189, 500, 1001})).isTrue();
+    assertThat(Arrays.equals(sv, new int[] { -1000, -500, 189, 500, 1001 })).isTrue();
   }
 
   @Test
@@ -77,13 +77,14 @@ class IntHashSetTest {
     ihs.add(OS);
     ihs.add(OS + 1);
     int[] sv = getSortedValues(ihs);
-    assertThat(Arrays.equals(sv, new int[]{99999, 100000, 100001})).isTrue();
+    assertThat(Arrays.equals(sv, new int[] { 99999, 100000, 100001 })).isTrue();
     ihs.add(OS - 32767);
     sv = getSortedValues(ihs);
-    assertThat(Arrays.equals(sv, new int[]{OS - 32767, 99999, 100000, 100001})).isTrue();
+    assertThat(Arrays.equals(sv, new int[] { OS - 32767, 99999, 100000, 100001 })).isTrue();
     ihs.add(OS - 32768);
     sv = getSortedValues(ihs);
-    assertThat(Arrays.equals(sv, new int[]{OS - 32768, OS - 32767, 99999, 100000, 100001})).isTrue();
+    assertThat(Arrays.equals(sv, new int[] { OS - 32768, OS - 32767, 99999, 100000, 100001 }))
+            .isTrue();
 
   }
 

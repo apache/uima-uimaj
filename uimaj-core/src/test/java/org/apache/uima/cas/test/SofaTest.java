@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,9 +80,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.data.Offset.offset;
 
 class SofaTest {
 
@@ -561,7 +561,8 @@ class SofaTest {
       assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertThat(doubleArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getDouble(), offset(0.0));
+        assertThat(doubleArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getDouble(),
+                offset(0.0));
       }
 
       dest = new byte[1];

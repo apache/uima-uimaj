@@ -18,6 +18,8 @@
  */
 package org.apache.uima.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -44,8 +46,6 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class CasCopierTest {
   private TypeSystemDescription typeSystem;

@@ -31,7 +31,6 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -40,7 +39,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.junit.jupiter.api.AfterEach;
@@ -49,9 +47,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for IteratorTest.java goes here.
- * 
  */
-public class GrowingTheCasTest {
+class GrowingTheCasTest {
 
   private AnalysisEngine ae = null;
 
@@ -60,33 +57,18 @@ public class GrowingTheCasTest {
   private JCas jcas;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws Exception {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
             descriptorFile.exists());
 
-    try {
-      XMLParser parser = UIMAFramework.getXMLParser();
-      AnalysisEngineDescription spec = (AnalysisEngineDescription) parser
-              .parse(new XMLInputSource(descriptorFile));
-      ae = UIMAFramework.produceAnalysisEngine(spec);
-      Properties props = new Properties();
-      props.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "0");
-      smallHeapCas = CasCreationUtils.createCas(spec, props).getJCas();
-    } catch (IOException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (InvalidXMLException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (ResourceInitializationException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (CASException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
-
+    XMLParser parser = UIMAFramework.getXMLParser();
+    AnalysisEngineDescription spec = (AnalysisEngineDescription) parser
+            .parse(new XMLInputSource(descriptorFile));
+    ae = UIMAFramework.produceAnalysisEngine(spec);
+    Properties props = new Properties();
+    props.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "0");
+    smallHeapCas = CasCreationUtils.createCas(spec, props).getJCas();
   }
 
   @AfterEach
@@ -292,7 +274,7 @@ public class GrowingTheCasTest {
   }
 
   @Test
-  public void testAnnotator() {
+  void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {

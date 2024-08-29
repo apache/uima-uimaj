@@ -30,7 +30,10 @@ import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTE
 import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.apache.uima.util.CasCreationUtils.createCas;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.as;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
