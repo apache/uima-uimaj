@@ -172,7 +172,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("sofaNameMappings", null), });

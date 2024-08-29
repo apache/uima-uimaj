@@ -193,7 +193,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("deploymentParameters",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("deploymentParameters",
           new PropertyXmlInfo[] { new PropertyXmlInfo("parameter"), });
 
 }

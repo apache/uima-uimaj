@@ -122,7 +122,7 @@ public class BinaryCasSerDes {
    */
   private static final int arrayContentOffset = 2;
 
-  final private CASImpl baseCas; // must be the base cas
+  private final CASImpl baseCas; // must be the base cas
   private TypeSystemImpl tsi;
 
   // this can't be an instance field - there may be multiple threads sharing this
@@ -199,9 +199,9 @@ public class BinaryCasSerDes {
    * reset at end of delta deserializings because multiple mods not supported
    */
 //@formatter:on
-  final private Int2ObjHashMap<TOP, TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
-  final private Int2ObjHashMap<TOP, TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
-  final private Int2ObjHashMap<TOP, TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
+  private final Int2ObjHashMap<TOP, TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
+  private final Int2ObjHashMap<TOP, TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
+  private final Int2ObjHashMap<TOP, TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);
 
   /**
    * used to calculate total heap size

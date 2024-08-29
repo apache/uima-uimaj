@@ -46,6 +46,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@Deprecated(since = "2.0.0")
 class CasInitializerDescription_implTest {
   CasInitializerDescription_impl mTestDesc;
 

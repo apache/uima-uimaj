@@ -261,7 +261,7 @@ public class CASImpl extends AbstractCas_ImplBase
     new DebugFSLogicalStructure();
   }
 
-  private final static ThreadLocal<Boolean> defaultV2IdRefs = InheritableThreadLocal
+  private static final ThreadLocal<Boolean> defaultV2IdRefs = InheritableThreadLocal
           .withInitial(() -> null);
 
   public static ThreadLocal<Boolean> getDefaultV2IdRefs() {
@@ -341,12 +341,12 @@ public class CASImpl extends AbstractCas_ImplBase
     /**
      * map from FS ids to FSs.
      */
-    final private Id2FS id2fs;
+    private final Id2FS id2fs;
     /** set to > 0 to reuse an id, 0 otherwise */
     private int reuseId = 0;
 
     // Base CAS for all views
-    final private CASImpl baseCAS;
+    private final CASImpl baseCAS;
 
     /**
      * These fields are here, not in TypeSystemImpl, because different CASes may have different
@@ -586,7 +586,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private boolean traceFSisCreate;
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1; // only for tracing, to convert id's to v2 addresses
-    final private int initialHeapSize;
+    private final int initialHeapSize;
     // @formatter:off
     /** if true, 
      *    modify fs creation to save in id2fs map
@@ -2145,7 +2145,7 @@ public class CASImpl extends AbstractCas_ImplBase
     maybeLogUpdate(fs, fi);
   }
 
-  final public void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
+  public final void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
     if (fs._inSetSortedIndex()) {
       boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCode);
       setter.run();
@@ -2194,7 +2194,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @param i
    *          the index being updated
    */
-  final public void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
+  public final void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat, i, 1);
     }
@@ -2206,7 +2206,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @param indexesPlus1
    *          - a set of indexes (plus 1) that have been update
    */
-  final public void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
+  public final void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, indexesPlus1);
     }
@@ -2226,19 +2226,19 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  final public void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
+  public final void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat);
     }
   }
 
-  final public void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
+  public final void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, getFeatFromCode_checked(featCode));
     }
   }
 
-  final public boolean isLogging() {
+  public final boolean isLogging() {
     return svd.trackingMark != null;
   }
 
@@ -5136,7 +5136,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return svd.casId;
   }
 
-  final public int getNextFsId(TOP fs) {
+  public final int getNextFsId(TOP fs) {
     return svd.getNextFsId(fs);
   }
 
@@ -5177,25 +5177,25 @@ public class CASImpl extends AbstractCas_ImplBase
   // return ++ svd.fsIdGenerator;
   // }
 
-  final public int getLastUsedFsId() {
+  public final int getLastUsedFsId() {
     return svd.fsIdGenerator;
   }
 
-  final public int peekNextFsId() {
+  public final int peekNextFsId() {
     return svd.peekNextFsId();
   }
 
-  final public int lastV2IdIncr() {
+  public final int lastV2IdIncr() {
     return svd.lastFsV2IdIncr();
   }
 
   /**
    * Call this to capture the current value of fsIdGenerator and make it available to other threads.
-   * 
+   * <p>
    * Must be called on a thread that has been synchronized with the thread used for creating FSs for
    * this CAS.
    */
-  final public void captureLastFsIdForOtherThread() {
+  public final void captureLastFsIdForOtherThread() {
     svd.fsIdLastValue.set(svd.fsIdGenerator);
   }
 
@@ -5275,7 +5275,7 @@ public class CASImpl extends AbstractCas_ImplBase
   //
   // }
 
-  public final static boolean isSameCAS(CAS c1, CAS c2) {
+  public static final boolean isSameCAS(CAS c1, CAS c2) {
     CASImpl ci1 = (CASImpl) c1.getLowLevelCAS();
     CASImpl ci2 = (CASImpl) c2.getLowLevelCAS();
     return ci1.getBaseCAS() == ci2.getBaseCAS();

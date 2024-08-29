@@ -46,15 +46,15 @@ public final class FSArray<T extends FeatureStructure> extends TOP
         implements ArrayFSImpl<T>, Iterable<T>, SelectViaCopyToArray<T> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
+  public static final String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasRegistry.register(FSArray.class);
+  public static final int typeIndexID = JCasRegistry.register(FSArray.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   /**
    * used to obtain reference to the _Type instance

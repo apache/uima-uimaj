@@ -127,7 +127,7 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorHandling",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorHandling",
           new PropertyXmlInfo[] { new PropertyXmlInfo("errorRateThreshold", null),
               new PropertyXmlInfo("maxConsecutiveRestarts", null),
               new PropertyXmlInfo("timeout", null), });

@@ -28,7 +28,7 @@ public class Utilities {
 
   public static final int numberOfCores = Runtime.getRuntime().availableProcessors();
 
-  static public int nextHigherPowerOf2(int i) {
+  public static int nextHigherPowerOf2(int i) {
     return (i < 1) ? 1 : Integer.highestOneBit(i) << ((Integer.bitCount(i) == 1 ? 0 : 1));
   }
 

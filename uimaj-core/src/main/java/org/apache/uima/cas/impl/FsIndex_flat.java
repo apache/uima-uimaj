@@ -43,13 +43,13 @@ import org.apache.uima.jcas.cas.TOP;
 public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> {
 
   // The index, an array.
-  final private TOP[] indexedFSs;
+  private final TOP[] indexedFSs;
 
-  final private FsIndex_iicp<T> iicp;
+  private final FsIndex_iicp<T> iicp;
 
-  final private Comparator<TOP> comparatorWithoutId;
+  private final Comparator<TOP> comparatorWithoutId;
 
-  final private int maxAnnotSpan;
+  private final int maxAnnotSpan;
 
   FsIndex_flat(FsIndex_iicp<T> iicp) {
     super(iicp.getCasImpl(), iicp.fsIndex_singletype.getType(),

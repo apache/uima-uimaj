@@ -47,20 +47,20 @@ public class SourceDocumentInformation extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.examples.SourceDocumentInformation";
+  public static final String _TypeName = "org.apache.uima.examples.SourceDocumentInformation";
 
   /**
    * @generated
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static int typeIndexID = JCasRegistry.register(SourceDocumentInformation.class);
+  public static final int typeIndexID = JCasRegistry.register(SourceDocumentInformation.class);
   /**
    * @generated
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   /**
    * @generated
@@ -75,24 +75,24 @@ public class SourceDocumentInformation extends Annotation {
    * ******************* Feature Names *
    *******************/
 
-  public final static String _FeatName_uri = "uri";
-  public final static String _FeatName_offsetInSource = "offsetInSource";
-  public final static String _FeatName_documentSize = "documentSize";
-  public final static String _FeatName_lastSegment = "lastSegment";
+  public static final String _FeatName_uri = "uri";
+  public static final String _FeatName_offsetInSource = "offsetInSource";
+  public static final String _FeatName_documentSize = "documentSize";
+  public static final String _FeatName_lastSegment = "lastSegment";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_uri = TypeSystemImpl
+  private static final CallSite _FC_uri = TypeSystemImpl
           .createCallSite(SourceDocumentInformation.class, "uri");
-  private final static MethodHandle _FH_uri = _FC_uri.dynamicInvoker();
-  private final static CallSite _FC_offsetInSource = TypeSystemImpl
+  private static final MethodHandle _FH_uri = _FC_uri.dynamicInvoker();
+  private static final CallSite _FC_offsetInSource = TypeSystemImpl
           .createCallSite(SourceDocumentInformation.class, "offsetInSource");
-  private final static MethodHandle _FH_offsetInSource = _FC_offsetInSource.dynamicInvoker();
-  private final static CallSite _FC_documentSize = TypeSystemImpl
+  private static final MethodHandle _FH_offsetInSource = _FC_offsetInSource.dynamicInvoker();
+  private static final CallSite _FC_documentSize = TypeSystemImpl
           .createCallSite(SourceDocumentInformation.class, "documentSize");
-  private final static MethodHandle _FH_documentSize = _FC_documentSize.dynamicInvoker();
-  private final static CallSite _FC_lastSegment = TypeSystemImpl
+  private static final MethodHandle _FH_documentSize = _FC_documentSize.dynamicInvoker();
+  private static final CallSite _FC_lastSegment = TypeSystemImpl
           .createCallSite(SourceDocumentInformation.class, "lastSegment");
-  private final static MethodHandle _FH_lastSegment = _FC_lastSegment.dynamicInvoker();
+  private static final MethodHandle _FH_lastSegment = _FC_lastSegment.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

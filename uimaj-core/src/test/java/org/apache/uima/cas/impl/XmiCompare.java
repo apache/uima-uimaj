@@ -221,9 +221,9 @@ public class XmiCompare {
     CASImpl ci1 = (CASImpl) cas1;
     CASImpl ci2 = (CASImpl) cas2;
     Iterator<FsIndex_singletype<TOP>> il1 = ci1.indexRepository.streamNonEmptyIndexes(TOP.class)
-            .collect(Collectors.toList()).iterator();
+            .toList().iterator();
     Iterator<FsIndex_singletype<TOP>> il2 = ci2.indexRepository.streamNonEmptyIndexes(TOP.class)
-            .collect(Collectors.toList()).iterator();
+            .toList().iterator();
 
     StringBuilder sb = new StringBuilder();
     StringBuilder sba = new StringBuilder();
@@ -456,7 +456,7 @@ public class XmiCompare {
     Type type = ts.getType(typename);
     Feature feat = ts.getFeatureByFullName(typename + ":" + featurename);
     return cas.select(type).allViews().map(fs -> cc.sortFSArray((FSArray) fs.getFeatureValue(feat)))
-            .collect(Collectors.toList());
+            .toList();
   }
 
   private void sortStringArray(String t, String f) {

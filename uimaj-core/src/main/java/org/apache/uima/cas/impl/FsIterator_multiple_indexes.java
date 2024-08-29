@@ -48,7 +48,7 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
 
   // An array of iterators, one for each in the collection (e.g. subtypes, or views or ...)
   // split among empty and non-empty.
-  final protected LowLevelIterator<T>[] allIterators;
+  protected final LowLevelIterator<T>[] allIterators;
   private LowLevelIterator<T>[] emptyIterators;
   protected LowLevelIterator<T>[] nonEmptyIterators;
 
@@ -57,10 +57,10 @@ public abstract class FsIterator_multiple_indexes<T extends FeatureStructure>
    * index, only for compares between index items and outside args. if ignoring type, uses that
    * style
    */
-  final protected Comparator<TOP> comparatorMaybeNoTypeWithoutId;
+  protected final Comparator<TOP> comparatorMaybeNoTypeWithoutId;
   // final protected boolean ignoreType_moveToLeftmost;
 
-  final protected LowLevelIndex<T> main_idx;
+  protected final LowLevelIndex<T> main_idx;
 
   // /** true if sorted index, with typepriority as a key, but ignoring it because
   // * either there are no type priorities defined, or

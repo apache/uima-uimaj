@@ -141,21 +141,6 @@ public interface CAS extends AbstractCas {
    */
   String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
-  // /**
-  // * Java Object type
-  // */
-  // static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
-  //
-  // /**
-  // * FS Array List
-  // */
-  // static final String TYPE_NAME_FS_ARRAY_LIST = UIMA_CAS_PREFIX + "FSArrayList";
-  //
-  // /**
-  // * int Array List
-  // */
-  // static final String TYPE_NAME_INT_ARRAY_LIST = UIMA_CAS_PREFIX + "IntegerArrayList";
-
   /**
    * ArrayBase type.
    */
@@ -1278,7 +1263,7 @@ public interface CAS extends AbstractCas {
    */
   default EmptyFloatList emptyFloatList() {
     return ((CASImpl) getLowLevelCAS()).emptyFloatList();
-  };
+  }
 
   /**
    * @param <T>
@@ -1287,21 +1272,21 @@ public interface CAS extends AbstractCas {
    */
   default <T extends TOP> EmptyFSList<T> emptyFSList() {
     return ((CASImpl) getLowLevelCAS()).emptyFSList();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) empty list
    */
   default EmptyIntegerList emptyIntegerList() {
     return ((CASImpl) getLowLevelCAS()).emptyIntegerList();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) empty list
    */
   default EmptyStringList emptyStringList() {
     return ((CASImpl) getLowLevelCAS()).emptyStringList();
-  };
+  }
 
   /**
    * @param <T>
@@ -1319,7 +1304,7 @@ public interface CAS extends AbstractCas {
    */
   default FloatArray emptyFloatArray() {
     return ((CASImpl) getLowLevelCAS()).emptyFloatArray();
-  };
+  }
 
   /**
    * @param <T>
@@ -1328,7 +1313,7 @@ public interface CAS extends AbstractCas {
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     return ((CASImpl) getLowLevelCAS()).emptyFSArray();
-  };
+  }
 
   /**
    * @param type
@@ -1340,56 +1325,56 @@ public interface CAS extends AbstractCas {
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
     return ((CASImpl) getLowLevelCAS()).emptyFSArray(type);
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default IntegerArray emptyIntegerArray() {
     return ((CASImpl) getLowLevelCAS()).emptyIntegerArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default StringArray emptyStringArray() {
     return ((CASImpl) getLowLevelCAS()).emptyStringArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default DoubleArray emptyDoubleArray() {
     return ((CASImpl) getLowLevelCAS()).emptyDoubleArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default LongArray emptyLongArray() {
     return ((CASImpl) getLowLevelCAS()).emptyLongArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default ShortArray emptyShortArray() {
     return ((CASImpl) getLowLevelCAS()).emptyShortArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default ByteArray emptyByteArray() {
     return ((CASImpl) getLowLevelCAS()).emptyByteArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default BooleanArray emptyBooleanArray() {
     return ((CASImpl) getLowLevelCAS()).emptyBooleanArray();
-  };
+  }
 
   /**
    * @param clazz

@@ -148,13 +148,13 @@ public class XmiCasSerializer {
   // XML1_1_SUPPORTED = v;
   // }
 
-  public final static String SYSTEM_LINE_FEED;
+  public static final String SYSTEM_LINE_FEED;
   static {
     String lf = System.getProperty("line.separator");
     SYSTEM_LINE_FEED = (lf == null) ? "\n" : lf;
   }
 
-  public final static char[] INT_TO_HEX = "0123456789ABCDEF".toCharArray();
+  public static final char[] INT_TO_HEX = "0123456789ABCDEF".toCharArray();
 
   private final CasSerializerSupport css = new CasSerializerSupport();
 

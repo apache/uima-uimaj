@@ -36,7 +36,7 @@ public class TimeAnnot extends DateTimeAnnot {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.TimeAnnot";
+  public static final String _TypeName = "org.apache.uima.tutorial.TimeAnnot";
 
   /**
    * The Constant typeIndexID.

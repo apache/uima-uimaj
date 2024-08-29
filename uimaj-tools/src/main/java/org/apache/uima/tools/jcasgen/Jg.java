@@ -82,7 +82,7 @@ import org.apache.uima.util.XMLizable;
 
 public class Jg {
 
-  private final static boolean IS_TRACE_LIMITED = false;
+  private static final boolean IS_TRACE_LIMITED = false;
 
   /**
    * Interface implemented by JCAS code generation's templates.
@@ -215,7 +215,7 @@ public class Jg {
    * @param casElementName
    *          the cas element name
    */
-  static private void addBuiltInTypeInfo(String casName, String javaName, String casElementName) {
+  private static void addBuiltInTypeInfo(String casName, String javaName, String casElementName) {
     TypeInfo ti = new TypeInfo(casName, javaName, casElementName);
     builtInTypes.put(casName, ti);
   }
@@ -228,11 +228,11 @@ public class Jg {
    * @param javaName
    *          the java name
    */
-  static private void addBuiltInTypeInfo(String casName, String javaName) {
+  private static void addBuiltInTypeInfo(String casName, String javaName) {
     addBuiltInTypeInfo(casName, javaName, null);
   }
 
-  static private List<String> genericFeatureDescriptorTypes = Arrays.asList("uima.cas.FSArray",
+  private static List<String> genericFeatureDescriptorTypes = Arrays.asList("uima.cas.FSArray",
           "uima.cas.FSList");
   // first type needed by fsArrayType; in hash map will be overwritten, though
   static {

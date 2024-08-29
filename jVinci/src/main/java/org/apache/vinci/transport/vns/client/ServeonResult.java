@@ -34,7 +34,7 @@ import org.apache.vinci.transport.vns.VNSConstants;
  */
 public class ServeonResult extends Frame {
 
-  static public TransportableFactory factory = new TransportableFactory() {
+  public static TransportableFactory factory = new TransportableFactory() {
     @Override
     public Transportable makeTransportable() {
       return new ServeonResult();
@@ -60,7 +60,7 @@ public class ServeonResult extends Frame {
    * @return -
    * 
    */
-  static public Transportable composeQuery(String service_name, String host_name, int priority,
+  public static Transportable composeQuery(String service_name, String host_name, int priority,
           int instance) {
     VinciFrame query = (VinciFrame) composeQuery(service_name, host_name, priority);
     query.fadd(VNSConstants.INSTANCE_KEY, instance);
@@ -82,7 +82,7 @@ public class ServeonResult extends Frame {
    *          -
    * @return -
    */
-  static public Transportable composeQuery(String service_name, String host_name, int priority) {
+  public static Transportable composeQuery(String service_name, String host_name, int priority) {
     VinciFrame query = (VinciFrame) composeQuery(service_name, host_name);
     query.fadd(VNSConstants.LEVEL_KEY, priority);
     return query;
@@ -100,7 +100,7 @@ public class ServeonResult extends Frame {
    *          -
    * @return -
    */
-  static public Transportable composeQuery(String service_name, String host_name) {
+  public static Transportable composeQuery(String service_name, String host_name) {
     VinciFrame query = new VinciFrame();
     query.fadd(TransportConstants.COMMAND_KEY, VNSConstants.SERVEON_COMMAND);
     query.fadd(VNSConstants.SERVICE_KEY, service_name);

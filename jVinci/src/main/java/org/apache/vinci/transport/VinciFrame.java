@@ -52,7 +52,7 @@ public class VinciFrame extends QueryableFrame {
    * 
    * @return -
    */
-  static public TransportableFactory getVinciFrameFactory() {
+  public static TransportableFactory getVinciFrameFactory() {
     return vinciFrameFactory;
   }
 

@@ -42,7 +42,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   // final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
 
   // The index
-  final private ObjHashSet<TOP> index;
+  private final ObjHashSet<TOP> index;
 
   // /**
   // * Copy on write, initially null

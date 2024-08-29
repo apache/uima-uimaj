@@ -64,7 +64,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class MultiResourceSelectionDialog extends ResourcePickerDialog {
 
   /** The Constant PATH_SEPARATOR. */
-  private final static String PATH_SEPARATOR = System.getProperty("path.separator");
+  private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   /**
    * The Class CandidateAndSource.

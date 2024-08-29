@@ -29,14 +29,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class CasDataToXCasTest {
+class CasDataToXCasTest {
 
-  /*
-   * Test for void generateXCas(CasData)
-   */
   @Test
-  public void testGenerateXCasCasData() throws Exception {
-    try {
+  void testGenerateXCasCasData() throws Exception {
       CasData casData = new CasDataImpl();
       FeatureStructure testFS = new FeatureStructureImpl();
       testFS.setType("Test");
@@ -66,10 +62,6 @@ public class CasDataToXCasTest {
       generator.setContentHandler(testContentHandler);
       generator.generateXCas(casData);
       assertThat(testContentHandler.foundTestElement).isTrue();
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
   }
 
   public class TestContentHandler extends DefaultHandler {
@@ -85,12 +77,6 @@ public class CasDataToXCasTest {
       testElementName = aTestElementName;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
-     * java.lang.String, org.xml.sax.Attributes)
-     */
     @Override
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
             throws SAXException {
@@ -103,28 +89,16 @@ public class CasDataToXCasTest {
       }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.ContentHandler#characters(char[], int, int)
-     */
     @Override
     public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
       buf.append(arg0, arg1, arg2);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
-     * java.lang.String)
-     */
     @Override
     public void endElement(String arg0, String arg1, String arg2) throws SAXException {
       if (testElementName.equals(arg1)) {
-        assertThat(buf.toString()).isEqualTo("this should show up in XML content");
+        assertThat(buf).hasToString("this should show up in XML content");
       }
     }
   }
-
 }

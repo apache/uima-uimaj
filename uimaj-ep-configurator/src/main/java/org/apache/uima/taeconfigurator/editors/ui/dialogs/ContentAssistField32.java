@@ -33,7 +33,7 @@ import org.eclipse.ui.fieldassist.ContentAssistField;
 public class ContentAssistField32 {
 
   /** The caf. */
-  final private ContentAssistField caf;
+  private final ContentAssistField caf;
 
   /**
    * Instantiates a new content assist field 32.

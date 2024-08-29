@@ -61,7 +61,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
   /**
    * Instrumentation Facility (wraps ProcessTrace)
    */
-  final private InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
+  private final InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
           null);
 
   /**

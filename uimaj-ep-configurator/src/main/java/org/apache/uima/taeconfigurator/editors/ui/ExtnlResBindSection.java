@@ -49,7 +49,7 @@ import org.eclipse.ui.forms.IManagedForm;
 public class ExtnlResBindSection extends AbstractSection {
 
   /** The Constant boundHeader. */
-  private final static String boundHeader = "Bound to: ";
+  private static final String boundHeader = "Bound to: ";
 
   /** The section client. */
   private Composite sectionClient;

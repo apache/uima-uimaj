@@ -228,8 +228,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public static class SerialContext {
 
-    final public ContentHandler ch;
-    final public Serializer serializer;
+    public final ContentHandler ch;
+    public final Serializer serializer;
 
     public SerialContext(ContentHandler ch, Serializer serializer) {
       this.ch = ch;

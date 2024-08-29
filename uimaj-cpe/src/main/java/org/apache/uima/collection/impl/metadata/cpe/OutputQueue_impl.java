@@ -94,7 +94,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("outputQueue",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("outputQueue",
           new PropertyXmlInfo[0]);
 
   /**

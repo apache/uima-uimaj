@@ -42,13 +42,13 @@ public class ConfigGroup {
   private ConfigurationGroup namedCg = null;
 
   /** The Constant NOT_IN_ANY_GROUP. */
-  public final static int NOT_IN_ANY_GROUP = 1;
+  public static final int NOT_IN_ANY_GROUP = 1;
 
   /** The Constant COMMON. */
-  public final static int COMMON = 2;
+  public static final int COMMON = 2;
 
   /** The Constant NAMED_GROUP. */
-  public final static int NAMED_GROUP = 4;
+  public static final int NAMED_GROUP = 4;
 
   /**
    * Instantiates a new config group.

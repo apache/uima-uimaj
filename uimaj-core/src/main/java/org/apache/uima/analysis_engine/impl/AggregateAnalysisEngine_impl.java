@@ -78,7 +78,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   private static final Class<AggregateAnalysisEngine_impl> CLASS_NAME = AggregateAnalysisEngine_impl.class;
 
-  static public final String PARAM_RESULT_SPECIFICATION = "RESULT_SPECIFICATION";
+  public static final String PARAM_RESULT_SPECIFICATION = "RESULT_SPECIFICATION";
 
   /**
    * The AnalysisEngineDescription for this AnlaysisEngine instance.

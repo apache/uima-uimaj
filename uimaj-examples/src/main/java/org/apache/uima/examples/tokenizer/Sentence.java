@@ -34,7 +34,7 @@ public class Sentence extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.examples.tokenizer.Sentence";
+  public static final String _TypeName = "org.apache.uima.examples.tokenizer.Sentence";
 
   /** The Constant typeIndexID. */
   public static final int typeIndexID = JCasRegistry.register(Sentence.class);

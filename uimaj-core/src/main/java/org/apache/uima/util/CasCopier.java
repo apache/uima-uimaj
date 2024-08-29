@@ -250,7 +250,7 @@ public class CasCopier {
 
   // final private Feature mDestSofaFeature;
 
-  final private boolean lenient; // true: ignore feature structures and features that are not
+  private final boolean lenient; // true: ignore feature structures and features that are not
                                  // defined in the destination CAS
 
   /**
@@ -260,12 +260,12 @@ public class CasCopier {
    * 
    * Target not set if lenient specified and src type isn't in target
    */
-  final private Map<TOP, TOP> mFsMap; // is identity hash map
+  private final Map<TOP, TOP> mFsMap; // is identity hash map
 
   /**
    * Deferred calls to copy Features of a FS
    */
-  final private Deque<Runnable> fsToDo = new ArrayDeque<>();
+  private final Deque<Runnable> fsToDo = new ArrayDeque<>();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
@@ -740,7 +740,7 @@ public class CasCopier {
       tgtView = tgtCasViewImpl;
     }
 
-    TypeImpl tgtTi = getTargetType(((TOP) srcFs)._getTypeImpl());
+    TypeImpl tgtTi = getTargetType(srcFs._getTypeImpl());
     if (null == tgtTi) {
       return null; // not in target, no FS to create
     }
@@ -1028,8 +1028,8 @@ public class CasCopier {
   private TOP copyArray(TOP srcFS) {
     final CommonArrayFS srcCA = (CommonArrayFS) srcFS;
     final int size = srcCA.size();
-    final TypeImpl tgtTi = getTargetType(((TOP) srcFS)._getTypeImpl()); // could be null for src =
-                                                                        // e.g. Annotation[]
+    // could be null for src = e.g. Annotation[]
+    final TypeImpl tgtTi = getTargetType(srcFS._getTypeImpl());
 
     if (tgtTi == null) {
       return null; // can't copy

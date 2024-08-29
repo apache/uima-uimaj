@@ -42,13 +42,13 @@ import org.eclipse.swt.widgets.Label;
 public class AddIndexKeyDialog extends AbstractDialog {
 
   /** The Constant ASCENDING. */
-  static private final String ASCENDING = "Ascending (Standard)";
+  private static final String ASCENDING = "Ascending (Standard)";
 
   /** The Constant DESCENDING. */
-  static private final String DESCENDING = "Descending (Reverse)";
+  private static final String DESCENDING = "Descending (Reverse)";
 
   /** The Constant TYPE_PRIORITY. */
-  static private final String TYPE_PRIORITY = "Type Priority";
+  private static final String TYPE_PRIORITY = "Type Priority";
 
   /** The type priority. */
   public boolean typePriority;

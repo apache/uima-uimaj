@@ -298,7 +298,7 @@ public class AnalysisEngineManagementImpl
     }
   }
 
-  static private final Callable<AtomicInteger> produceAtomicInteger = new Callable<AtomicInteger>() {
+  private static final Callable<AtomicInteger> produceAtomicInteger = new Callable<AtomicInteger>() {
     @Override
     public AtomicInteger call() throws Exception {
       return new AtomicInteger(1);

@@ -41,7 +41,7 @@ public class DateTimeAnnot extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.DateTimeAnnot";
+  public static final String _TypeName = "org.apache.uima.tutorial.DateTimeAnnot";
 
   /**
    * The Constant typeIndexID.
@@ -74,12 +74,12 @@ public class DateTimeAnnot extends Annotation {
    * ******************* Feature Offsets *
    *******************/
 
-  public final static String _FeatName_shortDateString = "shortDateString";
+  public static final String _FeatName_shortDateString = "shortDateString";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_shortDateString = TypeSystemImpl
+  private static final CallSite _FC_shortDateString = TypeSystemImpl
           .createCallSite(DateTimeAnnot.class, "shortDateString");
-  private final static MethodHandle _FH_shortDateString = _FC_shortDateString.dynamicInvoker();
+  private static final MethodHandle _FH_shortDateString = _FC_shortDateString.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

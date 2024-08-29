@@ -62,7 +62,7 @@ class FeaturePathImpl implements FeaturePath {
   private String originalBuiltInName = null;
 
   // featurePath element names
-  final private ArrayList<String> featurePathElementNames = new ArrayList<>();
+  private final ArrayList<String> featurePathElementNames = new ArrayList<>();
 
   private boolean pathStartsWithSlash = true;
   /**
@@ -71,7 +71,7 @@ class FeaturePathImpl implements FeaturePath {
    * using typeInit. It has values for the first names in the featurePathElementNames which are
    * always valid for a given starting type (set into boundBaseType).
    */
-  final private ArrayList<FeatureImpl> boundFeatures = new ArrayList<>();
+  private final ArrayList<FeatureImpl> boundFeatures = new ArrayList<>();
 
   private FeatureImpl targetFeature; // set to the last value of boundFeatures
   private TypeImpl targetType; // set to type of range of last found feature, works when there are

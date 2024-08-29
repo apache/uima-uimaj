@@ -207,7 +207,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
 
   // METHODS CALLED BY THE PARSER

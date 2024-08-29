@@ -82,7 +82,7 @@ public class Mapping_impl extends MetaDataObject_impl implements Mapping {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("mapping",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("mapping",
           new PropertyXmlInfo[] { new PropertyXmlInfo("feature"),
               new PropertyXmlInfo("indexName") });
 }

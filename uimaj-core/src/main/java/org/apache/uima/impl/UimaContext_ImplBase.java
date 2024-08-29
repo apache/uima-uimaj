@@ -80,12 +80,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * refers to fields in this (containing, outer) class. So it seems the method could just be used
    * directly, and putting it into an inner class is silly.
    */
-  final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
+  private final ComponentInfo mComponentInfo = new ComponentInfoImpl();
 
   /**
    * Fully-qualified name of this context.
    */
-  final protected String mQualifiedContextName;
+  protected final String mQualifiedContextName;
 
   /**
    * Mapping between sofa names assigned by an aggregate engine to sofa names assigned by the
@@ -95,7 +95,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Multi-threading: This map is constructed at Constructor time, and never updated, only
    * referenced, subsequently.
    */
-  final protected Map<String, String> mSofaMappings;
+  protected final Map<String, String> mSofaMappings;
 
   /**
    * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method. Note: CASes
@@ -162,16 +162,16 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * or size operations. The size check followed by an add is in one sync block within
    * getEmptyCas(), locked on the set object itself (not shared with any other locks).
    */
-  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
+  protected final Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   /**
    * Object that implements management interface to the AE.
    */
-  final protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
+  protected final AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
-  final private String uniqueIdentifier;
+  private final String uniqueIdentifier;
 
-  final private String mdcUniqueId;
+  private final String mdcUniqueId;
 
   /**
    * A number to throttle logging from Annotators If not the max value, it wraps loggers obtained

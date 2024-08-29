@@ -67,7 +67,7 @@ public class VinciContext {
 
   private static final int DEFAULT_VNS_PORT = 9000;
 
-  static private VinciContext globalContext;
+  private static VinciContext globalContext;
   static {
     String portString = System.getProperty(VNS_PORT_PROPERTY);
     if (portString == null) {
@@ -134,7 +134,7 @@ public class VinciContext {
    * @param to
    *          The limit on the number of entries that will be maintained in the VNS cache.
    */
-  synchronized public void setVNSCacheSize(int to) {
+  public synchronized void setVNSCacheSize(int to) {
     vnsCacheSize = to;
   }
 
@@ -325,7 +325,7 @@ public class VinciContext {
    * 
    * @return -
    */
-  static public VinciContext getGlobalContext() {
+  public static VinciContext getGlobalContext() {
     return globalContext;
   }
 
@@ -338,7 +338,7 @@ public class VinciContext {
    * 
    * @pre serviceName != null
    */
-  synchronized public ResolveResult getCachedResolveResult(String serviceName) {
+  public synchronized ResolveResult getCachedResolveResult(String serviceName) {
     CachedVNSResult r = (CachedVNSResult) vnsCache.get(serviceName);
     if (r != null) {
       long now = System.currentTimeMillis();
@@ -358,7 +358,7 @@ public class VinciContext {
    * 
    * @pre serviceName != null
    */
-  synchronized public ResolveResult getStaleCachedResolveResult(String serviceName) {
+  public synchronized ResolveResult getStaleCachedResolveResult(String serviceName) {
     CachedVNSResult r = (CachedVNSResult) vnsCache.get(serviceName);
     if (r != null) {
       return r.r;
@@ -376,7 +376,7 @@ public class VinciContext {
    * @param r
    *          -
    */
-  synchronized public void cacheResolveResult(String serviceName, ResolveResult r) {
+  public synchronized void cacheResolveResult(String serviceName, ResolveResult r) {
     CachedVNSResult c = (CachedVNSResult) vnsCache.get(serviceName);
     if (c == null) {
       vnsCache.put(serviceName, new CachedVNSResult(r));
@@ -394,11 +394,11 @@ public class VinciContext {
    * @param serviceName
    *          -
    */
-  synchronized public void flushFromCache(String serviceName) {
+  public synchronized void flushFromCache(String serviceName) {
     vnsCache.remove(serviceName);
   }
 
-  synchronized public void flushAll() {
+  public synchronized void flushAll() {
     vnsCache.clear();
   }
 

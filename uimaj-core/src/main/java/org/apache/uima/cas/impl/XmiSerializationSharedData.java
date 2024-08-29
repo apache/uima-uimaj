@@ -442,7 +442,7 @@ public class XmiSerializationSharedData {
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
-    final public List<XmlAttribute> attributes = new ArrayList<>();
+    public final List<XmlAttribute> attributes = new ArrayList<>();
 
     /**
      * List of XmlElementNameAndContents objects each describing one of the child elements
@@ -551,9 +551,9 @@ public class XmiSerializationSharedData {
    * to an out-of-typesystem FS.
    */
   public static class XmiArrayElement {
-    final public int index;
+    public final int index;
 
-    final public String xmiId;
+    public final String xmiId;
 
     XmiArrayElement(int index, String xmiId) {
       this.index = index;

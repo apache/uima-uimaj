@@ -2081,7 +2081,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     return Integer.compare(a._id, b._id);
   }
 
-  protected final static int wrapGetIntCatchException(MethodHandle mh) {
+  protected static final int wrapGetIntCatchException(MethodHandle mh) {
     try {
       return (int) mh.invokeExact();
     } catch (Throwable t) {

@@ -35,7 +35,7 @@ import org.apache.uima.resource.ResourceSpecifier;
  * 
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public class CasInitializerFactory_impl implements ResourceFactory {
 
   /**
@@ -46,8 +46,7 @@ public class CasInitializerFactory_impl implements ResourceFactory {
   public Resource produceResource(Class<? extends Resource> aResourceClass,
           ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
-    if (aSpecifier instanceof CasInitializerDescription) {
-      CasInitializerDescription desc = (CasInitializerDescription) aSpecifier;
+    if (aSpecifier instanceof CasInitializerDescription desc) {
       String className = desc.getImplementationName();
 
       // load class using UIMA Extension ClassLoader if there is one
@@ -85,11 +84,7 @@ public class CasInitializerFactory_impl implements ResourceFactory {
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
                 new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      } catch (IllegalAccessException e) {
-        throw new ResourceInitializationException(
-                ResourceInitializationException.COULD_NOT_INSTANTIATE,
-                new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      } catch (InstantiationException e) {
+      } catch (IllegalAccessException | InstantiationException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.COULD_NOT_INSTANTIATE,
                 new Object[] { className, aSpecifier.getSourceUrlString() }, e);

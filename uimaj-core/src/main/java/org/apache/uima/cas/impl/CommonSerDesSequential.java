@@ -86,15 +86,15 @@ public class CommonSerDesSequential {
    * 
    * Before accessing this, any pending items must be merged (sorting done lazily)
    */
-  final private List<TOP> sortedFSs = new ArrayList<>(); // holds the FSs sorted by id
+  private final List<TOP> sortedFSs = new ArrayList<>(); // holds the FSs sorted by id
 
-  final private List<TOP> pending = new ArrayList<>(); // batches up FSs that need to be inserted
+  private final List<TOP> pending = new ArrayList<>(); // batches up FSs that need to be inserted
                                                        // into sortedFSs
 
   /**
    * The associated CAS
    */
-  final private CASImpl baseCas;
+  private final CASImpl baseCas;
 
   /**
    * The first free (available) simulated heap addr, also the last addr + length of that

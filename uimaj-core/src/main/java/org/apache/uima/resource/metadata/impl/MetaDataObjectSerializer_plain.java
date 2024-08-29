@@ -29,7 +29,7 @@ class MetaDataObjectSerializer_plain implements MetaDataObject_impl.Serializer {
 
   private static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
-  final private ContentHandler ch;
+  private final ContentHandler ch;
 
   MetaDataObjectSerializer_plain(ContentHandler ch) {
     this.ch = ch;

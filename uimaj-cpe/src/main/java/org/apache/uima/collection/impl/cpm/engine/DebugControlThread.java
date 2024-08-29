@@ -35,7 +35,7 @@ import org.apache.uima.util.Level;
 public class DebugControlThread implements Runnable {
 
   /** The Constant NOTFOUND. */
-  private final static String NOTFOUND = "NOT-FOUND";
+  private static final String NOTFOUND = "NOT-FOUND";
 
   /** The file name. */
   private String fileName = null;

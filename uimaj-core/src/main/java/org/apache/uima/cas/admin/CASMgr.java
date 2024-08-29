@@ -75,11 +75,10 @@ public interface CASMgr {
   void enableReset(boolean flag);
 
   /**
-   * Does nothing, kept only for backwards compatibility
-   * 
    * @param cas
    *          -
    * @forRemoval 4.0.0
+   * @deprecated Does nothing, kept only for backwards compatibility
    */
   @Deprecated(since = "3.0.0")
   void setCAS(CAS cas);

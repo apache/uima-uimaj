@@ -36,17 +36,17 @@ import org.apache.uima.jcas.JCasRegistry;
 public class Sofa extends TOP implements SofaFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_SOFA;
-  public final static String _FeatName_sofaNum = "sofaNum"; // int
-  public final static String _FeatName_sofaID = "sofaID"; // string
-  public final static String _FeatName_mimeType = "mimeType"; // string
-  public final static String _FeatName_sofaArray = "sofaArray"; // TOP
-  public final static String _FeatName_sofaString = "sofaString"; // string
-  public final static String _FeatName_sofaURI = "sofaURI"; // string
+  public static final String _TypeName = CAS.TYPE_NAME_SOFA;
+  public static final String _FeatName_sofaNum = "sofaNum"; // int
+  public static final String _FeatName_sofaID = "sofaID"; // string
+  public static final String _FeatName_mimeType = "mimeType"; // string
+  public static final String _FeatName_sofaArray = "sofaArray"; // TOP
+  public static final String _FeatName_sofaString = "sofaString"; // string
+  public static final String _FeatName_sofaURI = "sofaURI"; // string
 
-  public final static int typeIndexID = JCasRegistry.register(Sofa.class);
+  public static final int typeIndexID = JCasRegistry.register(Sofa.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   @Override
   public int getTypeIndexID() {
@@ -62,25 +62,25 @@ public class Sofa extends TOP implements SofaFSImpl {
   // public final static int _FI_sofaString = TypeSystemImpl.getAdjustedFeatureOffset("sofaString");
   // public final static int _FI_sofaURI = TypeSystemImpl.getAdjustedFeatureOffset("sofaURI");
 
-  private final static CallSite _FC_sofaNum = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_sofaNum = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "sofaNum");
-  private final static CallSite _FC_sofaID = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_sofaID = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "sofaID");
-  private final static CallSite _FC_mimeType = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_mimeType = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "mimeType");
-  private final static CallSite _FC_sofaArray = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_sofaArray = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "sofaArray");
-  private final static CallSite _FC_sofaString = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_sofaString = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "sofaString");
-  private final static CallSite _FC_sofaURI = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
+  private static final CallSite _FC_sofaURI = TypeSystemImpl.createCallSiteForBuiltIn(Sofa.class,
           "sofaURI");
 
-  private final static MethodHandle _FH_sofaNum = _FC_sofaNum.dynamicInvoker();
-  private final static MethodHandle _FH_sofaID = _FC_sofaID.dynamicInvoker();
-  private final static MethodHandle _FH_mimeType = _FC_mimeType.dynamicInvoker();
-  private final static MethodHandle _FH_sofaArray = _FC_sofaArray.dynamicInvoker();
-  private final static MethodHandle _FH_sofaString = _FC_sofaString.dynamicInvoker();
-  private final static MethodHandle _FH_sofaURI = _FC_sofaURI.dynamicInvoker();
+  private static final MethodHandle _FH_sofaNum = _FC_sofaNum.dynamicInvoker();
+  private static final MethodHandle _FH_sofaID = _FC_sofaID.dynamicInvoker();
+  private static final MethodHandle _FH_mimeType = _FC_mimeType.dynamicInvoker();
+  private static final MethodHandle _FH_sofaArray = _FC_sofaArray.dynamicInvoker();
+  private static final MethodHandle _FH_sofaString = _FC_sofaString.dynamicInvoker();
+  private static final MethodHandle _FH_sofaURI = _FC_sofaURI.dynamicInvoker();
 
   // private final int _F_sofaNum;
   // private final String _F_sofaID; // view name or _InitialView

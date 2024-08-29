@@ -94,7 +94,7 @@ public class BrowserUtil {
    * @param args
    *          [url_to_open]
    */
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     String url = (args.length > 0) ? args[0] : "http://apache.org";
     try {
       Process process = BrowserUtil.openUrlInDefaultBrowser(url);
@@ -129,8 +129,7 @@ public class BrowserUtil {
     Process process = null;
 
     switch (__osId) {
-      case WINDOWS_NT:
-      case WINDOWS_9x:
+      case WINDOWS_NT, WINDOWS_9x:
         // Add quotes around the URL to allow ampersands and other
         // special characters to work.
         process = Runtime.getRuntime()

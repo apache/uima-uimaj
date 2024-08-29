@@ -91,7 +91,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("label"), new PropertyXmlInfo("typeName"),
               new PropertyXmlInfo("kind"), new PropertyXmlInfo("keys", true)
 

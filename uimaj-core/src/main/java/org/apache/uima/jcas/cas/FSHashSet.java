@@ -56,19 +56,16 @@ public class FSHashSet <T extends TOP> extends TOP implements
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(FSHashSet.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(FSHashSet.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -89,13 +86,13 @@ public class FSHashSet <T extends TOP> extends TOP implements
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_fsArray = "fsArray";
+  public static final String _FeatName_fsArray = "fsArray";
 
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSHashSet.class, "fsArray");
-  private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
+  private static final CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSHashSet.class, "fsArray");
+  private static final MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -337,7 +334,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     
     return new Iterator<T>() {
 
-      final private Iterator<T> baseIt = isSaveNeeded 
+      private final Iterator<T> baseIt = isSaveNeeded
           ? fsHashSet.iterator()
           : gtaIterator();
 

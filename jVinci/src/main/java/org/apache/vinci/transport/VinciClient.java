@@ -300,7 +300,7 @@ public class VinciClient extends BaseClient {
    * @pre service_name != null
    * @pre factory != null
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name,
+  public static Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory);
@@ -331,7 +331,7 @@ public class VinciClient extends BaseClient {
    * @pre factory != null
    * @pre socket_timeout &ge; 0
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name,
+  public static Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
     return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory,
             socket_timeout);
@@ -364,7 +364,7 @@ public class VinciClient extends BaseClient {
    * @pre factory != null
    * @pre socket_timeout &ge; 0
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name,
+  public static Transportable sendAndReceive(Transportable in, String service_name,
           TransportableFactory factory, int socket_timeout, int connect_timeout)
           throws IOException, ServiceException {
     return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory, socket_timeout,
@@ -590,7 +590,7 @@ public class VinciClient extends BaseClient {
    * @pre in != null
    * @pre service_name != null
    */
-  static public VinciFrame rpc(Transportable in, String service_name)
+  public static VinciFrame rpc(Transportable in, String service_name)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name);
   }
@@ -622,7 +622,7 @@ public class VinciClient extends BaseClient {
    * @throws VNSException
    *           -
    */
-  static public VinciFrame rpc(Transportable in, String service_name, int timeout)
+  public static VinciFrame rpc(Transportable in, String service_name, int timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name, timeout);
   }
@@ -657,13 +657,13 @@ public class VinciClient extends BaseClient {
    * @throws VNSException
    *           -
    */
-  static public VinciFrame rpc(Transportable in, String service_name, int timeout,
+  public static VinciFrame rpc(Transportable in, String service_name, int timeout,
           int connect_timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name, timeout, connect_timeout);
   }
 
-  static public void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
     Frame ping = new VinciFrame().fadd(TransportConstants.PING_KEY, "hi");
     System.out.println(VinciClient.rpc(ping, args[0]));
   }

@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
 
   /** The Constant contentAssistAvailable. */
-  private final static boolean contentAssistAvailable;
+  private static final boolean contentAssistAvailable;
   static {
     boolean contentAssistIsOK = false;
     try {

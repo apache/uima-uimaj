@@ -87,7 +87,7 @@ public class XCASSerializer {
      * Any FS reference we've touched goes in here. value is index repo (first one?), or
      * MULTIPLY_INDEXED
      */
-    final private Map<TOP, Integer> queued = new IdentityHashMap<>();
+    private final Map<TOP, Integer> queued = new IdentityHashMap<>();
 
     private static final int NOT_INDEXED = -1;
 
@@ -99,7 +99,7 @@ public class XCASSerializer {
      * Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
      * Key is used to index into dupVectors
      */
-    final private Map<TOP, Integer> duplicates = new IdentityHashMap<>();
+    private final Map<TOP, Integer> duplicates = new IdentityHashMap<>();
 
     /**
      * A key identifying a particular FS indexed in multiple indexes. Starts a 0, incr by 1 for each
@@ -115,13 +115,13 @@ public class XCASSerializer {
 
     // next 2 are a pair; the first is a fs, the 2nd is the index repo its indexed in
     /** list of FSs that are in an index somewhere. */
-    final private List<TOP> indexedFSs = new ArrayList<>();
+    private final List<TOP> indexedFSs = new ArrayList<>();
 
     /** Specific IndexRepository for indexed FSs */
-    final private IntVector indexReps = new IntVector();
+    private final IntVector indexReps = new IntVector();
 
     /** The current queue for FSs to write out. */
-    final private Deque<TOP> queue = new ArrayDeque<>();
+    private final Deque<TOP> queue = new ArrayDeque<>();
 
     private final AttributesImpl emptyAttrs = new AttributesImpl();
 

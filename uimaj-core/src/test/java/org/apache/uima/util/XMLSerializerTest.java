@@ -35,10 +35,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class XMLSerializerTest {
+class XMLSerializerTest {
 
   @Test
-  public void testXml10() throws Exception {
+  void testXml10() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     ContentHandler ch = sax2xml.getContentHandler();
@@ -51,7 +51,7 @@ public class XMLSerializerTest {
   }
 
   @Test
-  public void testXml11() throws Exception {
+  void testXml11() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
@@ -78,7 +78,7 @@ public class XMLSerializerTest {
   }
 
   @Test
-  public void testXml10Error() throws Exception {
+  void testXml10Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     ContentHandler ch = sax2xml.getContentHandler();
@@ -99,7 +99,7 @@ public class XMLSerializerTest {
   }
 
   @Test
-  public void testXml11Error() throws Exception {
+  void testXml11Error() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
@@ -118,7 +118,7 @@ public class XMLSerializerTest {
   }
 
   @Test
-  public void testXml11Error2() throws Exception {
+  void testXml11Error2() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(baos, false);
     sax2xml.setOutputProperty(OutputKeys.VERSION, "1.1");
@@ -139,5 +139,4 @@ public class XMLSerializerTest {
     }
     assertTrue(eh);
   }
-
 }

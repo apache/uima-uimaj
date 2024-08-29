@@ -179,7 +179,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
           new PropertyXmlInfo[] { //
               new PropertyXmlInfo("name", true), //
               new PropertyXmlInfo("description", true), //

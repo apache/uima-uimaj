@@ -90,7 +90,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   // Resource Manager for that combination.
 
   // note: all accesses to this are synchronized on this object itself
-  static final private Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers = new WeakHashMap<>(
+  private static final Map<ResourceManager, Map<StringPair, ResourceManager>> cachedResourceManagers = new WeakHashMap<>(
           4);
 
   private AnalysisEngine ae = null;
@@ -662,7 +662,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    * inner class StringPair
    * 
    */
-  static public class StringPair {
+  public static class StringPair {
 
     private String classPath;
 

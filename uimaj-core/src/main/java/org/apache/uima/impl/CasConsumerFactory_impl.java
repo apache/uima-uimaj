@@ -93,11 +93,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         Resource resource;
         try {
           resource = (Resource) implClass.newInstance();
-        } catch (InstantiationException e) {
-          throw new ResourceInitializationException(
-                  ResourceInitializationException.COULD_NOT_INSTANTIATE,
-                  new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.COULD_NOT_INSTANTIATE,
                   new Object[] { className, aSpecifier.getSourceUrlString() }, e);

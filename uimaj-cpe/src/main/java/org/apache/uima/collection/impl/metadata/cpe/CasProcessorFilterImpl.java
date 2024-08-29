@@ -132,7 +132,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
           new PropertyXmlInfo[0]);
 
   /**

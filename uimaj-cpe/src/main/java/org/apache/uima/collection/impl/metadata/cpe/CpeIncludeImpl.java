@@ -111,7 +111,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("include",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("include",
           new PropertyXmlInfo[0]);
 
   /**

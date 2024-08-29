@@ -88,24 +88,21 @@ public class FSArrayList <T extends TOP> extends TOP implements
                          List<T>, RandomAccess, Cloneable {
  
   /** The Constant EMPTY_LIST. */
-  private final static List<? extends TOP> EMPTY_LIST = Arrays.asList(Constants.EMPTY_TOP_ARRAY);
+  private static final List<? extends TOP> EMPTY_LIST = Arrays.asList(Constants.EMPTY_TOP_ARRAY);
 
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.cas.FSArrayList";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.jcas.cas.FSArrayList";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(FSArrayList.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(FSArrayList.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -123,13 +120,13 @@ public class FSArrayList <T extends TOP> extends TOP implements
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_fsArray = "fsArray";
+  public static final String _FeatName_fsArray = "fsArray";
 
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSArrayList.class, "fsArray");
-  private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
+  private static final CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(FSArrayList.class, "fsArray");
+  private static final MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

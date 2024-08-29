@@ -57,7 +57,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   private boolean wentForward = true;
 
   // The IICP
-  final private FsIndex_iicp<T> iicp;
+  private final FsIndex_iicp<T> iicp;
 
   // /** true if sorted index, with typepriority as a key, but ignoring it because
   // * either there are no type priorities defined, or

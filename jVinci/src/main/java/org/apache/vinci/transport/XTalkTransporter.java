@@ -32,19 +32,19 @@ import org.apache.vinci.transport.util.UTFConverter;
  */
 public class XTalkTransporter implements FrameTransporter {
 
-  static private final int OVERSIZE_KEY_LENGTH = 1024 * 1024 * 1024;
+  private static final int OVERSIZE_KEY_LENGTH = 1024 * 1024 * 1024;
 
-  static public final byte DOCUMENT_MARKER = (byte) 'X';
+  public static final byte DOCUMENT_MARKER = (byte) 'X';
 
-  static public final byte ELEMENT_MARKER = (byte) 'E';
+  public static final byte ELEMENT_MARKER = (byte) 'E';
 
-  static public final byte PI_MARKER = (byte) 'p';
+  public static final byte PI_MARKER = (byte) 'p';
 
-  static public final byte STRING_MARKER = (byte) 's';
+  public static final byte STRING_MARKER = (byte) 's';
 
-  static public final byte VERSION_CODE = (byte) 0;
+  public static final byte VERSION_CODE = (byte) 0;
 
-  static final private String OVERSIZE_FIELD = "Oversize field: ";
+  private static final String OVERSIZE_FIELD = "Oversize field: ";
 
   /**
    * Parse the data-stream according to the XTalk protocol.
@@ -333,7 +333,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre is != null
    */
-  static private void ignoreString(InputStream is) throws IOException {
+  private static void ignoreString(InputStream is) throws IOException {
     long skip_me = readInt(is);
     long count = 0;
     long skipped = count;
@@ -358,7 +358,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre is != null
    */
-  static public String consumeString(InputStream is) throws IOException {
+  public static String consumeString(InputStream is) throws IOException {
     int utflen = readInt(is);
     if (utflen > OVERSIZE_KEY_LENGTH) {
       throw new IOException(OVERSIZE_FIELD + utflen);
@@ -368,7 +368,7 @@ public class XTalkTransporter implements FrameTransporter {
     return UTFConverter.convertUTFToString(bytearr);
   }
 
-  static public String consumeString(InputStream is, byte[] buffer, char[] cbuffer)
+  public static String consumeString(InputStream is, byte[] buffer, char[] cbuffer)
           throws IOException {
     int utflen = readInt(is);
     if (utflen > OVERSIZE_KEY_LENGTH) {
@@ -401,7 +401,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @throws IOException
    *           passthru
    */
-  static public int consumeCharacters(InputStream is, byte[] byteBuf, char[] charBuf,
+  public static int consumeCharacters(InputStream is, byte[] byteBuf, char[] charBuf,
           int bytesToRead) throws IOException {
     readFully(byteBuf, bytesToRead, is);
     return UTFConverter.convertUTFToString(byteBuf, 0, bytesToRead, charBuf);
@@ -419,7 +419,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    * @pre f != null
    */
-  static private FrameLeaf consumeLeaf(InputStream is, Frame f) throws IOException {
+  private static FrameLeaf consumeLeaf(InputStream is, Frame f) throws IOException {
     int utflen = readInt(is);
     if (utflen > OVERSIZE_KEY_LENGTH) {
       throw new IOException(OVERSIZE_FIELD + utflen);
@@ -515,7 +515,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre str != null
    * @pre os != null
    */
-  static public void stringToBin(String str, OutputStream os) throws IOException {
+  public static void stringToBin(String str, OutputStream os) throws IOException {
     byte[] write_me = UTFConverter.convertStringToUTF(str);
     writeInt(write_me.length, os);
     os.write(write_me);
@@ -534,7 +534,7 @@ public class XTalkTransporter implements FrameTransporter {
    * @throws IOException
    *           passthru
    */
-  static public void stringToBin(String str, OutputStream os, byte[] buffer) throws IOException {
+  public static void stringToBin(String str, OutputStream os, byte[] buffer) throws IOException {
     byte[] newbuf;
     if (buffer.length < str.length() * 3) {
       int len = UTFConverter.calculateUTFLength(str);
@@ -552,14 +552,14 @@ public class XTalkTransporter implements FrameTransporter {
     os.write(newbuf, 0, newlen);
   }
 
-  static public void stringToBin(char[] str, int begin, int len, OutputStream os)
+  public static void stringToBin(char[] str, int begin, int len, OutputStream os)
           throws IOException {
     byte[] write_me = UTFConverter.convertStringToUTF(str, begin, len);
     writeInt(write_me.length, os);
     os.write(write_me);
   }
 
-  static public void stringToBin(char[] str, int begin, int len, OutputStream os, byte[] buffer)
+  public static void stringToBin(char[] str, int begin, int len, OutputStream os, byte[] buffer)
           throws IOException {
     byte[] newbuf;
     if (buffer.length < (len - begin) * 3) {
@@ -589,7 +589,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre out != null
    */
-  static public void writeInt(int write_me, OutputStream out) throws IOException {
+  public static void writeInt(int write_me, OutputStream out) throws IOException {
     out.write(write_me >>> 24);
     out.write(write_me >>> 16);
     out.write(write_me >>> 8);
@@ -606,7 +606,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre in != null
    */
-  static public int readInt(InputStream in) throws IOException {
+  public static int readInt(InputStream in) throws IOException {
     int c1 = in.read();
     int c2 = in.read();
     int c3 = in.read();
@@ -629,11 +629,11 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre b != null
    * @pre in != null
    */
-  static public void readFully(byte[] b, InputStream in) throws IOException {
+  public static void readFully(byte[] b, InputStream in) throws IOException {
     readFully(b, b.length, in);
   }
 
-  static public void readFully(byte[] b, int length, InputStream in) throws IOException {
+  public static void readFully(byte[] b, int length, InputStream in) throws IOException {
     int read_so_far = 0;
     while (read_so_far < length) {
       int count = in.read(b, read_so_far, length - read_so_far);

@@ -20,7 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -48,7 +48,7 @@ import org.apache.uima.util.XMLizable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CasPoolTest {
+class CasPoolTest {
 
   private static XMLizable parseNoException() {
     try {
@@ -61,13 +61,13 @@ public class CasPoolTest {
     }
   }
 
-  final private static AnalysisEngineDescription aed = (AnalysisEngineDescription) parseNoException();
+  private static final AnalysisEngineDescription aed = (AnalysisEngineDescription) parseNoException();
 
   private AnalysisEngine analysisEngine;
   private CasManager casManager;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     try {
       analysisEngine = UIMAFramework.produceAnalysisEngine(aed);
     } catch (ResourceInitializationException e) {
@@ -78,7 +78,7 @@ public class CasPoolTest {
   }
 
   @Test
-  public void testCasReleaseNotAllowed() throws Exception {
+  void testCasReleaseNotAllowed() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
     casManager.defineCasPool("id", 2, p);
@@ -90,21 +90,14 @@ public class CasPoolTest {
     } catch (UIMARuntimeException e) {
       ex = e;
     }
-    assertTrue(ex != null && ex.getMessage().equals(
-            "Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service."));
+    assertThat(ex != null && ex.getMessage().equals(
+        "Illegal invocation of casRelease() while awaiting response from a UIMA-AS Service.")).isTrue();
     c.clearCasState(CasState.UIMA_AS_WAIT_4_RESPONSE);
-    ex = null;
-    try {
-      c.release();
-    } catch (UIMARuntimeException e) {
-      ex = e;
-    }
-    assertTrue(ex == null);
-
+    assertThatNoException().isThrownBy(() -> c.release() );
   }
 
   @Test
-  public void testMultiThread() throws Exception {
+  void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, 200);
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 10);
@@ -120,7 +113,6 @@ public class CasPoolTest {
         for (int k = 0; k < 5; k++) {
           getAndRelease(sb, random);
         }
-        // System.out.println(sb.toString());
       }
     };
     MultiThreadUtils.tstMultiThread("CasPoolTest", numberOfThreads, 10, run2isb, new Runnable() {
@@ -155,22 +147,20 @@ public class CasPoolTest {
 
   private CAS getCas(StringBuilder sb) {
     CAS c = casManager.getCas("id");
-    sb.append(" " + nc.incrementAndGet());
-    assertTrue(c != null);
+    sb.append(" ").append(nc.incrementAndGet());
+    assertThat(c).isNotNull();
     return c;
   }
 
   private void releaseCas(CAS c, StringBuilder sb) {
     casManager.releaseCas(c);
-    sb.append(" " + nc.decrementAndGet());
+    sb.append(" ").append(nc.decrementAndGet());
   }
 
   // verify that several CASes in a pool in different views share the same type system
 
   @Test
-  public void testPool() throws Exception {
-    try {
-
+  void testPool() throws Exception {
       casManager.defineCasPool("uniqueString", 2, null);
 
       CAS c1 = casManager.getCas("uniqueString");
@@ -183,9 +173,9 @@ public class CasPoolTest {
 
       TypeSystem ts = c1.getTypeSystem();
 
-      assertThat(ts == c2.getTypeSystem()).isTrue();
-      assertThat(ts == c1v2.getTypeSystem()).isTrue();
-      assertThat(ts == c2v2.getTypeSystem()).isTrue();
+      assertThat(ts).isSameAs(c2.getTypeSystem());
+      assertThat(ts).isSameAs(c1v2.getTypeSystem());
+      assertThat(ts).isSameAs(c2v2.getTypeSystem());
 
       casManager.releaseCas(c1v2);
       casManager.releaseCas(c2);
@@ -197,10 +187,5 @@ public class CasPoolTest {
               Collections.singletonMap(CAS.NAME_DEFAULT_SOFA, "mappedName"));
       c1.setCurrentComponentInfo(context.getComponentInfo());
       casManager.releaseCas(c1);
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
   }
-
 }

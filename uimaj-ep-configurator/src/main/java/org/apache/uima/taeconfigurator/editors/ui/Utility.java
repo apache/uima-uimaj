@@ -63,10 +63,10 @@ public class Utility extends MessageDialog {
   }
 
   /** The Constant OK_CANCEL. */
-  final private static String[] OK_CANCEL = { "OK", "Cancel" };
+  private static final String[] OK_CANCEL = { "OK", "Cancel" };
 
   /** The Constant OKstring. */
-  final private static String[] OKstring = { "OK" };
+  private static final String[] OKstring = { "OK" };
 
   /**
    * Pops up a warning message with an "OK" and "Cancel" button.

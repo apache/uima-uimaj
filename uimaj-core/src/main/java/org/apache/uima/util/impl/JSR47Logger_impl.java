@@ -40,12 +40,12 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class JSR47Logger_impl extends Logger_common_impl {
 
-  final static private Object[] zeroLengthArray = new Object[0];
+  private static final Object[] zeroLengthArray = new Object[0];
 
   /**
    * logger object from the underlying JSR-47 logging framework
    */
-  final private java.util.logging.Logger logger;
+  private final java.util.logging.Logger logger;
 
   /**
    * create a new LogWrapper class for the specified source class

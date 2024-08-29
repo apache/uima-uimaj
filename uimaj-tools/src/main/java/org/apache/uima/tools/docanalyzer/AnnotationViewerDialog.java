@@ -617,7 +617,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    *          the node
    * @return the text value
    */
-  static public String getTextValue(Node node) {
+  public static String getTextValue(Node node) {
     Node first = node.getFirstChild();
     if (first != null) {
       Text text = (Text) node.getFirstChild();
@@ -635,7 +635,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    *          the name
    * @return the first child by name
    */
-  static public Node getFirstChildByName(Node node, String name) {
+  public static Node getFirstChildByName(Node node, String name) {
     NodeList children = node.getChildNodes();
     for (int c = 0; c < children.getLength(); ++c) {
       Node n = children.item(c);

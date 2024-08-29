@@ -19,41 +19,40 @@
 
 package org.apache.uima.internal.util;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test XML utilities.
  */
-public class XmlUtilsTest {
+class XmlUtilsTest {
   @Test
-  public void testXMLChars() {
+  void testXMLChars() {
     // Create a string with chars from all the valid ranges.
-    char[] chars = new char[] { 0x9, 0xA, 0xD, 0x20, 0x25, 0xD7FF, 0xE000, 0xEFFF, 0xFFFD, 0xD800,
+    var chars = new char[] { 0x9, 0xA, 0xD, 0x20, 0x25, 0xD7FF, 0xE000, 0xEFFF, 0xFFFD, 0xD800,
         0xDC00, 0xDBFF, 0xDFFF };
     String s = new String(chars);
-    assertTrue(XMLUtils.checkForNonXmlCharacters(s) < 0);
+    assertThat(XMLUtils.checkForNonXmlCharacters(s)).isNegative();
 
-    // The follownig utf 16 code units are not valid XML chars, or can not stand by themselves
+    // The following utf 16 code units are not valid XML chars, or can not stand by themselves
     // (i.e., they're surrogates).
     chars = new char[] { 0x0, 0xDFFF, 0xD800, 0xDC00, 0xFFFF };
     for (int i = 0; i < chars.length; i++) {
-      assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { chars[i] })) == 0);
+      assertThat(XMLUtils.checkForNonXmlCharacters(String.valueOf(chars[i]))).isZero();
     }
 
     // The following characters are valid in XML 1.1 but not 1.0
     chars = new char[] { 0x1, 0xB };
     for (int i = 0; i < chars.length; i++) {
-      assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { chars[i] })) == 0);
-      assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { chars[i] }), true) < 0);
+      assertThat(XMLUtils.checkForNonXmlCharacters(String.valueOf(chars[i]))).isZero();
+      assertThat(XMLUtils.checkForNonXmlCharacters(String.valueOf(chars[i]), true)).isNegative();
     }
 
     // Check high surrogate followed by low surrogate (legal combination)
-    assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { 0xD800, 0xDC00 })) < 0);
+    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[]{0xD800, 0xDC00}))).isNegative();
 
     // Check low surrogate followed by high surrogate (illegal combination).
-    assertTrue(XMLUtils.checkForNonXmlCharacters(new String(new char[] { 0xDC00, 0xD800 })) == 0);
+    assertThat(XMLUtils.checkForNonXmlCharacters(new String(new char[]{0xDC00, 0xD800}))).isZero();
   }
-
 }

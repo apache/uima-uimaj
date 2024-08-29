@@ -37,7 +37,7 @@ import org.apache.uima.cas.TypeSystem;
 
 public class RsType {
 
-  public final static List<Feature> EMPTY_FEATURE_LIST = new ArrayList<>(0);
+  public static final List<Feature> EMPTY_FEATURE_LIST = new ArrayList<>(0);
 
   final String typeName;
   boolean isAllFeatures = false;

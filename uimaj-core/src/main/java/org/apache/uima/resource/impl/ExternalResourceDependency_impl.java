@@ -112,7 +112,7 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "externalResourceDependency",
           new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
               new PropertyXmlInfo("description", false), new PropertyXmlInfo("interfaceName"),

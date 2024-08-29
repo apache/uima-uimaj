@@ -56,15 +56,15 @@ public class I18nx_impl {
    * the thread local class loader at creation time, see UIMA-4793 Transient to allow exceptions to
    * be serialized. Deserialized versions have null as their value, which is handled by the users
    */
-  final transient private ClassLoader originalContextClassLoader;
+  private final transient ClassLoader originalContextClassLoader;
 
   // see https://issues.apache.org/jira/browse/UIMA-5961
   // the resourceBundle associated with the default locale, at the time of creation of this instance
-  final transient private ResourceBundle default_localized_resourceBundle;
+  private final transient ResourceBundle default_localized_resourceBundle;
   // the default locale, at the time of creation of this instance
-  final transient private Locale default_locale;
+  private final transient Locale default_locale;
   // a user specified resource bundle, used when the default_locale is not appropriate
-  transient private ResourceBundle user_specified_resourceBundle = null;
+  private transient ResourceBundle user_specified_resourceBundle = null;
 
   /**
    * Creates a new <code>InternationalizedException</code> with the specified message and cause.

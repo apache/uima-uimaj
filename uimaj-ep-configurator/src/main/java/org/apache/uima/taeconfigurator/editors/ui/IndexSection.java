@@ -50,16 +50,16 @@ public class IndexSection extends AbstractSection {
   public static final String ANNOTATION_INDEX_BUILT_IN = "Annotation Index (Built-in)";
 
   /** The Constant INDEX_NAME_COL. */
-  public final static int INDEX_NAME_COL = 0;
+  public static final int INDEX_NAME_COL = 0;
 
   /** The Constant INDEX_TYPE_COL. */
-  public final static int INDEX_TYPE_COL = 1;
+  public static final int INDEX_TYPE_COL = 1;
 
   /** The Constant ASC_DES_COL. */
-  public final static int ASC_DES_COL = 1;
+  public static final int ASC_DES_COL = 1;
 
   /** The Constant INDEX_KIND_COL. */
-  public final static int INDEX_KIND_COL = 2;
+  public static final int INDEX_KIND_COL = 2;
 
   /** The tt. */
   public Tree tt; // accessed by inner class

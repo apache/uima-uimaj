@@ -146,7 +146,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
           new PropertyXmlInfo[] { //
               new PropertyXmlInfo("featureDescription", null), //
               new PropertyXmlInfo("comparisonValue"), //

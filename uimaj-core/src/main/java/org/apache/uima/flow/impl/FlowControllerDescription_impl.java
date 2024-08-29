@@ -120,7 +120,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "flowControllerDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),

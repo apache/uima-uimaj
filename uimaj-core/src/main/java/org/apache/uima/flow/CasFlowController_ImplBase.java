@@ -43,9 +43,9 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    */
   @Override
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
-    if (aCAS instanceof CAS) {
-      checkTypeSystemChange((CAS) aCAS);
-      return computeFlow((CAS) aCAS);
+    if (aCAS instanceof CAS cas) {
+      checkTypeSystemChange(cas);
+      return computeFlow(cas);
     } else {
       throw new AnalysisEngineProcessException(
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,

@@ -30,11 +30,11 @@ import java.util.HashMap;
 final class StringSet {
 
   private int lastStringCode = 0;
-  final private ArrayList<String> strings = new ArrayList<>();
+  private final ArrayList<String> strings = new ArrayList<>();
   {
     strings.add(null);
   }
-  final private HashMap<String, Integer> string2int = new HashMap<>();
+  private final HashMap<String, Integer> string2int = new HashMap<>();
 
   // Reset the string heap (called on CAS reset).
   void reset() {

@@ -262,7 +262,7 @@ public class Misc {
     return (l >= 1) && sb.charAt(l - 1) == '\n';
   }
 
-  public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
+  public static final MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
 
   private static FilenameFilter jarFilter = new FilenameFilter() {
     @Override
@@ -618,7 +618,7 @@ public class Misc {
    *          the value to convert
    * @return the next higher power of 2, or i if it is already a power of 2
    */
-  static public int nextHigherPowerOf2(int i) {
+  public static int nextHigherPowerOf2(int i) {
     return (i < 1) ? 1 : Integer.highestOneBit(i) << ((Integer.bitCount(i) == 1 ? 0 : 1));
   }
 
@@ -631,7 +631,7 @@ public class Misc {
    *          the power of 2 to use
    * @return the next higher power of 2 to the x, or i if it is already == to 2 to the x
    */
-  static public int nextHigherPowerOfX(int i, int x) {
+  public static int nextHigherPowerOfX(int i, int x) {
     int shft = 31 - Integer.numberOfLeadingZeros(x); // x == 8, shft = 3
     return (i < 1) ? x : ((i + (x - 1)) >>> shft) << shft;
   }
@@ -652,7 +652,7 @@ public class Misc {
    *          -
    * @return -
    */
-  static public MethodHandle getProtectedMethodHandle(Class<?> clazz,
+  public static MethodHandle getProtectedMethodHandle(Class<?> clazz,
           Lookup methodHandleAccessContext, String protectedMethod, Class<?>... args) {
     try {
       Method m = clazz.getDeclaredMethod(protectedMethod, args);
@@ -679,12 +679,12 @@ public class Misc {
    *          -
    * @return -
    */
-  static public MethodHandle getProtectedMethodHandle(Class<?> clazz, String protectedMethod,
+  public static MethodHandle getProtectedMethodHandle(Class<?> clazz, String protectedMethod,
           Class<?>... args) {
     return getProtectedMethodHandle(clazz, UIMAlookup, protectedMethod, args);
   }
 
-  static public MethodHandle getProtectedFieldGetter(Class<?> clazz, String protectedField) {
+  public static MethodHandle getProtectedFieldGetter(Class<?> clazz, String protectedField) {
     try {
       Field f = clazz.getDeclaredField(protectedField);
       f.setAccessible(true);
@@ -703,7 +703,7 @@ public class Misc {
    *          the name of the field
    * @return the value or Integer.MIN_VALUE if not present
    */
-  static public int getStaticIntField(Class<?> clazz, String fieldName) {
+  public static int getStaticIntField(Class<?> clazz, String fieldName) {
     try {
       Field f = clazz.getField(fieldName);
       return f.getInt(null);
@@ -714,7 +714,7 @@ public class Misc {
     }
   }
 
-  static public int getStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
+  public static int getStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
     try {
       Field f = clazz.getDeclaredField(fieldName);
       return f.getInt(null);
@@ -725,7 +725,7 @@ public class Misc {
     }
   }
 
-  static public int getPrivateStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
+  public static int getPrivateStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
     try {
       Field f = clazz.getDeclaredField(fieldName);
       f.setAccessible(true);
@@ -745,7 +745,7 @@ public class Misc {
    * @param v
    *          0 or more strings as arguments
    */
-  static public void addAll(Collection<String> c, String... v) {
+  public static void addAll(Collection<String> c, String... v) {
     for (String s : v) {
       c.add(s);
     }
@@ -1267,7 +1267,7 @@ public class Misc {
     };
   }
 
-  static public boolean contains(String[] strings, String item) {
+  public static boolean contains(String[] strings, String item) {
     for (String string : strings) {
       if (Misc.equalStrings(string, item)) {
         return true;
@@ -1276,7 +1276,7 @@ public class Misc {
     return false;
   }
 
-  static public boolean contains(ClassLoader[] cls, ClassLoader cl) {
+  public static boolean contains(ClassLoader[] cls, ClassLoader cl) {
     for (ClassLoader item : cls) {
       if (item == cl) {
         return true;

@@ -201,7 +201,7 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
   /**
    * Data structure that holds the key of a component (AnalysisEngine) and its required input types.
    */
-  static private class ComponentInfo {
+  private static class ComponentInfo {
     String key;
 
     /**

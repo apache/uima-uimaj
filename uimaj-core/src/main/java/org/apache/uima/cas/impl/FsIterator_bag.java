@@ -33,7 +33,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   private static final AtomicInteger moveToCount = new AtomicInteger(0);
 
   protected CopyOnWriteObjHashSet<T> bag;
-  final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from
+  protected final FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from
                                              // super class, allows dispatch w/o casting
 
   private int position = -1;

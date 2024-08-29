@@ -83,10 +83,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   // private final static boolean DEBUG = false;
 
-  public final static boolean ITEM_ADDED_TO_INDEX = true;
-  public final static boolean ITEM_REMOVED_FROM_INDEX = false;
+  public static final boolean ITEM_ADDED_TO_INDEX = true;
+  public static final boolean ITEM_REMOVED_FROM_INDEX = false;
   /** set next to true to debug issues with different treatment of no type priorities in v3 */
-  public final static boolean V2_ANNOTATION_COMPARE_TYPE_ORDER = false;
+  public static final boolean V2_ANNOTATION_COMPARE_TYPE_ORDER = false;
   /**
    * The default size of an index.
    */
@@ -205,9 +205,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * only used when processing updates in batch mode
    */
   private static class ProcessedIndexInfo {
-    final private Set<TOP> fsAddedToIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
-    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
-    final private Set<TOP> fsReindexed = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsAddedToIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsDeletedFromIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsReindexed = new ObjHashSet<>(TOP.class, TOP._singleton);
   }
 
   /**
@@ -351,23 +351,23 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * speedup for annotation index accessing by type, lazily initialized
    */
-  final private Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes = new IdentityHashMap<>();
+  private final Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes = new IdentityHashMap<>();
 
   // the next are for journaling updates to indexes
-  final private List<TOP> indexUpdates;
+  private final List<TOP> indexUpdates;
 
-  final private BitSet indexUpdateOperation;
+  private final BitSet indexUpdateOperation;
 
   private boolean logProcessed;
 
   // Monitor indexes used to optimize getIndexedFS and flush
   // set of typecodes corresponding to indexes that are used
-  final private IntVector usedIndexes;
+  private final IntVector usedIndexes;
 
   // one bit per typeCode, indexed by typeCode
   // This is only to speed up the test to skip adding an index to the set of "used" ones if it
   // already is used.
-  final private BitSet isUsed;
+  private final BitSet isUsed;
 
   // /**
   // * Used for maintaining collection of all used iicp's for indexes

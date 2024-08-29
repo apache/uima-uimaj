@@ -36,11 +36,6 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    */
   private TypeSystem mLastTypeSystem = null;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
-   */
   @Override
   public final Class<CAS> getRequiredCasInterface() {
     return CAS.class;
@@ -56,17 +51,11 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
     return 1;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
-   */
   @Override
   public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
-    if (aCAS instanceof CAS) {
-      checkTypeSystemChange((CAS) aCAS);
-      process((CAS) aCAS);
+    if (aCAS instanceof CAS cas) {
+      checkTypeSystemChange(cas);
+      process(cas);
     } else {
       throw new AnalysisEngineProcessException(
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,

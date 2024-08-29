@@ -161,7 +161,7 @@ public class CasSerializerSupport {
    * Comparator that just uses short name Public for access by JsonCasSerializer where it's needed
    * for a binary search https://issues.apache.org/jira/browse/UIMA-5171
    */
-  public final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
+  public static final Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
     @Override
     public int compare(TypeImpl object1, TypeImpl object2) {
       return object1.getShortName().compareTo(object2.getShortName());
@@ -245,24 +245,24 @@ public class CasSerializerSupport {
   // Methods used to serialize items
   // Separate implementations for JSON and Xmi
   // **********************************************/
-  public static abstract class CasSerializerSupportSerialize {
+  public abstract static class CasSerializerSupportSerialize {
 
-    abstract protected void initializeNamespaces();
+    protected abstract void initializeNamespaces();
 
-    abstract protected void checkForNameCollision(XmlElementName xmlElementName);
+    protected abstract void checkForNameCollision(XmlElementName xmlElementName);
 
-    abstract protected void addNameSpace(XmlElementName xmlElementName);
+    protected abstract void addNameSpace(XmlElementName xmlElementName);
 
-    abstract protected XmlElementName uimaTypeName2XmiElementName(String typeName);
+    protected abstract XmlElementName uimaTypeName2XmiElementName(String typeName);
 
-    abstract protected void writeFeatureStructures(int elementCount) throws Exception;
+    protected abstract void writeFeatureStructures(int elementCount) throws Exception;
 
-    abstract protected void writeViews() throws Exception;
+    protected abstract void writeViews() throws Exception;
 
-    abstract protected void writeView(Sofa sofa, Collection<TOP> members) throws Exception;
+    protected abstract void writeView(Sofa sofa, Collection<TOP> members) throws Exception;
 
-    abstract protected void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted,
-            Collection<TOP> reindexed) throws Exception;
+    protected abstract void writeView(Sofa sofa, Collection<TOP> added, Collection<TOP> deleted,
+                                      Collection<TOP> reindexed) throws Exception;
 
     /**
      * 
@@ -274,19 +274,19 @@ public class CasSerializerSupport {
      * @throws Exception
      *           -
      */
-    abstract protected boolean writeFsStart(TOP fs, int typeCode) throws Exception;
+    protected abstract boolean writeFsStart(TOP fs, int typeCode) throws Exception;
 
-    abstract protected void writeFs(TOP fs, int typeCode) throws Exception;
+    protected abstract void writeFs(TOP fs, int typeCode) throws Exception;
 
-    abstract protected void writeListsAsIndividualFSs(TOP fs, int typeCode) throws Exception;
+    protected abstract void writeListsAsIndividualFSs(TOP fs, int typeCode) throws Exception;
 
-    abstract protected void writeArrays(TOP fsarray, int typeCode, int typeClass) throws Exception;
+    protected abstract void writeArrays(TOP fsarray, int typeCode, int typeClass) throws Exception;
 
-    abstract protected void writeEndOfIndividualFs() throws Exception;
+    protected abstract void writeEndOfIndividualFs() throws Exception;
 
-    abstract protected void writeEndOfSerialization() throws Exception;
+    protected abstract void writeEndOfSerialization() throws Exception;
 
-    abstract protected void writeFsRef(TOP fs) throws Exception;
+    protected abstract void writeFsRef(TOP fs) throws Exception;
   }
 
   /**

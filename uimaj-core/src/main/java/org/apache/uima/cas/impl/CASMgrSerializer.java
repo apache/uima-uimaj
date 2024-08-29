@@ -306,7 +306,8 @@ public class CASMgrSerializer implements Serializable {
     stringSubtypeValuePos = new int[size];
     List<String> strVals = new ArrayList<>();
     TypeImpl_string type;
-    int pos = 0, typeCode;
+    int pos = 0;
+    int typeCode;
     String[] stringSet;
     for (int i = 0; i < size; i++) {
       type = (TypeImpl_string) list.get(i);

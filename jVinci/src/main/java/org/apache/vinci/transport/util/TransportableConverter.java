@@ -50,7 +50,7 @@ public class TransportableConverter {
    * @pre convert_me != null
    * @pre factory != null
    */
-  static public Transportable convert(Transportable convert_me, TransportableFactory factory) {
+  public static Transportable convert(Transportable convert_me, TransportableFactory factory) {
     Transportable return_me = factory.makeTransportable();
     convert(convert_me, return_me);
     return return_me;
@@ -67,7 +67,7 @@ public class TransportableConverter {
    * @pre convert_me != null
    * @pre into_me != null
    */
-  static public void convert(Transportable convert_me, Transportable into_me) {
+  public static void convert(Transportable convert_me, Transportable into_me) {
     try {
       ByteArrayOutputStream byte_out = new ByteArrayOutputStream();
       convert_me.toStream(byte_out);

@@ -284,7 +284,7 @@ class AnalysisEngine_implTest {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       FixedFlow emptyFlow = (FixedFlow) desc.getAnalysisEngineMetaData().getFlowConstraints();
       assertThat(emptyFlow.getFixedFlow()).isNotNull();
-      assertThat(emptyFlow.getFixedFlow().length).isEqualTo(0);
+      assertThat(emptyFlow.getFixedFlow().length).isZero();
       ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
       ae.destroy();
@@ -331,13 +331,13 @@ class AnalysisEngine_implTest {
       String[] arrayParam = (String[]) ae1.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
       assertThat(arrayParam).isNotNull();
-      assertThat(arrayParam.length).isEqualTo(5);
+      assertThat(arrayParam).hasSize(5);
       String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
       assertThat(arrayParam).isEqualTo(expect);
       Integer[] intArr = (Integer[]) ae1.getUimaContext()
               .getConfigParameterValue("IntegerArrayParam");
       assertThat(intArr).isNotNull();
-      assertThat(intArr.length).isEqualTo(4);
+      assertThat(intArr).hasSize(4);
       Integer[] intExpect = { 1, 22, 333, 4444 };
       assertThat(intArr).isEqualTo(intExpect);
       Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
@@ -406,7 +406,7 @@ class AnalysisEngine_implTest {
     }
     assertThat(ex).isNotNull();
     assertThat(ex.getMessage()).isNotNull();
-    assertThat(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED")).isFalse();
+    assertThat(ex.getMessage()).doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
   }
 
   @Test
@@ -503,12 +503,12 @@ class AnalysisEngine_implTest {
       _testProcess(aggDesc);
 
       // test aggregate TAE containing a CAS Consumer
-      File outFile = JUnitExtension.getFile("CpmOutput.txt");
+      var outFile = JUnitExtension.getFile("CpmOutput.txt");
       if (outFile != null && outFile.exists()) {
-        // outFile.delete() //can't be relied upon. Instead set file to zero length.
-        FileOutputStream fos = new FileOutputStream(outFile, false);
-        fos.close();
-        assertThat(outFile.length()).isEqualTo(0);
+        try (var fos = new FileOutputStream(outFile, false)) {
+          // outFile.delete() //can't be relied upon. Instead set file to zero length.
+        }
+        assertThat(outFile.length()).isZero();
       }
 
       AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser()
@@ -1285,8 +1285,7 @@ class AnalysisEngine_implTest {
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(2);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
         assertThat(
-                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
-                        .isTrue();
+                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
 
         cas.reset();
       }
@@ -1325,12 +1324,10 @@ class AnalysisEngine_implTest {
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
         assertThat(
-                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
-                        .isTrue();
+                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
         FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
         assertThat(
-                FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"))
-                        .isTrue();
+                FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
 
         cas.reset();
       }
@@ -1371,8 +1368,7 @@ class AnalysisEngine_implTest {
         assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
         assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Three\tERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("One\tTwo\nThree\tERROR"))
-                .isTrue();
+        assertThat(FlowControllerForErrorTest.abortedDocuments).contains("One\tTwo\nThree\tERROR");
 
         cas.reset();
       }

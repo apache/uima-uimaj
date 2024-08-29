@@ -302,7 +302,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     }
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "configurationParameterSettings",
           new PropertyXmlInfo[] { new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization

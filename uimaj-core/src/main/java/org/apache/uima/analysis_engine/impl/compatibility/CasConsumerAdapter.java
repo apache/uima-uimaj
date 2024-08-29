@@ -136,9 +136,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     try {
       mCasConsumer.batchProcessComplete(new ProcessTrace_impl());
-    } catch (ResourceProcessException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
+    } catch (ResourceProcessException | IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
@@ -152,9 +150,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     try {
       mCasConsumer.collectionProcessComplete(new ProcessTrace_impl());
-    } catch (ResourceProcessException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
+    } catch (ResourceProcessException | IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }

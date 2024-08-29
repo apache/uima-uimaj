@@ -605,9 +605,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
   private static final String ERROR_DECOMPILING = "!!! ERROR:";
 
-  static private boolean isSource = false;
+  private static boolean isSource = false;
 
-  static private Path tempDir = null;
+  private static Path tempDir = null;
 
   /***************************************************************************************************/
 
@@ -847,7 +847,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    */
   private boolean unableToCompile;
 
-  final private StringBuilder psb = new StringBuilder();
+  private final StringBuilder psb = new StringBuilder();
 
   public MigrateJCas() {
   }
@@ -1698,9 +1698,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     }
   }
 
-  private final static Pattern refGetter = Pattern
+  private static final Pattern refGetter = Pattern
           .compile("(ll_getRef(Array)?Value)|" + "(ll_getFSForRef)");
-  private final static Pattern word1 = Pattern.compile("\\A(\\w*)"); // word chars starting at
+  private static final Pattern word1 = Pattern.compile("\\A(\\w*)"); // word chars starting at
                                                                      // beginning \\A means
                                                                      // beginning
 
@@ -3150,7 +3150,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * Reporting classes
    *********************************************************************/
 
-  private static abstract class Report2<T, U> {
+  private abstract static class Report2<T, U> {
     public abstract Comparable<T> getFirst(); // Eclipse on linux complained if not public, was OK
                                               // on windows
 

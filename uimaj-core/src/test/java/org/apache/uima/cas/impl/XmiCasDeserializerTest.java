@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1001,7 +1002,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testDuplicateNsPrefixes() throws Exception {
+  void testDuplicateNsPrefixes() throws Exception {
     TypeSystemDescription ts = new TypeSystemDescription_impl();
     ts.addType("org.bar.foo.Foo", "", "uima.tcas.Annotation");
     ts.addType("org.baz.foo.Foo", "", "uima.tcas.Annotation");
@@ -1316,7 +1317,7 @@ public class XmiCasDeserializerTest {
       // create an annotation and add to index
       AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
       cas2.getIndexRepository().addFS(cas2newAnnot);
-      assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
+      assertThat(cas2tIndex).hasSize(4); // prev annots and this new one
 
       // modify language feature
       Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
@@ -1571,7 +1572,7 @@ public class XmiCasDeserializerTest {
    */
   //@formatter:on
   @Test
-  public void testDeltaCasAllowPreexistingFS() throws Exception {
+  void testDeltaCasAllowPreexistingFS() throws Exception {
     try {
 
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -1782,7 +1783,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testDeltaCasListFS() throws Exception {
+  void testDeltaCasListFS() throws Exception {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
       TypeSystem ts = cas1.getTypeSystem();
@@ -1902,7 +1903,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testOutOfTypeSystemData() throws Exception {
+  void testOutOfTypeSystemData() throws Exception {
     // deserialize a simple XMI into a CAS with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
             new TypePriorities_impl(), new FsIndexDescription[0]);
@@ -1970,7 +1971,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testOutOfTypeSystemArrayElement() throws Exception {
+  void testOutOfTypeSystemArrayElement() throws Exception {
     // add to type system an annotation type that has an FSArray feature
     TypeDescription testAnnotTypeDesc = typeSystem
             .addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
@@ -2012,9 +2013,9 @@ public class XmiCasDeserializerTest {
     FeatureStructure testAnnot2 = partialTsCas.getAnnotationIndex(testAnnotType2).iterator().get();
     Feature arrayFeat2 = testAnnotType2.getFeatureByBaseName("arrayFeat");
     FeatureStructure arrayFs2 = testAnnot2.getFeatureValue(arrayFeat2);
-    List ootsElems = sharedData.getOutOfTypeSystemElements();
+    List<OotsElementData> ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
-    List ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
+    List<XmiArrayElement> ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
     assertEquals(2, ootsArrayElems.size());
     for (int i = 0; i < 2; i++) {
       OotsElementData oed = (OotsElementData) ootsElems.get(i);
@@ -2033,7 +2034,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testOutOfTypeSystemListElement() throws Exception {
+  void testOutOfTypeSystemListElement() throws Exception {
     // add to type system an annotation type that has an FSList feature
     TypeDescription testAnnotTypeDesc = typeSystem
             .addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
@@ -2091,7 +2092,7 @@ public class XmiCasDeserializerTest {
     FeatureStructure testAnnot2 = partialTsCas.getAnnotationIndex(testAnnotType2).iterator().get();
     Feature listFeat2 = testAnnotType2.getFeatureByBaseName("listFeat");
     FeatureStructure listFs = testAnnot2.getFeatureValue(listFeat2);
-    List ootsElems = sharedData.getOutOfTypeSystemElements();
+    List<OotsElementData> ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
 
     OotsElementData oed = sharedData.getOutOfTypeSystemFeatures((TOP) listFs);
@@ -2112,7 +2113,7 @@ public class XmiCasDeserializerTest {
   }
 
   @Test
-  public void testOutOfTypeSystemDataComplexCas() throws Exception {
+  void testOutOfTypeSystemDataComplexCas() throws Exception {
     // deserialize a complex XCAS
     CAS originalCas = CasCreationUtils.createCas(typeSystem, null, indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));

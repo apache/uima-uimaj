@@ -204,7 +204,7 @@ public abstract class FSClassRegistry {
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
   // Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
 
-  static private class ErrorReport {
+  private static class ErrorReport {
     final Exception e;
     final boolean doThrow;
 
@@ -215,7 +215,7 @@ public abstract class FSClassRegistry {
   }
 
   // must precede first (static) use
-  static private ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
+  private static ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
 
   // /**
   // * Map (per class loader) from JCas Classes, to all callSites in that JCas class

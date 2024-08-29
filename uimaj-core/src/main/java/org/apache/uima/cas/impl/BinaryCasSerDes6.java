@@ -217,7 +217,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     None(Deflater.NO_COMPRESSION), Fast(Deflater.BEST_SPEED), Default(
             Deflater.DEFAULT_COMPRESSION), Best(Deflater.BEST_COMPRESSION),;
 
-    final public int lvl;
+    public final int lvl;
 
     CompressLevel(int lvl) {
       this.lvl = lvl;
@@ -228,7 +228,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     Default(Deflater.DEFAULT_STRATEGY), Filtered(Deflater.FILTERED), HuffmanOnly(
             Deflater.HUFFMAN_ONLY),;
 
-    final public int strat;
+    public final int strat;
 
     CompressStrat(int strat) {
       this.strat = strat;
@@ -257,8 +257,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      * foundFSs used to test if fsRef needs to be serialized   
      */
     // @formatter:on
-    final private PositiveIntSet foundFSs;
-    final private List<TOP> fssToSerialize; // ordered list of FSs found in indexes or linked from
+    private final PositiveIntSet foundFSs;
+    private final List<TOP> fssToSerialize; // ordered list of FSs found in indexes or linked from
                                             // other found FSs
 
     // @formatter:off
@@ -268,7 +268,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      *   b) remembers required mapping for processing delta cas serializations and deserializations conversion of tgt seq # to src addr
      */
     // @formatter:on
-    final private CasSeqAddrMaps fsStartIndexes;
+    private final CasSeqAddrMaps fsStartIndexes;
 
     private ReuseInfo(PositiveIntSet foundFSs, List<TOP> fssToSerialize,
             CasSeqAddrMaps fsStartIndexes) {
@@ -286,17 +286,17 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * Things set up for one instance of this class
    */
   private TypeSystemImpl srcTs;
-  final private TypeSystemImpl tgtTs;
-  final private CompressLevel compressLevel;
-  final private CompressStrat compressStrategy;
+  private final TypeSystemImpl tgtTs;
+  private final CompressLevel compressLevel;
+  private final CompressStrat compressStrategy;
 
   /*****************************************************
    * Things for both serialization and Deserialization
    *****************************************************/
-  final private CASImpl cas; // cas being serialized or deserialized into
-  final private BinaryCasSerDes bcsd; // common binary ser/des code
+  private final CASImpl cas; // cas being serialized or deserialized into
+  private final BinaryCasSerDes bcsd; // common binary ser/des code
   // private int[] heap; // main heap, can't be final because grow replaces it
-  final private StringHeap stringHeapObj; // needed for compression encoding/decoding
+  private final StringHeap stringHeapObj; // needed for compression encoding/decoding
   // final private LongHeap longHeapObj;
   // final private ShortHeap shortHeapObj;
   // final private ByteHeap byteHeapObj;
@@ -306,18 +306,18 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   // private int totalMappedHeapSize = 0; // heapEnd - heapStart, but with FS that don't exist in
   // the target type system deleted
 
-  final private boolean isSerializingDelta; // if true, there is a marker indicating the start
+  private final boolean isSerializingDelta; // if true, there is a marker indicating the start
                                             // spot(s)
   private boolean isDelta;
   private boolean isReadingDelta;
-  final private MarkerImpl mark; // the mark to serialize from
+  private final MarkerImpl mark; // the mark to serialize from
 
   /**
    * maps from src id &lt;-&gt; tgt id For deserialization: if src type not exist, tgt to src is 0
    */
-  final private CasSeqAddrMaps fsStartIndexes;
-  final private boolean reuseInfoProvided;
-  final private boolean doMeasurements; // if true, doing measurements
+  private final CasSeqAddrMaps fsStartIndexes;
+  private final boolean reuseInfoProvided;
+  private final boolean doMeasurements; // if true, doing measurements
 
   private OptimizeStrings os;
   private boolean only1CommonString; // true if only one common string
@@ -327,7 +327,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   // private TypeInfo typeInfo; // type info for the current type being serialized/deserialized
   // // always the "src" typeInfo I think, except for compareCas use
-  final private CasTypeSystemMapper typeMapper;
+  private final CasTypeSystemMapper typeMapper;
 
   /**
    * This is the used version of isTypeMapping, normally == to isTypeMappingCmn But compareCASes
@@ -365,7 +365,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    *   - feature slot 0 is used for this when reading (not when writing - could be made more uniform)
    */
   // @formatter:on
-  final private int[][] prevHeapInstanceWithIntValues;
+  private final int[][] prevHeapInstanceWithIntValues;
 
   // @formatter:off
   /**
@@ -381,7 +381,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * 2nd index: key is slot-offset number (0-based) 
    */
   // @formatter:on
-  final private Int2ObjHashMap<long[], long[]> prevFsWithLongValues;
+  private final Int2ObjHashMap<long[], long[]> prevFsWithLongValues;
 
   /**
    * ordered set of FSs found in indexes or linked from other found FSs. used to control
@@ -409,23 +409,23 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   /**
    * FSs being processed, including below-the-line deltas.
    */
-  final private List<TOP> toBeScanned = new ArrayList<>();
+  private final List<TOP> toBeScanned = new ArrayList<>();
   // private HashSetInt ffssBelowMark; // sorted fss's found below the mark
   // final private int[] typeCodeHisto = new int[ts.getTypeArraySize()];
 
-  final private boolean debugEOF = false;
+  private final boolean debugEOF = false;
   /*********************************
    * Things for just serialization
    *********************************/
   private DataOutputStream serializedOut; // where to write out the serialized result
 
-  final private SerializationMeasures sm; // null or serialization measurements
-  final private ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+  private final SerializationMeasures sm; // null or serialization measurements
+  private final ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
                                                                                                                // created,
                                                                                                                // indexed
                                                                                                                // by
                                                                                                                // SlotKind.i
-  final private DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+                                                                                                               private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
                                                                                                     // created,
                                                                                                     // indexed
                                                                                                     // by
@@ -463,14 +463,14 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   private DataInputStream deserIn;
   private int version;
 
-  final private DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
-  final private Inflater[] inflaters = new Inflater[NBR_SLOT_KIND_ZIP_STREAMS];
+  private final DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
+  private final Inflater[] inflaters = new Inflater[NBR_SLOT_KIND_ZIP_STREAMS];
 
   /**
    * the "fixups" for relative heap refs actions set slot values
    */
-  final private List<Runnable> fixupsNeeded = new ArrayList<>();
-  final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
+  private final List<Runnable> fixupsNeeded = new ArrayList<>();
+  private final List<Runnable> uimaSerializableFixups = new ArrayList<>();
   // /** hold on to FS prior to getting them indexed to prevent them from being GC'd */
   // final private List<TOP> preventFsGc = new ArrayList<>();
 
@@ -479,7 +479,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * deserializing a subtype of AnnotationBase before the sofa is known Also for Sofa creation where
    * some fields are final
    */
-  final private List<Runnable> singleFsDefer = new ArrayList<>();
+  private final List<Runnable> singleFsDefer = new ArrayList<>();
 
   /** used for deferred creation */
   private int sofaNum;
@@ -3405,8 +3405,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
   }
 
-  static private void setupOutputStream(int i, int size, ByteArrayOutputStream[] baosZipSources,
-          DataOutputStream[] dosZipSources) {
+  private static void setupOutputStream(int i, int size, ByteArrayOutputStream[] baosZipSources,
+                                        DataOutputStream[] dosZipSources) {
     // set up output stream
     baosZipSources[i] = new ByteArrayOutputStream(size);
     dosZipSources[i] = new DataOutputStream(baosZipSources[i]);

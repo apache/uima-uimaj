@@ -87,13 +87,13 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XmiCasDeserializer {
 
-  private final static boolean IS_NEW_FS = true;
-  private final static boolean IS_EXISTING_FS = false;
+  private static final boolean IS_NEW_FS = true;
+  private static final boolean IS_EXISTING_FS = false;
 
   // SofaFS type
-  private final static int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
+  private static final int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
 
-  private final static Pattern whiteSpace = Pattern.compile("\\s+");
+  private static final Pattern whiteSpace = Pattern.compile("\\s+");
 
   private static final String ID_ATTR_NAME = "xmi:id";
 
@@ -263,18 +263,18 @@ public class XmiCasDeserializer {
     /**
      * a list by view of FSs to be added to the indexes
      */
-    final private DeferredIndexUpdates toBeAdded = new DeferredIndexUpdates();
+    private final DeferredIndexUpdates toBeAdded = new DeferredIndexUpdates();
     /**
      * a list by view of FSs to be removed from the indexes
      */
-    final private DeferredIndexUpdates toBeRemoved = new DeferredIndexUpdates();
+    private final DeferredIndexUpdates toBeRemoved = new DeferredIndexUpdates();
 
     /**
      * Deferred Set of feature value assignments to do after all FSs are deserialized,
      */
-    final private List<Runnable_withSaxException> fixupToDos = new ArrayList<>();
+    private final List<Runnable_withSaxException> fixupToDos = new ArrayList<>();
 
-    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
+    private final List<Runnable> uimaSerializableFixups = new ArrayList<>();
 
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.

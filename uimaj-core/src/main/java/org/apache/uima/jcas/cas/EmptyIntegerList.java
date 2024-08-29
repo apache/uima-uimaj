@@ -29,11 +29,11 @@ import org.apache.uima.jcas.JCasRegistry;
 public class EmptyIntegerList extends IntegerList implements EmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_EMPTY_INTEGER_LIST;
+  public static final String _TypeName = CAS.TYPE_NAME_EMPTY_INTEGER_LIST;
 
-  public final static int typeIndexID = JCasRegistry.register(EmptyIntegerList.class);
+  public static final int typeIndexID = JCasRegistry.register(EmptyIntegerList.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   @Override
   public int getTypeIndexID() {

@@ -196,7 +196,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     None(Deflater.NO_COMPRESSION), Fast(Deflater.BEST_SPEED), Default(
             Deflater.DEFAULT_COMPRESSION), Best(Deflater.BEST_COMPRESSION),;
 
-    final public int lvl;
+    public final int lvl;
 
     CompressLevel(int lvl) {
       this.lvl = lvl;
@@ -207,7 +207,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     Default(Deflater.DEFAULT_STRATEGY), Filtered(Deflater.FILTERED), HuffmanOnly(
             Deflater.HUFFMAN_ONLY),;
 
-    final public int strat;
+    public final int strat;
 
     CompressStrat(int strat) {
       this.strat = strat;
@@ -217,8 +217,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   /**
    * Things set up for one instance of this class, and reuse-able
    */
-  final private TypeSystemImpl ts;
-  final private boolean doMeasurements;
+  private final TypeSystemImpl ts;
+  private final boolean doMeasurements;
 
   final TypeImpl fsArrayType;
 
@@ -303,18 +303,18 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    */
 
   private class Serializer {
-    final private DataOutputStream serializedOut; // where to write out the serialized result
-    final private CASImpl baseCas; // cas being serialized
-    final private BinaryCasSerDes bcsd;
-    final private MarkerImpl mark; // the mark to serialize from
+    private final DataOutputStream serializedOut; // where to write out the serialized result
+    private final CASImpl baseCas; // cas being serialized
+    private final BinaryCasSerDes bcsd;
+    private final MarkerImpl mark; // the mark to serialize from
 
-    final private SerializationMeasures sm; // null or serialization measurements
-    final private ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+    private final SerializationMeasures sm; // null or serialization measurements
+    private final ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
                                                                                                                  // created,
                                                                                                                  // indexed
                                                                                                                  // by
                                                                                                                  // SlotKind.i
-    final private DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
+                                                                                                                 private final DataOutputStream[] dosZipSources = new DataOutputStream[NBR_SLOT_KIND_ZIP_STREAMS]; // lazily
                                                                                                       // created,
                                                                                                       // indexed
                                                                                                       // by
@@ -329,9 +329,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // final private ShortHeap shortHeapObj;
     // final private ByteHeap byteHeapObj;
 
-    final private boolean isDelta; // if true, there is a marker indicating the start spot(s)
-    final private boolean isTsi; // true to include the type system and indexes definition
-    final private boolean doMeasurement; // if true, doing measurements
+    private final boolean isDelta; // if true, there is a marker indicating the start spot(s)
+    private final boolean isTsi; // true to include the type system and indexes definition
+    private final boolean doMeasurement; // if true, doing measurements
     // final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new
     // ComprItemRefs() : null;
     // final private int[] typeCodeHisto = new int[ts.getTypeArraySize()];
@@ -339,16 +339,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // needs to be Integer to get comparator choice
     // final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for
     // each output stream kind
-    final private OptimizeStrings os;
-    final private CompressLevel compressLevel;
-    final private CompressStrat compressStrategy;
+    private final OptimizeStrings os;
+    private final CompressLevel compressLevel;
+    private final CompressStrat compressStrategy;
 
     // private int iPrevHeap; // 0 or heap addr of previous instance of current type
     /**
      * For differencing when reading and writing. Also used for arrays to difference the 0th
      * element.
      */
-    final private TOP[] prevFsByType;
+    private final TOP[] prevFsByType;
     private TOP prevFs;
 
     private boolean only1CommonString; // true if only one common string
@@ -363,23 +363,23 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     // final private DataOutputStream arrayLength_dos;
     // final private DataOutputStream heapRef_dos;
     // final private DataOutputStream int_dos;
-    final private DataOutputStream byte_dos;
+    private final DataOutputStream byte_dos;
     // final private DataOutputStream short_dos;
-    final private DataOutputStream typeCode_dos;
-    final private DataOutputStream strOffset_dos;
-    final private DataOutputStream strLength_dos;
+    private final DataOutputStream typeCode_dos;
+    private final DataOutputStream strOffset_dos;
+    private final DataOutputStream strLength_dos;
     // final private DataOutputStream long_High_dos;
     // final private DataOutputStream long_Low_dos;
-    final private DataOutputStream float_Mantissa_Sign_dos;
-    final private DataOutputStream float_Exponent_dos;
-    final private DataOutputStream double_Mantissa_Sign_dos;
-    final private DataOutputStream double_Exponent_dos;
-    final private DataOutputStream fsIndexes_dos;
+    private final DataOutputStream float_Mantissa_Sign_dos;
+    private final DataOutputStream float_Exponent_dos;
+    private final DataOutputStream double_Mantissa_Sign_dos;
+    private final DataOutputStream double_Exponent_dos;
+    private final DataOutputStream fsIndexes_dos;
     // final private DataOutputStream strChars_dos;
-    final private DataOutputStream control_dos;
-    final private DataOutputStream strSeg_dos;
+    private final DataOutputStream control_dos;
+    private final DataOutputStream strSeg_dos;
 
-    final private CommonSerDesSequential csds;
+    private final CommonSerDesSequential csds;
     /**
      * convert between FSs and "sequential" numbers This is for compression efficiency and also is
      * needed for backwards compatibility with v2 serialization forms, where index information was
@@ -1550,13 +1550,13 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
    */
   private class Deserializer {
 
-    final private CASImpl baseCas; // cas being deserialized into
-    final private CASImpl ivCas; // initial view cas - where by default new fs are created
-    final private BinaryCasSerDes bcsd;
-    final private CommonSerDesSequential csds;
-    final private DataInput deserIn;
+    private final CASImpl baseCas; // cas being deserialized into
+    private final CASImpl ivCas; // initial view cas - where by default new fs are created
+    private final BinaryCasSerDes bcsd;
+    private final CommonSerDesSequential csds;
+    private final DataInput deserIn;
 
-    final private DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
+    private final DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
     private Inflater[] inflaters = new Inflater[NBR_SLOT_KIND_ZIP_STREAMS];
 
     /** the FS being deserialized */
@@ -1567,7 +1567,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * deserializing a subtype of AnnotationBase before the sofa is known Also for Sofa creation
      * where some fields are final
      */
-    final private List<Runnable> singleFsDefer = new ArrayList<>();
+    private final List<Runnable> singleFsDefer = new ArrayList<>();
 
     /** used for deferred creation */
     private int sofaNum;
@@ -1581,17 +1581,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     /**
      * the "fixups" for relative heap refs actions set slot values
      */
-    final private List<Runnable> fixupsNeeded = new ArrayList<>();
-    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
+    private final List<Runnable> fixupsNeeded = new ArrayList<>();
+    private final List<Runnable> uimaSerializableFixups = new ArrayList<>();
 
-    final private StringHeap stringHeapObj = new StringHeap();
+    private final StringHeap stringHeapObj = new StringHeap();
     // private LongHeap longHeapObj;
     // private ShortHeap shortHeapObj;
     // private ByteHeap byteHeapObj;
     //
     // private int stringTableOffset;
 
-    final private boolean isDelta; // if true, a delta is being deserialized
+    private final boolean isDelta; // if true, a delta is being deserialized
     private String[] readCommonString;
 
     // private TypeInfo typeInfo; // type info for the current type being serialized
@@ -1602,24 +1602,24 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
     // speedups
 
-    final private DataInputStream arrayLength_dis;
-    final private DataInputStream heapRef_dis;
-    final private DataInputStream int_dis;
-    final private DataInputStream byte_dis;
-    final private DataInputStream short_dis;
-    final private DataInputStream typeCode_dis;
-    final private DataInputStream strOffset_dis;
-    final private DataInputStream strLength_dis;
-    final private DataInputStream long_High_dis;
-    final private DataInputStream long_Low_dis;
-    final private DataInputStream float_Mantissa_Sign_dis;
-    final private DataInputStream float_Exponent_dis;
-    final private DataInputStream double_Mantissa_Sign_dis;
-    final private DataInputStream double_Exponent_dis;
-    final private DataInputStream fsIndexes_dis;
-    final private DataInputStream strChars_dis;
-    final private DataInputStream control_dis;
-    final private DataInputStream strSeg_dis;
+    private final DataInputStream arrayLength_dis;
+    private final DataInputStream heapRef_dis;
+    private final DataInputStream int_dis;
+    private final DataInputStream byte_dis;
+    private final DataInputStream short_dis;
+    private final DataInputStream typeCode_dis;
+    private final DataInputStream strOffset_dis;
+    private final DataInputStream strLength_dis;
+    private final DataInputStream long_High_dis;
+    private final DataInputStream long_Low_dis;
+    private final DataInputStream float_Mantissa_Sign_dis;
+    private final DataInputStream float_Exponent_dis;
+    private final DataInputStream double_Mantissa_Sign_dis;
+    private final DataInputStream double_Exponent_dis;
+    private final DataInputStream fsIndexes_dis;
+    private final DataInputStream strChars_dis;
+    private final DataInputStream control_dis;
+    private final DataInputStream strSeg_dis;
 
     // @formatter:off
     /**
@@ -1640,13 +1640,13 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * when reading (not when writing - could be made more uniform)
      */
     // @formatter:on
-    final private int[][] prevFsRefsByType = new int[ts.getTypeArraySize()][];
+    private final int[][] prevFsRefsByType = new int[ts.getTypeArraySize()][];
     private int[] prevFsRefs;
 
     /**
      * Used for differencing, except for HeapRef values which use above
      */
-    final private TOP[] prevFsByType = new TOP[ts.getTypeArraySize()];
+    private final TOP[] prevFsByType = new TOP[ts.getTypeArraySize()];
     private TOP prevFs;
 
     /**

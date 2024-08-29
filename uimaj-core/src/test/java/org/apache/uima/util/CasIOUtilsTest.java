@@ -258,20 +258,18 @@ public class CasIOUtilsTest {
   void testWrongInputStream() throws Exception {
     byte[] casBytes;
     try (var bos = new ByteArrayOutputStream(); var os = new ObjectOutputStream(bos)) {
-      os.writeObject(new String("WRONG OBJECT"));
+      os.writeObject("WRONG OBJECT");
       casBytes = bos.toByteArray();
     }
 
     try (ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes)) {
-      CasIOUtils.load(casInputStream, cas);
-    } catch (Exception e) {
-      assertThat(e instanceof CASRuntimeException).isTrue();
-      assertThat(((CASRuntimeException) e).getMessageKey()
-              .equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT")).isTrue();
-      return;
-    }
+      assertThatExceptionOfType(CASRuntimeException.class) //
+          .isThrownBy(() -> CasIOUtils.load(casInputStream, cas))
+          .satisfies(e -> {
+            assertThat(e.getMessageKey()).isEqualTo("UNRECOGNIZED_SERIALIZED_CAS_FORMAT");
+          });
 
-    fail("An exception should have been thrown for wrong input.");
+    }
   }
 
   @Test

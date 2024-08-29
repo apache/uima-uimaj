@@ -117,7 +117,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
           new PropertyXmlInfo[0]);
 
   /**

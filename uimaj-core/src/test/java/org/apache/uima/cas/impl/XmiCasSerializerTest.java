@@ -49,7 +49,7 @@ import org.xml.sax.SAXParseException;
  * Test case for XMI serialization, in particular, invalid XML 1.0 characters. Other aspects of XMI
  * serialization are tested elsewhere.
  */
-public class XmiCasSerializerTest {
+class XmiCasSerializerTest {
 
   private static boolean XML1_1_SUPPORTED = false;
 
@@ -57,9 +57,7 @@ public class XmiCasSerializerTest {
     try {
       XML1_1_SUPPORTED = SAXParserFactory.newInstance()
               .getFeature("http://xml.org/sax/features/xml-1.1");
-    } catch (SAXNotRecognizedException e) {
-    } catch (SAXNotSupportedException e) {
-    } catch (ParserConfigurationException e) {
+    } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
     }
   }
 
@@ -68,7 +66,7 @@ public class XmiCasSerializerTest {
   private File outputFile = null;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     // Temp output file, deleted on exit.
     outputFile = new File(JUnitExtension.getFile("ExampleCas"),
@@ -78,7 +76,7 @@ public class XmiCasSerializerTest {
   }
 
   @Test
-  public void testInvalidCharsInDocumentText() throws Exception {
+  void testInvalidCharsInDocumentText() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentText("Text with bad char: " + badChar);
@@ -114,7 +112,7 @@ public class XmiCasSerializerTest {
   }
 
   @Test
-  public void testInvalidCharsInFeatureValue() throws Exception {
+  void testInvalidCharsInFeatureValue() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentLanguage("a" + badChar);
@@ -156,5 +154,4 @@ public class XmiCasSerializerTest {
       outputFile.delete();
     }
   }
-
 }

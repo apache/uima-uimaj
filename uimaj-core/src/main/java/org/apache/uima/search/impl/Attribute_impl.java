@@ -118,7 +118,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("attribute",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("attribute",
           new PropertyXmlInfo[] {
           // name and value are attributes, not elements
           });

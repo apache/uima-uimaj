@@ -73,7 +73,7 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
           new PropertyXmlInfo[] { new PropertyXmlInfo("componentKey"),
               new PropertyXmlInfo("componentSofaName"), new PropertyXmlInfo("aggregateSofaName") });
 }

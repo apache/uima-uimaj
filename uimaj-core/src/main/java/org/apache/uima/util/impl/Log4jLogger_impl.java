@@ -48,8 +48,8 @@ public class Log4jLogger_impl extends Logger_common_impl {
    * <p>
    * These are log4j class versions of the slf4j markers.
    */
-  final static private org.apache.logging.log4j.Marker LOG4J_CONFIG = m(UIMA_MARKER_CONFIG);
-  final static private org.apache.logging.log4j.Marker LOG4J_FINEST = m(UIMA_MARKER_FINEST);
+  private static final org.apache.logging.log4j.Marker LOG4J_CONFIG = m(UIMA_MARKER_CONFIG);
+  private static final org.apache.logging.log4j.Marker LOG4J_FINEST = m(UIMA_MARKER_FINEST);
 
   /**
    * Filters for use in setLevel calls, for levels that need marker filtering.
@@ -58,7 +58,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
    * or TRACE), they return ACCEPT if the marker is present DENY otherwise
    */
 
-  static private org.apache.logging.log4j.core.filter.AbstractFilter makeFilter(
+  private static org.apache.logging.log4j.core.filter.AbstractFilter makeFilter(
           final org.apache.logging.log4j.Level tLevel, org.apache.logging.log4j.Marker tMarker) {
     return new org.apache.logging.log4j.core.filter.AbstractFilter() {
 
@@ -134,21 +134,21 @@ public class Log4jLogger_impl extends Logger_common_impl {
     };
   }
 
-  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_CONFIG = makeFilter(
+  private static final org.apache.logging.log4j.core.filter.AbstractFilter FILTER_CONFIG = makeFilter(
           org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);
 
-  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINEST = makeFilter(
+  private static final org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINEST = makeFilter(
           org.apache.logging.log4j.Level.TRACE, LOG4J_FINEST);
 
   /**
    * logger object from the underlying Log4j logging framework The ExtendedLoggerWrapper includes
    * the ability to specify the wrapper class
    */
-  final private ExtendedLoggerWrapper logger;
+  private final ExtendedLoggerWrapper logger;
 
-  final private org.apache.logging.log4j.core.Logger coreLogger;
+  private final org.apache.logging.log4j.core.Logger coreLogger;
 
-  final private MessageFactory mf;
+  private final MessageFactory mf;
 
   /**
    * create a new LogWrapper class for the specified source class

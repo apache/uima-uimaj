@@ -28,7 +28,7 @@ import java.io.InputStream;
  */
 public class StreamMaterializer {
 
-  static private final int BUFFER_SIZE = 8192;
+  private static final int BUFFER_SIZE = 8192;
 
   /**
    * Utility class not meant to be instantiated.

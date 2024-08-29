@@ -64,18 +64,18 @@ public class CasTypeSystemMapper {
    * Map from source types to target types. Source type code used as index, value is target type or
    * null if the type doesn't exist in the target
    */
-  final private List<TypeImpl> tSrc2Tgt = new ArrayList<>();
+  private final List<TypeImpl> tSrc2Tgt = new ArrayList<>();
 
   /**
    * Map from target types to source types. Source type code used as index, value is target type or
    * null if the type doesn't exist in the target
    */
-  final private List<TypeImpl> tTgt2Src = new ArrayList<>();
+  private final List<TypeImpl> tTgt2Src = new ArrayList<>();
   /**
    * Feature mapping from source to target first key is the src type code, 2nd is the src feature
    * offset (origin 0)
    */
-  final private FeatureImpl[][] fSrc2Tgt;
+  private final FeatureImpl[][] fSrc2Tgt;
 
   // @formatter:off
   /**
@@ -87,9 +87,9 @@ public class CasTypeSystemMapper {
    *   Also, when comparing the slots in the target with a given source
    */
   // @formatter:on
-  final private FeatureImpl[][] fTgt2Src;
+  private final FeatureImpl[][] fTgt2Src;
 
-  final private boolean typeSystemsSame;
+  private final boolean typeSystemsSame;
 
   public boolean isEqual() {
     return typeSystemsSame;

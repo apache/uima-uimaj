@@ -32,8 +32,8 @@ import org.apache.uima.jcas.cas.TOP;
  */
 class FsIterator_limited<T extends FeatureStructure> implements LowLevelIterator<T> {
 
-  final private LowLevelIterator<T> iterator; // not just for single-type iterators
-  final private int limit;
+  private final LowLevelIterator<T> iterator; // not just for single-type iterators
+  private final int limit;
 
   private int count = 0;
   private boolean limitReached = false;
