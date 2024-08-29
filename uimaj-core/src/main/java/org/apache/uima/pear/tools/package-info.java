@@ -18,11 +18,8 @@
  */
 
 /**
- * <!-- Abstract -->
- * The <CODE>org.apache.uima.pear.tools</CODE> package provides applications
- * and tools that allow installing PEAR packages containing UIMA-compliant
- * components, verifying serviceability of installed components by using
- * UIMA API and browsing PEAR packages.
- * <br>
+ * <!-- Abstract --> The <CODE>org.apache.uima.pear.tools</CODE> package provides applications and
+ * tools that allow installing PEAR packages containing UIMA-compliant components, verifying
+ * serviceability of installed components by using UIMA API and browsing PEAR packages. <br>
  */
 package org.apache.uima.pear.tools;

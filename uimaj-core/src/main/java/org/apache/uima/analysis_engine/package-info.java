@@ -17,7 +17,6 @@
  * under the License.
  */
 /**
- * The Analysis Engine interface, along with supporting
- * interfaces and exception classes.
+ * The Analysis Engine interface, along with supporting interfaces and exception classes.
  */
 package org.apache.uima.analysis_engine;

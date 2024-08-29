@@ -463,7 +463,7 @@ public class XmiCasDeserializerTest {
     doTestMultiThreadedSerialize(tsWithNoMultiRefs);
     var tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
     doTestMultiThreadedSerialize(tsWithMultiRefs);
-}
+  }
 
   private static class DoSerialize implements Runnable {
     private CAS cas;
@@ -539,8 +539,8 @@ public class XmiCasDeserializerTest {
       MultiThreadUtils.waitForAllReady(sliceOfThreads);
 
       System.out.println("\nNumber of threads serializing: " + j
-          + "  Normalized millisecs (should be close to the same): "
-          + (System.currentTimeMillis() - startTime) / j);
+              + "  Normalized millisecs (should be close to the same): "
+              + (System.currentTimeMillis() - startTime) / j);
     }
 
     MultiThreadUtils.terminateThreads(threads);
@@ -703,7 +703,7 @@ public class XmiCasDeserializerTest {
   @Test
   void testMultipleSofas() throws Exception {
     var cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
     // set document text for the initial view
     cas.setDocumentText("This is a test");
     // create a new view and set its document text
@@ -736,7 +736,7 @@ public class XmiCasDeserializerTest {
 
     // deserialize into another CAS (repeat twice to check it still works after reset)
     var newCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
     for (var i = 0; i < 2; i++) {
       var newDeser = new XmiCasDeserializer(newCas.getTypeSystem());
       ContentHandler newDeserHandler = newDeser.getXmiCasHandler(newCas);
@@ -784,9 +784,8 @@ public class XmiCasDeserializerTest {
     serCasStream.close();
 
     // now read in a TypeSystem that's a subset of those types
-    var partialTypeSystemDesc = UIMAFramework.getXMLParser()
-            .parseTypeSystemDescription(new XMLInputSource(
-                    JUnitExtension.getFile("ExampleCas/partialTestTypeSystem.xml")));
+    var partialTypeSystemDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(JUnitExtension.getFile("ExampleCas/partialTestTypeSystem.xml")));
     var partialTypeSystem = CasCreationUtils.createCas(partialTypeSystemDesc, null, null)
             .getTypeSystem();
 
@@ -827,7 +826,7 @@ public class XmiCasDeserializerTest {
   @Test
   void testNoInitialSofa() throws Exception {
     var cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
     // create non-annotation type so as not to create the _InitialView Sofa
     var intArrayFS = cas.createIntArrayFS(5);
     intArrayFS.set(0, 1);
@@ -846,7 +845,7 @@ public class XmiCasDeserializerTest {
 
     // deserialize into another CAS
     var cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
 
     var deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
@@ -881,10 +880,10 @@ public class XmiCasDeserializerTest {
   @Test
   void testv1FormatXcas() throws Exception {
     var cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
     var ts = cas.getTypeSystem();
-    var v1cas = CasCreationUtils.createCas(ts, new TypePriorities_impl(), FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS,
-            null);
+    var v1cas = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS, null);
 
     // get a complex CAS
     var serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -924,10 +923,12 @@ public class XmiCasDeserializerTest {
     // test it
     var engView = v1cas.getView("EnglishDocument");
     assertThat(engView.getDocumentText().equals("this beer is good")).isTrue();
-    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     var gerView = v1cas.getView("GermanDocument");
     assertThat(gerView.getDocumentText().equals("das bier ist gut")).isTrue();
-    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     assertThat(CAS.NAME_DEFAULT_SOFA.equals(v1cas.getSofa().getSofaID())).isTrue();
     assertThat(v1cas.getDocumentText().equals("some text for the default text sofa.")).isTrue();
 
@@ -949,10 +950,12 @@ public class XmiCasDeserializerTest {
     // test it
     engView = cas.getView("EnglishDocument");
     assertThat(engView.getDocumentText().equals("this beer is good")).isTrue();
-    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     gerView = cas.getView("GermanDocument");
     assertThat(gerView.getDocumentText().equals("das bier ist gut")).isTrue();
-    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     assertThat(CAS.NAME_DEFAULT_SOFA.equals(v1cas.getSofa().getSofaID())).isTrue();
     assertThat(v1cas.getDocumentText().equals("some text for the default text sofa.")).isTrue();
   }
@@ -1067,15 +1070,13 @@ public class XmiCasDeserializerTest {
     newView1.setDocumentText(sofaText1);
     final var annotText = "Sofa";
     var annotStart1 = sofaText1.indexOf(annotText);
-    var annot1 = newView1.createAnnotation(orgType, annotStart1,
-            annotStart1 + annotText.length());
+    var annot1 = newView1.createAnnotation(orgType, annotStart1, annotStart1 + annotText.length());
     newView1.addFsToIndexes(annot1);
     var newView2 = newCas2.createView("newSofa2");
     final var sofaText2 = "This is another new Sofa, created in CAS 2.";
     newView2.setDocumentText(sofaText2);
     var annotStart2 = sofaText2.indexOf(annotText);
-    var annot2 = newView2.createAnnotation(orgType, annotStart2,
-            annotStart2 + annotText.length());
+    var annot2 = newView2.createAnnotation(orgType, annotStart2, annotStart2 + annotText.length());
     newView2.addFsToIndexes(annot2);
 
     // Add an FS with an array of existing annotations in another view
@@ -1119,7 +1120,8 @@ public class XmiCasDeserializerTest {
     var iter = cas.getAnnotationIndex().iterator();
     while (iter.hasNext()) {
       var annot = (AnnotationFS) iter.next();
-      assertThat(annot.getCoveredText()).isEqualTo(cas.getDocumentText().substring(annot.getBegin(), annot.getEnd()));
+      assertThat(annot.getCoveredText())
+              .isEqualTo(cas.getDocumentText().substring(annot.getBegin(), annot.getEnd()));
     }
     // check Owner annotation we created to test link across merge boundary
     iter = cas.getAnnotationIndex(ownerType).iterator();
@@ -1150,8 +1152,7 @@ public class XmiCasDeserializerTest {
     var checkPreexistingView = cas.getView("preexistingView");
     assertThat(checkPreexistingView.getDocumentText()).isEqualTo(preexistingViewText);
     var personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
-    var targetAnnot3 = checkPreexistingView.getAnnotationIndex(personType).iterator()
-            .get();
+    var targetAnnot3 = checkPreexistingView.getAnnotationIndex(personType).iterator().get();
     assertThat(targetAnnot3.getCoveredText()).isEqualTo("John Smith");
 
     // Check the FS with an array of pre-existing FSs
@@ -1232,7 +1233,7 @@ public class XmiCasDeserializerTest {
             .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
 
     assertThat(cas1.getAnnotationIndex().iterator().next().getStringValue(languageF1)
-        .equals("x-unspecified")).isTrue();
+            .equals("x-unspecified")).isTrue();
     // check new annotation exists and preexisting is not deleted
     assertThat(cas1.getAnnotationIndex().size() == 4).isTrue();
   }
@@ -1283,10 +1284,10 @@ public class XmiCasDeserializerTest {
     // deserialize delta xmi into cas1
     var threw = false;
     try {
-      deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId,
-              AllowPreexistingFS.disallow);
+      deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
     } catch (CASRuntimeException e) {
-      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED).isTrue();
+      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED)
+              .isTrue();
       threw = true;
     }
     assertThat(threw).isTrue();
@@ -1294,7 +1295,7 @@ public class XmiCasDeserializerTest {
     // check language feature of doc annot is not changed.
     // System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
     assertThat(cas1.getAnnotationIndex().iterator().next().getStringValue(languageF)
-        .equals("x-unspecified")).isTrue();
+            .equals("x-unspecified")).isTrue();
     // check new annotation exists
     assertThat(cas1.getAnnotationIndex().size() == 3).isTrue(); // cas2 should be unchanged.
   }
@@ -1375,7 +1376,8 @@ public class XmiCasDeserializerTest {
       this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId,
               AllowPreexistingFS.disallow);
     } catch (CASRuntimeException e) {
-      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED).isTrue();
+      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED)
+              .isTrue();
     }
 
     // check new annotation index
@@ -1432,7 +1434,8 @@ public class XmiCasDeserializerTest {
       this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId,
               AllowPreexistingFS.disallow);
     } catch (CASRuntimeException e) {
-      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED).isTrue();
+      assertThat(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED)
+              .isTrue();
     }
 
     // check new annotation added and preexisitng FS not removed from index
@@ -1695,8 +1698,7 @@ public class XmiCasDeserializerTest {
 
     // ======================================================================
     // deserialize delta xmi into cas1
-    this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId,
-            AllowPreexistingFS.allow);
+    this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.allow);
 
     // ======================================================================
     // serialize complete cas and deserialize into cas3 and compare with cas1.
@@ -1810,8 +1812,7 @@ public class XmiCasDeserializerTest {
 
     // ======================================================================
     // deserialize delta xmi into cas1
-    deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId,
-            AllowPreexistingFS.allow);
+    deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.allow);
     CasComparer.assertEquals(cas2linksFS, entityFS.getFeatureValue(linksFeat));
     // ======================================================================
     // serialize complete cas and deserialize into cas3 and compare with cas1.
@@ -1862,28 +1863,23 @@ public class XmiCasDeserializerTest {
     deserialize(xmiStr, partialTsCas, sharedData2, true, -1);
 
     assertThat(sharedData2.getOutOfTypeSystemElements()).hasSize(1);
-    var ootsFeats3 = sharedData2
-            .getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(3));
+    var ootsFeats3 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(3));
     assertThat(ootsFeats3.attributes).hasSize(1);
     var ootsAttr = ootsFeats3.attributes.get(0);
     assertThat(ootsAttr.name).isEqualTo("mentionType");
     assertThat(ootsAttr.value).isEqualTo("NAME");
-    var ootsFeats5 = sharedData2
-            .getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(5));
+    var ootsFeats5 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(5));
     assertThat(ootsFeats5.attributes).isEmpty();
     assertThat(ootsFeats5.childElements).hasSize(1);
     var ootsChildElem = ootsFeats5.childElements.get(0);
     assertThat(ootsChildElem.name.qName).isEqualTo("mentionType");
     assertThat(ootsChildElem.contents).isEqualTo("NAME");
 
-    var ootsFeats8 = sharedData2
-            .getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(8));
+    var ootsFeats8 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(8));
     assertThat(ootsFeats8.attributes).hasSize(1);
-    var ootsFeats10 = sharedData2
-            .getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(10));
+    var ootsFeats10 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(10));
     assertThat(ootsFeats10.attributes).hasSize(1);
-    var ootsFeats11 = sharedData2
-            .getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(11));
+    var ootsFeats11 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(11));
     assertThat(ootsFeats11.childElements).hasSize(4);
 
     var xmiStr3 = serialize(partialTsCas, sharedData2);
@@ -1895,8 +1891,8 @@ public class XmiCasDeserializerTest {
   @Test
   void testOutOfTypeSystemArrayElement() throws Exception {
     // add to type system an annotation type that has an FSArray feature
-    var testAnnotTypeDesc = typeSystem
-            .addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
+    var testAnnotTypeDesc = typeSystem.addType("org.apache.uima.testTypeSystem.TestAnnotation", "",
+            "uima.tcas.Annotation");
     testAnnotTypeDesc.addFeature("arrayFeat", "", "uima.cas.FSArray");
     // populate a CAS with such an array
     var cas = CasCreationUtils.createCas(typeSystem, null, null);
@@ -1937,8 +1933,7 @@ public class XmiCasDeserializerTest {
     var arrayFs2 = testAnnot2.getFeatureValue(arrayFeat2);
     var ootsElems = sharedData.getOutOfTypeSystemElements();
     assertThat(ootsElems).hasSize(2);
-    var ootsArrayElems = sharedData
-            .getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
+    var ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
     assertThat(ootsArrayElems).hasSize(2);
     for (var i = 0; i < 2; i++) {
       var oed = (OotsElementData) ootsElems.get(i);
@@ -1959,8 +1954,8 @@ public class XmiCasDeserializerTest {
   @Test
   void testOutOfTypeSystemListElement() throws Exception {
     // add to type system an annotation type that has an FSList feature
-    var testAnnotTypeDesc = typeSystem
-            .addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
+    var testAnnotTypeDesc = typeSystem.addType("org.apache.uima.testTypeSystem.TestAnnotation", "",
+            "uima.tcas.Annotation");
     testAnnotTypeDesc.addFeature("listFeat", "", "uima.cas.FSList");
 
     // populate a CAS with such an list
@@ -2120,8 +2115,8 @@ public class XmiCasDeserializerTest {
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData);
     baos.close();
     var xmiStr = new String(baos.toByteArray(), StandardCharsets.UTF_8); // note by default
-                                                                            // XmiCasSerializer
-                                                                            // generates UTF-8
+                                                                         // XmiCasSerializer
+                                                                         // generates UTF-8
 
     // workaround for newline serialization problem in Sun Java 1.4.2
     // this test file should contain CRLF line endings, but Sun Java loses them
@@ -2141,8 +2136,8 @@ public class XmiCasDeserializerTest {
     XmiCasSerializer.serialize(cas, null, baos, false, serSharedData, marker);
     baos.close();
     var xmiStr = new String(baos.toByteArray(), StandardCharsets.UTF_8); // note by default
-                                                                            // XmiCasSerializer
-                                                                            // generates UTF-8
+                                                                         // XmiCasSerializer
+                                                                         // generates UTF-8
 
     // workaround for newline serialization problem in Sun Java 1.4.2
     // this test file should contain CRLF line endings, but Sun Java loses them
@@ -2158,8 +2153,8 @@ public class XmiCasDeserializerTest {
           boolean lenient, int mergePoint) throws FactoryConfigurationError,
           ParserConfigurationException, SAXException, IOException {
     var bytes = xmlStr.getBytes(StandardCharsets.UTF_8); // this assumes the encoding is UTF-8,
-                                                            // which is the default output encoding
-                                                            // of the XmiCasSerializer
+                                                         // which is the default output encoding
+                                                         // of the XmiCasSerializer
     var bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint);
     bais.close();
@@ -2170,8 +2165,8 @@ public class XmiCasDeserializerTest {
           throws FactoryConfigurationError, ParserConfigurationException, SAXException,
           IOException {
     var bytes = xmlStr.getBytes(StandardCharsets.UTF_8); // this assumes the encoding is UTF-8,
-                                                            // which is the default output encoding
-                                                            // of the XmiCasSerializer
+                                                         // which is the default output encoding
+                                                         // of the XmiCasSerializer
     var bais = new ByteArrayInputStream(bytes);
     XmiCasDeserializer.deserialize(bais, cas, lenient, sharedData, mergePoint, allow);
     bais.close();

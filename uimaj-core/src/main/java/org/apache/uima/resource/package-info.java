@@ -19,28 +19,26 @@
 /**
  * Interfaces for <code>Resources</code> and <code>ResourceSpecifiers</code>.
  * <p>
- * {@link org.apache.uima.resource.Resource} is the general term for all UIMA components
- * that can be acquired and used by an application (or by other resources).
+ * {@link org.apache.uima.resource.Resource} is the general term for all UIMA components that can be
+ * acquired and used by an application (or by other resources).
  * <p>
- * <code>Resource</code>s may be co-located with their client or distributed
- * as services.  This is made transparent to the client.
+ * <code>Resource</code>s may be co-located with their client or distributed as services. This is
+ * made transparent to the client.
  * </p>
  * <p>
- * A {@link org.apache.uima.resource.ResourceSpecifier} contains information that can be
- * used to acquire a reference to a <code>Resource</code>, whether that is done by
- * instantiating the resource locally or locating an existing resource
- * available as a service.
+ * A {@link org.apache.uima.resource.ResourceSpecifier} contains information that can be used to
+ * acquire a reference to a <code>Resource</code>, whether that is done by instantiating the
+ * resource locally or locating an existing resource available as a service.
  * </p>
  * <p>
- * The {@link org.apache.uima.ResourceFactory} takes a <code>ResourceSpecifier</code> and
- * returns an instance of the specified <code>Resource</code>.  Again, this can be
- * done by creating the instance or by locating an existing instance.
+ * The {@link org.apache.uima.ResourceFactory} takes a <code>ResourceSpecifier</code> and returns an
+ * instance of the specified <code>Resource</code>. Again, this can be done by creating the instance
+ * or by locating an existing instance.
  * </p>
  * <p>
- * Most applications will not need to deal with this abstract
- * <code>Resource</code> interface.  UIMA Developers who need to introduce
- * new types of Resources, however, will need to implement the interfaces
- * in this package.
+ * Most applications will not need to deal with this abstract <code>Resource</code> interface. UIMA
+ * Developers who need to introduce new types of Resources, however, will need to implement the
+ * interfaces in this package.
  * </p>
  */
 package org.apache.uima.resource;

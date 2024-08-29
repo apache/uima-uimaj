@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,8 +53,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TypeSystemTest {
 
@@ -160,12 +160,13 @@ class TypeSystemTest {
       // by name on types more than one level removed from the introducing
       // type.
       assertThat(tsm.getFeatureByFullName(
-          annot2name + TypeSystem.FEATURE_SEPARATOR + CAS.FEATURE_BASE_NAME_BEGIN) != null).isTrue();
+              annot2name + TypeSystem.FEATURE_SEPARATOR + CAS.FEATURE_BASE_NAME_BEGIN) != null)
+                      .isTrue();
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
       assertThat(tsm.getFeatureByFullName(
-          annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null).isTrue();
+              annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null).isTrue();
 
       // Test illegal feature names.
       Feature feat = null;
@@ -237,7 +238,8 @@ class TypeSystemTest {
       feat = tsm.addFeature(featName, annot4, annot1);
       assertThat(feat != null).isTrue();
       assertThat(featName.equals(feat.getShortName())).isTrue();
-      assertThat(feat.getName().equals(annot4Name + TypeSystem.FEATURE_SEPARATOR + featName)).isTrue();
+      assertThat(feat.getName().equals(annot4Name + TypeSystem.FEATURE_SEPARATOR + featName))
+              .isTrue();
       // Check that we can't add features to top, inherit from arrays etc.
       Type top = tsm.getTopType();
       Type intT = tsm.getType(CAS.TYPE_NAME_INTEGER);
@@ -506,7 +508,8 @@ class TypeSystemTest {
   @Test
   void testSerializeTypeSystem() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
-    assertThat(descriptorFile.exists()).as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
+    assertThat(descriptorFile.exists())
+            .as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
     TypeSystem typeSystem = null;
     try {
       XMLParser parser = UIMAFramework.getXMLParser();

@@ -17,7 +17,11 @@
  * under the License.
  */
 /**
- * <p>Provides the classes that support the Java Cas Model (JCM).</p>
- * <p>Provides the JCas implementation class, the JCasHashMap, and the JCas version of the index repository.
+ * <p>
+ * Provides the classes that support the Java Cas Model (JCM).
+ * </p>
+ * <p>
+ * Provides the JCas implementation class, the JCasHashMap, and the JCas version of the index
+ * repository.
  */
 package org.apache.uima.jcas.impl;

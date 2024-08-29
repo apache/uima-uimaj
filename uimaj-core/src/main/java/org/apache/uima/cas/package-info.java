@@ -17,13 +17,20 @@
  * under the License.
  */
 /**
- * <p>Common Analysis System(CAS) Interfaces</p>
+ * <p>
+ * Common Analysis System(CAS) Interfaces
+ * </p>
  * <h2>Common Analysis System (CAS) Interfaces</h2>
- * <p>The <a href="CAS.html">CAS</a> provides</p>
+ * <p>
+ * The <a href="CAS.html">CAS</a> provides
+ * </p>
  * <ul>
- * <li>a set of methods for creating Feature Structures and setting / getting their Feature values, based on parameters referencing Types and Features.</li>
+ * <li>a set of methods for creating Feature Structures and setting / getting their Feature values,
+ * based on parameters referencing Types and Features.</li>
  * <li>a link to the <a href="TypeSystem.html">type system</a> being used</li>
- * <li>a container for the set of one or more "Views" - each view corresponding to a separate set of indexes, contained in a <a href="FSIndexRepository.html">index repository</a>. These indexes can be used to retrieve the Feature Structures that have already been created.
+ * <li>a container for the set of one or more "Views" - each view corresponding to a separate set of
+ * indexes, contained in a <a href="FSIndexRepository.html">index repository</a>. These indexes can
+ * be used to retrieve the Feature Structures that have already been created.
  * <ul>
  * <li>For each view:
  * <ul>
@@ -36,22 +43,45 @@
  * </li>
  * </ul>
  * <h3>Type System</h3>
- * <p>The Type System is a collection of types and features of each type, where the types are in a single type hierarchy. The type/feature information is collected from possibly multiple annotators that make up a UIMA pipeline, and the definitions are merged.</p>
+ * <p>
+ * The Type System is a collection of types and features of each type, where the types are in a
+ * single type hierarchy. The type/feature information is collected from possibly multiple
+ * annotators that make up a UIMA pipeline, and the definitions are merged.
+ * </p>
  * <h2>Index Repository</h2>
- * <p>Indexes provide a way to access those Feature Structures which have been indexed (added to the index, and not subsequently removed). Each CAS view has a separate set of indexes.</p>
+ * <p>
+ * Indexes provide a way to access those Feature Structures which have been indexed (added to the
+ * index, and not subsequently removed). Each CAS view has a separate set of indexes.
+ * </p>
  * <ul>
- * <li>FSIndexRepository - UIMA pipelines specify a set of index definitions to be used; these definitions are used for all views. In addition to user-specified indexes, there are two built-in indexes: the Annotation Index, and a default "bag" index that is used whenever no other index is defined, to enable retrieval of all indexed Feature Structures. When users add instances to the indexes, they do so for the indexes in just one view. Users may choose to index the same Feature Structure in multiple views, with one restriction: Feature Structures which are subtypes of AnnotationBase may only be added to the view where the Feature Structure was created. The FSIndexRepository instance per view allows access to the Feature Structures indexed in that view.</li>
- * <li>FSIndex - represents a particular index over a type and its subtypes. There are three underlying kinds of indexes: Bag, Set, and Sorted. The Set and Sorted include a "comparator" which defines a compare order which is also used as the definition of "equal" for Sets.</li>
+ * <li>FSIndexRepository - UIMA pipelines specify a set of index definitions to be used; these
+ * definitions are used for all views. In addition to user-specified indexes, there are two built-in
+ * indexes: the Annotation Index, and a default "bag" index that is used whenever no other index is
+ * defined, to enable retrieval of all indexed Feature Structures. When users add instances to the
+ * indexes, they do so for the indexes in just one view. Users may choose to index the same Feature
+ * Structure in multiple views, with one restriction: Feature Structures which are subtypes of
+ * AnnotationBase may only be added to the view where the Feature Structure was created. The
+ * FSIndexRepository instance per view allows access to the Feature Structures indexed in that
+ * view.</li>
+ * <li>FSIndex - represents a particular index over a type and its subtypes. There are three
+ * underlying kinds of indexes: Bag, Set, and Sorted. The Set and Sorted include a "comparator"
+ * which defines a compare order which is also used as the definition of "equal" for Sets.</li>
  * </ul>
  * <h3>Built-in Feature Structure classes</h3>
- * <p>This package holds the definition for many of the built-in Feature Structures.</p>
- * <p>The following classes are alternate interfaces for built-in Feature Structures; they remain for backwards compatibility.org.apache.uima.cas</p>
+ * <p>
+ * This package holds the definition for many of the built-in Feature Structures.
+ * </p>
+ * <p>
+ * The following classes are alternate interfaces for built-in Feature Structures; they remain for
+ * backwards compatibility.org.apache.uima.cas
+ * </p>
  * <table style="height: 247px;" border="1" >
- * <caption>alternate interfaces</caption>
- * <tbody>
+ * <caption>alternate interfaces</caption> <tbody>
  * <tr>
- * <td style="text-align: center;">UIMA v2 name<br>org.apache.uima.cas</td>
- * <td style="text-align: center;">preferred<br>org.apache.uima.jcas.cas</td>
+ * <td style="text-align: center;">UIMA v2 name<br>
+ * org.apache.uima.cas</td>
+ * <td style="text-align: center;">preferred<br>
+ * org.apache.uima.jcas.cas</td>
  * </tr>
  * <tr>
  * <td>BooleanArrayFS</td>
@@ -92,7 +122,9 @@
  * </tbody>
  * </table>
  * <h3>Constraints - used by filtered iterators</h3>
- * <p>Iterators may be filtered, using constraints, specified using these interfaces.</p>
+ * <p>
+ * Iterators may be filtered, using constraints, specified using these interfaces.
+ * </p>
  * <ul>
  * <li>ConstraintFactor</li>
  * <li>FeaturePath</li>
@@ -106,10 +138,12 @@
  * <li>FSTypeConstraint</li>
  * </ul>
  * <h3>Exception collections</h3>
- * <p>Many of the exceptions that UIMA may throw are collected into groups here. These classes provide one level of indirection that permit IDE environments to conveniently locate and work with these.</p>
+ * <p>
+ * Many of the exceptions that UIMA may throw are collected into groups here. These classes provide
+ * one level of indirection that permit IDE environments to conveniently locate and work with these.
+ * </p>
  * <table>
- * <caption>exceptions</caption>
- * <tbody>
+ * <caption>exceptions</caption> <tbody>
  * <tr>
  * <td>&nbsp;</td>
  * <td style="text-align: center;">Extends</td>
@@ -124,6 +158,8 @@
  * </tr>
  * </tbody>
  * </table>
- * <p>&nbsp;</p>
+ * <p>
+ * &nbsp;
+ * </p>
  */
 package org.apache.uima.cas;

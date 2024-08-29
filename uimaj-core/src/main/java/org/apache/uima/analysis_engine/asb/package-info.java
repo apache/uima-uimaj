@@ -17,8 +17,8 @@
  * under the License.
  */
 /**
- * Contains the Analysis Structure Broker (ASB) interface, along with supporting
- * interfaces and exception classes.  The ASB is the component responsible for
- * communicating with component Analysis Engines within an Aggregate Analysis Engine.
+ * Contains the Analysis Structure Broker (ASB) interface, along with supporting interfaces and
+ * exception classes. The ASB is the component responsible for communicating with component Analysis
+ * Engines within an Aggregate Analysis Engine.
  */
 package org.apache.uima.analysis_engine.asb;

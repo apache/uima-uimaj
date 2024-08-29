@@ -18,10 +18,8 @@
  */
 
 /**
- * <!-- Abstract -->
- * The <CODE>org.apache.uima.pear.util</CODE> package provides utilities that
- * facilitate common operations with general files, strings and XML files,
- * as well as simple process message routing and other useful operations.
- * <br>
+ * <!-- Abstract --> The <CODE>org.apache.uima.pear.util</CODE> package provides utilities that
+ * facilitate common operations with general files, strings and XML files, as well as simple process
+ * message routing and other useful operations. <br>
  */
 package org.apache.uima.pear.util;

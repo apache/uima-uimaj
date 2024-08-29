@@ -100,7 +100,7 @@ class XCasToCasDataSaxHandlerTest {
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
 
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
 

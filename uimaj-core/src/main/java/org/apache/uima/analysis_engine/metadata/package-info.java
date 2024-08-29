@@ -17,7 +17,6 @@
  * under the License.
  */
 /**
- * Interfaces for objects that represent metadata for an
- * Analysis Engine.
+ * Interfaces for objects that represent metadata for an Analysis Engine.
  */
 package org.apache.uima.analysis_engine.metadata;

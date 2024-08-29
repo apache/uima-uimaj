@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,7 +48,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
@@ -55,8 +56,6 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class XCASDeserializerTest {
 
@@ -446,10 +445,12 @@ class XCASDeserializerTest {
     assertThat(v1cas.getDocumentText().equals("some text for the default text sofa.")).isTrue();
     CAS engView = v1cas.getView("EnglishDocument");
     assertThat(engView.getDocumentText().equals("this beer is good")).isTrue();
-    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     CAS gerView = v1cas.getView("GermanDocument");
     assertThat(gerView.getDocumentText().equals("das bier ist gut")).isTrue();
-    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
 
     // reserialize
     StringWriter sw = new StringWriter();
@@ -469,10 +470,12 @@ class XCASDeserializerTest {
     assertThat(v1cas.getDocumentText().equals("some text for the default text sofa.")).isTrue();
     engView = cas.getView("EnglishDocument");
     assertThat(engView.getDocumentText().equals("this beer is good")).isTrue();
-    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(engView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
     gerView = cas.getView("GermanDocument");
     assertThat(gerView.getDocumentText().equals("das bier ist gut")).isTrue();
-    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus documentAnnotation
+    assertThat(gerView.getAnnotationIndex().size() == 5).isTrue(); // 4 annots plus
+                                                                   // documentAnnotation
   }
 
   @Test

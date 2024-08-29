@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,8 +43,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class TypeSystemUtilsTest {
 
   private CAS cas;
@@ -51,7 +51,8 @@ class TypeSystemUtilsTest {
   public void setUp() {
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/pathValidationTS.xml");
-    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).exists();
+    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath())
+            .exists();
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();

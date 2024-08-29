@@ -18,6 +18,8 @@
  */
 /**
  * Apache UIMA internals
- * <p>Contains reference implementations of the interfaces in <code>org.apache.uima</code>.</p>
+ * <p>
+ * Contains reference implementations of the interfaces in <code>org.apache.uima</code>.
+ * </p>
  */
 package org.apache.uima.impl;

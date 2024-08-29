@@ -18,7 +18,6 @@
  */
 
 /**
- * Interfaces for objects that represent metadata for a
- * Resource.
+ * Interfaces for objects that represent metadata for a Resource.
  */
 package org.apache.uima.resource.metadata;

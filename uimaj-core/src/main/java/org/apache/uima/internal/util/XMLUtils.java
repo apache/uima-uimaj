@@ -623,8 +623,7 @@ public abstract class XMLUtils {
   }
 
   public static SAXTransformerFactory createSaxTransformerFactory() {
-    var saxTransformerFactory = (SAXTransformerFactory) TransformerFactory
-            .newInstance();
+    var saxTransformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
     try {
       saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {

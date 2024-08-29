@@ -40,8 +40,7 @@ class TypeSystemUtilTest {
 
     var cas = CasCreationUtils.createCas(tsDesc, null, null);
     // convert that CAS's type system back to a TypeSystemDescription
-    var tsDesc2 = TypeSystemUtil
-            .typeSystem2TypeSystemDescription(cas.getTypeSystem());
+    var tsDesc2 = TypeSystemUtil.typeSystem2TypeSystemDescription(cas.getTypeSystem());
     // test that this is valid by creating a new CAS
     CasCreationUtils.createCas(tsDesc2, null, null);
 
