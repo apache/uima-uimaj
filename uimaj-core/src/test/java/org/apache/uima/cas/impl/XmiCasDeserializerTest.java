@@ -1776,7 +1776,7 @@ public class XmiCasDeserializerTest {
     // =======================================================================
     // create Marker, add/modify fs and serialize in delta xmi format.
     var marker = cas2.createMarker();
-    FSIndex cas2tIndex = cas2.getAnnotationIndex();
+    var cas2tIndex = cas2.getAnnotationIndex();
 
     // create an annotation and add to index
     var cas2anAnnot5 = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);

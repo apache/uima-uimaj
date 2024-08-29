@@ -366,8 +366,7 @@ public class XCASSerializer {
 
       // Get indexes for each SofaFS in the CAS
       for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
-        FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                .getSofaIndexRepository(sofaNum);
+        var viewIR = cas.getBaseCAS().getSofaIndexRepository(sofaNum);
         if (viewIR != null) {
           Collection<TOP> fssInView = viewIR.getIndexedFSs();
           if (!fssInView.isEmpty()) {
@@ -390,9 +389,7 @@ public class XCASSerializer {
     }
 
     private void enqueueFeaturesOfIndexed() {
-      final int max = indexedFSs.size();
-      for (int i = 0; i < max; i++) {
-        TOP fs = indexedFSs.get(i);
+      for (TOP fs : indexedFSs) {
         int typeCode = fs._getTypeCode();
         final int typeClass = classifyType(fs._getTypeImpl());
         if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {

@@ -22,8 +22,9 @@ package org.apache.uima.internal.util;
  * static utilities, used by other parts of the UIMA framework
  *
  * @deprecated use Misc instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public class Utilities {
 
   public static final int numberOfCores = Runtime.getRuntime().availableProcessors();

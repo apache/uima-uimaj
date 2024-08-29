@@ -453,8 +453,9 @@ public interface UimaContext {
    * 
    * @return the data path
    * @deprecated Use {@link #getDataPathElements()} instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.4.0")
   String getDataPath();
 
   /**

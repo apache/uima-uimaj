@@ -100,7 +100,7 @@ class XCasToCasDataSaxHandlerTest {
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-            new FsIndexDescription[0]);
+        FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
 
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
 
@@ -193,10 +193,10 @@ class XCasToCasDataSaxHandlerTest {
       if (typeSystem.subsumes(annotType, type)) {
         // annotation type - check for presence of begin/end
         FeatureValue beginVal = fs.getFeatureValue("begin");
-        assertThat(beginVal instanceof PrimitiveValue).isTrue();
+        assertThat(beginVal).isInstanceOf(PrimitiveValue.class);
         assertThat(((PrimitiveValue) beginVal).toInt() >= 0).isTrue();
         FeatureValue endVal = fs.getFeatureValue("end");
-        assertThat(endVal instanceof PrimitiveValue).isTrue();
+        assertThat(endVal).isInstanceOf(PrimitiveValue.class);
         assertThat(((PrimitiveValue) endVal).toInt() >= 0).isTrue();
       }
     }

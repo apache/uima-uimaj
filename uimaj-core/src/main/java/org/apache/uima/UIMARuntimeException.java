@@ -264,8 +264,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
     // if null message and mCause is UIMAException (e.g. a checked exception that is wrapped),
     // "promote" message
     if (mMessageKey == null) {
-      if (mCause instanceof I18nExceptionI) {
-        I18nExceptionI cause = (I18nExceptionI) mCause;
+      if (mCause instanceof I18nExceptionI cause) {
         mMessageKey = cause.getMessageKey();
         mArguments = cause.getArguments();
       }

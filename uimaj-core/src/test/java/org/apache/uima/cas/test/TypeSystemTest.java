@@ -19,12 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,11 +52,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-/**
- * Class comment for TypeSystemTest.java goes here.
- * 
- */
-public class TypeSystemTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TypeSystemTest {
 
   private class SetupTest implements AnnotatorInitializer {
     /**
@@ -76,23 +68,23 @@ public class TypeSystemTest {
 
       boolean exc = false;
       Type annot = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
-      assertTrue(annot != null);
+      assertThat(annot != null).isTrue();
       // Check for some illegal characters in type names.
       try {
         tsm.addType("TestWithADash-", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType("test.with.a.slash/", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       // Check for empty identifiers (period at beginning or end, two or
       // more
@@ -100,52 +92,52 @@ public class TypeSystemTest {
       try {
         tsm.addType("test.empty.identifier.", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType(".test.empty.identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType("test.empty..identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       // Test underscore behavior (leading underscores are out, other ones
       // in).
       try {
         tsm.addType("test._leading.Underscore", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType("test_embedded.Under__Score", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
+        assertThat(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX)).isTrue();
         exc = true;
       }
-      assertFalse(exc);
+      assertThat(exc).isFalse();
       exc = false;
       // Test (un)qualified names.
       String qualName = "this.is.a.NameTestType";
       String shortName = "NameTestType";
       Type nameTest = tsm.addType(qualName, annot);
-      assertTrue(nameTest != null);
-      assertTrue(qualName.equals(nameTest.getName()));
-      assertTrue(shortName.equals(nameTest.getShortName()));
+      assertThat(nameTest != null).isTrue();
+      assertThat(qualName.equals(nameTest.getName())).isTrue();
+      assertThat(shortName.equals(nameTest.getShortName())).isTrue();
 
       // ///////////////////////////////////////////////////////////////////////
       // Test features (names and inheritance
@@ -153,27 +145,27 @@ public class TypeSystemTest {
       // Set up: add two new annotation types, one inheriting from the
       // other.
       Type annot1 = tsm.addType("Annot1", annot);
-      assertTrue(annot1 != null);
+      assertThat(annot1 != null).isTrue();
       String annot2name = "Annot2";
       Type annot2 = tsm.addType(annot2name, annot1);
-      assertTrue(annot2 != null);
+      assertThat(annot2 != null).isTrue();
       // Another name test.
-      assertTrue(annot1.getName().equals(annot1.getShortName()));
+      assertThat(annot1.getName().equals(annot1.getShortName())).isTrue();
       String annot3name = "Annot3";
       Type annot3 = tsm.addType(annot3name, annot2);
-      assertTrue(annot3 != null);
+      assertThat(annot3 != null).isTrue();
 
       // Check for bug reported by Marshall: feature names can not be
       // retrieved
       // by name on types more than one level removed from the introducing
       // type.
-      assertTrue(tsm.getFeatureByFullName(
-              annot2name + TypeSystem.FEATURE_SEPARATOR + CAS.FEATURE_BASE_NAME_BEGIN) != null);
+      assertThat(tsm.getFeatureByFullName(
+          annot2name + TypeSystem.FEATURE_SEPARATOR + CAS.FEATURE_BASE_NAME_BEGIN) != null).isTrue();
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
-      assertTrue(tsm.getFeatureByFullName(
-              annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null);
+      assertThat(tsm.getFeatureByFullName(
+          annot2name + TypeSystem.FEATURE_SEPARATOR + inhTestFeat) != null).isTrue();
 
       // Test illegal feature names.
       Feature feat = null;
@@ -182,21 +174,21 @@ public class TypeSystemTest {
       } catch (CASAdminException e) {
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         feat = tsm.addFeature("test space", annot1, annot);
       } catch (CASAdminException e) {
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         feat = tsm.addFeature("test.Qualified:name", annot1, annot);
       } catch (CASAdminException e) {
         exc = true;
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
 
       // Now actually create a feature.
@@ -204,9 +196,9 @@ public class TypeSystemTest {
       try {
         feat = tsm.addFeature(featName, annot2, annot);
       } catch (CASAdminException e) {
-        assertTrue(false);
+        assertThat(false).isTrue();
       }
-      assertTrue(feat != null);
+      assertThat(feat != null).isTrue();
 
       // Check that a feature of the same name can be created on a
       // supertype if it has the same range
@@ -215,9 +207,9 @@ public class TypeSystemTest {
         feat2 = tsm.addFeature(featName, annot1, annot);
       } catch (CASAdminException e) {
         e.printStackTrace();
-        assertTrue(false);
+        assertThat(false).isTrue();
       }
-      assertTrue(feat2 != null);
+      assertThat(feat2 != null).isTrue();
       // Check that a feature of the same name can not be created on a
       // subtype.
       /*
@@ -233,19 +225,19 @@ public class TypeSystemTest {
         feat2 = tsm.addFeature(featName, annot2, annot2);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getMessageKey().equals(CASAdminException.DUPLICATE_FEATURE));
+        assertThat(e.getMessageKey().equals(CASAdminException.DUPLICATE_FEATURE)).isTrue();
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       // Check that a feature of the same name _can_ be created on a
       // different
       // type.
       String annot4Name = "Annot4";
       Type annot4 = tsm.addType(annot4Name, annot);
-      assertTrue(annot4 != null);
+      assertThat(annot4 != null).isTrue();
       feat = tsm.addFeature(featName, annot4, annot1);
-      assertTrue(feat != null);
-      assertTrue(featName.equals(feat.getShortName()));
-      assertTrue(feat.getName().equals(annot4Name + TypeSystem.FEATURE_SEPARATOR + featName));
+      assertThat(feat != null).isTrue();
+      assertThat(featName.equals(feat.getShortName())).isTrue();
+      assertThat(feat.getName().equals(annot4Name + TypeSystem.FEATURE_SEPARATOR + featName)).isTrue();
       // Check that we can't add features to top, inherit from arrays etc.
       Type top = tsm.getTopType();
       Type intT = tsm.getType(CAS.TYPE_NAME_INTEGER);
@@ -254,33 +246,33 @@ public class TypeSystemTest {
         tsm.addFeature("testFeature", top, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
+        assertThat(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL)).isTrue();
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addFeature("testFeature", intT, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
+        assertThat(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL)).isTrue();
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType("newType", intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
+        assertThat(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL)).isTrue();
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
       exc = false;
       try {
         tsm.addType("newType", tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
+        assertThat(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL)).isTrue();
       }
-      assertTrue(exc);
+      assertThat(exc).isTrue();
     }
 
     /**
@@ -305,7 +297,7 @@ public class TypeSystemTest {
       ts = cas.getTypeSystem();
     } catch (Exception e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
   }
 
@@ -316,77 +308,77 @@ public class TypeSystemTest {
   }
 
   @Test
-  public void testSuperTypeBuiltIn() {
+  void testSuperTypeBuiltIn() {
     CAS cas = CASInitializer.initCas(new SetupTest(), null);
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
-    assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
+    assertThat(ts.getParent(stringArray).getName()).isEqualTo("uima.cas.ArrayBase");
   }
 
   @Test
-  public void testNameChecking() {
+  void testNameChecking() {
     CAS tcas = CASInitializer.initCas(new SetupTest(), null);
-    assertTrue(tcas != null);
+    assertThat(tcas != null).isTrue();
   }
 
   @Test
-  public void testGetParent() {
-    assertTrue(ts.getParent(ts.getType(CAS.TYPE_NAME_TOP)) == null);
+  void testGetParent() {
+    assertThat(ts.getParent(ts.getType(CAS.TYPE_NAME_TOP)) == null).isTrue();
     Type annotBase = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    assertTrue(ts.getParent(annotBase) == ts.getTopType());
+    assertThat(ts.getParent(annotBase) == ts.getTopType()).isTrue();
     Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(ts.getParent(annot) == ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE));
-    assertTrue(ts.getParent(ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
+    assertThat(ts.getParent(annot) == ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE)).isTrue();
+    assertThat(ts.getParent(ts.getType(CASTestSetup.TOKEN_TYPE)) == annot).isTrue();
   }
 
   @Test
-  public void testGetType() {
+  void testGetType() {
     Type top = ts.getTopType();
-    assertTrue(top != null);
-    assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
+    assertThat(top != null).isTrue();
+    assertThat(top.getName().equals(CAS.TYPE_NAME_TOP)).isTrue();
     Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(annot != null);
+    assertThat(annot != null).isTrue();
     Type token = ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(token != null);
+    assertThat(token != null).isTrue();
   }
 
   /*
    * Test for Feature getFeature(String)
    */
   @Test
-  public void testGetFeature() {
+  void testGetFeature() {
     Type annot = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Feature start = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     Feature end = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     Type integer = ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(start.getDomain() == annot);
-    assertTrue(end.getDomain() == annot);
-    assertTrue(start.getRange() == integer);
-    assertTrue(end.getRange() == integer);
+    assertThat(start.getDomain() == annot).isTrue();
+    assertThat(end.getDomain() == annot).isTrue();
+    assertThat(start.getRange() == integer).isTrue();
+    assertThat(end.getRange() == integer).isTrue();
     Feature start1 = annot.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
-    assertTrue(start == start1);
+    assertThat(start == start1).isTrue();
     Feature start2 = ts.getType(CASTestSetup.TOKEN_TYPE)
             .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
-    assertTrue(start == start2);
+    assertThat(start == start2).isTrue();
   }
 
   @Test
-  public void testGetTypeIterator() {
+  void testGetTypeIterator() {
     Iterator<Type> it = ts.getTypeIterator();
     // Put the type names in a vector and do some spot checks.
     List<String> v = new ArrayList<>();
     while (it.hasNext()) {
       v.add(it.next().getName());
     }
-    assertTrue(v.contains(CAS.TYPE_NAME_TOP));
-    assertTrue(v.contains(CAS.TYPE_NAME_FLOAT));
-    assertTrue(v.contains(CAS.TYPE_NAME_FS_ARRAY));
-    assertTrue(v.contains(CAS.TYPE_NAME_ANNOTATION));
-    assertTrue(v.contains(CASTestSetup.SENT_TYPE));
+    assertThat(v.contains(CAS.TYPE_NAME_TOP)).isTrue();
+    assertThat(v.contains(CAS.TYPE_NAME_FLOAT)).isTrue();
+    assertThat(v.contains(CAS.TYPE_NAME_FS_ARRAY)).isTrue();
+    assertThat(v.contains(CAS.TYPE_NAME_ANNOTATION)).isTrue();
+    assertThat(v.contains(CASTestSetup.SENT_TYPE)).isTrue();
   }
 
   @Test
-  public void testGetFeatures() {
+  void testGetFeatures() {
     Iterator<Feature> it = ts.getFeatures();
     // Put feature names in vector and test for some known features.
     List<String> v = new ArrayList<>();
@@ -395,128 +387,126 @@ public class TypeSystemTest {
     }
     String annotPrefix = CAS.TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR;
     String arrayPrefix = CAS.TYPE_NAME_ARRAY_BASE + TypeSystem.FEATURE_SEPARATOR;
-    assertTrue(arrayPrefix != null);
+    assertThat(arrayPrefix != null).isTrue();
     String tokenPrefix = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR;
-    assertTrue(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_BEGIN));
-    assertTrue(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_END));
-    assertTrue(v.contains(tokenPrefix + CASTestSetup.TOKEN_TYPE_FEAT));
+    assertThat(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_BEGIN)).isTrue();
+    assertThat(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_END)).isTrue();
+    assertThat(v.contains(tokenPrefix + CASTestSetup.TOKEN_TYPE_FEAT)).isTrue();
     // assertTrue(v.contains(arrayPrefix + CAS.ARRAY_LENGTH_FEAT));
   }
 
   @Test
-  public void testGetTopType() {
+  void testGetTopType() {
     Type top = ts.getTopType();
-    assertTrue(top != null);
-    assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
+    assertThat(top != null).isTrue();
+    assertThat(top.getName().equals(CAS.TYPE_NAME_TOP)).isTrue();
   }
 
   @Test
-  public void testGetDirectlySubsumedTypes() {
+  void testGetDirectlySubsumedTypes() {
     List<Type> subTypes = ts.getDirectSubtypes(ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(subTypes.contains(intType));
+    assertThat(subTypes.contains(intType)).isTrue();
     Type annotBaseType = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    assertTrue(subTypes.contains(annotBaseType));
+    assertThat(subTypes.contains(annotBaseType)).isTrue();
     Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(!subTypes.contains(annotType));
+    assertThat(!subTypes.contains(annotType)).isTrue();
     Type tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(!subTypes.contains(tokenType));
+    assertThat(!subTypes.contains(tokenType)).isTrue();
   }
 
   /*
    * Test for boolean subsumes(Type, Type)
    */
   @Test
-  public void testSubsumes() {
+  void testSubsumes() {
     Type top = ts.getTopType();
     Type intType = ts.getType(CAS.TYPE_NAME_INTEGER);
     Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Type tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(ts.subsumes(top, intType));
-    assertTrue(ts.subsumes(top, annotType));
-    assertTrue(ts.subsumes(top, tokenType));
-    assertTrue(ts.subsumes(annotType, tokenType));
-    assertTrue(!ts.subsumes(tokenType, annotType));
-    assertTrue(!ts.subsumes(tokenType, top));
+    assertThat(ts.subsumes(top, intType)).isTrue();
+    assertThat(ts.subsumes(top, annotType)).isTrue();
+    assertThat(ts.subsumes(top, tokenType)).isTrue();
+    assertThat(ts.subsumes(annotType, tokenType)).isTrue();
+    assertThat(!ts.subsumes(tokenType, annotType)).isTrue();
+    assertThat(!ts.subsumes(tokenType, top)).isTrue();
 
     Type stringType = ts.getType(CAS.TYPE_NAME_STRING);
     Type substringType = ts.getType(CASTestSetup.GROUP_1);
-    assertTrue(ts.subsumes(stringType, substringType));
+    assertThat(ts.subsumes(stringType, substringType)).isTrue();
   }
 
   /**
    * Test presence of builtin types and their properties.
    */
   @Test
-  public void testBuiltinTypes() {
-    assertTrue(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
-    assertTrue(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
-    assertTrue(cas.getTypeSystem().getTopType().isFeatureFinal());
-    assertFalse(cas.getTypeSystem().getTopType().isInheritanceFinal());
+  void testBuiltinTypes() {
+    assertThat(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal()).isTrue();
+    assertThat(cas.getTypeSystem().getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal()).isTrue();
+    assertThat(cas.getTypeSystem().getTopType().isFeatureFinal()).isTrue();
+    assertThat(cas.getTypeSystem().getTopType().isInheritanceFinal()).isFalse();
   }
 
   /**
    * Test creation of type system with static [T]CASFactory methods.
    */
   @Test
-  public void testCreateTypeSystem() {
+  void testCreateTypeSystem() {
     // Test creation of CAS type system.
     TypeSystemMgr tsMgr = CASFactory.createTypeSystem();
     Type top = tsMgr.getTopType();
-    assertNotNull(top);
-    assertTrue(tsMgr.getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal());
-    assertTrue(tsMgr.getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal());
-    assertTrue(tsMgr.getTopType().isFeatureFinal());
-    assertFalse(tsMgr.getTopType().isInheritanceFinal());
+    assertThat(top).isNotNull();
+    assertThat(tsMgr.getType(CAS.TYPE_NAME_FLOAT).isInheritanceFinal()).isTrue();
+    assertThat(tsMgr.getType(CAS.TYPE_NAME_FLOAT).isFeatureFinal()).isTrue();
+    assertThat(tsMgr.getTopType().isFeatureFinal()).isTrue();
+    assertThat(tsMgr.getTopType().isInheritanceFinal()).isFalse();
     Type someType = tsMgr.addType("some.type", top);
-    assertNotNull(someType);
+    assertThat(someType).isNotNull();
 
   }
 
-  /**
+  /*
    * Test array types.
-   * 
    */
   @Test
-  public void testArrayTypes() {
+  void testArrayTypes() {
     // Our version of object arrays. Type is built-in and has special name,
     // for backwards compatibility.
     Type fsArrayType = ts.getType(CAS.TYPE_NAME_FS_ARRAY);
-    assertNotNull(fsArrayType);
-    assertTrue(fsArrayType.isArray());
-    assertNotNull(fsArrayType.getComponentType());
-    assertTrue(fsArrayType.getComponentType().equals(ts.getTopType()));
-    assertTrue(fsArrayType.equals(ts.getArrayType(ts.getTopType())));
+    assertThat(fsArrayType).isNotNull();
+    assertThat(fsArrayType.isArray()).isTrue();
+    assertThat(fsArrayType.getComponentType()).isNotNull();
+    assertThat(fsArrayType.getComponentType().equals(ts.getTopType())).isTrue();
+    assertThat(fsArrayType.equals(ts.getArrayType(ts.getTopType()))).isTrue();
     // Int arrays are also built-in, but are primitive-valued.
     Type intArrayType = ts.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-    assertNotNull(intArrayType);
-    assertTrue(intArrayType.isArray());
-    assertNotNull(intArrayType.getComponentType());
-    assertTrue(intArrayType.getComponentType().equals(ts.getType(CAS.TYPE_NAME_INTEGER)));
-    assertTrue(intArrayType.equals(ts.getArrayType(ts.getType(CAS.TYPE_NAME_INTEGER))));
+    assertThat(intArrayType).isNotNull();
+    assertThat(intArrayType.isArray()).isTrue();
+    assertThat(intArrayType.getComponentType()).isNotNull();
+    assertThat(intArrayType.getComponentType().equals(ts.getType(CAS.TYPE_NAME_INTEGER))).isTrue();
+    assertThat(intArrayType.equals(ts.getArrayType(ts.getType(CAS.TYPE_NAME_INTEGER)))).isTrue();
     // Negative tests: make sure regular types are not classified as arrays.
     Type stringType = ts.getType(CAS.TYPE_NAME_STRING);
-    assertFalse(stringType.isArray());
-    assertNull(stringType.getComponentType());
+    assertThat(stringType.isArray()).isFalse();
+    assertThat(stringType.getComponentType()).isNull();
     Type topType = ts.getTopType();
-    assertFalse(topType.isArray());
-    assertNull(topType.getComponentType());
+    assertThat(topType.isArray()).isFalse();
+    assertThat(topType.getComponentType()).isNull();
     // Create an array of arrays.
     Type intMatrix = ts.getArrayType(intArrayType);
-    assertNotNull(intMatrix);
-    assertTrue(intMatrix.isArray());
-    assertTrue(intMatrix.getComponentType().equals(intArrayType));
+    assertThat(intMatrix).isNotNull();
+    assertThat(intMatrix.isArray()).isTrue();
+    assertThat(intMatrix.getComponentType().equals(intArrayType)).isTrue();
     // Check array inheritance.
     Type annotationArray = ts.getArrayType(ts.getType(CAS.TYPE_NAME_ANNOTATION));
-    assertTrue(ts.subsumes(fsArrayType, annotationArray));
+    assertThat(ts.subsumes(fsArrayType, annotationArray)).isTrue();
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }
 
   @Test
-  public void testSerializeTypeSystem() {
+  void testSerializeTypeSystem() {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/arrayValueDescriptor.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
-            descriptorFile.exists());
+    assertThat(descriptorFile.exists()).as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
     TypeSystem typeSystem = null;
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
@@ -525,26 +515,26 @@ public class TypeSystemTest {
       typeSystem = UIMAFramework.produceAnalysisEngine(spec).newCAS().getTypeSystem();
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (InvalidXMLException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (IOException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     try {
       TypeSystem2Xml.typeSystem2Xml(typeSystem, os);
     } catch (SAXException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (IOException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     try {
       os.close();
     } catch (IOException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     InputStream is = new ByteArrayInputStream(os.toByteArray());
     // System.out.println(os.toString());
@@ -553,7 +543,7 @@ public class TypeSystemTest {
     try {
       descriptor = UIMAFramework.getXMLParser().parse(xis);
     } catch (InvalidXMLException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     // instantiate CAS to get type system. Also build style
     // map file if there is none.
@@ -561,30 +551,30 @@ public class TypeSystemTest {
     try {
       tsDesc.resolveImports();
     } catch (InvalidXMLException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     try {
       CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[] {});
     } catch (ResourceInitializationException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
   }
 
   @Test
-  public void testSerializeParameterizedArrayTypeSystem() {
+  void testSerializeParameterizedArrayTypeSystem() {
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     try {
       TypeSystem2Xml.typeSystem2Xml(ts, os);
     } catch (SAXException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (IOException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     try {
       os.close();
     } catch (IOException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     InputStream is = new ByteArrayInputStream(os.toByteArray());
     // System.out.println(os.toString());
@@ -593,7 +583,7 @@ public class TypeSystemTest {
     try {
       descriptor = UIMAFramework.getXMLParser().parse(xis);
     } catch (InvalidXMLException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     // instantiate CAS to get type system. Also build style
     // map file if there is none.
@@ -601,12 +591,12 @@ public class TypeSystemTest {
     try {
       tsDesc.resolveImports();
     } catch (InvalidXMLException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     try {
       CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[] {});
     } catch (ResourceInitializationException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
   }
 }

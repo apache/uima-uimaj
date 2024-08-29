@@ -47,7 +47,7 @@ public class UIMALogFormatter extends Formatter {
       return "";
     }
 
-    StringBuffer buffer = new StringBuffer(100);
+    var buffer = new StringBuilder(100);
 
     // create timestamp
     Date timestamp = new Date(record.getMillis());

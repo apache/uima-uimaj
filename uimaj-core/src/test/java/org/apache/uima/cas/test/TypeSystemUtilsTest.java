@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,11 +41,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * Class comment for IteratorTest.java goes here.
- * 
- */
-public class TypeSystemUtilsTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TypeSystemUtilsTest {
 
   private CAS cas;
 
@@ -55,8 +51,7 @@ public class TypeSystemUtilsTest {
   public void setUp() {
 
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/pathValidationTS.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
-            descriptorFile.exists());
+    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).exists();
 
     try {
       XMLParser parser = UIMAFramework.getXMLParser();
@@ -65,53 +60,53 @@ public class TypeSystemUtilsTest {
       cas = CasCreationUtils.createCas(spec, null, new FsIndexDescription[] {});
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (InvalidXMLException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     } catch (IOException e) {
       e.printStackTrace();
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
 
   }
 
   @Test
-  public void testPathValidation() {
+  void testPathValidation() {
     Type type1 = cas.getTypeSystem().getType("Type1");
     // Type1, f0/begin, always
     List<String> path = new ArrayList<>();
     path.add("f0");
     path.add("begin");
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS).isTrue();
     // Type1, f1, possible
     path = new ArrayList<>();
     path.add("f1");
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE).isTrue();
     // Type1, f1/tail/tail, possible
     path = new ArrayList<>();
     path.add("f1");
     path.add("tail");
     path.add("tail");
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE).isTrue();
     // Type1, f2, possible
     path = new ArrayList<>();
     path.add("f2");
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.POSSIBLE).isTrue();
     // Type1, nosuchfeature, never
     path = new ArrayList<>();
     path.add("nosuchfeature");
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.NEVER);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.NEVER).isTrue();
     // Type1, <empty path>, always
     path = new ArrayList<>();
-    assertTrue(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS);
+    assertThat(TypeSystemUtils.isPathValid(type1, path) == PathValid.ALWAYS).isTrue();
     // t1, f1/f2/f3, always
     Type t1 = cas.getTypeSystem().getType("t1");
     path = new ArrayList<>();
     path.add("f1");
     path.add("f2");
     path.add("f3");
-    assertTrue(TypeSystemUtils.isPathValid(t1, path) == PathValid.ALWAYS);
+    assertThat(TypeSystemUtils.isPathValid(t1, path) == PathValid.ALWAYS).isTrue();
   }
 
   @AfterEach

@@ -20,10 +20,6 @@
 package org.apache.uima.internal.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URL;
@@ -34,11 +30,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/*
- * UIMA ClassLoader test
- * 
- */
-public class UIMAClassLoaderTest {
+class UIMAClassLoaderTest {
 
   private String testClassPath;
 
@@ -50,7 +42,7 @@ public class UIMAClassLoaderTest {
   }
 
   @Test
-  public void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
+  void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     assertThat(rsrcMgr.getExtensionClassLoader()) //
@@ -66,40 +58,40 @@ public class UIMAClassLoaderTest {
     UIMAClassLoader cl = (UIMAClassLoader) rsrcMgr.getExtensionClassLoader();
     Object o = cl.getClassLoadingLockForTesting("someString");
     Object o2 = cl.getClassLoadingLockForTesting("s2");
-    assertTrue(o != o2);
-    assertTrue(cl != o);
+    assertThat(o != o2).isTrue();
+    assertThat(cl != o).isTrue();
   }
 
   @Test
-  public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
+  void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
     ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
-    assertNull(rsrcMgr.getExtensionClassLoader());
+    assertThat(rsrcMgr.getExtensionClassLoader()).isNull();
 
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", true);
 
-    assertNotNull(rsrcMgr.getExtensionClassLoader());
+    assertThat(rsrcMgr.getExtensionClassLoader()).isNotNull();
 
   }
 
   @Test
-  public void testSimpleClassloadingSampleString() throws Exception {
+  void testSimpleClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
-    assertNotNull(testClass);
-    assertEquals(cl, testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(cl);
 
     testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
 
-    assertNotNull(testClass);
-    assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
   }
 
   @Test
-  public void testParallelClassLoading() throws Exception {
+  void testParallelClassLoading() throws Exception {
     final UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     final Class<?>[] loadedClasses = new Class<?>[Misc.numberOfCores];
 
@@ -115,58 +107,57 @@ public class UIMAClassLoaderTest {
             MultiThreadUtils.emptyReset);
     Class<?> c = loadedClasses[0];
     for (int i = 1; i < Misc.numberOfCores; i++) {
-      assertEquals(c, loadedClasses[i]);
+      assertThat(loadedClasses[i]).isEqualTo(c);
     }
   }
 
   @Test
-  public void testSimpleClassloadingSampleURL() throws Exception {
+  void testSimpleClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
-    assertNotNull(testClass);
-    assertEquals(cl, testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(cl);
 
     testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
 
-    assertNotNull(testClass);
-    assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
   }
 
   @Test
-  public void testAdvancedClassloadingSampleString() throws Exception {
+  void testAdvancedClassloadingSampleString() throws Exception {
     UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
-    assertNotNull(testClass);
-    assertEquals(cl, testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(cl);
 
     testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
 
-    assertNotNull(testClass);
-    assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
   }
 
   @Test
-  public void testAdvancedClassloadingSampleURL() throws Exception {
+  void testAdvancedClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
-    assertNotNull(testClass);
-    assertEquals(cl, testClass.getClassLoader());
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(cl);
 
     testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
 
-    assertNotNull(testClass);
-    assertEquals(this.getClass().getClassLoader(), testClass.getClassLoader());
-
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
   }
 }
