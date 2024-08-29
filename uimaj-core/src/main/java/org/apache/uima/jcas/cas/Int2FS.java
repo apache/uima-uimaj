@@ -258,7 +258,7 @@ public static final String _FeatName_fsArray = "fsArray";
       }
 
       // using element by element instead of bulk operations
-      // in case fsa was preallocated and right size, may need journaling
+      // in case fsa was pre-allocated and right size, may need journaling
 
       Iterator<IntEntry<T>> it = int2FS.iterator();
       int[] i = new int[1];
@@ -268,7 +268,7 @@ public static final String _FeatName_fsArray = "fsArray";
 
       it.forEachRemaining(e -> {
         ia_final.set(i[0], e.getKey());
-        fsa_final.set_without_PEAR_conversion(i[0], (T) e.getValue());
+        fsa_final.set_without_PEAR_conversion(i[0], e.getValue());
         i[0]++;
       });
     }
@@ -381,7 +381,7 @@ public static final String _FeatName_fsArray = "fsArray";
   public T remove(int key) {
     maybeLazyInit();
     isSaveNeeded = true;
-    return (T) int2FS.remove(key);
+    return int2FS.remove(key);
   }
 
   public void clear() {

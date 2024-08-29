@@ -377,14 +377,11 @@ class FeaturePathImpl implements FeaturePath {
     return (tgtFs == FEATURE_PATH_FAILED) ? null : targetType;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FeaturePath#getTypClass(org.apache.uima.cas. FeatureStructure)
-   * 
+  /**
    * @deprecated use getTypeClass instead (spelling correction)
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   @Override
   public TypeClass getTypClass(FeatureStructure fs) {
     TypeImpl type = (TypeImpl) getType(fs);

@@ -6002,15 +6002,12 @@ public class CASImpl extends AbstractCas_ImplBase
       }, "close trace output"));
     }
   }
-
   /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.admin.CASMgr#setCAS(org.apache.uima.cas.CAS) Internal use Never called
-   * Kept because it's in the interface.
+   * @forRemoval 4.0.0
+   * @deprecated Does nothing, kept only for backwards compatibility
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   public void setCAS(CAS cas) {
   }
 

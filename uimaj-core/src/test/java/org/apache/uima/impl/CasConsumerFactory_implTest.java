@@ -44,10 +44,10 @@ class CasConsumerFactory_implTest {
     desc.setFrameworkImplementation("foo");
 
     assertThatExceptionOfType(ResourceInitializationException.class)
-        .isThrownBy(() -> ccFactory.produceResource(CasConsumer.class, desc, Collections.EMPTY_MAP))
+        .isThrownBy(() -> ccFactory.produceResource(CasConsumer.class, desc, Collections.emptyMap()))
         .satisfies(e -> {
           assertThat(e.getMessage()).isNotNull();
-          assertThat(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED")).isFalse();
+          assertThat(e.getMessage()).doesNotStartWith("EXCEPTION MESSAGE LOCALIZATION FAILED");
           assertThat(e.getMessageKey()).isEqualTo(ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
         });
   }

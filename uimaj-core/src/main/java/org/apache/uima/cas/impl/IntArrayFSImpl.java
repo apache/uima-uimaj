@@ -24,8 +24,9 @@ import org.apache.uima.cas.IntArrayFS;
  * V2 compatibility only The non-JCas cover class for Integer Array
  * 
  * @deprecated use IntegerArray instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface IntArrayFSImpl extends IntArrayFS {
 
 }

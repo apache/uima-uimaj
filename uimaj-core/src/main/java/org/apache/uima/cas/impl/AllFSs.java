@@ -157,8 +157,8 @@ class AllFSs {
 
     final TypeImpl srcType = fs._getTypeImpl();
     if (srcType.getStaticMergedNonSofaFsRefs().length > 0) {
-      if (fs instanceof UimaSerializableFSs) {
-        ((UimaSerializableFSs) fs)._save_fsRefs_to_cas_data();
+      if (fs instanceof UimaSerializableFSs uimaSerializableFSs) {
+        uimaSerializableFSs._save_fsRefs_to_cas_data();
       }
       for (FeatureImpl srcFeat : srcType.getStaticMergedNonSofaFsRefs()) {
         if (typeMapper != null) {

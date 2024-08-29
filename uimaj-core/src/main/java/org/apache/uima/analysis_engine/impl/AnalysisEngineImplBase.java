@@ -174,6 +174,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     return result;
   }
 
+  /**
+   * @deprecated Need to find a better solution since {@link Object#finalize()} has been deprecated by Java.
+   */
   @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
@@ -271,11 +274,6 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#process(org.apache.uima.cas.CAS)
-   */
   @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {

@@ -195,7 +195,7 @@ class AnalysisEnginePoolTest {
     try {
       // Test each form of the process method. When TestAnnotator executes, it
       // stores in static fields the document text and the ResultSpecification.
-      // We use thse to make sure the information propogates correctly to the annotator.
+      // We use those to make sure the information propagates correctly to the annotator.
 
       // process(CAS)
       CAS tcas = tae.newCAS();

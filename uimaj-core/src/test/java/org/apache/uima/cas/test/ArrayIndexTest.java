@@ -40,6 +40,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// Class must be public because it is also a annotator class!
+@SuppressWarnings("java:S5786")
 public class ArrayIndexTest implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";

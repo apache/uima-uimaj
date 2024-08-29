@@ -797,8 +797,8 @@ public class CASSerializer implements Serializable {
         } // end of switch
       } else { // end of if-array
         // 1 or more features modified
-        if (fs instanceof UimaSerializable) {
-          ((UimaSerializable) fs)._save_to_cas_data();
+        if (fs instanceof UimaSerializable uimaSerializable) {
+          uimaSerializable._save_to_cas_data();
         }
         BitSet fm = fsChange.featuresModified;
         int offset = fm.nextSetBit(0);

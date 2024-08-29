@@ -30,9 +30,7 @@ import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_INTE
 import static org.apache.uima.resource.metadata.ConfigurationParameter.TYPE_STRING;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.apache.uima.util.CasCreationUtils.createCas;
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -381,7 +379,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testDefaultingOperationalParameters() throws Exception {
+  void testDefaultingOperationalParameters() throws Exception {
     var in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/TestPrimitiveOperationalParmsDefaults.xml"));
     AnalysisEngineDescription desc = xmlParser.parseAnalysisEngineDescription(in);
@@ -393,7 +391,7 @@ class AnalysisEngineDescription_implTest {
   }
 
   @Test
-  public void testDelegateImports() throws Exception {
+  void testDelegateImports() throws Exception {
     // create aggregate TAE description and add delegate AE import
     Import_impl delegateImport = new Import_impl();
     delegateImport.setLocation(
@@ -547,8 +545,8 @@ class AnalysisEngineDescription_implTest {
     var desc = xmlParser.parseAnalysisEngineDescription(in);
     var resMgr = newDefaultResourceManager();
     var dataPathDir = getFile("TextAnalysisEngineImplTest/dataPathDir");
-    resMgr.setDataPath(dataPathDir.getCanonicalPath());
-    desc.doFullValidation(resMgr);
+    resMgr.setDataPathElements(dataPathDir.getCanonicalFile());
+    assertThatNoException().isThrownBy(() -> desc.doFullValidation(resMgr));
   }
 
   @Test

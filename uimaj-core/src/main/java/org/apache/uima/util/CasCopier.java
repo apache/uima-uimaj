@@ -816,7 +816,7 @@ public class CasCopier {
     TOP tgtFs = tgtView.createFS(tgtTi);
 
     // add to map so we don't try to copy this more than once
-    mFsMap.put((TOP) srcFs, tgtFs);
+    mFsMap.put(srcFs, tgtFs);
 
     fsToDo.addLast(() -> {
       if (srcFs instanceof UimaSerializable) {

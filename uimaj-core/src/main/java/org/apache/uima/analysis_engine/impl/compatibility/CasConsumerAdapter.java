@@ -112,8 +112,8 @@ public class CasConsumerAdapter implements AnalysisComponent {
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
     try {
       TypeSystem typeSystem;
-      if (aCAS instanceof JCas) {
-        typeSystem = ((JCas) aCAS).getTypeSystem();
+      if (aCAS instanceof JCas jcas) {
+        typeSystem = jcas.getTypeSystem();
       } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();

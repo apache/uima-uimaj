@@ -41,10 +41,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class IndexSerializationTest {
+class IndexSerializationTest {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
@@ -91,7 +92,7 @@ public class IndexSerializationTest {
   private Feature endFeature;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     casMgr = initCAS();
     cas = (CASImpl) casMgr;
 
@@ -106,11 +107,11 @@ public class IndexSerializationTest {
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
     annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(annotationType != null);
+    Assertions.assertTrue(annotationType != null);
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     casMgr = null;
     cas = null;
     annotationType = null;
@@ -183,7 +184,7 @@ public class IndexSerializationTest {
    * Test driver.
    */
   @Test
-  public void testMain() throws Exception {
+  void testMain() throws Exception {
 
     for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
@@ -249,6 +250,5 @@ public class IndexSerializationTest {
     // System.out.println("Size of set index: " + index.size());
     // System.out.println("Should be: " + setSize);
     assertTrue(index.size() == setSize);
-
   }
 }

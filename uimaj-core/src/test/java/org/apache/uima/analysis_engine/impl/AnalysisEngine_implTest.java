@@ -283,8 +283,7 @@ class AnalysisEngine_implTest {
               JUnitExtension.getFile("TextAnalysisEngineImplTest/EmptyAggregate.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       FixedFlow emptyFlow = (FixedFlow) desc.getAnalysisEngineMetaData().getFlowConstraints();
-      assertThat(emptyFlow.getFixedFlow()).isNotNull();
-      assertThat(emptyFlow.getFixedFlow().length).isZero();
+      assertThat(emptyFlow.getFixedFlow()).isNotNull().isEmpty();
       ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
       ae.destroy();
@@ -864,12 +863,12 @@ class AnalysisEngine_implTest {
       // test results of merge
       // TypeSystem
       TypeSystemDescription typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
-      assertThat(typeSys.getTypes().length).isEqualTo(8);
+      assertThat(typeSys.getTypes()).hasSize(8);
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
       assertThat(type0).isNotNull();
       assertThat(type0.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
-      assertThat(type0.getFeatures().length).isEqualTo(1);
+      assertThat(type0.getFeatures()).hasSize(1);
 
       TypeDescription type1 = typeSys.getType("Person");
       assertThat(type1).isNotNull();
@@ -884,22 +883,22 @@ class AnalysisEngine_implTest {
       TypeDescription type3 = typeSys.getType("Org");
       assertThat(type3).isNotNull();
       assertThat(type3.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
-      assertThat(type3.getFeatures().length).isEqualTo(0);
+      assertThat(type3.getFeatures()).isEmpty();
 
       TypeDescription type4 = typeSys.getType("DocumentStructure");
       assertThat(type4).isNotNull();
       assertThat(type4.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
-      assertThat(type4.getFeatures().length).isEqualTo(0);
+      assertThat(type4.getFeatures()).isEmpty();
 
       TypeDescription type5 = typeSys.getType("Paragraph");
       assertThat(type5).isNotNull();
       assertThat(type5.getSupertypeName()).isEqualTo("DocumentStructure");
-      assertThat(type5.getFeatures().length).isEqualTo(0);
+      assertThat(type5.getFeatures()).isEmpty();
 
       TypeDescription type6 = typeSys.getType("Sentence");
       assertThat(type6).isNotNull();
       assertThat(type6.getSupertypeName()).isEqualTo("DocumentStructure");
-      assertThat(type6.getFeatures().length).isEqualTo(0);
+      assertThat(type6.getFeatures()).isEmpty();
 
       TypeDescription type7 = typeSys.getType("test.flowController.Test");
       assertThat(type7).isNotNull();

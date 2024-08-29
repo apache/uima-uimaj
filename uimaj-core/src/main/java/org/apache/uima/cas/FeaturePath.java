@@ -174,8 +174,9 @@ public interface FeaturePath {
    * 
    * @return Returns the type class of the feature path or null if the feature path is not set
    * @deprecated use getTypeClass (spelling fix)
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   TypeClass getTypClass(FeatureStructure fs);
 
   /**

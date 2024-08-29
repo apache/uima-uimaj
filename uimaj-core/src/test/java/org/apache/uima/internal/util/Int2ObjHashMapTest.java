@@ -18,16 +18,16 @@
  */
 package org.apache.uima.internal.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.Random;
 
 import org.apache.uima.util.IntEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class Int2ObjHashMapTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
+class Int2ObjHashMapTest {
 
   // a number of extras needed to cause rebalance
   // is > 1 because it might turn out randomly that
@@ -38,37 +38,34 @@ public class Int2ObjHashMapTest {
   Int2ObjHashMap<Integer, Integer> ihm;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     ihm = new Int2ObjHashMap<>(Integer.class);
   }
 
   @Test
-  public void testBasic() {
+  void testBasic() {
 
     ihm.put(15, 150);
     ihm.put(188, 1880);
-    assertEquals(2, ihm.size());
-    assertEquals(150, (int) ihm.get(15));
-    assertEquals(1880, (int) ihm.get(188));
+    assertThat(ihm.size()).isEqualTo(2);
+    assertThat((int) ihm.get(15)).isEqualTo(150);
+    assertThat((int) ihm.get(188)).isEqualTo(1880);
 
-    assertEquals(null, ihm.remove(18));
-    assertEquals(150, (int) ihm.remove(15));
-    assertEquals(1, ihm.size());
+    assertThat(ihm.remove(18)).isNull();
+    assertThat((int) ihm.remove(15)).isEqualTo(150);
+    assertThat(ihm.size()).isEqualTo(1);
 
     for (IntEntry<Integer> ie : ihm) {
-      assertEquals(ie.getKey(), 188);
+      assertThat(188).isEqualTo(ie.getKey());
     }
 
-    assertEquals(1880, (int) ihm.remove(188));
-    assertEquals(0, ihm.size());
-    for (IntEntry<Integer> ie : ihm) {
-      fail(); // should be empty
-    }
-
+    assertThat((int) ihm.remove(188)).isEqualTo(1880);
+    assertThat(ihm).isEmpty();
+    assertThat(ihm.iterator().hasNext()).isFalse();
   }
 
   @Test
-  public void testRebalance() {
+  void testRebalance() {
     // 100 elements, require 256 table (128 * .66 = 85)
     for (int i = 1; i < 101; i++) {
       ihm.put(i, i * 10);
@@ -76,31 +73,31 @@ public class Int2ObjHashMapTest {
 
     // have 100 elements, remove 100 elements
     for (int i = 1; i < 101; i++) {
-      assertEquals(i * 10, (int) ihm.remove(i));
+      assertThat((int) ihm.remove(i)).isEqualTo(i * 10);
     }
 
-    assertEquals(0, ihm.size());
+    assertThat(ihm.size()).isEqualTo(0);
 
-    assertEquals(64, ihm.getCapacity());
+    assertThat(ihm.getCapacity()).isEqualTo(64);
 
     for (int i = 1; i < 101 + REBAL; i++) {
       ihm.put(i + 100, i * 10); // add different keys, so may use some new slots
     }
 
-    assertEquals(256, ihm.getCapacity()); // because above are different adds, likely into
+    assertThat(ihm.getCapacity()).isEqualTo(256); // because above are different adds, likely into
                                           // non-removed positions
 
     // have 100 elements, remove 100 elements
     for (int i = 1; i < 101 + REBAL; i++) {
-      assertEquals(i * 10, (int) ihm.remove(i + 100));
+      assertThat((int) ihm.remove(i + 100)).isEqualTo(i * 10);
     }
 
-    assertEquals(64, ihm.getCapacity());
+    assertThat(ihm.getCapacity()).isEqualTo(64);
 
   }
 
   @Test
-  public void testRandom() {
+  void testRandom() {
     int countAdd = 0;
     int dupsA = 0;
     int notPres = 0;
@@ -119,7 +116,7 @@ public class Int2ObjHashMapTest {
         int sz = ihm.size();
         if (ihm.put(k, -k) == null) {
           countAdd++;
-          assertEquals(sz + 1, ihm.size());
+          assertThat(ihm.size()).isEqualTo(sz + 1);
         } else {
           dupsA++;
         }
@@ -127,7 +124,7 @@ public class Int2ObjHashMapTest {
         int sz = ihm.size();
         if (ihm.remove(k) != null) {
           countRmv++;
-          assertEquals(sz - 1, ihm.size());
+          assertThat(ihm.size()).isEqualTo(sz - 1);
         } else {
           notPres++;
         }
@@ -136,6 +133,6 @@ public class Int2ObjHashMapTest {
     }
     System.out.format("%s testRandom added: %,d dups: %,d rmvd: %,d notPres: %,d, size: %d%n",
             this.getClass().getName(), countAdd, dupsA, countRmv, notPres, ihm.size());
-    assertEquals(countAdd - countRmv, ihm.size());
+    assertThat(ihm.size()).isEqualTo(countAdd - countRmv);
   }
 }

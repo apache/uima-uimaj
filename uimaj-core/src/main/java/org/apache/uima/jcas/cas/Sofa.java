@@ -203,7 +203,7 @@ public class Sofa extends TOP implements SofaFSImpl {
     setLocalSofaDataNoDocAnnotUpdate(aString);
 
     // create or update the document annotation for this Sofa's view
-    ((CASImpl) (_casView.getView(this))).updateDocumentAnnotation();
+    _casView.getView(this).updateDocumentAnnotation();
   }
 
   /**

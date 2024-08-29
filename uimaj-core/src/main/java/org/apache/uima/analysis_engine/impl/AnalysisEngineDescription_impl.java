@@ -515,9 +515,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         String componentSofaName = sofaMappings[s].getComponentSofaName();
         if (componentSofaName == null) {
           componentSofaName = CAS.NAME_DEFAULT_SOFA;
-        } else if (componentSpec instanceof AnalysisEngineDescription
+        } else if (componentSpec instanceof AnalysisEngineDescription analysisEngineDescription
                 && !CAS.NAME_DEFAULT_SOFA.equals(componentSofaName)
-                && !declaresSofa((AnalysisEngineDescription) componentSpec, componentSofaName)) {
+                && !declaresSofa(analysisEngineDescription, componentSofaName)) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_SOFA,
                   new Object[] { componentKey, componentSofaName,

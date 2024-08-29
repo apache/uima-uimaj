@@ -32,10 +32,10 @@ import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 import org.junit.jupiter.api.Test;
 
-public class Int2IntRBTTest {
+class Int2IntRBTTest {
 
   @Test
-  public void testexpand() {
+  void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();
 
     int shiftpoint = 1 + (1 << 30);
@@ -53,7 +53,7 @@ public class Int2IntRBTTest {
   }
 
   @Test
-  public void testIterator() {
+  void testIterator() {
     Int2IntRBT ia = new Int2IntRBT();
     Integer[] vs = new Integer[] { 2, 2, 5, 1, 6, 7, 3, 4 };
     for (Integer i : vs) {
@@ -94,7 +94,7 @@ public class Int2IntRBTTest {
   }
 
   @Test
-  public void testFastLookup() {
+  void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
     Set<Integer> keys = new HashSet<>(1000);

@@ -470,8 +470,8 @@ class CasCreationUtilsTest {
       }
 
       // test that passing an invalid object causes an error
-      descList.add(new ConfigurationParameter_impl());
-      assertThatExceptionOfType(ResourceInitializationException.class).isThrownBy(() -> CasCreationUtils.createCas(descList));
+    assertThatExceptionOfType(ResourceInitializationException.class).isThrownBy( //
+        () -> CasCreationUtils.createCas(asList(tsd1, tsd2, indexes, priorities, new ConfigurationParameter_impl())));
   }
 
   @Test
