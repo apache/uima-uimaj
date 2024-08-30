@@ -35,11 +35,7 @@ import org.junit.jupiter.api.Test;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 
-/**
- * Test FSArrayList
- * 
- */
-public class FSArrayListTest {
+class FSArrayListTest {
 
   private CAS cas;
 
@@ -64,7 +60,7 @@ public class FSArrayListTest {
   }
 
   @Test
-  public void testBasic() {
+  void testBasic() {
     FSArrayList<Token> al = new FSArrayList<>(jcas);
     Token t1 = new Token(jcas);
     Token t2 = new Token(jcas);
@@ -85,5 +81,4 @@ public class FSArrayListTest {
     assertNotNull(fa);
     assertEquals(fa.get(0), k);
   }
-
 }

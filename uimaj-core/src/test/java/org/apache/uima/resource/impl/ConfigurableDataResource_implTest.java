@@ -30,43 +30,33 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameterDeclarations_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests the DataResource_impl class.
- * 
- */
-public class ConfigurableDataResource_implTest {
+class ConfigurableDataResource_implTest {
 
   @Test
-  public void testInitialize() throws Exception {
-    try {
-      // create a ConfigurableDataResourceSpecifier
-      ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
-      cspec.setUrl("jdbc:db2:MyDatabase");
-      ResourceMetaData md = new ResourceMetaData_impl();
-      cspec.setMetaData(md);
-      md.setName("foo");
-      ConfigurationParameterDeclarations decls = new ConfigurationParameterDeclarations_impl();
-      ConfigurationParameter param = new ConfigurationParameter_impl();
-      param.setName("param");
-      param.setType("String");
-      decls.addConfigurationParameter(param);
-      md.setConfigurationParameterDeclarations(decls);
+  void testInitialize() throws Exception {
+    // create a ConfigurableDataResourceSpecifier
+    ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
+    cspec.setUrl("jdbc:db2:MyDatabase");
+    ResourceMetaData md = new ResourceMetaData_impl();
+    cspec.setMetaData(md);
+    md.setName("foo");
+    ConfigurationParameterDeclarations decls = new ConfigurationParameterDeclarations_impl();
+    ConfigurationParameter param = new ConfigurationParameter_impl();
+    param.setName("param");
+    param.setType("String");
+    decls.addConfigurationParameter(param);
+    md.setConfigurationParameterDeclarations(decls);
 
-      // initialize a DataResource
-      ConfigurableDataResource_impl cdr = new ConfigurableDataResource_impl();
-      cdr.initialize(cspec, Collections.EMPTY_MAP);
-      assertEquals(new URI("jdbc:db2:MyDatabase"), cdr.getUri());
-      assertEquals("foo", cdr.getMetaData().getName());
-      ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations()
-              .getConfigurationParameters()[0];
-      assertEquals("param", param0.getName());
-      assertEquals("String", param0.getType());
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // initialize a DataResource
+    ConfigurableDataResource_impl cdr = new ConfigurableDataResource_impl();
+    cdr.initialize(cspec, Collections.EMPTY_MAP);
+    assertEquals(new URI("jdbc:db2:MyDatabase"), cdr.getUri());
+    assertEquals("foo", cdr.getMetaData().getName());
+    ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations()
+            .getConfigurationParameters()[0];
+    assertEquals("param", param0.getName());
+    assertEquals("String", param0.getType());
   }
 }

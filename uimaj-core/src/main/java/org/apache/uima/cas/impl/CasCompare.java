@@ -790,7 +790,7 @@ public class CasCompare {
                                                                                                      // ones.
 
       // filter out items only of interest when reached via ref
-      if (excludedRootNames.size() > 0) {
+      if (!excludedRootNames.isEmpty()) {
         System.out.println("Excluding Root Names with: "
                 + Misc.ppList(Arrays.asList(excludedRootNames.toArray())));
         c1FoundFSs = c1FoundFSs.stream()
@@ -799,7 +799,7 @@ public class CasCompare {
         c2FoundFSs = c2FoundFSs.stream()
                 .filter(fs -> !excludedRootNames.contains(fs.getType().getName()))
                 .collect(Collectors.toCollection(ArrayList::new));
-      } else if (includedTypeNames.size() > 0) {
+      } else if (!includedTypeNames.isEmpty()) {
         System.out.println("Including only Root Names: "
                 + Misc.ppList(Arrays.asList(includedTypeNames.toArray())));
         c1FoundFSs = c1FoundFSs.stream()
@@ -1265,7 +1265,7 @@ public class CasCompare {
 
     CommonList e = al.get(0);
     if (e instanceof FSList) {
-      assert al.size() > 0;
+      assert !al.isEmpty();
       FSArray<TOP> fsa = new FSArray<>(tsi.fsArrayType, view, al.size());
       int i = 0;
       for (CommonList n : al) {
@@ -1881,7 +1881,7 @@ public class CasCompare {
 
     prev1.add(rfs1);
     prev2.add(rfs2);
-    assert prev1.fsList.size() > 0;
+    assert !prev1.fsList.isEmpty();
     // TOP savedFs1 = fs1;
     // TOP savedFs2 = fs2;
 

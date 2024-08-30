@@ -294,7 +294,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       @Override
       public void forEach(Consumer<? super T> action) {
         baseItems.forEach(item -> {
-            T pearedItem = _maybeGetPearFs((T) item);
+            T pearedItem = _maybeGetPearFs(item);
             action.accept(pearedItem);
         });
       }
@@ -320,8 +320,8 @@ public class FSArrayList <T extends TOP> extends TOP implements
        */
       @Override
       public boolean contains(Object o) {
-        return (o instanceof TOP) 
-                 ? baseItems.contains(_maybeGetBaseForPearFs((TOP)o))
+        return (o instanceof TOP top)
+                 ? baseItems.contains(_maybeGetBaseForPearFs(top))
                  : false;
       }
 
@@ -533,121 +533,72 @@ public class FSArrayList <T extends TOP> extends TOP implements
         return baseItems.parallelStream().map(item -> _maybeGetPearFs(item));
       }
 
-      /*
-       * @see java.util.List#indexOf(java.lang.Object)
-       */
       @Override
       public int indexOf(Object o) {
-        return baseItems.indexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+        return baseItems.indexOf((o instanceof TOP top) ? _maybeGetBaseForPearFs(top) : o);
       }
 
-      /*
-       * @see java.util.List#lastIndexOf(java.lang.Object)
-       */
       @Override
       public int lastIndexOf(Object o) {
-        return baseItems.lastIndexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+        return baseItems.lastIndexOf((o instanceof TOP top) ? _maybeGetBaseForPearFs(top) : o);
       }
 
-      /*
-       * @see java.util.List#listIterator()
-       */
       @Override
       public ListIterator<T> listIterator() {
         return listIterator(0);
       }
 
-      /*
-       * @see java.util.List#listIterator(int)
-       */
       @Override
       public ListIterator<T> listIterator(int index) {
         return new ListIterator<T>() {
           
           ListIterator<T> baseIt = baseItems.listIterator(index);
           
-          /*
-           * @see java.util.ListIterator#hasNext()
-           */
           @Override
           public boolean hasNext() {
             return baseIt.hasNext();
           }
 
-          /**
-           * @return
-           * @see java.util.ListIterator#next()
-           */
           @Override
           public T next() {
             return _maybeGetPearFs(baseIt.next());
           }
 
-          /*
-           * @see java.util.ListIterator#hasPrevious()
-           */
           @Override
           public boolean hasPrevious() {
             return baseIt.hasPrevious();
           }
 
-          /*
-           * @see java.util.Iterator#forEachRemaining(java.util.function.Consumer)
-           */
           @Override
           public void forEachRemaining(Consumer<? super T> action) {
             baseIt.forEachRemaining(item -> action.accept(_maybeGetPearFs(item)));
           }
 
-          /**
-           * @return
-           * @see java.util.ListIterator#previous()
-           */
           @Override
           public T previous() {
             return baseIt.previous();
           }
 
-          /**
-           * @return
-           * @see java.util.ListIterator#nextIndex()
-           */
           @Override
           public int nextIndex() {
             return baseIt.nextIndex();
           }
 
-          /**
-           * @return
-           * @see java.util.ListIterator#previousIndex()
-           */
           @Override
           public int previousIndex() {
             return baseIt.previousIndex();
           }
 
-          /**
-           * 
-           * @see java.util.ListIterator#remove()
-           */
           @Override
           public void remove() {
             throw new UnsupportedOperationException();
           }
 
-          /**
-           * @param e
-           * @see java.util.ListIterator#set(java.lang.Object)
-           */
           @Override
           public void set(T e) {
             baseIt.set(_maybeGetBaseForPearFs(e));
           }
 
-          /**
-           * @param e
-           * @see java.util.ListIterator#add(java.lang.Object)
-           */
           @Override
           public void add(T e) {
             throw new UnsupportedOperationException();
@@ -655,26 +606,18 @@ public class FSArrayList <T extends TOP> extends TOP implements
         };
       }
 
-      /*
-       * @see java.util.List#subList(int, int)
-       */
       @Override
       public List<T> subList(int fromIndex, int toIndex) {
         return gl_read_pear(baseItems.subList(fromIndex, toIndex));
       }
 
-      /*
-       * @see java.util.List#spliterator()
-       */
       @Override
       public Spliterator<T> spliterator() {
         return FSArrayList.this._casView.makePearAware(baseItems.spliterator());
       }
     };
   }
-  /* (non-Javadoc)
-   * @see java.util.List#get(int)
-   */
+
   @Override
   public T get(int i) {
     return _maybeGetPearFs(gl().get(i));
@@ -726,7 +669,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       throw new ArrayIndexOutOfBoundsException(
           String.format("FSArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
-    for (;srcPos < srcEnd && destPos < destEnd;) {
+    while(srcPos < srcEnd && destPos < destEnd) {
       set(destPos++, (T) src[srcPos++]);
     }
   }
@@ -750,7 +693,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       throw new ArrayIndexOutOfBoundsException(
           String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
-    for (;srcPos < srcEnd && destPos < destEnd;) {
+    while(srcPos < srcEnd && destPos < destEnd) {
       dest[destPos++] = (E) get(srcPos++);
     }
   }
@@ -832,7 +775,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       throw new ClassCastException("argument must be of class FSArray or FSArrayList");
     } 
     
-    si.forEachRemaining(fs -> add(fs));
+    si.forEachRemaining(this::add);
   }
   
   /**
@@ -911,9 +854,6 @@ public class FSArrayList <T extends TOP> extends TOP implements
   }
 
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final int maxLen = 10;
@@ -927,9 +867,6 @@ public class FSArrayList <T extends TOP> extends TOP implements
         + "]";
   }
 
-  /*
-   * @see java.util.ArrayList#add(java.lang.Object)
-   */
   @Override
   public boolean add(T e) {
     maybeStartUsingArrayList();
@@ -1028,8 +965,9 @@ public class FSArrayList <T extends TOP> extends TOP implements
     maybeStartUsingArrayList();
 //    return fsArrayList.addAll(index, c); // doesn't do pear conversion
     fsArrayList.ensureCapacity(fsArrayList.size() + c.size());
-    List<T> baseItems = c.stream().map(item -> 
-        _maybeGetBaseForPearFs(item)).collect(Collectors.toList());
+    List<T> baseItems = c.stream() //
+          .map(this::_maybeGetBaseForPearFs) //
+          .collect(Collectors.toList());
     fsArrayList.addAll(index, baseItems); 
     return true;
   }

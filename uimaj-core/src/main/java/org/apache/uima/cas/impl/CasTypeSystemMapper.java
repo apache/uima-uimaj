@@ -130,12 +130,8 @@ public class CasTypeSystemMapper {
    * @return Type in other type system, or this one if map is empty
    */
   public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
-    return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
+    return tSrc2Tgt.isEmpty() ? srcType : tSrc2Tgt.get(srcType.getCode());
   }
-
-  // public TypeImpl mapTypeSrc2Tgt(int srcTypeCode) {
-  // return tSrc2Tgt.get(srcTypeCode);
-  // }
 
   /**
    * @param tgtType
@@ -143,11 +139,11 @@ public class CasTypeSystemMapper {
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
-    return (tTgt2Src.size() == 0) ? tgtType : tTgt2Src.get(tgtType.getCode());
+    return tTgt2Src.isEmpty() ? tgtType : tTgt2Src.get(tgtType.getCode());
   }
 
   public TypeImpl mapTypeCodeTgt2Src(int tgtTypeCode) {
-    return (tTgt2Src.size() == 0) ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
+    return tTgt2Src.isEmpty() ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
   }
 
   /**
@@ -208,12 +204,7 @@ public class CasTypeSystemMapper {
   }
 
   /**
-   * return true if no types are filtered
-   * 
-   * @param map
-   * @param tsSrc
-   * @param tsTgt
-   * @return
+   * @return true if no types are filtered
    */
   private boolean addTypes(List<TypeImpl> map, TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
     boolean r = true;

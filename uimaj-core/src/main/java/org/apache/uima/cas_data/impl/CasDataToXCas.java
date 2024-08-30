@@ -252,16 +252,16 @@ public class CasDataToXCas {
 
       // encode array subelements
       String[] arrayElems = null;
-      if (aFS instanceof PrimitiveArrayFS) {
-        arrayElems = ((PrimitiveArrayFS) aFS).toStringArray();
-      } else if (aFS instanceof ReferenceArrayFS) {
-        arrayElems = ((ReferenceArrayFS) aFS).getIdRefArray();
+      if (aFS instanceof PrimitiveArrayFS primitiveArrayFS) {
+        arrayElems = primitiveArrayFS.toStringArray();
+      } else if (aFS instanceof ReferenceArrayFS referenceArrayFS) {
+        arrayElems = referenceArrayFS.getIdRefArray();
       }
       if (arrayElems != null) {
-        for (int j = 0; j < arrayElems.length; j++) {
+        for (var arrayElem : arrayElems) {
           mHandler.startElement("", "i", "i", new AttributesImpl());
-          if (arrayElems[j] != null) {
-            mHandler.characters(arrayElems[j].toCharArray(), 0, arrayElems[j].length());
+          if (arrayElem != null) {
+            mHandler.characters(arrayElem.toCharArray(), 0, arrayElem.length());
           }
           mHandler.endElement("", "i", "i");
         }

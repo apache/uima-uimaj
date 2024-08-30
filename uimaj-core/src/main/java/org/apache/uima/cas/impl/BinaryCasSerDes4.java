@@ -143,7 +143,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   // may add more later - to specify differing trade-offs between speed and compression
   public enum Compression {
     None, Compress
-  };
+  }
 
   public static final boolean IS_DIFF_ENCODE = true;
   public static final boolean CAN_BE_NEGATIVE = true;
@@ -1808,7 +1808,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           arraySize = ((CommonArrayFS<?>) currentFs).size();
         } else {
           if (!ts.annotBaseType.subsumes(type) && // defer subtypes of AnnotationBase
-                  !(ts.sofaType == type)) { // defer sofa types
+                  ts.sofaType != type) { // defer sofa types
             createCurrentFs(type, ivCas);
           } else {
             currentFs = null;
@@ -1977,7 +1977,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
         case Slot_DoubleRef:
           readIntoDoubleArray(((DoubleArray) fs)._getTheArray());
-          ;
           break;
 
         case Slot_HeapRef: {
@@ -2141,7 +2140,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
       }
 
-      bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta, i -> seq2fs.get(i),
+      bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta, seq2fs::get,
               // written on separate line for Eclipse breakpoint control
               i -> csds.addr2fs.get(i) // https://issues.apache.org/jira/browse/UIMA-5593
       );

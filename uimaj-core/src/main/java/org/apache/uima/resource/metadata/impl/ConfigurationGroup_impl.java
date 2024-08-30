@@ -108,7 +108,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     String[] names = getNames();
     buf.append(names[0]);
     for (int i = 1; i < names.length; i++) {

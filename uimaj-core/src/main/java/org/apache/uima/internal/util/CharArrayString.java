@@ -406,8 +406,7 @@ public class CharArrayString {
     if (o == null) {
       return false;
     }
-    if (o instanceof CharArrayString) {
-      CharArrayString s = (CharArrayString) o;
+    if (o instanceof CharArrayString s) {
       if (len != s.len) {
         return false;
       }

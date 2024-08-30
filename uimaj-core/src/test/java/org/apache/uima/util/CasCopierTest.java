@@ -120,7 +120,7 @@ class CasCopierTest {
       e.printStackTrace();
       ee = e;
     }
-    assertThat(ee).isEqualTo(null);
+    assertThat(ee).isNull();
   }
 
   @Test

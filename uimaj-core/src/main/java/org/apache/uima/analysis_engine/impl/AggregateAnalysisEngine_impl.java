@@ -630,9 +630,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       Iterator<AnalysisEngine> aeIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (aeIter.hasNext()) {
         AnalysisEngine ae = aeIter.next();
-        if (ae instanceof AnalysisEngineImplBase) {
-          ProcessTrace subPT = ((AnalysisEngineImplBase) ae).buildProcessTraceFromMBeanStats();
-          if (subPT.getEvents().size() > 0) {
+        if (ae instanceof AnalysisEngineImplBase analysisEngineImplBase) {
+          ProcessTrace subPT = analysisEngineImplBase.buildProcessTraceFromMBeanStats();
+          if (!subPT.getEvents().isEmpty()) {
             procEvt.addSubEvent(subPT.getEvents().get(0));
           }
         }

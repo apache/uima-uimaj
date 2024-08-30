@@ -197,7 +197,7 @@ public class CommonSerDesSequential {
    * @return sorted FSs above mark if mark set, otherwise all, sorted
    */
   List<TOP> getSortedFSs() {
-    if (pending.size() != 0) {
+    if (!pending.isEmpty()) {
       merge();
     }
     return sortedFSs;

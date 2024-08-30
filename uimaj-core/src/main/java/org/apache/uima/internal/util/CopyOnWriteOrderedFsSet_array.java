@@ -139,7 +139,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        return (T) a[pos++];
+        return a[pos++];
       }
     };
   }

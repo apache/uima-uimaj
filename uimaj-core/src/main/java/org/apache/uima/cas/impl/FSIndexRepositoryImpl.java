@@ -779,32 +779,25 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     FsIndex_singletype<T> ind;
     switch (indexingStrategy) {
-
       case FSIndex.SET_INDEX:
-        ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs); // false
-                                                                                              // =
-                                                                                              // is
-                                                                                              // set
+        // false = is set
+        ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs);
         break;
 
       // case FSIndex.FLAT_INDEX:
       // // this index is only created from another existing index
       // throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
 
-      case FSIndex.BAG_INDEX:
-      case FSIndex.DEFAULT_BAG_INDEX:
+      case FSIndex.BAG_INDEX, FSIndex.DEFAULT_BAG_INDEX:
         ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy, comparatorForIndexSpecs);
         break;
 
       default:
         // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just
         // create a sorted index.
-        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs); // true
-                                                                                                  // =
-                                                                                                  // is
-                                                                                                  // sorted
+        // true = is sorted
+        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs);
         break;
-
     }
     return ind;
   }
@@ -1608,7 +1601,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>();
     for (int i = 0; i < usedIndexes.size(); i++) {
       FsIndex_singletype<TOP> idx = getNonSetSingleIndexForUsedType(i);
-      if (idx.size() > 0) {
+      if (!idx.isEmpty()) {
         indexes.add(idx.getNonNullCow());
       }
     }
@@ -1639,7 +1632,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private <T extends TOP> Collection<T> getCollectionFromCows(
           ArrayList<CopyOnWriteIndexPart<T>> indexes) {
 
-    if (indexes.size() == 0) {
+    if (indexes.isEmpty()) {
       return Collections.emptySet();
     }
 
@@ -1743,7 +1736,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     if (iicp.isDefaultBagIndex()) {
-      if (iicp.getFsIndex_singleType().size() > 0) {
+      if (!iicp.getFsIndex_singleType().isEmpty()) {
         indexes.add(iicp.getFsIndex_singleType().getNonNullCow());
       }
       ti.getDirectSubtypes().forEach(type -> collectCowIndexParts(type, indexes));
@@ -2019,8 +2012,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       processIndexUpdates();
     }
     final ProcessedIndexInfo pii = mPii;
-    return ((pii.fsAddedToIndex.size() > 0) || (pii.fsDeletedFromIndex.size() > 0)
-            || (pii.fsReindexed.size() > 0));
+    return ((!pii.fsAddedToIndex.isEmpty()) || (!pii.fsDeletedFromIndex.isEmpty())
+            || (!pii.fsReindexed.isEmpty()));
   }
 
   @Override

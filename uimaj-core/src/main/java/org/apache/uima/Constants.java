@@ -27,8 +27,9 @@ public abstract class Constants {
    * 
    * @deprecated SOAP protocol is no longer supported since UIMA v3.3.0. Constant to be removed in
    *             UIMAv4.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   public static final String PROTOCOL_SOAP = "SOAP";
 
   /**
@@ -37,8 +38,9 @@ public abstract class Constants {
    * 
    * @deprecated SOAP protocol is no longer supported since UIMA v3.3.0. Constant to be removed in
    *             UIMAv4.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   public static final String PROTOCOL_SOAP_WITH_ATTACHMENTS = "SOAPwithAttachments";
 
   /**

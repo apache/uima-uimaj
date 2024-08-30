@@ -190,7 +190,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
 
     // doing this element by element to get pear conversions done if needed, and
     // to get journaling done
-    for (; srcPos < srcEnd && destPos < destEnd;) {
+    while (srcPos < srcEnd && destPos < destEnd) {
       set(destPos++, (T) src[srcPos++]);
     }
   }
@@ -208,7 +208,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
               String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d", srcPos,
                       destPos, length));
     }
-    for (; srcPos < srcEnd && destPos < destEnd;) {
+    while (srcPos < srcEnd && destPos < destEnd) {
       dest[destPos++] = (U) _maybeGetPearFs(get(srcPos++));
     }
   }

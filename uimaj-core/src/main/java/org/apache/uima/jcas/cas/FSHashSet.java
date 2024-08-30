@@ -192,7 +192,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     FSArray<T> a = getFsArray();
 
     for (T fs : a) {
-      fsHashSet.add((T) fs);
+      fsHashSet.add(fs);
     }
   }
     
@@ -351,19 +351,12 @@ public class FSHashSet <T extends TOP> extends TOP implements
   }
   
   /**
-   * 
    * @return iterator over non-pear versions
    */
   private Iterator<T> gtaIterator() {
-    return (Iterator<T>) getFsArray().iterator(); 
+    return getFsArray().iterator();
   }
 
-  /**
-   * Size.
-   *
-   * @return the int
-   * @see java.util.HashSet#size()
-   */
   @Override
   public int size() {
     return isSaveNeeded 
@@ -371,28 +364,15 @@ public class FSHashSet <T extends TOP> extends TOP implements
         : gta().length;
   }
 
-  /**
-   * Checks if is empty.
-   *
-   * @return true, if is empty
-   * @see java.util.HashSet#isEmpty()
-   */
   @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
-  /**
-   * Contains.
-   *
-   * @param o the o
-   * @return true, if successful
-   * @see java.util.HashSet#contains(java.lang.Object)
-   */
   @Override
   public boolean contains(Object o) {
     maybeLazyInit();
-    return fsHashSet.contains((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+    return fsHashSet.contains((o instanceof TOP top) ? _maybeGetBaseForPearFs(top) : o);
   }
 
   /**
@@ -420,7 +400,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean remove(Object o) {
     maybeLazyInit();
-    boolean r = fsHashSet.remove((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+    boolean r = fsHashSet.remove((o instanceof TOP top) ? _maybeGetBaseForPearFs(top) : o);
     if (r) isSaveNeeded = true;
     return r;
   }

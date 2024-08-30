@@ -64,9 +64,9 @@ class ArrayFSTest {
     }
     assertThat(exceptionCaught).isTrue();
     ArrayFS array = cas.createArrayFS(0);
-    assertThat(array.size()).isEqualTo(0);
+    assertThat(array.size()).isZero();
     assertThat(array).isNotNull();
-    assertThat(array.size()).isEqualTo(0);
+    assertThat(array.size()).isZero();
     exceptionCaught = false;
     try {
       array.get(0);

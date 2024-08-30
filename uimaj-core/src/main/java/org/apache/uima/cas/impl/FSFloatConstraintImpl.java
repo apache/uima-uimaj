@@ -162,7 +162,7 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
     if (codes.size() == 1) {
       return toString(codes.get(0)) + " " + values.get(0).toString();
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("( ");
     for (int i = 0; i < codes.size(); i++) {
       buf.append(toString(codes.get(i)));

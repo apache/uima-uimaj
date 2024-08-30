@@ -28,10 +28,10 @@ import org.apache.uima.cas.FeatureStructure;
  * @param <T>
  *          -
  * @deprecated unused in v3, only present to avoid compile errors in unused v2 classes
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface FSGenerator<T extends FeatureStructure> {
 
   T createFS(int addr, CASImpl cas);
-
 }

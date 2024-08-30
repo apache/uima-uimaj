@@ -57,7 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class CasIOUtilsTest {
+class CasIOUtilsTest {
 
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE = 7;
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE_LENIENT = 5;
@@ -336,7 +336,7 @@ public class CasIOUtilsTest {
   }
 
   @Test
-  public void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
+  void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
     CASImpl cas = (CASImpl) createCas();
     byte[] buf;
     try (var ctx = cas.ll_enableV2IdRefs(true)) {

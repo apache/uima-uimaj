@@ -723,8 +723,7 @@ public class CasCopier {
 
     // Sofa - cannot be created by normal methods. Instead, we return the Sofa with the
     // same Sofa ID in the target CAS. If it does not exist it will be created.
-    if (srcFs instanceof Sofa) {
-      Sofa srcSofa = (Sofa) srcFs;
+    if (srcFs instanceof Sofa srcSofa) {
       return getCorrespondingTgtView(srcSofa.getSofaID()).getSofa();
     }
 

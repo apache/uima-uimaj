@@ -260,6 +260,7 @@ public class CASImpl extends AbstractCas_ImplBase
   // is to force the classes needed by Eclipse debugging to load
   // otherwise, you get a com.sun.jdi.ClassNotLoadedException when
   // the class is used as part of formatting debugging messages
+
   static {
     new DebugNameValuePair(null, null);
     new DebugFSLogicalStructure();
@@ -318,7 +319,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     @Override
     public boolean equals(Object obj) {
-      if (obj == null || !(obj instanceof FsChange)) {
+      if (!(obj instanceof FsChange)) {
         return false;
       }
       return ((FsChange) obj).fs._id == fs._id;
@@ -826,12 +827,12 @@ public class CASImpl extends AbstractCas_ImplBase
       featureCodesInIndexKeys.clear();
       // featureJiInIndexKeys.clear();
 
-      /**
+      /*
        * Clear the existing views, except keep the info for the initial view so that the cas
        * complete deserialization after setting up the new index repository in the base cas can
        * "refresh" the existing initial view (if present; if not present, a new one is created).
        */
-      if (sofaNbr2ViewMap.size() >= 1) {
+      if (!sofaNbr2ViewMap.isEmpty()) {
         // have initial view - preserve it
         CASImpl localInitialView = sofaNbr2ViewMap.get(1);
         sofaNbr2ViewMap.clear();
@@ -841,7 +842,6 @@ public class CASImpl extends AbstractCas_ImplBase
         sofaNbr2ViewMap.clear();
         viewCount = 0;
       }
-
     }
 
     private void resetNoQuestions(boolean flushIndexRepos) {
@@ -874,7 +874,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private void flushIndexRepositoriesAllViews() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
-        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        CASImpl tcas = ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
         if (tcas != null) {
           tcas.indexRepository.flush();
         }
@@ -887,7 +887,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private void clearNonSharedInstanceData() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
-        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        CASImpl tcas = ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
         if (tcas != null) {
           tcas.mySofaRef = null; // was in v2: (1 == view) ? -1 : 0;
           tcas.docAnnotIter = null;
@@ -1429,7 +1429,7 @@ public class CASImpl extends AbstractCas_ImplBase
   void installTypeSystemInAllViews(TypeSystemImpl ts) {
     svd.tsi = ts;
     final List<CASImpl> sn2v = svd.sofaNbr2ViewMap;
-    if (sn2v.size() > 0) {
+    if (!sn2v.isEmpty()) {
       for (CASImpl view : sn2v.subList(1, sn2v.size())) {
         view.tsi_local = ts;
       }
@@ -1672,8 +1672,12 @@ public class CASImpl extends AbstractCas_ImplBase
     Misc.setWithExpand(svd.sofa2indexMap, aSofaRef, indxRepos);
   }
 
+  /**
+   * @deprecated As of v2.0, use {@link #createView(String)} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public SofaFS createSofa(SofaID sofaID, String mimeType) {
     // extract absolute SofaName string from the ID
     SofaFS aSofa = createSofa(sofaID.getSofaID(), mimeType);
@@ -1742,9 +1746,10 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * @deprecated
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public SofaFS getSofa(SofaID sofaID) {
     // extract absolute SofaName string from the ID
     return getSofa(sofaID.getSofaID());
@@ -1986,9 +1991,10 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * @deprecated Use {@link #reset reset()}instead.
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void flush() {
     reset();
   }
@@ -2070,12 +2076,10 @@ public class CASImpl extends AbstractCas_ImplBase
   private void logFSUpdate(TOP fs, FeatureImpl fi, int arrayIndexStart, int nbrOfConsecutive) {
 
     // log the FS
-
     final Map<TOP, FsChange> changes = svd.modifiedPreexistingFSs;
 
     // create or use last FsChange element
-
-    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
+    FsChange change = changes.computeIfAbsent(fs, FsChange::new);
 
     if (fi == null) {
       Misc.assertUie(arrayIndexStart >= 0);
@@ -2088,8 +2092,6 @@ public class CASImpl extends AbstractCas_ImplBase
   /**
    * @param fs
    *          the Feature Structure being updated
-   * @param arrayIndexStart
-   * @param nbrOfConsecutive
    */
   private void logFSUpdate(TOP fs, PositiveIntSet indexesPlus1) {
 
@@ -2099,7 +2101,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     // create or use last FsChange element
 
-    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
+    FsChange change = changes.computeIfAbsent(fs, FsChange::new);
 
     change.addArrayData(indexesPlus1);
   }
@@ -2354,9 +2356,8 @@ public class CASImpl extends AbstractCas_ImplBase
   public static void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat,
           String s) {
     final TypeImpl range = feat.getRangeImpl();
-    if (fs instanceof Sofa) {
+    if (fs instanceof Sofa sofa) {
       // sofa has special setters
-      Sofa sofa = (Sofa) fs;
       switch (feat.getCode()) {
         case sofaMimeFeatCode:
           sofa.setMimeType(s);
@@ -2608,8 +2609,12 @@ public class CASImpl extends AbstractCas_ImplBase
      */
   }
 
+  /**
+   * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
+   * @forRemoval 4.0.0
+   */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public JCas getJCas(SofaID aSofaID) throws CASException {
     SofaFS sofa = getSofa(aSofaID);
     // sofa guaranteed to be non-null by above method.
@@ -4059,7 +4064,12 @@ public class CASImpl extends AbstractCas_ImplBase
 
   }
 
+  /**
+   * @deprecated Use {@link #createFeaturePath()} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
+  @Deprecated(since = "3.6.0")
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
           throws CASRuntimeException {
     return FeatureValuePathImpl.getFeaturePath(featureValuePath);
@@ -5460,26 +5470,13 @@ public class CASImpl extends AbstractCas_ImplBase
    * @return -
    */
   public EmptyList emptyListFromTypeCode(int typeCode) {
-    switch (typeCode) {
-      case fsListTypeCode:
-      case fsEListTypeCode:
-      case fsNeListTypeCode:
-        return emptyFSList();
-      case floatListTypeCode:
-      case floatEListTypeCode:
-      case floatNeListTypeCode:
-        return emptyFloatList();
-      case intListTypeCode:
-      case intEListTypeCode:
-      case intNeListTypeCode:
-        return emptyIntegerList();
-      case stringListTypeCode:
-      case stringEListTypeCode:
-      case stringNeListTypeCode:
-        return emptyStringList();
-      default:
-        throw new IllegalArgumentException();
-    }
+    return switch (typeCode) {
+      case fsListTypeCode, fsEListTypeCode, fsNeListTypeCode -> emptyFSList();
+      case floatListTypeCode, floatEListTypeCode, floatNeListTypeCode -> emptyFloatList();
+      case intListTypeCode, intEListTypeCode, intNeListTypeCode -> emptyIntegerList();
+      case stringListTypeCode, stringEListTypeCode, stringNeListTypeCode -> emptyStringList();
+      default -> throw new IllegalArgumentException();
+    };
   }
 
   // /**
@@ -5757,10 +5754,8 @@ public class CASImpl extends AbstractCas_ImplBase
   private FeatureImpl prevFi;
 
   void traceFSfeat(FeatureStructureImplC fs, FeatureImpl fi, Object v) {
-    // debug
-    FeatureImpl originalFi = fi;
     StringBuilder b = svd.traceFScreationSb;
-    assert (b.length() > 0);
+    assert (!b.isEmpty());
     if (fs._id != svd.traceFSid) {
       traceFSfeatUpdate(fs);
     }
@@ -5773,7 +5768,7 @@ public class CASImpl extends AbstractCas_ImplBase
           v = fs._getLongValueNc(prevFi);
           break; // correct double and long
         default:
-          Misc.internalError();
+          throw Misc.internalError();
       }
       fi = prevFi;
       prevFi = null;
@@ -5840,8 +5835,7 @@ public class CASImpl extends AbstractCas_ImplBase
    *         Note: white space in strings converted to "_' characters
    */
   private String getTraceRepOfObj(FeatureImpl fi, Object v) {
-    if (v instanceof TOP) {
-      TOP fs = (TOP) v;
+    if (v instanceof TOP fs) {
       return Misc.elide(fs.getType().getShortName(), 5, false) + ':' + geti2addr(fs._id);
     }
     if (v == null) {
@@ -5856,9 +5850,7 @@ public class CASImpl extends AbstractCas_ImplBase
       switch (fi.getSlotKind()) {
         case Slot_Boolean:
           return (iv == 1) ? "true" : "false";
-        case Slot_Byte:
-        case Slot_Short:
-        case Slot_Int:
+        case Slot_Byte, Slot_Short, Slot_Int:
           return Integer.toString(iv);
         case Slot_Float:
           return Float.toString(int2float(iv));
@@ -6007,7 +5999,7 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  /*
+  /**
    * @forRemoval 4.0.0
    * 
    * @deprecated Does nothing, kept only for backwards compatibility

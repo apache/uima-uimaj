@@ -563,7 +563,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     try {
       withContexts(component, context, null, () -> component.initialize(context));
     } catch (Exception e) {
-      throw (e instanceof ResourceInitializationException) ? ((ResourceInitializationException) e)
+      throw e instanceof ResourceInitializationException resourceInitializationException //
+              ? resourceInitializationException //
               : new ResourceInitializationException(e);
     }
   }

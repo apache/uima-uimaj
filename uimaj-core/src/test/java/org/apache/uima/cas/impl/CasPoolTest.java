@@ -174,9 +174,10 @@ class CasPoolTest {
 
     TypeSystem ts = c1.getTypeSystem();
 
-    assertThat(ts).isSameAs(c2.getTypeSystem());
-    assertThat(ts).isSameAs(c1v2.getTypeSystem());
-    assertThat(ts).isSameAs(c2v2.getTypeSystem());
+    assertThat(ts) //
+            .isSameAs(c2.getTypeSystem()) //
+            .isSameAs(c1v2.getTypeSystem()) //
+            .isSameAs(c2v2.getTypeSystem());
 
     casManager.releaseCas(c1v2);
     casManager.releaseCas(c2);

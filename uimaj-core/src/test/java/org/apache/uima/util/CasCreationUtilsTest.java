@@ -91,9 +91,9 @@ class CasCreationUtilsTest {
     assertThat(merged.getType("Type2").getFeatures()).hasSize(2);
     assertThat(merged.getType("Type3").getFeatures()).hasSize(1);
 
-    assertThat(typesWithMergedFeatures.size()).isEqualTo(2);
-    assertThat(typesWithMergedFeatures.containsKey("Type1")).isTrue();
-    assertThat(typesWithMergedFeatures.containsKey("Type2")).isTrue();
+    assertThat(typesWithMergedFeatures).hasSize(2);
+    assertThat(typesWithMergedFeatures).containsKey("Type1");
+    assertThat(typesWithMergedFeatures).containsKey("Type2");
 
     // make sure one-arg version doesn't fail
     CasCreationUtils.mergeTypeSystems(tsList);
@@ -229,7 +229,7 @@ class CasCreationUtilsTest {
 
     // test removal
     desc.getDelegateAnalysisEngineSpecifiersWithImports().remove("Annotator1");
-    assertThat(desc.getDelegateAnalysisEngineSpecifiers().isEmpty()).isTrue();
+    assertThat(desc.getDelegateAnalysisEngineSpecifiers()).isEmpty();
   }
 
   @Test
@@ -286,9 +286,9 @@ class CasCreationUtilsTest {
     assertThat(type7.getFeatures()).hasSize(1);
 
     // Place has merged features, Person has different supertype
-    assertThat(mergedTypes.size()).isEqualTo(2);
-    assertThat(mergedTypes.containsKey("Place")).isTrue();
-    assertThat(mergedTypes.containsKey("Person")).isTrue();
+    assertThat(mergedTypes).hasSize(2);
+    assertThat(mergedTypes).containsKey("Place");
+    assertThat(mergedTypes).containsKey("Person");
 
     // make sure one-arg version doesn't fail
     CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);
@@ -576,11 +576,9 @@ class CasCreationUtilsTest {
     // merge of the non-remote delegates and report the failure. (This example
     // also happens to use import-by-name so we need to set the data path.)
     var resMgr = UIMAFramework.newDefaultResourceManager();
-    var pathSep = System.getProperty("path.separator");
-    resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-            .getAbsolutePath() + pathSep
-            + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
-            + pathSep
-            + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
+    resMgr.setDataPathElements(
+            JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir").getAbsoluteFile(),
+            JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsoluteFile(),
+            JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsoluteFile());
   }
 }

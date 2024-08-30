@@ -25,7 +25,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Testing that collectionProcessComplete is correctly propogated to annotators.
+ * Testing that collectionProcessComplete is correctly propagated to annotators.
  */
 public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_ImplBase {
 

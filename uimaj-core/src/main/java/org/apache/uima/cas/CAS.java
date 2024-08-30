@@ -965,6 +965,7 @@ public interface CAS extends AbstractCas {
    * @deprecated Use {@link #createFeaturePath()} instead.
    * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   FeatureValuePath createFeatureValuePath(String featureValuePath) throws CASRuntimeException;
 
   /**

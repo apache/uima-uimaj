@@ -278,7 +278,7 @@ public class BinaryCasSerDes {
 
     createFSsFromHeaps(false, 1, csds); // false means not delta
 
-    reinitIndexedFSs(fsIndex, false, i -> csds.addr2fs.get(i));
+    reinitIndexedFSs(fsIndex, false, csds.addr2fs::get);
   }
 
   public CASImpl setupCasFromCasMgrSerializer(CASMgrSerializer casMgrSerializer) {
@@ -880,8 +880,8 @@ public class BinaryCasSerDes {
 
         // modified Byte Heap
         heapsz = updateAuxArrayMods(r, byteAuxAddr2fsa, (ba, arrayIndex) -> {
-          if (ba instanceof ByteArray) {
-            ((ByteArray) ba).set(arrayIndex, dis.readByte());
+          if (ba instanceof ByteArray byteArray) {
+            byteArray.set(arrayIndex, dis.readByte());
           } else {
             ((BooleanArray) ba).set(arrayIndex, dis.readByte() == 1);
           }
@@ -903,8 +903,8 @@ public class BinaryCasSerDes {
 
         // modified Long Heap
         updateAuxArrayMods(r, longAuxAddr2fsa, (la, arrayIndex) -> {
-          if (la instanceof LongArray) {
-            ((LongArray) la).set(arrayIndex, r.readLong());
+          if (la instanceof LongArray longArray) {
+            longArray.set(arrayIndex, r.readLong());
           } else {
             ((DoubleArray) la).set(arrayIndex, CASImpl.long2double(r.readLong()));
           }
@@ -957,7 +957,7 @@ public class BinaryCasSerDes {
       }
 
       // update the indexes
-      IntFunction<TOP> getFsFromAddr = i -> csds.addr2fs.get(i);
+      IntFunction<TOP> getFsFromAddr = csds.addr2fs::get;
       reinitIndexedFSs(fsindexes, delta, getFsFromAddr);
 
       if (!delta) {
@@ -1155,7 +1155,7 @@ public class BinaryCasSerDes {
       // next line the getView as a side effect
       // checks for dupl sofa name, and if not,
       // adds the name to the sofaNameSet
-      ((CASImpl) baseCas.getView(sofa)).registerView(sofa);
+      baseCas.getView(sofa).registerView(sofa);
     });
 
     baseCas.getInitialView(); // done for side effect of creating the initial view if not present
@@ -1579,8 +1579,8 @@ public class BinaryCasSerDes {
           Misc.internalError();
       } // end of switch
     } else { // end of is-array
-      if (fs instanceof UimaSerializable) {
-        ((UimaSerializable) fs)._save_to_cas_data();
+      if (fs instanceof UimaSerializable uimaSerializable) {
+        uimaSerializable._save_to_cas_data();
       }
       int i = pos + 1;
       for (FeatureImpl feat : type.getFeatureImpls()) {
@@ -1789,9 +1789,8 @@ public class BinaryCasSerDes {
             }
           } else {
             fs = view.createFS(type);
-            if (fs instanceof UimaSerializable) {
-              final UimaSerializable ufs = (UimaSerializable) fs;
-              fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
+            if (fs instanceof UimaSerializable ufs) {
+              fixups4UimaSerialization.add(ufs::_init_from_cas_data);
             }
           }
         } else if (type == tsi.sofaType) {
@@ -1805,9 +1804,8 @@ public class BinaryCasSerDes {
           isSofa = true;
         } else {
           fs = initialView.createFS(type);
-          if (fs instanceof UimaSerializable) {
-            final UimaSerializable ufs = (UimaSerializable) fs;
-            fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
+          if (fs instanceof UimaSerializable ufs) {
+            fixups4UimaSerialization.add(ufs::_init_from_cas_data);
           }
         }
         if (!isSofa) { // if it was a sofa, other code added or pended it
@@ -2019,11 +2017,11 @@ public class BinaryCasSerDes {
     if (null == s) {
       return false; // null is the default value, no need to set it
     }
-    if (fs instanceof Sofa) {
+    if (fs instanceof Sofa sofa) {
       if (feat == tsi.sofaId) {
         return false; // do nothing, this value was already used
       }
-      Sofa sofa = (Sofa) fs;
+
       if (feat == tsi.sofaMime) {
         sofa.setMimeType(s);
         return false;

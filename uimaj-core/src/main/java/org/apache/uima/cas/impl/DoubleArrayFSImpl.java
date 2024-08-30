@@ -24,8 +24,9 @@ import org.apache.uima.cas.DoubleArrayFS;
  * V2 compatibility only The non-JCas cover class for Double Array
  * 
  * @deprecated use DoubleArray instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface DoubleArrayFSImpl extends DoubleArrayFS {
 
 }

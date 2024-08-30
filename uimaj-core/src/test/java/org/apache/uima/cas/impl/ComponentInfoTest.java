@@ -30,9 +30,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class ComponentInfoTest {
+class ComponentInfoTest {
   @Test
-  public void testComponentInfo() throws Exception {
+  void testComponentInfo() throws Exception {
     // test the CAS.getCurrentComponentInfo() is null after a component has
     // been processed
     File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml");

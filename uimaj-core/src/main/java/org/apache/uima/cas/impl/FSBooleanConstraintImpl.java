@@ -21,34 +21,18 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FSBooleanConstraint;
 
-/**
- * See interface for documentation.
- */
 public class FSBooleanConstraintImpl implements FSBooleanConstraint {
 
   private boolean condition = true;
 
-  /**
-   * Default constructor.
-   */
   public FSBooleanConstraintImpl() {
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSBooleanConstraint#eq(boolean)
-   */
   @Override
   public void eq(boolean cond) {
     condition = cond;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FSBooleanConstraint#match(boolean)
-   */
   @Override
   public boolean match(boolean cond) {
     return (condition == cond);
@@ -57,11 +41,6 @@ public class FSBooleanConstraintImpl implements FSBooleanConstraint {
   @Override
   public String toString() {
     // need to escape quotes and backslashes
-    StringBuffer buf = new StringBuffer();
-    buf.append("= \"");
-    buf.append(condition);
-    buf.append('"');
-    return buf.toString();
+    return "= \"" + condition + '"';
   }
-
 }

@@ -1557,7 +1557,7 @@ public abstract class FSClassRegistry {
     // in a PEAR setup, and this cl is not the cl that loaded the JCas class.
     // See method comment getGeneratorsForClassLoader(...) in for why.
     if (!isPear || jcci.isPearOverride(tsi)) {
-      r[aTypeInfo.getCode()] = (FsGenerator3) jcci.generator;
+      r[aTypeInfo.getCode()] = jcci.generator;
     }
 
     for (var subType : aTypeInfo.getDirectSubtypes()) {

@@ -861,17 +861,15 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
               .entrySet()) {
         String key = entry.getKey();
         keys.add(key);
-        if (entry.getValue() instanceof Import) {
-          Import aeImport = ((Import) entry.getValue());
+        if (entry.getValue() instanceof Import aeImport) {
           // see if we processed this already
           if (entry.getValue().equals(mProcessedImports.get(key))) {
             continue;
           }
           // make sure Import's relative path base is set, to allow for
-          // users who create
-          // new import objects
-          if (aeImport instanceof Import_impl) {
-            ((Import_impl) aeImport).setSourceUrlIfNull(getSourceUrl());
+          // users who create new import objects
+          if (aeImport instanceof Import_impl importImpl) {
+            importImpl.setSourceUrlIfNull(getSourceUrl());
           }
           // locate import target
           URL url = aeImport.findAbsoluteUrl(aResourceManager);

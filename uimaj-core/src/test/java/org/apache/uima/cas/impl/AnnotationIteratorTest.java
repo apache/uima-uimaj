@@ -668,7 +668,7 @@ class AnnotationIteratorTest {
       if (isSave) {
         fss.add(fs);
       } else {
-        assertThat(fs.hashCode()).as(msg).isEqualTo(fss.get(fssStart + count - 1).hashCode());
+        assertThat(fs).as(msg).hasSameHashCodeAs(fss.get(fssStart + count - 1));
       }
     }
 
@@ -733,8 +733,8 @@ class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertThat(t.getBegin() < sa.getEnd())
-                .as("Subiterator returned annotation outside boundaries").isTrue();
+        assertThat(t.getBegin()).as("Subiterator returned annotation outside boundaries")
+                .isLessThan(sa.getEnd());
       }
     }
 
@@ -746,8 +746,8 @@ class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertThat(t.getBegin() < sa.getEnd())
-                .as("Subiterator returned annotation outside boundaries").isTrue();
+        assertThat(t.getBegin()).as("Subiterator returned annotation outside boundaries")
+                .isLessThan(sa.getEnd());
       }
     }
   }
