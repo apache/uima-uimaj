@@ -79,7 +79,6 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   // Never called. Disable default constructor
   @Deprecated
-  @SuppressWarnings("deprecation")
   protected Annotation() {
   }
 
@@ -204,7 +203,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @deprecated Use {@link #getBegin} instead.
    * @return the Annotation "begin" feature value
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public int getStart() {
     return getBegin();
   }

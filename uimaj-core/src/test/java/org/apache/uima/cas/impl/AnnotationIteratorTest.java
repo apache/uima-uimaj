@@ -259,11 +259,10 @@ class AnnotationIteratorTest {
     assertCount("Normal ambiguous select annot iterator", annotCount, annotIndex.select());
     assertCount("Normal ambiguous select annot iterator (type priorities)", annotCount,
             annotIndex.select().typePriority());
-    assertThat(annotIndex.select().toArray().length).isEqualTo(annotCount); // stream op
-    assertThat(annotIndex.select().asArray(Annotation.class).length).isEqualTo(annotCount); // select
-                                                                                            // op
-    assertThat(annotIndex.select().startAt(2).asArray(Annotation.class).length)
-            .isEqualTo(annotCount - 5);
+    assertThat(annotIndex.select().toArray()).hasSize(annotCount); // stream op
+    assertThat(annotIndex.select().asArray(Annotation.class)).hasSize(annotCount); // select
+                                                                                   // op
+    assertThat(annotIndex.select().startAt(2).asArray(Annotation.class)).hasSize(annotCount - 5);
 
     FSArray<Annotation> fsa = FSArray.create(jcas, annotIndex.select().asArray(Annotation.class));
     assertCount("fsa ambiguous select annot iterator", annotCount, fsa.select());
@@ -875,7 +874,7 @@ class AnnotationIteratorTest {
   }
 
   private int setupTheCas() {
-    List<AnnotationFS> annotationList = new ArrayList<>();
+    var annotationList = new ArrayList<AnnotationFS>();
 
     //@formatter:off
 //  Tokens                +---+
@@ -960,7 +959,7 @@ class AnnotationIteratorTest {
               fs.getEnd(), fs.getType().getName());
     }
 
-    assertThat(annotationList.size()).isEqualTo(annotCount);
+    assertThat(annotationList).hasSize(annotCount);
     ann = annotationList.stream().toArray(Annotation[]::new);
 
     return annotCount;

@@ -44,29 +44,20 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.asb.impl.ASB_impl;
-import org.apache.uima.analysis_engine.asb.impl.FlowControllerContainer;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.examples.SourceDocumentInformation;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.Session_impl;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.Capability;
@@ -75,9 +66,7 @@ import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.resource.metadata.NameValuePair;
-import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
-import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.AllowedValue_impl;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
@@ -93,14 +82,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.Settings;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.ContentHandler;
 import org.xmlunit.assertj3.XmlAssert;
 
 /**
@@ -110,10 +97,10 @@ class AnalysisEngine_implTest {
   @Test
   void testInitialize() throws Exception {
     try {
-      PrimitiveAnalysisEngine_impl ae1 = new PrimitiveAnalysisEngine_impl();
+      var ae1 = new PrimitiveAnalysisEngine_impl();
 
       // try to initialize with the wrong kind of specifier - should return false
-      boolean result = ae1.initialize(new URISpecifier_impl(), null);
+      var result = ae1.initialize(new URISpecifier_impl(), null);
       assertThat(result).isFalse();
 
       // try to initialize with an empty TaeDescription - should throw exception
@@ -152,61 +139,59 @@ class AnalysisEngine_implTest {
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow = new FixedFlow_impl();
+      var flow = new FixedFlow_impl();
       flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      AggregateAnalysisEngine_impl ae2 = new AggregateAnalysisEngine_impl();
+      var ae2 = new AggregateAnalysisEngine_impl();
       result = ae2.initialize(aggDesc, null);
       assertThat(result).isTrue();
 
       // try some descriptors that are invalid due to config. param problems
-      for (int i = 1; i <= 14; i++) {
+      for (var i = 1; i <= 14; i++) {
         _testInvalidDescriptor(JUnitExtension
                 .getFile("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml"));
       }
 
       // try a descriptor with configuration parameter overrides - should work
-      XMLInputSource in = new XMLInputSource(JUnitExtension
+      var in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides.xml"));
 
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(in);
-      AggregateAnalysisEngine_impl ae = new AggregateAnalysisEngine_impl();
+      var desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      var ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
 
-      PrimitiveAnalysisEngine_impl delegate1 = (PrimitiveAnalysisEngine_impl) ae._getASB()
-              .getComponentAnalysisEngines().get("Annotator1");
-      PrimitiveAnalysisEngine_impl delegate2 = (PrimitiveAnalysisEngine_impl) ae._getASB()
-              .getComponentAnalysisEngines().get("Annotator2");
-      FlowControllerContainer flowController = ((ASB_impl) ae._getASB())
-              .getFlowControllerContainer();
-      String strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
+      var delegate1 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines()
+              .get("Annotator1");
+      var delegate2 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines()
+              .get("Annotator2");
+      var flowController = ((ASB_impl) ae._getASB()).getFlowControllerContainer();
+      var strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringParam");
       assertThat(strVal1).isEqualTo("override");
-      String strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
+      var strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringParam");
       assertThat(strVal2).isEqualTo("en");
-      String strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("en",
+      var strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("en",
               "StringParam");
       assertThat(strVal3).isEqualTo("en");
 
-      Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
+      var intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       assertThat(intVal1.intValue()).isEqualTo(100);
-      Integer intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
+      var intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       assertThat(intVal2.intValue()).isEqualTo(100);
-      Integer intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
+      var intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
       assertThat(intVal3.intValue()).isEqualTo(100);
 
-      String[] strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
+      var strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
       assertThat(Arrays.asList(strArrVal1)).isEqualTo(Arrays.asList(new String[] { "override" }));
-      String[] strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
+      var strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
       assertThat(Arrays.asList(strArrVal2)).isEqualTo(Arrays.asList(new String[] { "override" }));
-      String[] strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue("en",
+      var strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
       assertThat(Arrays.asList(strArrVal3)).isEqualTo(Arrays.asList(new String[] { "override" }));
 
@@ -282,7 +267,7 @@ class AnalysisEngine_implTest {
       in = new XMLInputSource(
               JUnitExtension.getFile("TextAnalysisEngineImplTest/EmptyAggregate.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      FixedFlow emptyFlow = (FixedFlow) desc.getAnalysisEngineMetaData().getFlowConstraints();
+      var emptyFlow = (FixedFlow) desc.getAnalysisEngineMetaData().getFlowConstraints();
       assertThat(emptyFlow.getFixedFlow()).isNotNull().isEmpty();
       ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
@@ -299,13 +284,13 @@ class AnalysisEngine_implTest {
               .get("Annotator1");
       delegate2 = (PrimitiveAnalysisEngine_impl) ae._getASB().getComponentAnalysisEngines()
               .get("Annotator2");
-      String commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
+      var commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
               "CommonParam");
       assertThat(commonParamA).isEqualTo("AggregateParam1a");
-      String ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
+      var ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
               "BCParam");
       assertThat(ann1_groupBParamBC).isEqualTo("AggregateParam2b");
-      String ann2_groupBParamBC = (String) delegate2.getUimaContext().getConfigParameterValue("b",
+      var ann2_groupBParamBC = (String) delegate2.getUimaContext().getConfigParameterValue("b",
               "BCParam");
       assertThat(ann2_groupBParamBC).isEqualTo("AggregateParam3b");
 
@@ -316,8 +301,8 @@ class AnalysisEngine_implTest {
       // UimaExternalOverrides
       // Load 1st from filesystem, 2nd from classpath, and 3rd from datapath
 
-      String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
-      String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, resDir);
+      var resDir = "src/test/resources/TextAnalysisEngineImplTest/";
+      var prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, resDir);
       System.setProperty("UimaExternalOverrides",
               resDir + "testExternalOverride.settings,"
                       + "path:TextAnalysisEngineImplTest.testExternalOverride2,"
@@ -327,21 +312,19 @@ class AnalysisEngine_implTest {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae1 = new PrimitiveAnalysisEngine_impl();
       ae1.initialize(desc, null);
-      String[] arrayParam = (String[]) ae1.getUimaContext()
-              .getConfigParameterValue("StringArrayParam");
+      var arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
       assertThat(arrayParam).isNotNull();
       assertThat(arrayParam).hasSize(5);
-      String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
+      var expect = new String[] { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
       assertThat(arrayParam).isEqualTo(expect);
-      Integer[] intArr = (Integer[]) ae1.getUimaContext()
-              .getConfigParameterValue("IntegerArrayParam");
+      var intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
       assertThat(intArr).isNotNull();
       assertThat(intArr).hasSize(4);
       Integer[] intExpect = { 1, 22, 333, 4444 };
       assertThat(intArr).isEqualTo(intExpect);
-      Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
+      var floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
       assertThat(floats != null && floats.length == 0).isTrue(); // Should be an empty array
-      Integer intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
+      var intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
       assertThat(intValue.intValue()).isEqualTo(43); // Will be 42 if external override not defined
       System.clearProperty("UimaExternalOverrides");
       if (prevDatapath == null) {
@@ -360,9 +343,8 @@ class AnalysisEngine_implTest {
               .getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       Map<String, Object> additionalParams = new HashMap<>();
-      Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      try (FileInputStream fis = new FileInputStream(
-              new File(resDir, "testExternalOverride2.settings"))) {
+      var extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
+      try (var fis = new FileInputStream(new File(resDir, "testExternalOverride2.settings"))) {
         extSettings.load(fis);
       }
       additionalParams.put(Resource.PARAM_EXTERNAL_OVERRIDE_SETTINGS, extSettings);
@@ -390,11 +372,10 @@ class AnalysisEngine_implTest {
   }
 
   protected void _testInvalidDescriptor(File aFile) throws IOException {
-    XMLInputSource in = new XMLInputSource(aFile);
+    var in = new XMLInputSource(aFile);
     Exception ex = null;
     try {
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(in);
+      var desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       UIMAFramework.produceAnalysisEngine(desc);
     } catch (InvalidXMLException e) {
       // e.printStackTrace();
@@ -411,7 +392,7 @@ class AnalysisEngine_implTest {
   @Test
   void testParameterGroups() throws Exception {
     // Check that both groups parameters and non-group parameters are validated
-    XMLInputSource in = new XMLInputSource(JUnitExtension
+    var in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AnnotatorWithGroupParameterError.xml"));
     AnalysisEngineDescription desc = null;
     InvalidXMLException ex = null;
@@ -423,7 +404,7 @@ class AnalysisEngine_implTest {
     in.close();
     // For now parse should always work ... in a later release will fail unless special environment
     // variable set
-    boolean support240bug = true; // System.getenv("UIMA_Jira3123") != null;
+    var support240bug = true; // System.getenv("UIMA_Jira3123") != null;
     if (support240bug) {
       assertThat(desc).isNotNull();
     } else {
@@ -495,7 +476,7 @@ class AnalysisEngine_implTest {
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow = new FixedFlow_impl();
+      var flow = new FixedFlow_impl();
       flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       aggDesc.getAnalysisEngineMetaData().setCapabilities(cap);
@@ -507,10 +488,10 @@ class AnalysisEngine_implTest {
         try (var fos = new FileOutputStream(outFile, false)) {
           // outFile.delete() //can't be relied upon. Instead set file to zero length.
         }
-        assertThat(outFile.length()).isZero();
+        assertThat(outFile).isEmpty();
       }
 
-      AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser()
+      var aggWithCcDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
 
@@ -520,15 +501,15 @@ class AnalysisEngine_implTest {
         outFile = JUnitExtension.getFile("CpmOutput.txt");
       }
       assertThat(outFile != null && outFile.exists()).isTrue();
-      assertThat(outFile.length() > 0).isTrue();
+      assertThat(outFile).isNotEmpty();
       outFile.delete();
 
       // test aggregate that uses ParallelStep
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
+      var desc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateForParallelStepTest.xml")));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
-      CAS cas = ae.newCAS();
+      var ae = UIMAFramework.produceAnalysisEngine(desc);
+      var cas = ae.newCAS();
       cas.setDocumentText("new test");
       ae.process(cas);
       assertThat(TestAnnotator.lastDocument).isEqualTo("new test");
@@ -547,8 +528,8 @@ class AnalysisEngine_implTest {
    *          description of TextAnalysisEngine to test
    */
   protected void _testProcess(AnalysisEngineDescription aTaeDesc) throws UIMAException {
-    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
-    CAS tcas = ae.newCAS();
+    var ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
+    var tcas = ae.newCAS();
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
@@ -559,8 +540,8 @@ class AnalysisEngine_implTest {
 
   protected void _testProcess(AnalysisEngineDescription aTaeDesc, String[] languages)
           throws UIMAException {
-    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
-    CAS tcas = ae.newCAS();
+    var ae = UIMAFramework.produceAnalysisEngine(aTaeDesc);
+    var tcas = ae.newCAS();
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl(tcas.getTypeSystem());
@@ -609,7 +590,7 @@ class AnalysisEngine_implTest {
   @Test
   void testReconfigure() throws Exception {
     try {
-      CAS cas = CasCreationUtils.createCas();
+      var cas = CasCreationUtils.createCas();
 
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
       AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
@@ -626,7 +607,7 @@ class AnalysisEngine_implTest {
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
       // instantiate TextAnalysisEngine
-      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
+      var ae = new PrimitiveAnalysisEngine_impl();
       ae.initialize(primitiveDesc, null);
 
       // check value of string param (TestAnnotator saves it in a static field)
@@ -645,7 +626,7 @@ class AnalysisEngine_implTest {
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow = new FixedFlow_impl();
+      var flow = new FixedFlow_impl();
       flow.setFixedFlow("Test");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       ConfigurationParameter p2 = new ConfigurationParameter_impl();
@@ -657,7 +638,7 @@ class AnalysisEngine_implTest {
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
-      AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
+      var aggAe = new AggregateAnalysisEngine_impl();
       aggAe.initialize(aggDesc, null);
 
       assertThat(TestAnnotator.stringParamValue) //
@@ -680,7 +661,7 @@ class AnalysisEngine_implTest {
 
   @Test
   void thatConfigurationManagerSessionIsValidAfterInitializingDelegateComponent() throws Exception {
-    AnalysisEngineDescription pseudoAggregateDesc = UIMAFramework.getResourceSpecifierFactory()
+    var pseudoAggregateDesc = UIMAFramework.getResourceSpecifierFactory()
             .createAnalysisEngineDescription();
     pseudoAggregateDesc.setPrimitive(true);
     pseudoAggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
@@ -694,12 +675,12 @@ class AnalysisEngine_implTest {
     pseudoAggregateDesc.getMetaData().getConfigurationParameterSettings()
             .setParameterSettings(new NameValuePair_impl("StringParam", "initial"));
 
-    AnalysisEngine pseudoAggregate = UIMAFramework.produceAnalysisEngine(pseudoAggregateDesc);
+    var pseudoAggregate = UIMAFramework.produceAnalysisEngine(pseudoAggregateDesc);
     pseudoAggregate.setConfigParameterValue("StringParam", "changed");
     pseudoAggregate.reconfigure();
     pseudoAggregate.process(CasCreationUtils.createCas());
 
-    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
+    try (var softly = new AutoCloseableSoftAssertions()) {
       softly.assertThat(TestAnnotator.lastConfigurationManagerSession) //
               .as("ConfigurationManager session has not been tampered with")
               .isInstanceOf(Session_impl.class) //
@@ -730,15 +711,14 @@ class AnalysisEngine_implTest {
       feat2.setName("Feature2");
       feat2.setRangeTypeName("EnumType");
       type2.setFeatures(feat2);
-      TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-              CAS.TYPE_NAME_STRING);
+      var enumType = typeSystem.addType("EnumType", "Test Enumerated Type", CAS.TYPE_NAME_STRING);
       enumType.setAllowedValues( //
               new AllowedValue_impl("One", "First Value"), //
               new AllowedValue_impl("Two", "Second Value"));
       desc.getAnalysisEngineMetaData().setTypeSystem(typeSystem);
 
       TypePriorities typePriorities = new TypePriorities_impl();
-      TypePriorityList priorityList = typePriorities.addPriorityList();
+      var priorityList = typePriorities.addPriorityList();
       priorityList.addType("Type1");
       priorityList.addType("Type2");
       desc.getAnalysisEngineMetaData().setTypePriorities(typePriorities);
@@ -771,67 +751,67 @@ class AnalysisEngine_implTest {
       desc.getAnalysisEngineMetaData().setFsIndexes(index1, index2, index3);
 
       // instantiate TextAnalysisEngine
-      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
+      var ae = new PrimitiveAnalysisEngine_impl();
       ae.initialize(desc, null); // this calls createAnalysisProcessData
 
       // check results in CAS
       // type system
-      CAS cas = ae.newCAS();
-      TypeSystem ts = cas.getTypeSystem();
-      Type t1 = ts.getType("Type1");
+      var cas = ae.newCAS();
+      var ts = cas.getTypeSystem();
+      var t1 = ts.getType("Type1");
       assertThat(t1.getName()).isEqualTo("Type1");
-      Feature f1 = t1.getFeatureByBaseName("Feature1");
-      Feature f1a = ts.getFeatureByFullName("Type1:Feature1");
+      var f1 = t1.getFeatureByBaseName("Feature1");
+      var f1a = ts.getFeatureByFullName("Type1:Feature1");
       assertThat(f1a).isEqualTo(f1);
       assertThat(f1.getShortName()).isEqualTo("Feature1");
       assertThat(f1.getDomain()).isEqualTo(t1);
 
-      Type t2 = ts.getType("Type2");
+      var t2 = ts.getType("Type2");
       assertThat(t2.getName()).isEqualTo("Type2");
-      Feature f2 = t2.getFeatureByBaseName("Feature2");
-      Feature f2a = ts.getFeatureByFullName("Type2:Feature2");
+      var f2 = t2.getFeatureByBaseName("Feature2");
+      var f2a = ts.getFeatureByFullName("Type2:Feature2");
       assertThat(f2a).isEqualTo(f2);
       assertThat(f2.getShortName()).isEqualTo("Feature2");
       assertThat(f2.getDomain()).isEqualTo(t2);
 
-      Type et = ts.getType("EnumType");
+      var et = ts.getType("EnumType");
       assertThat(et.getName()).isEqualTo("EnumType");
       assertThat(f2.getRange()).isEqualTo(et);
 
       // indexes
-      FSIndexRepository irep = cas.getIndexRepository();
+      var irep = cas.getIndexRepository();
       FSIndex ind = irep.getIndex("Index1");
       assertThat(ind).isNotNull();
       assertThat(ind.getType().getName()).isEqualTo("Type1");
       assertThat(ind.getIndexingStrategy()).isEqualTo(FSIndex.SORTED_INDEX);
 
-      FeatureStructure fs1 = cas.createFS(t1);
+      var fs1 = cas.createFS(t1);
       fs1.setIntValue(f1, 0);
-      FeatureStructure fs2 = cas.createFS(t1);
+      var fs2 = cas.createFS(t1);
       fs2.setIntValue(f1, 1);
-      assertThat(ind.compare(fs1, fs2) < 0).isTrue();
+      assertThat(ind.compare(fs1, fs2)).isNegative();
 
-      FSIndex ind2 = irep.getIndex("Index2");
+      var ind2 = irep.getIndex("Index2");
       assertThat(ind2).isNotNull();
       assertThat(ind2.getType().getName()).isEqualTo("Type2");
       assertThat(ind2.getIndexingStrategy()).isEqualTo(FSIndex.SET_INDEX);
 
-      FeatureStructure fs3 = cas.createFS(t2);
+      var fs3 = cas.createFS(t2);
       fs3.setStringValue(f2, "One");
-      FeatureStructure fs4 = cas.createFS(t2);
+      var fs4 = cas.createFS(t2);
       fs4.setStringValue(f2, "Two");
-      assertThat(ind2.compare(fs3, fs4) > 0).isTrue();
+      assertThat(ind2.compare(fs3, fs4)).isPositive();
 
-      FSIndex ind3 = irep.getIndex("Index3");
+      var ind3 = irep.getIndex("Index3");
       assertThat(ind3).isNotNull();
       assertThat(ind3.getType().getName()).isEqualTo("uima.tcas.Annotation");
       assertThat(ind3.getIndexingStrategy()).isEqualTo(FSIndex.SORTED_INDEX);
 
-      AnnotationFS fs5 = cas.createAnnotation(t1, 0, 0);
-      AnnotationFS fs6 = cas.createAnnotation(t2, 0, 0);
-      AnnotationFS fs7 = cas.createAnnotation(t1, 0, 0);
-      assertThat(ind3.compare(fs5, fs6) < 0).isTrue();
-      assertThat(ind3.compare(fs6, fs7) > 0).isTrue();
+      var fs5 = cas.createAnnotation(t1, 0, 0);
+      var fs6 = cas.createAnnotation(t2, 0, 0);
+      var fs7 = cas.createAnnotation(t1, 0, 0);
+      assertThat(ind3.compare(fs5, fs6)).isNegative();
+      assertThat(ind3.compare(fs6, fs7)).isPositive();
 
       // only way to check if allowed values is correct is to try to set an
       // invalid value?
@@ -852,79 +832,78 @@ class AnalysisEngine_implTest {
     try {
       // create aggregate analysis engine whose delegates each declare
       // type system, type priorities, and indexes
-      XMLInputSource in = new XMLInputSource(
+      var in = new XMLInputSource(
               JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(in);
-      AggregateAnalysisEngine_impl ae = new AggregateAnalysisEngine_impl();
+      var desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      var ae = new AggregateAnalysisEngine_impl();
       ae.initialize(desc, Collections.EMPTY_MAP);
       // initialize method automatically calls processDelegateAnalysisEngineMetaData()
 
       // test results of merge
       // TypeSystem
-      TypeSystemDescription typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
+      var typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
       assertThat(typeSys.getTypes()).hasSize(8);
 
-      TypeDescription type0 = typeSys.getType("NamedEntity");
+      var type0 = typeSys.getType("NamedEntity");
       assertThat(type0).isNotNull();
-      assertThat(type0.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type0.getSupertypeName()).isEqualTo(CAS.TYPE_NAME_ANNOTATION);
       assertThat(type0.getFeatures()).hasSize(1);
 
-      TypeDescription type1 = typeSys.getType("Person");
+      var type1 = typeSys.getType("Person");
       assertThat(type1).isNotNull();
       assertThat(type1.getSupertypeName()).isEqualTo("NamedEntity");
-      assertThat(type1.getFeatures().length).isEqualTo(1);
+      assertThat(type1.getFeatures()).hasSize(1);
 
-      TypeDescription type2 = typeSys.getType("Place");
+      var type2 = typeSys.getType("Place");
       assertThat(type2).isNotNull();
       assertThat(type2.getSupertypeName()).isEqualTo("NamedEntity");
-      assertThat(type2.getFeatures().length).isEqualTo(3);
+      assertThat(type2.getFeatures()).hasSize(3);
 
-      TypeDescription type3 = typeSys.getType("Org");
+      var type3 = typeSys.getType("Org");
       assertThat(type3).isNotNull();
-      assertThat(type3.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type3.getSupertypeName()).isEqualTo(CAS.TYPE_NAME_ANNOTATION);
       assertThat(type3.getFeatures()).isEmpty();
 
-      TypeDescription type4 = typeSys.getType("DocumentStructure");
+      var type4 = typeSys.getType("DocumentStructure");
       assertThat(type4).isNotNull();
-      assertThat(type4.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
+      assertThat(type4.getSupertypeName()).isEqualTo(CAS.TYPE_NAME_ANNOTATION);
       assertThat(type4.getFeatures()).isEmpty();
 
-      TypeDescription type5 = typeSys.getType("Paragraph");
+      var type5 = typeSys.getType("Paragraph");
       assertThat(type5).isNotNull();
       assertThat(type5.getSupertypeName()).isEqualTo("DocumentStructure");
       assertThat(type5.getFeatures()).isEmpty();
 
-      TypeDescription type6 = typeSys.getType("Sentence");
+      var type6 = typeSys.getType("Sentence");
       assertThat(type6).isNotNull();
       assertThat(type6.getSupertypeName()).isEqualTo("DocumentStructure");
       assertThat(type6.getFeatures()).isEmpty();
 
-      TypeDescription type7 = typeSys.getType("test.flowController.Test");
+      var type7 = typeSys.getType("test.flowController.Test");
       assertThat(type7).isNotNull();
-      assertThat(type7.getSupertypeName()).isEqualTo("uima.tcas.Annotation");
-      assertThat(type7.getFeatures().length).isEqualTo(1);
+      assertThat(type7.getSupertypeName()).isEqualTo(CAS.TYPE_NAME_ANNOTATION);
+      assertThat(type7.getFeatures()).hasSize(1);
 
       // TypePriorities
-      TypePriorities pri = ae.getAnalysisEngineMetaData().getTypePriorities();
+      var pri = ae.getAnalysisEngineMetaData().getTypePriorities();
       assertThat(pri).isNotNull();
-      TypePriorityList[] priLists = pri.getPriorityLists();
-      assertThat(priLists.length).isEqualTo(3);
-      String[] list0 = priLists[0].getTypes();
-      String[] list1 = priLists[1].getTypes();
-      String[] list2 = priLists[2].getTypes();
+      var priLists = pri.getPriorityLists();
+      assertThat(priLists).hasSize(3);
+      var list0 = priLists[0].getTypes();
+      var list1 = priLists[1].getTypes();
+      var list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       assertThat((list0.length == 2 && list1.length == 2 && list2.length == 3)
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
               || (list0.length == 3 && list1.length == 2 && list2.length == 2)).isTrue();
 
       // Indexes
-      FsIndexDescription[] indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
-      assertThat(indexes.length).isEqualTo(3);
+      var indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
+      assertThat(indexes).hasSize(3);
       // order of indexes is not defined
-      String label0 = indexes[0].getLabel();
-      String label1 = indexes[1].getLabel();
-      String label2 = indexes[2].getLabel();
+      var label0 = indexes[0].getLabel();
+      var label1 = indexes[1].getLabel();
+      var label2 = indexes[2].getLabel();
       assertThat(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
               || label2.equals("DocStructIndex")).isTrue();
       assertThat(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
@@ -934,8 +913,8 @@ class AnalysisEngine_implTest {
                       || label2.equals("FlowControllerTestIndex")).isTrue();
 
       // test that we can create a CAS
-      CAS cas = ae.newCAS();
-      TypeSystem ts = cas.getTypeSystem();
+      var cas = ae.newCAS();
+      var ts = cas.getTypeSystem();
       assertThat(ts.getType("NamedEntity")).isNotNull();
       assertThat(ts.getType("Person")).isNotNull();
       assertThat(ts.getType("Place")).isNotNull();
@@ -951,675 +930,629 @@ class AnalysisEngine_implTest {
 
   @Test
   void testCollectionProcessComplete() throws Exception {
-    try {
-      // test simple primitive TextAnalysisEngine (using TestAnnotator class)
-      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
-      primitiveDesc.setPrimitive(true);
-      primitiveDesc
-              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
-      primitiveDesc.getMetaData().setName("Test Primitive TAE");
-      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
-      ae.initialize(primitiveDesc, null);
-      ae.collectionProcessComplete(new ProcessTrace_impl());
+    // test simple primitive TextAnalysisEngine (using TestAnnotator class)
+    AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
+    primitiveDesc.setPrimitive(true);
+    primitiveDesc
+            .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+    primitiveDesc.getMetaData().setName("Test Primitive TAE");
+    var ae = new PrimitiveAnalysisEngine_impl();
+    ae.initialize(primitiveDesc, null);
+    ae.collectionProcessComplete(new ProcessTrace_impl());
 
-      // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
-      AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
-      aggDesc.setPrimitive(false);
-      aggDesc.getMetaData().setName("Test Aggregate TAE");
-      aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow = new FixedFlow_impl();
-      aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
-      aggAe.initialize(aggDesc, null);
-      aggAe.collectionProcessComplete(new ProcessTrace_impl());
+    // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
+    AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
+    aggDesc.setPrimitive(false);
+    aggDesc.getMetaData().setName("Test Aggregate TAE");
+    aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
+    var flow = new FixedFlow_impl();
+    aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+    var aggAe = new AggregateAnalysisEngine_impl();
+    aggAe.initialize(aggDesc, null);
+    aggAe.collectionProcessComplete(new ProcessTrace_impl());
 
-      // test that fixedFlow order is used
-      File descFile = JUnitExtension
-              .getFile("TextAnalysisEngineImplTest/AggregateForCollectionProcessCompleteTest.xml");
-      AnalysisEngineDescription cpcTestDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(descFile));
-      AnalysisEngine cpcTestAe = UIMAFramework.produceAnalysisEngine(cpcTestDesc);
-      cpcTestAe.collectionProcessComplete();
-      assertThat(AnnotatorForCollectionProcessCompleteTest.lastValue).isEqualTo("One");
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // test that fixedFlow order is used
+    var descFile = JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/AggregateForCollectionProcessCompleteTest.xml");
+    var cpcTestDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(descFile));
+    var cpcTestAe = UIMAFramework.produceAnalysisEngine(cpcTestDesc);
+    cpcTestAe.collectionProcessComplete();
+    assertThat(AnnotatorForCollectionProcessCompleteTest.lastValue).isEqualTo("One");
   }
 
   @Test
   void testBatchProcessComplete() throws Exception {
-    try {
-      // test simple primitive TextAnalysisEngine (using TestAnnotator class)
-      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
-      primitiveDesc.setPrimitive(true);
-      primitiveDesc
-              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
-      primitiveDesc.getMetaData().setName("Test Primitive TAE");
-      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
-      ae.initialize(primitiveDesc, null);
-      ae.batchProcessComplete(new ProcessTrace_impl());
+    // test simple primitive TextAnalysisEngine (using TestAnnotator class)
+    var primitiveDesc = new AnalysisEngineDescription_impl();
+    primitiveDesc.setPrimitive(true);
+    primitiveDesc
+            .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+    primitiveDesc.getMetaData().setName("Test Primitive TAE");
+    var ae = new PrimitiveAnalysisEngine_impl();
+    ae.initialize(primitiveDesc, null);
+    ae.batchProcessComplete(new ProcessTrace_impl());
 
-      // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
-      AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
-      aggDesc.setPrimitive(false);
-      aggDesc.getMetaData().setName("Test Aggregate TAE");
-      aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
-      FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow("Test");
-      aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
-      aggAe.initialize(aggDesc, null);
-      aggAe.batchProcessComplete(new ProcessTrace_impl());
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
+    var aggDesc = new AnalysisEngineDescription_impl();
+    aggDesc.setPrimitive(false);
+    aggDesc.getMetaData().setName("Test Aggregate TAE");
+    aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
+    var flow = new FixedFlow_impl();
+    flow.setFixedFlow("Test");
+    aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+    var aggAe = new AggregateAnalysisEngine_impl();
+    aggAe.initialize(aggDesc, null);
+    aggAe.batchProcessComplete(new ProcessTrace_impl());
   }
 
   @Test
   void testTypeSystemInit() throws Exception {
-    try {
-      AnalysisEngineDescription aggWithCcDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
-      AggregateAnalysisEngine_impl aggAe = new AggregateAnalysisEngine_impl();
-      aggAe.initialize(aggWithCcDesc, null);
-      CAS tcas = aggAe.newCAS();
-      tcas.setDocumentText("This is a test");
-      aggAe.process(tcas);
-      assertThat(TestAnnotator.typeSystemInitCalled).isTrue();
-      assertThat(AnnotationWriter.typeSystemInitCalled).isTrue();
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    var aggWithCcDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
+                    .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
+    var aggAe = new AggregateAnalysisEngine_impl();
+    aggAe.initialize(aggWithCcDesc, null);
+    var tcas = aggAe.newCAS();
+    tcas.setDocumentText("This is a test");
+    aggAe.process(tcas);
+    assertThat(TestAnnotator.typeSystemInitCalled).isTrue();
+    assertThat(AnnotationWriter.typeSystemInitCalled).isTrue();
   }
 
   @Test
   void testProcessAndOutputNewCASes() throws Exception {
-    try {
-      // primitive
-      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(
-                      JUnitExtension.getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml")));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
-      CAS cas = ae.newCAS();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      CasIterator iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      CAS outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line three");
-      outCas.release();
-      assertThat(iter.hasNext()).isFalse();
+    // primitive
+    var segmenterDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(
+                    JUnitExtension.getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml")));
+    var ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
+    var cas = ae.newCAS();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    var iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    var outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line one");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line three");
+    outCas.release();
+    assertThat(iter.hasNext()).isFalse();
 
-      // aggregate
-      AnalysisEngineDescription aggSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
-      cas = ae.newCAS();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line three");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
-      outCas.release();
-      assertThat(iter.hasNext()).isFalse();
-      // Annotator should NOT get the original CAS according to the default flow
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+    // aggregate
+    var aggSegDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
+    cas = ae.newCAS();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line one");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line three");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+    outCas.release();
+    assertThat(iter.hasNext()).isFalse();
+    // Annotator should NOT get the original CAS according to the default flow
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
 
-      // nested aggregate
-      AnalysisEngineDescription nestedAggSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/AggregateContainingAggregateSegmenter.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
-      cas = ae.newCAS();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line three");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
-      outCas.release();
-      assertThat(iter.hasNext()).isFalse();
-      // Annotator should NOT get the original CAS according to the default flow
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+    // nested aggregate
+    var nestedAggSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "TextAnalysisEngineImplTest/AggregateContainingAggregateSegmenter.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
+    cas = ae.newCAS();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line one");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line three");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+    outCas.release();
+    assertThat(iter.hasNext()).isFalse();
+    // Annotator should NOT get the original CAS according to the default flow
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
 
-      // two segmenters
-      AnalysisEngineDescription twoSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateWith2Segmenters.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
-      cas = ae.newCAS();
-      cas.setDocumentText("One\tTwo\nThree\tFour");
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
+    // two segmenters
+    var twoSegDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWith2Segmenters.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
+    cas = ae.newCAS();
+    cas.setDocumentText("One\tTwo\nThree\tFour");
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("One");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("One");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Two");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Two");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Three");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Three");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Four");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Four");
+    outCas.release();
+    assertThat(iter.hasNext()).isFalse();
+    // Annotator should NOT get the original CAS according to the default flow
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Four");
+
+    // dropping segments
+    aggSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
+                    .getFile("TextAnalysisEngineImplTest/AggregateSegmenterForDropTest.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
+    cas = ae.newCAS();
+    cas.setDocumentText("Line one\nDROP\nLine two\nDROP\nLine three");
+    // results should be the same as the first aggregate segmenter test.
+    // segmetns whose text is DROP should not be output.
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line one");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    assertThat(outCas.getDocumentText()).isEqualTo("Line three");
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+    outCas.release();
+    assertThat(iter.hasNext()).isFalse();
+    // Annotator should NOT get the original CAS according to the default flow
+    assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
+
+    // with ParallelStep
+    var desc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "TextAnalysisEngineImplTest/AggregateForParallelStepCasMultiplierTest.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(desc);
+    cas.reset();
+    cas.setDocumentText("One\tTwo\nThree\tFour");
+    iter = ae.processAndOutputNewCASes(cas);
+    Set<String> expectedOutputs = new HashSet<>();
+    expectedOutputs.add("One");
+    expectedOutputs.add("Two\nThree");
+    expectedOutputs.add("Four");
+    expectedOutputs.add("One\tTwo");
+    expectedOutputs.add("Three\tFour");
+    while (iter.hasNext()) {
       outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("One");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("One");
+      assertThat(expectedOutputs.remove(outCas.getDocumentText())).isTrue();
       outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Two");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Two");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Three");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Three");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Four");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Four");
-      outCas.release();
-      assertThat(iter.hasNext()).isFalse();
-      // Annotator should NOT get the original CAS according to the default flow
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Four");
-
-      // dropping segments
-      aggSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateSegmenterForDropTest.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
-      cas = ae.newCAS();
-      cas.setDocumentText("Line one\nDROP\nLine two\nDROP\nLine three");
-      // results should be the same as the first aggregate segmenter test.
-      // segmetns whose text is DROP should not be output.
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line one");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line two");
-      outCas.release();
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      assertThat(outCas.getDocumentText()).isEqualTo("Line three");
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
-      outCas.release();
-      assertThat(iter.hasNext()).isFalse();
-      // Annotator should NOT get the original CAS according to the default flow
-      assertThat(TestAnnotator.lastDocument).isEqualTo("Line three");
-
-      // with ParallelStep
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/AggregateForParallelStepCasMultiplierTest.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(desc);
-      cas.reset();
-      cas.setDocumentText("One\tTwo\nThree\tFour");
-      iter = ae.processAndOutputNewCASes(cas);
-      Set<String> expectedOutputs = new HashSet<>();
-      expectedOutputs.add("One");
-      expectedOutputs.add("Two\nThree");
-      expectedOutputs.add("Four");
-      expectedOutputs.add("One\tTwo");
-      expectedOutputs.add("Three\tFour");
-      while (iter.hasNext()) {
-        outCas = iter.next();
-        assertThat(expectedOutputs.remove(outCas.getDocumentText())).isTrue();
-        outCas.release();
-      }
-      assertThat(expectedOutputs.isEmpty()).isTrue();
-
-      // test aggregate with 2 AEs sharing resource manager
-      AnalysisEngineDescription aggregateSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
-
-      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      Map<String, Object> params = new HashMap<>();
-      AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
-      AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
-
-      // start with testing first ae
-      CAS cas1 = ae1.newCAS();
-      cas1.setDocumentText("Line one\nLine two\nLine three");
-      CasIterator iter1 = ae1.processAndOutputNewCASes(cas1);
-      assertThat(iter1.hasNext()).isTrue();
-      CAS outCas1 = iter1.next();
-      assertThat(outCas1.getDocumentText()).isEqualTo("Line one");
-
-      // now test second ae
-      CAS cas2 = ae2.newCAS();
-      cas2.setDocumentText("Line one\nLine two\nLine three");
-      CasIterator iter2 = ae2.processAndOutputNewCASes(cas2);
-      assertThat(iter2.hasNext()).isTrue();
-      CAS outCas2 = iter2.next();
-      assertThat(outCas2.getDocumentText()).isEqualTo("Line one");
-      outCas2.release();
-      assertThat(iter2.hasNext()).isTrue();
-      outCas2 = iter2.next();
-      assertThat(outCas2.getDocumentText()).isEqualTo("Line two");
-      outCas2.release();
-      assertThat(iter2.hasNext()).isTrue();
-      outCas2 = iter2.next();
-      assertThat(outCas2.getDocumentText()).isEqualTo("Line three");
-      outCas2.release();
-      assertThat(iter2.hasNext()).isFalse();
-
-      // continue testing first ae
-      outCas1.release();
-      assertThat(iter1.hasNext()).isTrue();
-      outCas1 = iter1.next();
-      assertThat(outCas1.getDocumentText()).isEqualTo("Line two");
-      outCas1.release();
-      assertThat(iter1.hasNext()).isTrue();
-      outCas1 = iter1.next();
-      assertThat(outCas1.getDocumentText()).isEqualTo("Line three");
-      outCas1.release();
-      assertThat(iter1.hasNext()).isFalse();
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
     }
+    assertThat(expectedOutputs).isEmpty();
+
+    // test aggregate with 2 AEs sharing resource manager
+    var aggregateSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
+                    .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
+
+    var rsrcMgr = UIMAFramework.newDefaultResourceManager();
+    Map<String, Object> params = new HashMap<>();
+    var ae1 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
+    var ae2 = UIMAFramework.produceAnalysisEngine(aggregateSegDesc, rsrcMgr, params);
+
+    // start with testing first ae
+    var cas1 = ae1.newCAS();
+    cas1.setDocumentText("Line one\nLine two\nLine three");
+    var iter1 = ae1.processAndOutputNewCASes(cas1);
+    assertThat(iter1.hasNext()).isTrue();
+    var outCas1 = iter1.next();
+    assertThat(outCas1.getDocumentText()).isEqualTo("Line one");
+
+    // now test second ae
+    var cas2 = ae2.newCAS();
+    cas2.setDocumentText("Line one\nLine two\nLine three");
+    var iter2 = ae2.processAndOutputNewCASes(cas2);
+    assertThat(iter2.hasNext()).isTrue();
+    var outCas2 = iter2.next();
+    assertThat(outCas2.getDocumentText()).isEqualTo("Line one");
+    outCas2.release();
+    assertThat(iter2.hasNext()).isTrue();
+    outCas2 = iter2.next();
+    assertThat(outCas2.getDocumentText()).isEqualTo("Line two");
+    outCas2.release();
+    assertThat(iter2.hasNext()).isTrue();
+    outCas2 = iter2.next();
+    assertThat(outCas2.getDocumentText()).isEqualTo("Line three");
+    outCas2.release();
+    assertThat(iter2.hasNext()).isFalse();
+
+    // continue testing first ae
+    outCas1.release();
+    assertThat(iter1.hasNext()).isTrue();
+    outCas1 = iter1.next();
+    assertThat(outCas1.getDocumentText()).isEqualTo("Line two");
+    outCas1.release();
+    assertThat(iter1.hasNext()).isTrue();
+    outCas1 = iter1.next();
+    assertThat(outCas1.getDocumentText()).isEqualTo("Line three");
+    outCas1.release();
+    assertThat(iter1.hasNext()).isFalse();
   }
 
   @Test
   void testProcessAndOutputNewCASesWithError() throws Exception {
-    try {
-      // aggregate
-      AnalysisEngineDescription aggSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
+    // aggregate
+    var aggSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
+                    .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
+    var ae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
 
-      CAS cas = ae.newCAS();
-      for (int i = 0; i < 2; i++) // verify we can do this more than once
-      {
-        FlowControllerForErrorTest.reset();
-        cas.setDocumentText("Line one\nLine two\nERROR");
-        CasIterator iter = ae.processAndOutputNewCASes(cas);
-        assertThat(iter.hasNext()).isTrue();
-        CAS outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-        outCas.release();
-        assertThat(iter.hasNext()).isTrue();
-        outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-        outCas.release();
-        try {
-          UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-          assertThat(iter.hasNext()).isTrue();
-          outCas = iter.next();
-          fail(); // the above should throw an exception
-        } catch (Exception e) {
-        } finally {
-          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
-        }
-        // check that FlowController was notified twice, once for the
-        // segment's flow and once for the complete document's flow
-        assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(2);
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments)
-                .contains("Line one\nLine two\nERROR");
-
-        cas.reset();
-      }
-
-      // nested aggregate
-      AnalysisEngineDescription nestedAggSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/NestedAggregateSegmenterForErrorTest.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
-      cas = ae.newCAS();
-      for (int i = 0; i < 2; i++) // verify we can do this more than once
-      {
-        FlowControllerForErrorTest.reset();
-        cas.setDocumentText("Line one\nLine two\nERROR");
-        CasIterator iter = ae.processAndOutputNewCASes(cas);
-        assertThat(iter.hasNext()).isTrue();
-        CAS outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Line one");
-        outCas.release();
-        assertThat(iter.hasNext()).isTrue();
-        outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Line two");
-        outCas.release();
-        try {
-          UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-          assertThat(iter.hasNext()).isTrue();
-          outCas = iter.next();
-          fail(); // the above should throw an exception
-        } catch (Exception e) {
-        } finally {
-          UIMAFramework.getLogger().setLevel(Level.INFO);
-        }
-        // check that FlowController was notified three times, once for the
-        // segment's flow and twice for the complete document's flow (once
-        // in each aggregate)
-        assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments)
-                .contains("Line one\nLine two\nERROR");
-        FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
-        assertThat(FlowControllerForErrorTest.abortedDocuments)
-                .contains("Line one\nLine two\nERROR");
-
-        cas.reset();
-      }
-
-      // 2 segmenters
-      AnalysisEngineDescription twoSegDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/AggregateWith2SegmentersForErrorTest.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
-      cas = ae.newCAS();
-      for (int i = 0; i < 2; i++) // verify we can do this more than once
-      {
-        FlowControllerForErrorTest.abortedDocuments.clear();
-        cas.setDocumentText("One\tTwo\nThree\tERROR");
-        CasIterator iter = ae.processAndOutputNewCASes(cas);
-        assertThat(iter.hasNext()).isTrue();
-        CAS outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("One");
-        outCas.release();
-        assertThat(iter.hasNext()).isTrue();
-        outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Two");
-        outCas.release();
-        assertThat(iter.hasNext()).isTrue();
-        outCas = iter.next();
-        assertThat(outCas.getDocumentText()).isEqualTo("Three");
-        outCas.release();
-        try {
-          UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-          assertThat(iter.hasNext()).isTrue();
-          outCas = iter.next();
-          fail(); // the above should throw an exception
-        } catch (Exception e) {
-        } finally {
-          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
-        }
-        // check that FlowController was notified three times, once for each level of granularity
-        assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(3);
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments.contains("Three\tERROR")).isTrue();
-        assertThat(FlowControllerForErrorTest.abortedDocuments).contains("One\tTwo\nThree\tERROR");
-
-        cas.reset();
-      }
-
-      // segmenter that requests too many CASes
-      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(
-                      JUnitExtension.getFile("TextAnalysisEngineImplTest/BadSegmenter.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
-      cas = ae.newCAS();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      CasIterator iter = ae.processAndOutputNewCASes(cas);
+    var cas = ae.newCAS();
+    for (var i = 0; i < 2; i++) // verify we can do this more than once
+    {
+      FlowControllerForErrorTest.reset();
+      cas.setDocumentText("Line one\nLine two\nERROR");
+      var iter = ae.processAndOutputNewCASes(cas);
       assertThat(iter.hasNext()).isTrue();
-      CAS outCas = iter.next(); // first call OK
+      var outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
       outCas.release();
       assertThat(iter.hasNext()).isTrue();
-      // next call should fail with AnalysisEngineProcessException
+      outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+      outCas.release();
       try {
         UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-        iter.next();
-        fail(); // should not get here
+        assertThat(iter.hasNext()).isTrue();
+        outCas = iter.next();
+        fail(); // the above should throw an exception
       } catch (Exception e) {
       } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
-
-      // bad segmenter in an aggregate
-      AnalysisEngineDescription aggWithBadSegmenterDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
-                      "TextAnalysisEngineImplTest/AggregateWithBadSegmenterForErrorTest.xml")));
-      ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
-      FlowControllerForErrorTest.reset();
-      cas = ae.newCAS();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next(); // first call OK
-      outCas.release();
-      assertThat(FlowControllerForErrorTest.abortedDocuments.isEmpty()).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.isEmpty()).isTrue();
-      // next call should fail with AnalysisEngineProcessException
-      try {
-        UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-        if (iter.hasNext()) {
-          iter.next();
-        }
-        fail(); // should not get here
-      } catch (Exception e) {
-      } finally {
-        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
-      }
-      assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.abortedDocuments
-              .contains("Line one\nLine two\nLine three")).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.failedAEs.contains("Segmenter")).isTrue();
-
-      // configure AE to continue after error
-      ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
-      ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
-      ae.reconfigure();
-      FlowControllerForErrorTest.reset();
+      // check that FlowController was notified twice, once for the
+      // segment's flow and once for the complete document's flow
+      assertThat(FlowControllerForErrorTest.abortedDocuments).hasSize(2);
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("ERROR");
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
 
       cas.reset();
-      cas.setDocumentText("Line one\nLine two\nLine three");
-      iter = ae.processAndOutputNewCASes(cas);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next(); // first call OK
-      outCas.release();
-      assertThat(FlowControllerForErrorTest.abortedDocuments.isEmpty()).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.isEmpty()).isTrue();
+    }
 
-      // next call should not have aborted, but FC should have been notified of the failiure,
-      // and no CAS should come back
-      UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+    // nested aggregate
+    var nestedAggSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "TextAnalysisEngineImplTest/NestedAggregateSegmenterForErrorTest.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
+    cas = ae.newCAS();
+    for (var i = 0; i < 2; i++) // verify we can do this more than once
+    {
+      FlowControllerForErrorTest.reset();
+      cas.setDocumentText("Line one\nLine two\nERROR");
+      var iter = ae.processAndOutputNewCASes(cas);
+      assertThat(iter.hasNext()).isTrue();
+      var outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Line one");
+      outCas.release();
+      assertThat(iter.hasNext()).isTrue();
+      outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Line two");
+      outCas.release();
       try {
-        assertThat(iter.hasNext()).isFalse();
+        UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+        assertThat(iter.hasNext()).isTrue();
+        outCas = iter.next();
+        fail(); // the above should throw an exception
+      } catch (Exception e) {
+      } finally {
+        UIMAFramework.getLogger().setLevel(Level.INFO);
+      }
+      // check that FlowController was notified three times, once for the
+      // segment's flow and twice for the complete document's flow (once
+      // in each aggregate)
+      assertThat(FlowControllerForErrorTest.abortedDocuments).hasSize(3);
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("ERROR");
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
+      FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("Line one\nLine two\nERROR");
+
+      cas.reset();
+    }
+
+    // 2 segmenters
+    var twoSegDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "TextAnalysisEngineImplTest/AggregateWith2SegmentersForErrorTest.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
+    cas = ae.newCAS();
+    for (var i = 0; i < 2; i++) // verify we can do this more than once
+    {
+      FlowControllerForErrorTest.abortedDocuments.clear();
+      cas.setDocumentText("One\tTwo\nThree\tERROR");
+      var iter = ae.processAndOutputNewCASes(cas);
+      assertThat(iter.hasNext()).isTrue();
+      var outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("One");
+      outCas.release();
+      assertThat(iter.hasNext()).isTrue();
+      outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Two");
+      outCas.release();
+      assertThat(iter.hasNext()).isTrue();
+      outCas = iter.next();
+      assertThat(outCas.getDocumentText()).isEqualTo("Three");
+      outCas.release();
+      try {
+        UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+        assertThat(iter.hasNext()).isTrue();
+        outCas = iter.next();
+        fail(); // the above should throw an exception
+      } catch (Exception e) {
       } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
-      assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(0);
-      assertThat(FlowControllerForErrorTest.failedAEs.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.failedAEs.contains("Segmenter")).isTrue();
+      // check that FlowController was notified three times, once for each level of granularity
+      assertThat(FlowControllerForErrorTest.abortedDocuments).hasSize(3);
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("ERROR");
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("Three\tERROR");
+      assertThat(FlowControllerForErrorTest.abortedDocuments).contains("One\tTwo\nThree\tERROR");
 
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+      cas.reset();
     }
+
+    // segmenter that requests too many CASes
+    var segmenterDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(
+                    JUnitExtension.getFile("TextAnalysisEngineImplTest/BadSegmenter.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
+    cas = ae.newCAS();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    var iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    var outCas = iter.next(); // first call OK
+    outCas.release();
+    assertThat(iter.hasNext()).isTrue();
+    // next call should fail with AnalysisEngineProcessException
+    try {
+      UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+      iter.next();
+      fail(); // should not get here
+    } catch (Exception e) {
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+    }
+
+    // bad segmenter in an aggregate
+    var aggWithBadSegmenterDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension.getFile(
+                    "TextAnalysisEngineImplTest/AggregateWithBadSegmenterForErrorTest.xml")));
+    ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
+    FlowControllerForErrorTest.reset();
+    cas = ae.newCAS();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next(); // first call OK
+    outCas.release();
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).isEmpty();
+    // next call should fail with AnalysisEngineProcessException
+    try {
+      UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+      if (iter.hasNext()) {
+        iter.next();
+      }
+      fail(); // should not get here
+    } catch (Exception e) {
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+    }
+    assertThat(FlowControllerForErrorTest.abortedDocuments).hasSize(1)
+            .contains("Line one\nLine two\nLine three");
+    assertThat(FlowControllerForErrorTest.failedAEs).hasSize(1).contains("Segmenter");
+
+    // configure AE to continue after error
+    ae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
+    ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
+    ae.reconfigure();
+    FlowControllerForErrorTest.reset();
+
+    cas.reset();
+    cas.setDocumentText("Line one\nLine two\nLine three");
+    iter = ae.processAndOutputNewCASes(cas);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next(); // first call OK
+    outCas.release();
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).isEmpty();
+
+    // next call should not have aborted, but FC should have been notified of the failiure,
+    // and no CAS should come back
+    UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+    try {
+      assertThat(iter.hasNext()).isFalse();
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+    }
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).hasSize(1).contains("Segmenter");
   }
 
   @Test
   void testResegment() throws Exception {
-    try {
-      // primitive
-      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(
-                      JUnitExtension.getFile("TextAnalysisEngineImplTest/NewlineResegmenter.xml")));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
-      CAS inputCas1 = ae.newCAS();
-      Type sdiType = inputCas1.getTypeSystem()
-              .getType("org.apache.uima.examples.SourceDocumentInformation");
-      Feature uriFeat = sdiType.getFeatureByBaseName("uri");
-      inputCas1.setDocumentText("This is");
-      FeatureStructure sdiFS = inputCas1.createFS(sdiType);
-      sdiFS.setStringValue(uriFeat, "cas1");
-      inputCas1.getIndexRepository().addFS(sdiFS);
-      CAS inputCas2 = ae.newCAS();
-      inputCas2.setDocumentText(" one.\nThis is");
-      FeatureStructure sdiFS2 = inputCas2.createFS(sdiType);
-      sdiFS2.setStringValue(uriFeat, "cas2");
-      inputCas2.getIndexRepository().addFS(sdiFS2);
-      CAS inputCas3 = ae.newCAS();
-      inputCas3.setDocumentText(" two.\n");
-      FeatureStructure sdiFS3 = inputCas3.createFS(sdiType);
-      sdiFS3.setStringValue(uriFeat, "cas3");
-      inputCas3.getIndexRepository().addFS(sdiFS3);
+    // primitive
+    var segmenterDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(
+                    JUnitExtension.getFile("TextAnalysisEngineImplTest/NewlineResegmenter.xml")));
+    var ae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
+    var inputCas1 = ae.newCAS();
+    var sdiType = inputCas1.getTypeSystem()
+            .getType("org.apache.uima.examples.SourceDocumentInformation");
+    var uriFeat = sdiType.getFeatureByBaseName("uri");
+    inputCas1.setDocumentText("This is");
+    var sdiFS = inputCas1.createFS(sdiType);
+    sdiFS.setStringValue(uriFeat, "cas1");
+    inputCas1.getIndexRepository().addFS(sdiFS);
+    var inputCas2 = ae.newCAS();
+    inputCas2.setDocumentText(" one.\nThis is");
+    var sdiFS2 = inputCas2.createFS(sdiType);
+    sdiFS2.setStringValue(uriFeat, "cas2");
+    inputCas2.getIndexRepository().addFS(sdiFS2);
+    var inputCas3 = ae.newCAS();
+    inputCas3.setDocumentText(" two.\n");
+    var sdiFS3 = inputCas3.createFS(sdiType);
+    sdiFS3.setStringValue(uriFeat, "cas3");
+    inputCas3.getIndexRepository().addFS(sdiFS3);
 
-      // input first CAS. Should be no segments yet.
-      CasIterator iter = ae.processAndOutputNewCASes(inputCas1);
-      assertThat(iter.hasNext()).isFalse();
-      // input second CAS. We should get back one segment.
-      iter = ae.processAndOutputNewCASes(inputCas2);
-      assertThat(iter.hasNext()).isTrue();
-      CAS outCas = iter.next();
-      JCas outJCas = outCas.getJCas();
-      assertThat(outCas.getDocumentText()).isEqualTo("This is one.");
-      // -- check SourceDocumentInformation FSs
-      AnnotationIndex<SourceDocumentInformation> ai = outCas.getAnnotationIndex(sdiType);
-      Iterator<SourceDocumentInformation> sdiIter = ai.iterator();
-      Iterator<SourceDocumentInformation> sdiIter2 = outCas
-              .<SourceDocumentInformation> getAnnotationIndex(sdiType).iterator();
+    // input first CAS. Should be no segments yet.
+    var iter = ae.processAndOutputNewCASes(inputCas1);
+    assertThat(iter.hasNext()).isFalse();
+    // input second CAS. We should get back one segment.
+    iter = ae.processAndOutputNewCASes(inputCas2);
+    assertThat(iter.hasNext()).isTrue();
+    var outCas = iter.next();
+    var outJCas = outCas.getJCas();
+    assertThat(outCas.getDocumentText()).isEqualTo("This is one.");
+    // -- check SourceDocumentInformation FSs
+    AnnotationIndex<SourceDocumentInformation> ai = outCas.getAnnotationIndex(sdiType);
+    Iterator<SourceDocumentInformation> sdiIter = ai.iterator();
+    Iterator<SourceDocumentInformation> sdiIter2 = outCas
+            .<SourceDocumentInformation> getAnnotationIndex(sdiType).iterator();
 
-      AnnotationIndex<SourceDocumentInformation> ai2 = outJCas
-              .getAnnotationIndex(SourceDocumentInformation.class);
-      Iterator<SourceDocumentInformation> sdiIter3 = outJCas
-              .getAnnotationIndex(SourceDocumentInformation.class).iterator();
+    var ai2 = outJCas.getAnnotationIndex(SourceDocumentInformation.class);
+    Iterator<SourceDocumentInformation> sdiIter3 = outJCas
+            .getAnnotationIndex(SourceDocumentInformation.class).iterator();
 
-      // testing to see if these compile OK
-      for (SourceDocumentInformation sdi : ai) {
-      }
-      for (SourceDocumentInformation sdi : outCas
-              .<SourceDocumentInformation> getAnnotationIndex(sdiType)) {
-      }
-
-      assertThat(sdiIter.hasNext()).isTrue();
-      AnnotationFS outSdiFs = sdiIter.next();
-      assertThat(outSdiFs.getCoveredText()).isEqualTo("This is");
-      assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas1");
-      assertThat(sdiIter.hasNext()).isTrue();
-      outSdiFs = sdiIter.next();
-      assertThat(outSdiFs.getCoveredText()).isEqualTo(" one.");
-      assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas2");
-      assertThat(sdiIter.hasNext()).isFalse();
-      // --
-      assertThat(iter.hasNext()).isFalse();
-
-      // input third CAS. We should get back one more segment.
-      iter = ae.processAndOutputNewCASes(inputCas3);
-      assertThat(iter.hasNext()).isTrue();
-      outCas = iter.next();
-      outJCas = outCas.getJCas();
-      assertThat(outCas.getDocumentText()).isEqualTo("This is two.");
-      // -- check SourceDocumentInformation FSs
-      sdiIter = outCas.<SourceDocumentInformation> getAnnotationIndex(sdiType).iterator();
-      assertThat(sdiIter.hasNext()).isTrue();
-      outSdiFs = sdiIter.next();
-      assertThat(outSdiFs.getCoveredText()).isEqualTo("This is");
-      assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas2");
-      assertThat(sdiIter.hasNext()).isTrue();
-      outSdiFs = sdiIter.next();
-      assertThat(outSdiFs.getCoveredText()).isEqualTo(" two.");
-      assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas3");
-      assertThat(sdiIter.hasNext()).isFalse();
-      // --
-      assertThat(iter.hasNext()).isFalse();
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+    // testing to see if these compile OK
+    for (var sdi : ai) {
     }
+    for (var sdi : outCas.<SourceDocumentInformation> getAnnotationIndex(sdiType)) {
+    }
+
+    assertThat(sdiIter.hasNext()).isTrue();
+    AnnotationFS outSdiFs = sdiIter.next();
+    assertThat(outSdiFs.getCoveredText()).isEqualTo("This is");
+    assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas1");
+    assertThat(sdiIter.hasNext()).isTrue();
+    outSdiFs = sdiIter.next();
+    assertThat(outSdiFs.getCoveredText()).isEqualTo(" one.");
+    assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas2");
+    assertThat(sdiIter.hasNext()).isFalse();
+    // --
+    assertThat(iter.hasNext()).isFalse();
+
+    // input third CAS. We should get back one more segment.
+    iter = ae.processAndOutputNewCASes(inputCas3);
+    assertThat(iter.hasNext()).isTrue();
+    outCas = iter.next();
+    outJCas = outCas.getJCas();
+    assertThat(outCas.getDocumentText()).isEqualTo("This is two.");
+    // -- check SourceDocumentInformation FSs
+    sdiIter = outCas.<SourceDocumentInformation> getAnnotationIndex(sdiType).iterator();
+    assertThat(sdiIter.hasNext()).isTrue();
+    outSdiFs = sdiIter.next();
+    assertThat(outSdiFs.getCoveredText()).isEqualTo("This is");
+    assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas2");
+    assertThat(sdiIter.hasNext()).isTrue();
+    outSdiFs = sdiIter.next();
+    assertThat(outSdiFs.getCoveredText()).isEqualTo(" two.");
+    assertThat(outSdiFs.getStringValue(uriFeat)).isEqualTo("cas3");
+    assertThat(sdiIter.hasNext()).isFalse();
+    // --
+    assertThat(iter.hasNext()).isFalse();
   }
 
   @Test
   void testProcessWithError() throws Exception {
+    // This test uses an aggregate AE fails if the document text is set to "ERROR".
+    var aeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
+    var ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+    FlowControllerForErrorTest.reset();
+    var cas = ae.newCAS();
+    // try document that should succeed
+    cas.setDocumentText("This is OK");
+    ae.process(cas);
+    // flow controller should not be notified
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).isEmpty();
+
+    // now one that fails
+    cas.reset();
+    cas.setDocumentText("ERROR");
     try {
-      // This test uses an aggregate AE fails if the document text is set to "ERROR".
-      AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
-      FlowControllerForErrorTest.reset();
-      CAS cas = ae.newCAS();
-      // try document that should succeed
-      cas.setDocumentText("This is OK");
-      ae.process(cas);
-      // flow controller should not be notified
-      assertThat(FlowControllerForErrorTest.abortedDocuments.isEmpty()).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.isEmpty()).isTrue();
-
-      // now one that fails
-      cas.reset();
-      cas.setDocumentText("ERROR");
-      try {
-        UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-        ae.process(cas);
-        fail();
-      } catch (Exception e) {
-      } finally {
-        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
-      }
-      assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.abortedDocuments.contains("ERROR")).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.failedAEs.contains("ErrorAnnotator")).isTrue();
-
-      // AE should still be able to process a new document now
-      FlowControllerForErrorTest.reset();
-      cas.reset();
-      cas.setDocumentText("This is OK");
-      ae.process(cas);
-      assertThat(FlowControllerForErrorTest.abortedDocuments.isEmpty()).isTrue();
-      assertThat(FlowControllerForErrorTest.failedAEs.isEmpty()).isTrue();
-
-      // configure AE to continue after error
-      ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
-      ae.reconfigure();
-      cas.reset();
-      cas.setDocumentText("ERROR");
       UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
-      try {
-        ae.process(cas); // should not throw exception now
-      } finally {
-        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
-      }
-
-      // document should not have aborted, but FC should have been notified of the failiure
-      assertThat(FlowControllerForErrorTest.abortedDocuments.size()).isEqualTo(0);
-      assertThat(FlowControllerForErrorTest.failedAEs.size()).isEqualTo(1);
-      assertThat(FlowControllerForErrorTest.failedAEs.contains("ErrorAnnotator")).isTrue();
-
+      ae.process(cas);
+      fail();
     } catch (Exception e) {
-      JUnitExtension.handleException(e);
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
     }
+    assertThat(FlowControllerForErrorTest.abortedDocuments).hasSize(1).contains("ERROR");
+    assertThat(FlowControllerForErrorTest.failedAEs).hasSize(1).contains("ErrorAnnotator");
+
+    // AE should still be able to process a new document now
+    FlowControllerForErrorTest.reset();
+    cas.reset();
+    cas.setDocumentText("This is OK");
+    ae.process(cas);
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).isEmpty();
+
+    // configure AE to continue after error
+    ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
+    ae.reconfigure();
+    cas.reset();
+    cas.setDocumentText("ERROR");
+    UIMAFramework.getLogger().setLevel(Level.OFF); // Suppress logging of expected exception
+    try {
+      ae.process(cas); // should not throw exception now
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+    }
+
+    // document should not have aborted, but FC should have been notified of the failure
+    assertThat(FlowControllerForErrorTest.abortedDocuments).isEmpty();
+    assertThat(FlowControllerForErrorTest.failedAEs).hasSize(1).contains("ErrorAnnotator");
   }
 
   @Test
   void testThrottleLogging() throws Exception {
     // This test uses an aggregate AE fails if the document text is set to "ERROR".
-    AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
-            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                    .getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
-    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+    var aeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
+    var ae = UIMAFramework.produceAnalysisEngine(aeDesc);
     FlowControllerForErrorTest.reset();
-    CAS cas = ae.newCAS();
-    for (int i = 0; i < 2; i++) {
+    var cas = ae.newCAS();
+    for (var i = 0; i < 2; i++) {
       cas.setDocumentText("LOG");
       try {
         ae.process(cas);
@@ -1634,7 +1567,7 @@ class AnalysisEngine_implTest {
             Collections.singletonMap(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 1));
     FlowControllerForErrorTest.reset();
     cas = ae.newCAS();
-    for (int i = 0; i < 2; i++) {
+    for (var i = 0; i < 2; i++) {
       cas.setDocumentText("LOG");
       try {
         ae.process(cas);
@@ -1649,7 +1582,7 @@ class AnalysisEngine_implTest {
             Collections.singletonMap(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 0));
     FlowControllerForErrorTest.reset();
     cas = ae.newCAS();
-    for (int i = 0; i < 2; i++) {
+    for (var i = 0; i < 2; i++) {
       cas.setDocumentText("LOG");
       try {
         ae.process(cas);
@@ -1663,18 +1596,14 @@ class AnalysisEngine_implTest {
 
   @Test
   void testMissingSuper() throws Exception {
-    try {
-      // initialize simple primitive TextAnalysisEngine
-      AnalysisEngine ae1 = new PrimitiveAnalysisEngine_impl();
-      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
-      primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
-      primitiveDesc.setPrimitive(true);
-      primitiveDesc.setAnnotatorImplementationName(AnnotatorMissingSuper.class.getCanonicalName());
-      ae1.initialize(primitiveDesc, null);
-      ae1.process(ae1.newCAS());
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // initialize simple primitive TextAnalysisEngine
+    AnalysisEngine ae1 = new PrimitiveAnalysisEngine_impl();
+    AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
+    primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
+    primitiveDesc.setPrimitive(true);
+    primitiveDesc.setAnnotatorImplementationName(AnnotatorMissingSuper.class.getCanonicalName());
+    ae1.initialize(primitiveDesc, null);
+    ae1.process(ae1.newCAS());
   }
 
   @Test
@@ -1691,36 +1620,35 @@ class AnalysisEngine_implTest {
 
   private void manyDelegatesCommon() throws Exception {
     // Test that an aggregate can be copied preserving all comments and ordering of delegates
-    XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
+    var parsingOptions = new XMLParser.ParsingOptions(false);
     parsingOptions.preserveComments = true;
-    XMLParser parser = UIMAFramework.getXMLParser();
-    File inFile = JUnitExtension
+    var parser = UIMAFramework.getXMLParser();
+    var inFile = JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AggregateWithManyDelegates.xml");
-    AnalysisEngineDescription desc = parser
-            .parseAnalysisEngineDescription(new XMLInputSource(inFile), parsingOptions);
+    var desc = parser.parseAnalysisEngineDescription(new XMLInputSource(inFile), parsingOptions);
 
     // Write out descriptor
-    File cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
-    try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(cloneFile))) {
-      XMLSerializer xmlSerializer = new XMLSerializer(false);
+    var cloneFile = new File(inFile.getParentFile(), "CopyOfAggregateWithManyDelegates.xml");
+    try (var os = new BufferedOutputStream(new FileOutputStream(cloneFile))) {
+      var xmlSerializer = new XMLSerializer(false);
       xmlSerializer.setOutputStream(os);
       // set the amount to a value which will show up if used
       // indent should not be used because we're using a parser mode which preserves
       // comments and ignorable white space.
       // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
       xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-      ContentHandler contentHandler = xmlSerializer.getContentHandler();
+      var contentHandler = xmlSerializer.getContentHandler();
       contentHandler.startDocument();
       desc.toXML(contentHandler, true);
       contentHandler.endDocument();
     }
 
-    String inXml = FileCompare.file2String(inFile);
-    String cloneXml = FileCompare.file2String(cloneFile);
+    var inXml = FileCompare.file2String(inFile);
+    var cloneXml = FileCompare.file2String(cloneFile);
     XmlAssert.assertThat(cloneXml).and(inXml).areIdentical();
     // When building from a source distribution the descriptor may not have
     // appropriate line-ends so compute the length as if always 1 byte.
-    int diff = fileLength(cloneFile) - fileLength(inFile);
+    var diff = fileLength(cloneFile) - fileLength(inFile);
     // One platform inserts a blank line and a final newline, so don't insist on perfection
     // NOTE: This fails with Saxon as it omits the xmlns attribute (why?) and omits the newlines
     // between adjacent comments.
@@ -1743,29 +1671,25 @@ class AnalysisEngine_implTest {
 
   @Test
   void testMultiViewAnnotatorInput() throws Exception {
-    try {
-      AnalysisEngineDescription transAnnotatorDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(
-                      JUnitExtension.getFile("TextAnalysisEngineImplTest/MultiViewAnnotator.xml")));
-      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
-      ae.initialize(transAnnotatorDesc, null);
-      CAS tcas = ae.newCAS();
-      tcas.setDocumentText("this beer is good");
-      assertThat(tcas.getView("_InitialView").getDocumentText()).isEqualTo("this beer is good");
-      ae.process(tcas);
-      assertThat(tcas.getView("GermanDocument").getViewName()).isEqualTo("GermanDocument");
-      assertThat(tcas.getView("GermanDocument").getDocumentText()).isEqualTo("das bier ist gut");
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    var transAnnotatorDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(
+                    JUnitExtension.getFile("TextAnalysisEngineImplTest/MultiViewAnnotator.xml")));
+    var ae = new PrimitiveAnalysisEngine_impl();
+    ae.initialize(transAnnotatorDesc, null);
+    var tcas = ae.newCAS();
+    tcas.setDocumentText("this beer is good");
+    assertThat(tcas.getView("_InitialView").getDocumentText()).isEqualTo("this beer is good");
+    ae.process(tcas);
+    assertThat(tcas.getView("GermanDocument").getViewName()).isEqualTo("GermanDocument");
+    assertThat(tcas.getView("GermanDocument").getDocumentText()).isEqualTo("das bier ist gut");
   }
 
   /*
    * Get size of file asif has a single line-end character
    */
   private int fileLength(File f) throws IOException {
-    int len = 0;
-    BufferedReader rdr = new BufferedReader(new FileReader(f));
+    var len = 0;
+    var rdr = new BufferedReader(new FileReader(f));
     String line;
     while (null != (line = rdr.readLine())) {
       len += line.length() + 1;
@@ -1785,20 +1709,18 @@ class AnalysisEngine_implTest {
   void testAdditionalAEs() throws Exception {
 
     // Create an AE and "freeze" the type-system
-    AnalysisEngineDescription desc = UIMAFramework.getXMLParser()
-            .parseAnalysisEngineDescription(new XMLInputSource(JUnitExtension
-                    .getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
+    var desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
     UIMAFramework.getLogger().setLevel(Level.CONFIG);
     try {
-      AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
+      var ae1 = UIMAFramework.produceAnalysisEngine(desc);
       ae1.newCAS();
 
       // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
       // is also contained in the 1st (UIMA-5058)
       try {
-        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
-                .parseAnalysisEngineDescription(new XMLInputSource(
-                        JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
+        var desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+                JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
         UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
       } catch (Exception e) {
         JUnitExtension.handleException(e);
@@ -1806,9 +1728,8 @@ class AnalysisEngine_implTest {
 
       // Try creating one with at least one different type
       try {
-        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
-                .parseAnalysisEngineDescription(new XMLInputSource(
-                        JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
+        var desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+                JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
         UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
         fail();
       } catch (Exception e) {
@@ -1817,9 +1738,8 @@ class AnalysisEngine_implTest {
 
       // Try creating one with different type-priorities
       try {
-        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
-                .parseAnalysisEngineDescription(new XMLInputSource(
-                        JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
+        var desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+                JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
         UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
         fail();
       } catch (Exception e) {
@@ -1828,9 +1748,8 @@ class AnalysisEngine_implTest {
 
       // Try creating one with different indexes
       try {
-        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
-                .parseAnalysisEngineDescription(new XMLInputSource(
-                        JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
+        var desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(
+                JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
         UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
         fail();
       } catch (Exception e) {

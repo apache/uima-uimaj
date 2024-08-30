@@ -19,10 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import static java.lang.System.setProperty;
-import static org.apache.uima.cas.impl.CASImpl.DISABLE_PROTECT_INDEXES;
-import static org.apache.uima.cas.impl.CASImpl.REPORT_FS_UPDATES_CORRUPTS;
-import static org.apache.uima.cas.impl.CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -45,9 +41,9 @@ import org.junit.jupiter.api.Test;
 
 class IndexCorruptionReportingTest {
 
-  private static String oldReportFsUpdateCorruptsIndex;
-  private static String disableAutoProtectIndexes;
-  private static String exceptionWhenFsUpdateCorruptsIndex;
+  private static boolean oldReportFsUpdateCorruptsIndex;
+  private static boolean disableAutoProtectIndexes;
+  private static boolean exceptionWhenFsUpdateCorruptsIndex;
 
   private TypeSystemDescription typeSystemDescription;
 
@@ -60,16 +56,16 @@ class IndexCorruptionReportingTest {
 
   @BeforeAll
   static void setupClass() {
-    oldReportFsUpdateCorruptsIndex = setProperty(REPORT_FS_UPDATES_CORRUPTS, "true");
-    disableAutoProtectIndexes = setProperty(DISABLE_PROTECT_INDEXES, "true");
-    exceptionWhenFsUpdateCorruptsIndex = setProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
+    oldReportFsUpdateCorruptsIndex = CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = true;
+    disableAutoProtectIndexes = CASImpl.IS_DISABLED_PROTECT_INDEXES = true;
+    exceptionWhenFsUpdateCorruptsIndex = CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = true;
   }
 
   @AfterAll
   static void tearDownClass() {
-    restoreProperty(REPORT_FS_UPDATES_CORRUPTS, oldReportFsUpdateCorruptsIndex);
-    restoreProperty(DISABLE_PROTECT_INDEXES, disableAutoProtectIndexes);
-    restoreProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS, exceptionWhenFsUpdateCorruptsIndex);
+    CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = oldReportFsUpdateCorruptsIndex;
+    CASImpl.IS_DISABLED_PROTECT_INDEXES = disableAutoProtectIndexes;
+    CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = exceptionWhenFsUpdateCorruptsIndex;
   }
 
   @BeforeEach
@@ -93,13 +89,5 @@ class IndexCorruptionReportingTest {
             .extracting(e -> (UIMARuntimeException) e.getCause()) //
             .satisfies(e -> assertThat(e.getMessageKey())
                     .isEqualTo(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE));
-  }
-
-  private static void restoreProperty(String property, String oldValue) {
-    if (oldValue != null) {
-      setProperty(property, oldValue);
-    } else {
-      System.getProperties().remove(property);
-    }
   }
 }

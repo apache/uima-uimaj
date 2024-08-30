@@ -267,6 +267,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
 
+  /**
+   * @deprecated This is no longer used by the framework and was never intended for users to call.
+   *             Use {#link #process(CAS)} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
   @Deprecated(since = "2.3.1")
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,

@@ -208,11 +208,15 @@ public class CASImpl extends AbstractCas_ImplBase
    * having the framework silently recover them. This is enabled by having the framework throw an
    * exception; this is controlled by this global JVM property, which, if defined, causes the
    * framework to throw an exception rather than recover.
-   * 
    */
   public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
 
+  /**
+   * @deprecate Will become package private.
+   * @forRemoval 4.0.0
+   */
   // public for test case use
+  @Deprecated(since = "3.6.0")
   public static boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc
           .getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
 
@@ -226,7 +230,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   public static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
 
-  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX
+  static boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX
           || Misc.getNoValueSystemProperty(REPORT_FS_UPDATES_CORRUPTS);
 
   /**
@@ -240,7 +244,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * 
    * This is overridden if a report is requested or the exception detection is on.
    */
-  private static final boolean IS_DISABLED_PROTECT_INDEXES = Misc
+  static boolean IS_DISABLED_PROTECT_INDEXES = Misc
           .getNoValueSystemProperty(DISABLE_PROTECT_INDEXES) && !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX
           && !IS_THROW_EXCEPTION_CORRUPT_INDEX;
 
@@ -3310,7 +3314,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return
     // skip message if wasn't removed
     // skip message if protected in explicit block
-    IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.size() == 0;
+    IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.isEmpty();
   }
 
   /**
