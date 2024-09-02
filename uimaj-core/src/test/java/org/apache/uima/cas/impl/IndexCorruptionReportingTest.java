@@ -57,7 +57,7 @@ class IndexCorruptionReportingTest {
   @BeforeAll
   static void setupClass() {
     oldReportFsUpdateCorruptsIndex = CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = true;
-    disableAutoProtectIndexes = CASImpl.IS_DISABLED_PROTECT_INDEXES = true;
+    disableAutoProtectIndexes = CASImpl.IS_DISABLED_PROTECT_INDEXES = false;
     exceptionWhenFsUpdateCorruptsIndex = CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = true;
   }
 

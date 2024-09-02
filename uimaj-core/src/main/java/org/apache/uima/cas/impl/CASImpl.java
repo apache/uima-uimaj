@@ -212,7 +212,7 @@ public class CASImpl extends AbstractCas_ImplBase
   public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
 
   /**
-   * @deprecate Will become package private.
+   * @deprecated Will become package private.
    * @forRemoval 4.0.0
    */
   // public for test case use

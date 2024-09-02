@@ -17,10 +17,12 @@
  * under the License.
  */
 
-package org.apache.uima.cas.test;
+package org.apache.uima.cas.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -35,9 +37,8 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.cas.test.AnnotatorInitializer;
+import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,14 +136,8 @@ class IndexComparitorTest {
 
   private FSIndex<FeatureStructure> bagType1Sub1TypeOrder;
 
-  /**
-   * class which sets up
-   */
   private class SetupForIndexCompareTesting implements AnnotatorInitializer {
 
-    /**
-     * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
-     */
     @Override
     public void initTypeSystem(TypeSystemMgr tsm) {
       // Add new types and features.
@@ -245,7 +240,7 @@ class IndexComparitorTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     try {
       cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertThat(cas).isNotNull();
@@ -325,7 +320,7 @@ class IndexComparitorTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     fss = null;
     cas = null;
     ts = null;
@@ -567,18 +562,18 @@ class IndexComparitorTest {
   // note: this test is here because the setup is done
   @Test
   void testProtectIndex() throws Exception {
-    FSIterator<FeatureStructure> it = sortedType1.iterator();
-    FeatureStructure fs = it.get();
-    boolean ok = false;
+    var fs = sortedType1.iterator().get();
+
+    var oldIsReportFsUpdatesCorrputs = CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX;
+    var oldIsThrowExceptionCorruptIndes = CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX;
     try {
-      System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
-      fs.setBooleanValue(type1UsedBoolean, !fs.getBooleanValue(type1UsedBoolean)); // should cause
-                                                                                   // protection
-    } catch (Exception e) {
-      ok = true;
+      CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = true;
+      CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = true;
+      assertThatExceptionOfType(UIMARuntimeException.class).isThrownBy(
+              () -> fs.setBooleanValue(type1UsedBoolean, !fs.getBooleanValue(type1UsedBoolean)));
     } finally {
-      System.clearProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
+      CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = oldIsThrowExceptionCorruptIndes;
+      CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = oldIsReportFsUpdatesCorrputs;
     }
-    assertThat(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok).isTrue();
   }
 }
