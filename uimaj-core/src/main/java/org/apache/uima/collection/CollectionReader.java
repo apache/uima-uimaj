@@ -90,8 +90,9 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    * @return the CAS Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   CasInitializer getCasInitializer();
 
   /**
@@ -103,7 +104,8 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
    *          the CAS Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   void setCasInitializer(CasInitializer aCasInitializer);
 }

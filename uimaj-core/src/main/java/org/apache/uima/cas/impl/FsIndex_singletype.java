@@ -54,13 +54,13 @@ import org.apache.uima.jcas.cas.TOP;
 public abstract class FsIndex_singletype<T extends FeatureStructure> extends AbstractCollection<T>
         implements Comparator<FeatureStructure>, LowLevelIndex<T> {
 
-  private final static String[] indexTypes = new String[] { "Sorted", "Set", "Bag", "DefaultBag" };
+  private static final String[] indexTypes = new String[] { "Sorted", "Set", "Bag", "DefaultBag" };
 
   /**
    * shares equal FSIndexComparatorImpl comparatorForIndexSpecs objects updates and accesses are
    * synchronized
    */
-  private final static WeakHashMap<FSIndexComparatorImpl, WeakReference<FSIndexComparatorImpl>> comparatorCache = new WeakHashMap<>();
+  private static final WeakHashMap<FSIndexComparatorImpl, WeakReference<FSIndexComparatorImpl>> comparatorCache = new WeakHashMap<>();
 
   private final int indexType; // Sorted,
                                // Set,
@@ -69,28 +69,28 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
                                // etc.
 
   // A reference to the low-level CAS.
-  final protected CASImpl casImpl;
+  protected final CASImpl casImpl;
 
   // comparators are over TOP since it's allowed to compare
   // items with types in the superchain of T (up to TOP)
   /**
    * comparator for an index, passed in as an argument to the constructor
    */
-  final protected FSIndexComparatorImpl comparatorForIndexSpecs;
+  protected final FSIndexComparatorImpl comparatorForIndexSpecs;
 
-  final protected Comparator<TOP> comparatorWithID;
-  final protected Comparator<TOP> comparatorWithoutID;
+  protected final Comparator<TOP> comparatorWithID;
+  protected final Comparator<TOP> comparatorWithoutID;
 
   /**
    * comparator (with id) (ignoring typeorder) - used within one type
    */
-  final protected Comparator<TOP> comparatorNoTypeWithID;
+  protected final Comparator<TOP> comparatorNoTypeWithID;
 
   /**
    * comparator (without id) (ignoring typeorder) - used within one type - used for iterator
    * operations where the type is requested to be ignored
    */
-  final protected Comparator<TOP> comparatorNoTypeWithoutID;
+  protected final Comparator<TOP> comparatorNoTypeWithoutID;
 
   public final boolean isAnnotIdx;
 
@@ -99,11 +99,11 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
    * number (indexes can have multiple keys)
    **********************************************************************/
   // For each key, the int code of the type of that key.
-  final private Object[] keys; // either a FeatImpl or a LinearTypeOrder;
+  private final Object[] keys; // either a FeatImpl or a LinearTypeOrder;
 
-  final private int[] keyTypeCodes;
+  private final int[] keyTypeCodes;
   // For each key, the comparison to use.
-  final private boolean[] isReverse; // true = reverse, false = standard
+  private final boolean[] isReverse; // true = reverse, false = standard
 
   // /** true if one of the keys is the linear type order key */
   // private boolean hasLinearTypeOrderKey = false;
@@ -112,7 +112,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> extends Abs
   // private boolean hasEmptyLinearTypeOrderKey = false;
 
   protected final TypeImpl type; // The type of this
-  final private int typeCode;
+  private final int typeCode;
 
   /**
    * common copy on write instance or null; starts out as null Iterator creation initializes (if

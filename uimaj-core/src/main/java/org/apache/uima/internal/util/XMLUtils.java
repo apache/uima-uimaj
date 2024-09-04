@@ -354,17 +354,17 @@ public abstract class XMLUtils {
    * @return the text of <code>aElem</code>
    */
   public static String getText(Element aElem) {
-    StringBuffer buf = new StringBuffer();
+    var buf = new StringBuilder();
     NodeList children = aElem.getChildNodes();
     int len = children.getLength();
     for (int i = 0; i < len; i++) {
       Node curNode = children.item(i);
-      if (curNode instanceof Text) {
-        buf.append(((Text) curNode).getData());
-      } else if (curNode instanceof Element) {
-        buf.append('<').append(((Element) curNode).getTagName()).append('>');
-        buf.append(getText((Element) curNode));
-        buf.append("</").append(((Element) curNode).getTagName()).append('>');
+      if (curNode instanceof Text text) {
+        buf.append(text.getData());
+      } else if (curNode instanceof Element element) {
+        buf.append('<').append(element.getTagName()).append('>');
+        buf.append(getText(element));
+        buf.append("</").append(element.getTagName()).append('>');
       }
     }
 
@@ -383,15 +383,14 @@ public abstract class XMLUtils {
    * @return the text of <code>aElem</code>
    */
   public static String getText(Element aElem, boolean aExpandEnvVarRefs) {
-    StringBuffer buf = new StringBuffer();
+    var buf = new StringBuilder();
     NodeList children = aElem.getChildNodes();
     int len = children.getLength();
     for (int i = 0; i < len; i++) {
       Node curNode = children.item(i);
-      if (curNode instanceof Text) {
-        buf.append(((Text) curNode).getData());
-      } else if (curNode instanceof Element) {
-        Element subElem = (Element) curNode;
+      if (curNode instanceof Text text) {
+        buf.append(text.getData());
+      } else if (curNode instanceof Element subElem) {
         if (aExpandEnvVarRefs && "envVarRef".equals(subElem.getTagName())) {
           String varName = getText(subElem, false);
           String value = System.getProperty(varName);
@@ -399,9 +398,9 @@ public abstract class XMLUtils {
             buf.append(value);
           }
         } else {
-          buf.append('<').append(((Element) curNode).getTagName()).append('>');
-          buf.append(getText((Element) curNode, aExpandEnvVarRefs));
-          buf.append("</").append(((Element) curNode).getTagName()).append('>');
+          buf.append('<').append(subElem.getTagName()).append('>');
+          buf.append(getText(subElem, aExpandEnvVarRefs));
+          buf.append("</").append(subElem.getTagName()).append('>');
         }
       }
     }
@@ -569,10 +568,7 @@ public abstract class XMLUtils {
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING,
               "SAXParserFactory didn't recognize feature " + DISALLOW_DOCTYPE_DECL);
-    } catch (SAXNotSupportedException e) {
-      UIMAFramework.getLogger().log(Level.WARNING,
-              "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
-    } catch (ParserConfigurationException e) {
+    } catch (SAXNotSupportedException | ParserConfigurationException e) {
       UIMAFramework.getLogger().log(Level.WARNING,
               "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
     }
@@ -582,10 +578,7 @@ public abstract class XMLUtils {
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING,
               "SAXParserFactory didn't recognize feature " + LOAD_EXTERNAL_DTD);
-    } catch (SAXNotSupportedException e) {
-      UIMAFramework.getLogger().log(Level.WARNING,
-              "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
-    } catch (ParserConfigurationException e) {
+    } catch (SAXNotSupportedException | ParserConfigurationException e) {
       UIMAFramework.getLogger().log(Level.WARNING,
               "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
     }
@@ -630,8 +623,7 @@ public abstract class XMLUtils {
   }
 
   public static SAXTransformerFactory createSaxTransformerFactory() {
-    SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory
-            .newInstance();
+    var saxTransformerFactory = (SAXTransformerFactory) TransformerFactory.newInstance();
     try {
       saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {

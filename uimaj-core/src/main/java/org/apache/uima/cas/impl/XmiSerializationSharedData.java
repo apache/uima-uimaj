@@ -145,7 +145,7 @@ public class XmiSerializationSharedData {
    * @return the FeatureStructure corresponding to that xmi:id, null if none.
    */
   public TOP getFsForXmiId(int xmiId) {
-    return (TOP) xmiIdToFs.get(xmiId);
+    return xmiIdToFs.get(xmiId);
   }
 
   int getXmiIdAsInt(TOP fs) {
@@ -231,8 +231,7 @@ public class XmiSerializationSharedData {
    *          given Sofa
    */
   public void addOutOfTypeSystemViewMember(String sofaXmiId, String memberXmiId) {
-    List<String> membersList = ootsViewMembers.computeIfAbsent(sofaXmiId,
-            k -> new ArrayList<>());
+    List<String> membersList = ootsViewMembers.computeIfAbsent(sofaXmiId, k -> new ArrayList<>());
     membersList.add(memberXmiId);
   }
 
@@ -349,8 +348,7 @@ public class XmiSerializationSharedData {
    *          xmi:id of the out-of-typesystem element that is the value at the given index
    */
   public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
-    List<XmiArrayElement> list = ootsArrayElements.computeIfAbsent(fsarray,
-            k -> new ArrayList<>());
+    List<XmiArrayElement> list = ootsArrayElements.computeIfAbsent(fsarray, k -> new ArrayList<>());
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
 
@@ -444,7 +442,7 @@ public class XmiSerializationSharedData {
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
-    final public List<XmlAttribute> attributes = new ArrayList<>();
+    public final List<XmlAttribute> attributes = new ArrayList<>();
 
     /**
      * List of XmlElementNameAndContents objects each describing one of the child elements
@@ -553,9 +551,9 @@ public class XmiSerializationSharedData {
    * to an out-of-typesystem FS.
    */
   public static class XmiArrayElement {
-    final public int index;
+    public final int index;
 
-    final public String xmiId;
+    public final String xmiId;
 
     XmiArrayElement(int index, String xmiId) {
       this.index = index;

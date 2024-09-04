@@ -97,8 +97,8 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
     try {
       TypeSystem typeSystem;
-      if (aCAS instanceof JCas) {
-        typeSystem = ((JCas) aCAS).getTypeSystem();
+      if (aCAS instanceof JCas jCas) {
+        typeSystem = jCas.getTypeSystem();
       } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
@@ -184,9 +184,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   public boolean hasNext() throws AnalysisEngineProcessException {
     try {
       return mCollectionReader.hasNext();
-    } catch (CollectionException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
+    } catch (CollectionException | IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
@@ -213,9 +211,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
 
     try {
       mCollectionReader.getNext(view);
-    } catch (CollectionException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (IOException e) {
+    } catch (CollectionException | IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
     return cas;

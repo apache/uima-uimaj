@@ -38,7 +38,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
-public class CasToComparableTextTest {
+class CasToComparableTextTest {
   private static final String TYPE_NAME_AKOF = "akof";
   private static final String FEATURE_BASE_NAME_AKOF_INT = "akofInt";
   private static final String FEATURE_BASE_NAME_AKOF_FS = "akofFs";
@@ -60,7 +60,7 @@ public class CasToComparableTextTest {
   private static final String FEATURE_BASE_NAME_AKOF_STRING_ARRAY = "akofAStr";
 
   @Test
-  public void thatPrimitiveValuesWork() throws Exception {
+  void thatPrimitiveValuesWork() throws Exception {
     TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
             .createTypeSystemDescription();
 
@@ -100,7 +100,7 @@ public class CasToComparableTextTest {
   }
 
   @Test
-  public void thatPrimitiveWork() throws Exception {
+  void thatPrimitiveWork() throws Exception {
     TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
             .createTypeSystemDescription();
 
@@ -173,7 +173,7 @@ public class CasToComparableTextTest {
   }
 
   @Test
-  public void thatReferenceValuesAndArraysWork() throws Exception {
+  void thatReferenceValuesAndArraysWork() throws Exception {
     TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
             .createTypeSystemDescription();
 

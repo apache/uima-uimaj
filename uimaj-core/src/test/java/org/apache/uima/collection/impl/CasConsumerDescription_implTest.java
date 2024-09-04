@@ -46,11 +46,11 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CasConsumerDescription_implTest {
+class CasConsumerDescription_implTest {
   CasConsumerDescription_impl mTestDesc;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     var typeSystem = new TypeSystemDescription_impl();
     var type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
     type1.addFeature("TestFeature", "For Testing Only", TYPE_NAME_STRING);

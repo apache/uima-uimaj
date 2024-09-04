@@ -352,17 +352,17 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // Keys in FixedFlow or LanguageCapabilityFlow must be defined
     FlowConstraints fc = getAnalysisEngineMetaData().getFlowConstraints();
     String[] keys = null;
-    if (fc instanceof FixedFlow) {
-      keys = ((FixedFlow) fc).getFixedFlow();
-    } else if (fc instanceof CapabilityLanguageFlow) {
-      keys = ((CapabilityLanguageFlow) fc).getCapabilityLanguageFlow();
+    if (fc instanceof FixedFlow fixedFlow) {
+      keys = fixedFlow.getFixedFlow();
+    } else if (fc instanceof CapabilityLanguageFlow capabilityLanguageFlow) {
+      keys = capabilityLanguageFlow.getCapabilityLanguageFlow();
     }
     if (keys != null) {
-      for (int i = 0; i < keys.length; i++) {
-        if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(keys[i])) {
+      for (String key : keys) {
+        if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(key)) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.UNDEFINED_KEY_IN_FLOW, new Object[] {
-                      getAnalysisEngineMetaData().getName(), keys[i], getSourceUrlString() });
+                      getAnalysisEngineMetaData().getName(), key, getSourceUrlString() });
         }
       }
     }
@@ -515,9 +515,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         String componentSofaName = sofaMappings[s].getComponentSofaName();
         if (componentSofaName == null) {
           componentSofaName = CAS.NAME_DEFAULT_SOFA;
-        } else if (componentSpec instanceof AnalysisEngineDescription
+        } else if (componentSpec instanceof AnalysisEngineDescription analysisEngineDescription
                 && !CAS.NAME_DEFAULT_SOFA.equals(componentSofaName)
-                && !declaresSofa((AnalysisEngineDescription) componentSpec, componentSofaName)) {
+                && !declaresSofa(analysisEngineDescription, componentSofaName)) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_SOFA,
                   new Object[] { componentKey, componentSofaName,
@@ -696,9 +696,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * 
    * @see MetaDataObject#listAttributes()
    * @deprecated never called anymore - getAdditionalAttributes called instead
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS,
@@ -860,17 +861,15 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
               .entrySet()) {
         String key = entry.getKey();
         keys.add(key);
-        if (entry.getValue() instanceof Import) {
-          Import aeImport = ((Import) entry.getValue());
+        if (entry.getValue() instanceof Import aeImport) {
           // see if we processed this already
           if (entry.getValue().equals(mProcessedImports.get(key))) {
             continue;
           }
           // make sure Import's relative path base is set, to allow for
-          // users who create
-          // new import objects
-          if (aeImport instanceof Import_impl) {
-            ((Import_impl) aeImport).setSourceUrlIfNull(getSourceUrl());
+          // users who create new import objects
+          if (aeImport instanceof Import_impl importImpl) {
+            importImpl.setSourceUrlIfNull(getSourceUrl());
           }
           // locate import target
           URL url = aeImport.findAbsoluteUrl(aResourceManager);

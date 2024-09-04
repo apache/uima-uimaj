@@ -41,7 +41,7 @@ public class UimaAcronym extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.UimaAcronym";
+  public static final String _TypeName = "org.apache.uima.tutorial.UimaAcronym";
 
   /**
    * The Constant typeIndexID.
@@ -74,12 +74,12 @@ public class UimaAcronym extends Annotation {
    * ******************* Feature Offsets *
    *******************/
 
-  public final static String _FeatName_expandedForm = "expandedForm";
+  public static final String _FeatName_expandedForm = "expandedForm";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_expandedForm = TypeSystemImpl.createCallSite(UimaAcronym.class,
+  private static final CallSite _FC_expandedForm = TypeSystemImpl.createCallSite(UimaAcronym.class,
           "expandedForm");
-  private final static MethodHandle _FH_expandedForm = _FC_expandedForm.dynamicInvoker();
+  private static final MethodHandle _FH_expandedForm = _FC_expandedForm.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

@@ -36,7 +36,7 @@ public class UimaMeeting extends Meeting {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.UimaMeeting";
+  public static final String _TypeName = "org.apache.uima.tutorial.UimaMeeting";
 
   /**
    * The Constant typeIndexID.

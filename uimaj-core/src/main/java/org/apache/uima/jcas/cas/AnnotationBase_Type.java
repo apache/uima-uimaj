@@ -33,12 +33,13 @@ import org.apache.uima.jcas.JCasRegistry;
  * for v2 compiling only
  * 
  * @deprecated
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
-  public final static int typeIndexID = -1;
+  public static final int typeIndexID = -1;
 
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.AnnotationBase");
+  public static final boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.AnnotationBase");
 
   final Feature casFeat_sofa;
 

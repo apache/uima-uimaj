@@ -22,7 +22,6 @@ package org.apache.uima.util.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.junit.jupiter.api.Test;
@@ -31,67 +30,59 @@ import org.junit.jupiter.api.Test;
  * Logger implementation test
  * 
  */
-public class LoggingTest {
+class LoggingTest {
   @Test
-  public void testDefaultLoggerCreation() throws Exception {
-    try {
-      // get default logger
-      Logger logger = UIMAFramework.getLogger();
-      assertThat(logger).isNotNull();
+  void testDefaultLoggerCreation() throws Exception {
+    // get default logger
+    Logger logger = UIMAFramework.getLogger();
+    assertThat(logger).isNotNull();
 
-      // create another logger
-      Logger logger1 = UIMAFramework.getLogger();
+    // create another logger
+    Logger logger1 = UIMAFramework.getLogger();
 
-      // both loggers must reference the same instance
-      assertThat(logger1).isEqualTo(logger);
+    // both loggers must reference the same instance
+    assertThat(logger1).isEqualTo(logger);
 
-      // test base logging functions
-      logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+    // test base logging functions
+    logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
 
-      // https://issues.apache.org/jira/browse/UIMA-5719
-      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
-              "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    }
+    // https://issues.apache.org/jira/browse/UIMA-5719
+    logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
+            "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
   }
 
   @Test
-  public void testClassLoggerCreation() throws Exception {
-    try {
-      // get class logger
-      Logger logger = UIMAFramework.getLogger(this.getClass());
-      assertThat(logger).isNotNull();
+  void testClassLoggerCreation() throws Exception {
+    // get class logger
+    Logger logger = UIMAFramework.getLogger(this.getClass());
+    assertThat(logger).isNotNull();
 
-      // create another class logger
-      Logger logger1 = UIMAFramework.getLogger(this.getClass());
+    // create another class logger
+    Logger logger1 = UIMAFramework.getLogger(this.getClass());
 
-      // create default logger
-      Logger defaultLogger = UIMAFramework.getLogger();
+    // create default logger
+    Logger defaultLogger = UIMAFramework.getLogger();
 
-      // both loggers must reference the same instance
-      assertThat(logger1).isEqualTo(logger);
+    // both loggers must reference the same instance
+    assertThat(logger1).isEqualTo(logger);
 
-      // should not be the same
-      assertThat(logger1).isNotSameAs(defaultLogger);
+    // should not be the same
+    assertThat(logger1).isNotSameAs(defaultLogger);
 
-      // test base logging functions
-      logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+    // test base logging functions
+    logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
 
-      // https://issues.apache.org/jira/browse/UIMA-5719
-      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
-              "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
-    }
+    // https://issues.apache.org/jira/browse/UIMA-5719
+    logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
+            "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
   }
 
   @Test
-  public void testSetLevel() throws Exception {
-    Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
-    // org.apache.uima.*
-    try {
+  void testSetLevel() throws Exception {
+    // should affect everything in org.apache.uima.*
+    Logger uimaLogger = UIMAFramework.getLogger();
 
+    try {
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
 
@@ -116,12 +107,8 @@ public class LoggingTest {
       assertThat(logger.isLoggable(Level.INFO)).isTrue();
       assertThat(logger.isLoggable(Level.FINER)).isFalse();
       assertThat(logger.isLoggable(Level.ALL)).isFalse();
-    } catch (Exception ex) {
-      JUnitExtension.handleException(ex);
     } finally {
       uimaLogger.setLevel(Level.INFO); // otherwise, is stuck at INFO, too much logging
     }
-
   }
-
 }

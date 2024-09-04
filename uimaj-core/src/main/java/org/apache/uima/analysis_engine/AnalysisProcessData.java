@@ -38,8 +38,11 @@ import org.apache.uima.util.ProcessTrace;
  * <p>
  * In a loosely-coupled system, the <code>AnalysisProcessData</code> object is transmitted between
  * remote AnalysisEngine services.
+ *
+ * @deprecated Do not use anymore.
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.1")
 public interface AnalysisProcessData {
 
   /**

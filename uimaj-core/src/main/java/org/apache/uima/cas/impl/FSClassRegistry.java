@@ -204,7 +204,7 @@ public abstract class FSClassRegistry {
   // private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas =
   // Collections.synchronizedMap(new IdentityHashMap<>()); // identity: key is classloader
 
-  static private class ErrorReport {
+  private static class ErrorReport {
     final Exception e;
     final boolean doThrow;
 
@@ -215,7 +215,7 @@ public abstract class FSClassRegistry {
   }
 
   // must precede first (static) use
-  static private ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
+  private static ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
 
   // /**
   // * Map (per class loader) from JCas Classes, to all callSites in that JCas class
@@ -1313,19 +1313,19 @@ public abstract class FSClassRegistry {
     // the range of all the features must match the getters
 
     for (Method m : clazz.getDeclaredMethods()) {
-
       String mname = m.getName();
       if (mname.length() <= 3 || !mname.startsWith("get")) {
         continue;
       }
-      String suffix = (mname.length() == 4) ? "" : mname.substring(4); // one char past 1st letter
-                                                                       // of feature
-      String fname = Character.toLowerCase(mname.charAt(3)) + suffix; // entire name, with first
-                                                                      // letter lower cased
+
+      // one char past 1st letter of feature
+      String suffix = (mname.length() == 4) ? "" : mname.substring(4);
+      // entire name, with first letter lower cased
+      String fname = Character.toLowerCase(mname.charAt(3)) + suffix;
       FeatureImpl fi = ti.getFeatureByBaseName(fname);
       if (fi == null) {
-        fname = mname.charAt(3) + suffix; // no feature, but look for one with captialized first
-                                          // letter
+        // no feature, but look for one with capitalized first letter
+        fname = mname.charAt(3) + suffix;
         fi = ti.getFeatureByBaseName(fname);
         if (fi == null) {
           continue;
@@ -1405,8 +1405,8 @@ public abstract class FSClassRegistry {
         FeatureImpl fi = ti.getFeatureByBaseName(featName);
         if (fi == null) {
           add2errors(errorSet,
-                  /**
-                   * JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn''t define
+                  /*
+                   * JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn't define
                    * that field.
                    */
                   new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM,
@@ -1557,7 +1557,7 @@ public abstract class FSClassRegistry {
     // in a PEAR setup, and this cl is not the cl that loaded the JCas class.
     // See method comment getGeneratorsForClassLoader(...) in for why.
     if (!isPear || jcci.isPearOverride(tsi)) {
-      r[aTypeInfo.getCode()] = (FsGenerator3) jcci.generator;
+      r[aTypeInfo.getCode()] = jcci.generator;
     }
 
     for (var subType : aTypeInfo.getDirectSubtypes()) {

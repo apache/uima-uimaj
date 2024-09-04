@@ -59,7 +59,8 @@ public interface CpeCollectionReader extends MetaDataObject {
   /**
    * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from
    * CollectionReader
-   * 
+   *
+   * @deprecated CasInitializer is deprecated
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.6.0")

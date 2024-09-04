@@ -64,18 +64,18 @@ public class CasTypeSystemMapper {
    * Map from source types to target types. Source type code used as index, value is target type or
    * null if the type doesn't exist in the target
    */
-  final private List<TypeImpl> tSrc2Tgt = new ArrayList<>();
+  private final List<TypeImpl> tSrc2Tgt = new ArrayList<>();
 
   /**
    * Map from target types to source types. Source type code used as index, value is target type or
    * null if the type doesn't exist in the target
    */
-  final private List<TypeImpl> tTgt2Src = new ArrayList<>();
+  private final List<TypeImpl> tTgt2Src = new ArrayList<>();
   /**
    * Feature mapping from source to target first key is the src type code, 2nd is the src feature
    * offset (origin 0)
    */
-  final private FeatureImpl[][] fSrc2Tgt;
+  private final FeatureImpl[][] fSrc2Tgt;
 
   // @formatter:off
   /**
@@ -87,9 +87,9 @@ public class CasTypeSystemMapper {
    *   Also, when comparing the slots in the target with a given source
    */
   // @formatter:on
-  final private FeatureImpl[][] fTgt2Src;
+  private final FeatureImpl[][] fTgt2Src;
 
-  final private boolean typeSystemsSame;
+  private final boolean typeSystemsSame;
 
   public boolean isEqual() {
     return typeSystemsSame;
@@ -130,12 +130,8 @@ public class CasTypeSystemMapper {
    * @return Type in other type system, or this one if map is empty
    */
   public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
-    return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
+    return tSrc2Tgt.isEmpty() ? srcType : tSrc2Tgt.get(srcType.getCode());
   }
-
-  // public TypeImpl mapTypeSrc2Tgt(int srcTypeCode) {
-  // return tSrc2Tgt.get(srcTypeCode);
-  // }
 
   /**
    * @param tgtType
@@ -143,11 +139,11 @@ public class CasTypeSystemMapper {
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
-    return (tTgt2Src.size() == 0) ? tgtType : tTgt2Src.get(tgtType.getCode());
+    return tTgt2Src.isEmpty() ? tgtType : tTgt2Src.get(tgtType.getCode());
   }
 
   public TypeImpl mapTypeCodeTgt2Src(int tgtTypeCode) {
-    return (tTgt2Src.size() == 0) ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
+    return tTgt2Src.isEmpty() ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
   }
 
   /**
@@ -208,12 +204,7 @@ public class CasTypeSystemMapper {
   }
 
   /**
-   * return true if no types are filtered
-   * 
-   * @param map
-   * @param tsSrc
-   * @param tsTgt
-   * @return
+   * @return true if no types are filtered
    */
   private boolean addTypes(List<TypeImpl> map, TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
     boolean r = true;

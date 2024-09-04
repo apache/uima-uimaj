@@ -41,7 +41,7 @@ public class PersonTitle extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "example.PersonTitle";
+  public static final String _TypeName = "example.PersonTitle";
 
   /**
    * The Constant typeIndexID.
@@ -74,11 +74,11 @@ public class PersonTitle extends Annotation {
    * ******************* Feature Offsets *
    *******************/
 
-  public final static String _FeatName_Kind = "Kind";
+  public static final String _FeatName_Kind = "Kind";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_Kind = TypeSystemImpl.createCallSite(PersonTitle.class, "Kind");
-  private final static MethodHandle _FH_Kind = _FC_Kind.dynamicInvoker();
+  private static final CallSite _FC_Kind = TypeSystemImpl.createCallSite(PersonTitle.class, "Kind");
+  private static final MethodHandle _FH_Kind = _FC_Kind.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

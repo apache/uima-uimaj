@@ -74,19 +74,19 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
 
   /** The Constant XMLNS_PART. */
   // for explanation of this strange code, see JDK bug 6447475 found by findbugs
-  public final static String XMLNS_PART;
+  public static final String XMLNS_PART;
   static {
     XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\"";
   }
 
   /** The Constant COMMON_HEADER. */
-  public final static String COMMON_HEADER;
+  public static final String COMMON_HEADER;
   static {
     COMMON_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<{2} " + XMLNS_PART + ">\n";
   }
 
   /** The Constant COMMON_NDVV. */
-  public final static String COMMON_NDVV;
+  public static final String COMMON_NDVV;
   static {
     COMMON_NDVV = "    <name>{0}</name>\n" // 1 = name of component (e.g. type name, type priority
                                            // name, ae descriptor name)
@@ -95,7 +95,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   }
 
   /** The Constant COMMON_FULL_DESCRIPTOR. */
-  public final static String COMMON_FULL_DESCRIPTOR;
+  public static final String COMMON_FULL_DESCRIPTOR;
   static {
     COMMON_FULL_DESCRIPTOR = COMMON_HEADER
             + "  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n" + "{5}" // 5

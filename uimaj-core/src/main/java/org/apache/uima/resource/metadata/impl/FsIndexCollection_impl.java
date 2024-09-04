@@ -168,7 +168,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexCollection",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexCollection",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
               new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
               new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),

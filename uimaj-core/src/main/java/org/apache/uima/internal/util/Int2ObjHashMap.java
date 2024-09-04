@@ -102,7 +102,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support
 
   // private boolean secondTimeShrinkable = false;
 
-  final private Class<T> componentType; // needed to make new instances of the value array
+  private final Class<T> componentType; // needed to make new instances of the value array
 
   // /** set to the first found_removed when searching */
   // private int found_removed;

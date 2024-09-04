@@ -52,29 +52,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AnnotationPredicatesTest {
+class AnnotationPredicatesTest {
   private static CAS cas;
   private SoftAssertions softly;
   private List<TestCase> testCases = union(NON_ZERO_WIDTH_TEST_CASES, ZERO_WIDTH_TEST_CASES);
 
   @BeforeAll
-  public static void setupClass() throws Exception {
+  static void setupClass() throws Exception {
     cas = CasCreationUtils.createCas();
   }
 
   @BeforeEach
-  public void setup() throws Exception {
+  void setup() throws Exception {
     cas.reset();
     softly = new SoftAssertions();
   }
 
   @AfterEach
-  public void teardown() throws Exception {
+  void teardown() {
     softly.assertAll();
   }
 
   @Test
-  public void thatCoveringWorks() throws Exception {
+  void thatCoveringWorks() {
     asList(AnnotationPredicates::covering,
             toRelativePositionPredicate1(cas, AnnotationPredicates::covering),
             toRelativePositionPredicate2(cas, AnnotationPredicates::covering))
@@ -82,12 +82,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticCoveringWorks() throws Exception {
+  void thatAxiomaticCoveringWorks() {
     assertPosition(softly, COVERING, AxiomaticAnnotationPredicates::covering, testCases);
   }
 
   @Test
-  public void thatCoveredByWorks() throws Exception {
+  void thatCoveredByWorks() {
     asList(AnnotationPredicates::coveredBy,
             toRelativePositionPredicate1(cas, AnnotationPredicates::coveredBy),
             toRelativePositionPredicate2(cas, AnnotationPredicates::coveredBy))
@@ -95,12 +95,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticCoveredByWorks() throws Exception {
+  void thatAxiomaticCoveredByWorks() {
     assertPosition(softly, COVERED_BY, AxiomaticAnnotationPredicates::coveredBy, testCases);
   }
 
   @Test
-  public void thatColocatedWorks() throws Exception {
+  void thatColocatedWorks() {
     asList(AnnotationPredicates::colocated,
             toRelativePositionPredicate1(cas, AnnotationPredicates::colocated),
             toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::colocated),
@@ -110,12 +110,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticColocatedWorks() throws Exception {
+  void thatAxiomaticColocatedWorks() {
     assertPosition(softly, COLOCATED, AxiomaticAnnotationPredicates::colocated, testCases);
   }
 
   @Test
-  public void thatOverlappingAtBeginWorks() throws Exception {
+  void thatOverlappingAtBeginWorks() {
     asList(AnnotationPredicates::overlappingAtBegin,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtBegin),
             toRelativePositionPredicate2(cas, AnnotationPredicates::overlappingAtBegin))
@@ -124,13 +124,13 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticOverlappingAtBeginWorks() throws Exception {
+  void thatAxiomaticOverlappingAtBeginWorks() {
     assertPosition(softly, OVERLAPPING_AT_BEGIN, AxiomaticAnnotationPredicates::overlappingAtBegin,
             testCases);
   }
 
   @Test
-  public void thatOverlappingAtEndWorks() throws Exception {
+  void thatOverlappingAtEndWorks() {
     asList(AnnotationPredicates::overlappingAtEnd,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlappingAtEnd),
             toRelativePositionPredicate2(cas, AnnotationPredicates::overlappingAtEnd)).forEach(
@@ -138,13 +138,13 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticOverlappingAtEndWorks() throws Exception {
+  void thatAxiomaticOverlappingAtEndWorks() {
     assertPosition(softly, OVERLAPPING_AT_END, AxiomaticAnnotationPredicates::overlappingAtEnd,
             testCases);
   }
 
   @Test
-  public void thatOverlappingWorks() throws Exception {
+  void thatOverlappingWorks() {
     asList(AnnotationPredicates::overlapping,
             toRelativePositionPredicate1(cas, AnnotationPredicates::overlapping),
             toRelativePositionPredicate1Inverse(cas, AnnotationPredicates::overlapping),
@@ -154,12 +154,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticOverlappingWorks() throws Exception {
+  void thatAxiomaticOverlappingWorks() {
     assertPosition(softly, OVERLAPPING, AxiomaticAnnotationPredicates::overlapping, testCases);
   }
 
   @Test
-  public void thatPrecedingWorks() throws Exception {
+  void thatPrecedingWorks() {
     asList(AnnotationPredicates::preceding,
             toRelativePositionPredicate1(cas, AnnotationPredicates::preceding),
             toRelativePositionPredicate2(cas, AnnotationPredicates::preceding))
@@ -167,12 +167,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticPrecedingWorks() throws Exception {
+  void thatAxiomaticPrecedingWorks() {
     assertPosition(softly, PRECEDING, AxiomaticAnnotationPredicates::preceding, testCases);
   }
 
   @Test
-  public void thatFollowingWorks() throws Exception {
+  void thatFollowingWorks() {
     asList(AnnotationPredicates::following,
             toRelativePositionPredicate1(cas, AnnotationPredicates::following),
             toRelativePositionPredicate2(cas, AnnotationPredicates::following))
@@ -180,12 +180,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticFollowingWorks() throws Exception {
+  void thatAxiomaticFollowingWorks() {
     assertPosition(softly, FOLLOWING, AxiomaticAnnotationPredicates::following, testCases);
   }
 
   @Test
-  public void thatBeginningWithWorks() throws Exception {
+  void thatBeginningWithWorks() {
     asList(AnnotationPredicates::beginningWith,
             toRelativePositionPredicate1(cas, AnnotationPredicates::beginningWith),
             toRelativePositionPredicate2(cas, AnnotationPredicates::beginningWith)).forEach(
@@ -193,12 +193,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticBeginningWithWorks() throws Exception {
+  void thatAxiomaticBeginningWithWorks() {
     assertPosition(softly, BEGINNING_WITH, AxiomaticAnnotationPredicates::beginningWith, testCases);
   }
 
   @Test
-  public void thatEndingWithWorks() throws Exception {
+  void thatEndingWithWorks() {
     asList(AnnotationPredicates::endingWith,
             toRelativePositionPredicate1(cas, AnnotationPredicates::endingWith),
             toRelativePositionPredicate2(cas, AnnotationPredicates::endingWith)).forEach(
@@ -206,12 +206,12 @@ public class AnnotationPredicatesTest {
   }
 
   @Test
-  public void thatAxiomaticEndingWithWorks() throws Exception {
+  void thatAxiomaticEndingWithWorks() {
     assertPosition(softly, ENDING_WITH, AxiomaticAnnotationPredicates::endingWith, testCases);
   }
 
   @SafeVarargs
-  public static <T> List<T> union(List<T>... aLists) {
+  static <T> List<T> union(List<T>... aLists) {
     List<T> all = new ArrayList<>();
     for (List<T> list : aLists) {
       all.addAll(list);

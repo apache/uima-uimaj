@@ -109,7 +109,7 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexBuildItem",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexBuildItem",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name", "name"),
               new PropertyXmlInfo("indexRule", null), new PropertyXmlInfo("filter", null), });
 }

@@ -19,72 +19,75 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.apache.uima.util.CasCreationUtils.createCas;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
-import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class IndexCorruptionReportingTest {
+class IndexCorruptionReportingTest {
 
-  static {
-    System.setProperty("uima.report_fs_update_corrupts_index", "true");
-    // System.setProperty("uima.disable_auto_protect_indexes", "false");
-    // System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
-  }
+  private static boolean oldReportFsUpdateCorruptsIndex;
+  private static boolean disableAutoProtectIndexes;
+  private static boolean exceptionWhenFsUpdateCorruptsIndex;
 
   private TypeSystemDescription typeSystemDescription;
 
-  private TypeSystem ts;
-
   private FsIndexDescription[] indexes;
 
-  private CASImpl cas;
+  private CAS cas;
 
   File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    typeSystemDescription = UIMAFramework.getXMLParser()
-            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
-    indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-            .getFsIndexes();
-    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(),
-            indexes);
-    ts = cas.getTypeSystem();
+  @BeforeAll
+  static void setupClass() {
+    oldReportFsUpdateCorruptsIndex = CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = true;
+    disableAutoProtectIndexes = CASImpl.IS_DISABLED_PROTECT_INDEXES = false;
+    exceptionWhenFsUpdateCorruptsIndex = CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = true;
   }
 
-  private FsIndex_bag<TOP> cbi() {
-    FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
-    return new FsIndex_bag<>(cas, ts.getTopType(), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
+  @AfterAll
+  static void tearDownClass() {
+    CASImpl.IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = oldReportFsUpdateCorruptsIndex;
+    CASImpl.IS_DISABLED_PROTECT_INDEXES = disableAutoProtectIndexes;
+    CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = exceptionWhenFsUpdateCorruptsIndex;
+  }
+
+  @BeforeEach
+  void setUp() throws Exception {
+    var xmlParser = UIMAFramework.getXMLParser();
+    typeSystemDescription = xmlParser
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile1));
+    indexes = xmlParser.parseFsIndexCollection(new XMLInputSource(indexesFile)).getFsIndexes();
+    cas = createCas(typeSystemDescription, new TypePriorities_impl(), indexes);
   }
 
   @Test
-  public void testReport() throws Exception {
-    JCas jcas = cas.getJCas();
-    Annotation a = new Annotation(jcas, 0, 10);
-    a.addToIndexes();
-    try {
-      a.setBegin(2);
-    } catch (UIMARuntimeException e) {
-      assertTrue(e.getMessageKey().equals(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE));
-    }
-  }
+  void testReport() throws Exception {
+    var jcas = cas.getJCas();
+    var ann = new Annotation(jcas, 0, 10);
+    ann.addToIndexes();
 
+    assertThatExceptionOfType(RuntimeException.class) //
+            .isThrownBy(() -> ann.setBegin(2)) //
+            .withCauseInstanceOf(UIMARuntimeException.class) //
+            .extracting(e -> (UIMARuntimeException) e.getCause()) //
+            .satisfies(e -> assertThat(e.getMessageKey())
+                    .isEqualTo(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE));
+  }
 }

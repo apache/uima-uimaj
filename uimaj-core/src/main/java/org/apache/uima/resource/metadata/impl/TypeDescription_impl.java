@@ -31,9 +31,9 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
 
   static final long serialVersionUID = 7505580429981863281L;
 
-  static final private FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
+  private static final FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
 
-  static final private AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
+  private static final AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
 
   /** Name of this Type. */
   private String mName;
@@ -158,7 +158,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
           new PropertyXmlInfo[] { //
               new PropertyXmlInfo("name"), //
               new PropertyXmlInfo("description", false), //

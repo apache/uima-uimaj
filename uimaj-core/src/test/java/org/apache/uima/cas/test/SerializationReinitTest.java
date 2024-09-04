@@ -622,7 +622,7 @@ public class SerializationReinitTest {
   }
 
   @Test
-  public void testDeltaBinaryShortLongArrayMods() throws Exception {
+  void testDeltaBinaryShortLongArrayMods() throws Exception {
     CASImpl cas2 = (CASImpl) initCAS();
     CASImpl cas3 = (CASImpl) initCAS();
 

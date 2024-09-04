@@ -19,8 +19,8 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -81,7 +81,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class SofaTest {
+class SofaTest {
 
   private CASMgr casMgr;
 
@@ -97,7 +97,7 @@ public class SofaTest {
 
   // private Feature annotSofaFeat;
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     try {
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
@@ -108,7 +108,7 @@ public class SofaTest {
       annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       // annotSofaFeat = annotationType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA);
       docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
-      assertTrue(annotationType != null);
+      assertThat(annotationType).isNotNull();
       crossType = tsa.addType("sofa.test.CrossAnnotation", annotationType);
       otherFeat = tsa.addFeature("otherAnnotation", crossType, annotationType);
       // Commit the type system.
@@ -128,8 +128,8 @@ public class SofaTest {
       irm.commit();
 
       cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
-      assertTrue(cas.getSofa() == null);
-      assertTrue(cas.getViewName().equals(CAS.NAME_DEFAULT_SOFA));
+      assertThat(cas.getSofa()).isNull();
+      assertThat(cas.getViewName()).isEqualTo(CAS.NAME_DEFAULT_SOFA);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -149,7 +149,7 @@ public class SofaTest {
    * Test driver.
    */
   @Test
-  public void testMain() throws Exception {
+  void testMain() throws Exception {
     try {
 
       // Create a Sofa (using old APIs for now)
@@ -157,7 +157,7 @@ public class SofaTest {
       id.setSofaID("EnglishDocument");
       SofaFS es = cas.createSofa(id, "text");
       // Initial View is #1!!!
-      assertTrue(2 == es.getSofaRef());
+      assertThat(es.getSofaRef()).isEqualTo(2);
 
       // Set the document text
       es.setLocalSofaData("this beer is good");
@@ -190,7 +190,7 @@ public class SofaTest {
       // Delete the generated file.
       File xcasFile = new File(xcasFilename);
       if (xcasFile.exists()) {
-        assertTrue(xcasFile.delete());
+        assertThat(xcasFile.delete()).isTrue();
       }
 
       // Add a new Sofa
@@ -198,11 +198,11 @@ public class SofaTest {
       // gid.setSofaID("GermanDocument");
       // SofaFS gs = ((CASImpl)cas).createSofa(gid,"text");
       CAS gerTcas = cas.createView("GermanDocument");
-      assertTrue(gerTcas.getViewName().equals("GermanDocument"));
+      assertThat(gerTcas.getViewName()).isEqualTo("GermanDocument");
       SofaFS gs = gerTcas.getSofa();
 
-      assertTrue(gs != null);
-      assertTrue(3 == gs.getSofaRef());
+      assertThat(gs).isNotNull();
+      assertThat(gs.getSofaRef()).isEqualTo(3);
 
       // Set the document text
       // gs.setLocalSofaData("das bier ist gut");
@@ -217,10 +217,10 @@ public class SofaTest {
       // fid.setSofaID("FrenchDocument");
       // SofaFS fs = ((CASImpl)cas).createSofa(fid, "text");
       CAS frT = cas.createView("FrenchDocument");
-      assertTrue(frT.getViewName().equals("FrenchDocument"));
+      assertThat(frT.getViewName()).isEqualTo("FrenchDocument");
       SofaFS fs = frT.getSofa();
-      assertTrue(fs != null);
-      assertTrue(4 == fs.getSofaRef());
+      assertThat(fs).isNotNull();
+      assertThat(fs.getSofaRef()).isEqualTo(4);
 
       // Test multiple Sofas across blob serialization
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
@@ -231,7 +231,7 @@ public class SofaTest {
 
       // Open TCas views of some Sofas
       CAS engTcas = cas.getView(es);
-      assertTrue(engTcas.getViewName().equals("EnglishDocument"));
+      assertThat(engTcas.getViewName()).isEqualTo("EnglishDocument");
       CAS frTcas = cas.getView("FrenchDocument");
 
       // Set the document text off SofaFS after the CAS view exists
@@ -250,8 +250,8 @@ public class SofaTest {
       StringTokenizer fst = new StringTokenizer(frText);
 
       while (est.hasMoreTokens()) {
-        assertTrue(gst.hasMoreTokens());
-        assertTrue(fst.hasMoreTokens());
+        assertThat(gst.hasMoreTokens()).isTrue();
+        assertThat(fst.hasMoreTokens()).isTrue();
 
         String eTok = est.nextToken();
         int engBegin = engText.indexOf(eTok, engEnd);
@@ -274,9 +274,9 @@ public class SofaTest {
         try {
           frTcas.getIndexRepository().addFS(engAnnot);
         } catch (Exception e) {
-          assertTrue(e instanceof CASRuntimeException);
+          assertThat(e instanceof CASRuntimeException).isTrue();
           CASRuntimeException c = (CASRuntimeException) e;
-          assertTrue("ANNOTATION_IN_WRONG_INDEX".equals(c.getMessageKey()));
+          assertThat(c.getMessageKey()).isEqualTo("ANNOTATION_IN_WRONG_INDEX");
         }
 
         AnnotationFS frAnnot = frTcas.createAnnotation(annotationType, frBegin, frEnd);
@@ -301,12 +301,12 @@ public class SofaTest {
       FSIndex<AnnotationFS> gerIndex = gerTcas.getAnnotationIndex();
       FSIndex<AnnotationFS> frIndex = frTcas.getAnnotationIndex();
       // assertTrue(sofaIndex.size() == 3); // 3 sofas
-      assertTrue(numSofas == 3);
-      assertTrue(engIndex.size() == 5); // 4 annots plus
+      assertThat(numSofas).isEqualTo(3);
+      assertThat(engIndex.size()).isEqualTo(5); // 4 annots plus
       // documentAnnotation
-      assertTrue(gerIndex.size() == 5); // 4 annots plus
+      assertThat(gerIndex.size()).isEqualTo(5); // 4 annots plus
       // documentAnnotation
-      assertTrue(frIndex.size() == 5); // 4 annots plus
+      assertThat(frIndex.size()).isEqualTo(5); // 4 annots plus
       // documentAnnotation
 
       // Test that the annotations are of the correct types
@@ -316,9 +316,9 @@ public class SofaTest {
       AnnotationFS engAnnot = engIt.get();
       AnnotationFS gerAnnot = gerIt.get();
       AnnotationFS frAnnot = frIt.get();
-      assertTrue(docAnnotationType.getName().equals(engAnnot.getType().getName()));
-      assertTrue(docAnnotationType.getName().equals(gerAnnot.getType().getName()));
-      assertTrue(docAnnotationType.getName().equals(frAnnot.getType().getName()));
+      assertThat(engAnnot.getType().getName()).isEqualTo(docAnnotationType.getName());
+      assertThat(gerAnnot.getType().getName()).isEqualTo(docAnnotationType.getName());
+      assertThat(frAnnot.getType().getName()).isEqualTo(docAnnotationType.getName());
 
       engIt.moveToNext();
       gerIt.moveToNext();
@@ -326,20 +326,20 @@ public class SofaTest {
       engAnnot = engIt.get();
       gerAnnot = gerIt.get();
       frAnnot = frIt.get();
-      assertTrue(annotationType.getName().equals(engAnnot.getType().getName()));
-      assertTrue(("this").equals(engAnnot.getCoveredText()));
-      assertTrue(annotationType.getName().equals(frAnnot.getType().getName()));
-      assertTrue(("cette").equals(frAnnot.getCoveredText()));
-      assertTrue(crossType.getName().equals(gerAnnot.getType().getName()));
-      assertTrue(("das").equals(gerAnnot.getCoveredText()));
+      assertThat(engAnnot.getType().getName()).isEqualTo(annotationType.getName());
+      assertThat(engAnnot.getCoveredText()).isEqualTo(("this"));
+      assertThat(frAnnot.getType().getName()).isEqualTo(annotationType.getName());
+      assertThat(frAnnot.getCoveredText()).isEqualTo(("cette"));
+      assertThat(gerAnnot.getType().getName()).isEqualTo(crossType.getName());
+      assertThat(gerAnnot.getCoveredText()).isEqualTo(("das"));
 
       // Test that the other annotation feature of cross annotations works
       AnnotationFS crossAnnot = (AnnotationFS) gerAnnot.getFeatureValue(otherFeat);
-      assertTrue(annotationType.getName().equals(crossAnnot.getType().getName()));
-      assertTrue(("this").equals(crossAnnot.getCoveredText()));
+      assertThat(crossAnnot.getType().getName()).isEqualTo(annotationType.getName());
+      assertThat(crossAnnot.getCoveredText()).isEqualTo(("this"));
 
       // Test equals method for same annotation obtained through different views
-      assertEquals(engAnnot, crossAnnot);
+      assertThat(crossAnnot).isEqualTo(engAnnot);
 
       // Test that annotations accessed from a reference in the base CAS
       // work correctly
@@ -348,11 +348,11 @@ public class SofaTest {
       anArray.set(1, frAnnot);
       anArray.set(2, gerAnnot);
       AnnotationFS tstAnnot = (AnnotationFS) anArray.get(0);
-      assertTrue(("this").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("this"));
       tstAnnot = (AnnotationFS) anArray.get(1);
-      assertTrue(("cette").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("cette"));
       tstAnnot = (AnnotationFS) anArray.get(2);
-      assertTrue(("das").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("das"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -363,7 +363,7 @@ public class SofaTest {
    * Test stream access to Sofa Data.
    */
   @Test
-  public void testSofaDataStream() throws Exception {
+  void testSofaDataStream() throws Exception {
     try {
 
       // Create Sofas
@@ -489,97 +489,98 @@ public class SofaTest {
       // read sofa data
       // InputStream is = strSofa.getSofaDataStream();
       InputStream is = stringView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       byte[] dest = new byte[1];
       StringBuffer buf = new StringBuffer();
       while (is.read(dest) != -1) {
         buf.append((char) dest[0]);
       }
-      assertTrue(buf.toString().equals("this beer is good"));
+      assertThat(buf.toString()).isEqualTo("this beer is good");
 
       dest = new byte[4];
       // is = intarraySofaFS.getSofaDataStream();
       is.close();
       is = intArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       int i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
+        assertThat(intArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getInt());
       }
 
       is.close();
       is = stringArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
       i = 0;
       while (br.ready()) {
-        assertTrue(stringArrayFS.get(i++).equals(br.readLine()));
+        assertThat(br.readLine()).isEqualTo(stringArrayFS.get(i++));
       }
 
       // is = floatarraySofaFS.getSofaDataStream();
       is.close();
       is = floatArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getFloat() == floatArrayFS.get(i++));
+        assertThat(floatArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getFloat(), offset(0.0f));
       }
 
       dest = new byte[2];
       // is = shortarraySofaFS.getSofaDataStream();
       is.close();
       is = shortArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getShort() == shortArrayFS.get(i++));
+        assertThat(shortArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getShort());
       }
 
       dest = new byte[1];
       // is = bytearraySofaFS.getSofaDataStream();
       is.close();
       is = byteArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).get() == byteArrayFS.get(i++));
+        assertThat(byteArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).get());
       }
 
       dest = new byte[8];
       // is = longarraySofaFS.getSofaDataStream();
       is.close();
       is = longArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getLong() == longArrayFS.get(i++));
+        assertThat(longArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getLong());
       }
 
       // is = doublearraySofaFS.getSofaDataStream();
       is.close();
       is = doubleArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       i = 0;
       while (is.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getDouble() == doubleArrayFS.get(i++));
+        assertThat(doubleArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getDouble(),
+                offset(0.0));
       }
 
       dest = new byte[1];
       is.close();
       // is = remoteSofa.getSofaDataStream();
       is = remoteView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       buf = new StringBuffer();
       while (is.read(dest) != -1) {
         buf.append((char) dest[0]);
       }
-      assertTrue(buf.toString().equals("this beer is good"));
+      assertThat(buf.toString()).isEqualTo("this beer is good");
       is.close();
 
       // Delete the generated file.
       File xcasFile = new File(sofaFileName);
       if (xcasFile.exists()) {
-        assertTrue(xcasFile.delete());
+        assertThat(xcasFile.delete()).isTrue();
       }
 
     } catch (Exception e) {
@@ -588,38 +589,38 @@ public class SofaTest {
   }
 
   @Test
-  public void testSetSofaDataString() {
+  void testSetSofaDataString() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
     CAS testView = cas.createView("TestView");
     testView.setSofaDataString(TEST_TEXT, TEST_MIME);
-    assertEquals(TEST_TEXT, testView.getSofa().getLocalStringData());
-    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
-    assertEquals(TEST_TEXT, testView.getSofaDataString());
+    assertThat(testView.getSofa().getLocalStringData()).isEqualTo(TEST_TEXT);
+    assertThat(testView.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
+    assertThat(testView.getSofaDataString()).isEqualTo(TEST_TEXT);
   }
 
   @Test
-  public void testSetSofaDataStringOnInitialView() {
+  void testSetSofaDataStringOnInitialView() {
     final String TEST_TEXT = "this is a test";
     final String TEST_MIME = "text/plain";
     cas.setSofaDataString(TEST_TEXT, TEST_MIME);
-    assertEquals(TEST_TEXT, cas.getSofa().getLocalStringData());
-    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
-    assertEquals(TEST_TEXT, cas.getSofaDataString());
+    assertThat(cas.getSofa().getLocalStringData()).isEqualTo(TEST_TEXT);
+    assertThat(cas.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
+    assertThat(cas.getSofaDataString()).isEqualTo(TEST_TEXT);
   }
 
   @Test
-  public void testSetSofaDataURI() {
+  void testSetSofaDataURI() {
     final String TEST_URI = "file:/test";
     final String TEST_MIME = "text/plain";
     CAS testView = cas.createView("TestView");
     testView.setSofaDataURI(TEST_URI, TEST_MIME);
-    assertEquals(TEST_URI, testView.getSofa().getSofaURI());
-    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+    assertThat(testView.getSofa().getSofaURI()).isEqualTo(TEST_URI);
+    assertThat(testView.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
   }
 
   @Test
-  public void testSetSofaDataURIonInitialView() throws Exception {
+  void testSetSofaDataURIonInitialView() throws Exception {
     // This test uses platform encoding both for reading and writing.
     String someText = "remote text.";
     String someTextFile = "./someUriText.txt";
@@ -630,11 +631,11 @@ public class SofaTest {
     final String TEST_URI = "file:" + someTextFile;
     final String TEST_MIME = "text/plain";
     cas.setSofaDataURI(TEST_URI, TEST_MIME);
-    assertEquals(TEST_URI, cas.getSofa().getSofaURI());
-    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
+    assertThat(cas.getSofa().getSofaURI()).isEqualTo(TEST_URI);
+    assertThat(cas.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
 
     InputStream is = cas.getSofaDataStream();
-    assertTrue(is != null);
+    assertThat(is).isNotNull();
 
     // This obviously can't work on all platforms
     // byte[] dest = new byte[1];
@@ -648,63 +649,63 @@ public class SofaTest {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     String textFromFile = reader.readLine();
     is.close();
-    assertTrue(textFromFile.equals(someText));
+    assertThat(someText).isEqualTo(textFromFile);
     File testFile = new File(someTextFile);
-    assertTrue(testFile.delete());
+    assertThat(testFile.delete()).isTrue();
   }
 
   @Test
-  public void testSetSofaDataArray() {
+  void testSetSofaDataArray() {
     final String TEST_MIME = "text/plain";
     CAS testView = cas.createView("TestView");
     ByteArrayFS sofaDataArray = testView.createByteArrayFS(2);
     sofaDataArray.set(0, (byte) 0);
     sofaDataArray.set(1, (byte) 42);
     testView.setSofaDataArray(sofaDataArray, TEST_MIME);
-    assertEquals(sofaDataArray, testView.getSofa().getLocalFSData());
-    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+    assertThat(testView.getSofa().getLocalFSData()).isEqualTo(sofaDataArray);
+    assertThat(testView.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
   }
 
   @Test
-  public void testSetSofaDataArrayOnInitialView() {
+  void testSetSofaDataArrayOnInitialView() {
     final String TEST_MIME = "text/plain";
     ByteArrayFS sofaDataArray = cas.createByteArrayFS(2);
     sofaDataArray.set(0, (byte) 0);
     sofaDataArray.set(1, (byte) 42);
     cas.setSofaDataArray(sofaDataArray, TEST_MIME);
-    assertEquals(sofaDataArray, cas.getSofa().getLocalFSData());
-    assertEquals(TEST_MIME, cas.getSofa().getSofaMime());
+    assertThat(cas.getSofa().getLocalFSData()).isEqualTo(sofaDataArray);
+    assertThat(cas.getSofa().getSofaMime()).isEqualTo(TEST_MIME);
   }
 
   @Test
-  public void testReset() {
+  void testReset() {
     cas.reset();
     cas.setDocumentText("setDocumentText creates the _InitialView Sofa");
     CAS testView = cas.createView("TestView");
     testView.setDocumentText("create a 2nd Sofa");
-    assertTrue(cas.getViewName().equals("_InitialView"));
-    assertTrue(testView.getViewName().equals("TestView"));
+    assertThat(cas.getViewName()).isEqualTo("_InitialView");
+    assertThat(testView.getViewName()).isEqualTo("TestView");
 
     cas.reset();
     SofaID_impl id = new SofaID_impl();
     id.setSofaID("TestView");
     SofaFS testSofa = cas.createSofa(id, "text");
     CAS newView = cas.getView(testSofa);
-    assertTrue(newView.getViewName().equals("TestView"));
+    assertThat(newView.getViewName()).isEqualTo("TestView");
   }
 
   private void checkViewsExist(Iterator it, AbstractCas... cas_s) {
     List<AbstractCas> casList = Arrays.asList(cas_s);
     int i = 0;
     while (it.hasNext()) {
-      assertTrue(casList.contains(it.next()));
+      assertThat(casList.contains(it.next())).isTrue();
       i++;
     }
-    assertEquals(i, cas_s.length);
+    assertThat(cas_s.length).isEqualTo(i);
   }
 
   @Test
-  public void testGetViewIterator() throws Exception {
+  void testGetViewIterator() throws Exception {
     cas.reset();
     CAS view1 = cas.createView("View1");
     CAS view2 = cas.createView("View2");

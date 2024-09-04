@@ -35,9 +35,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 public class MetaDataObjectSerializer_json implements MetaDataObject_impl.Serializer {
 
-  final private JsonContentHandlerJacksonWrapper jch;
-  final private JsonGenerator jg;
-  final private boolean isFormattedOutput;
+  private final JsonContentHandlerJacksonWrapper jch;
+  private final JsonGenerator jg;
+  private final boolean isFormattedOutput;
 
   public MetaDataObjectSerializer_json(JsonContentHandlerJacksonWrapper jch) {
     this.jch = jch;

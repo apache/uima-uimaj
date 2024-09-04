@@ -64,76 +64,67 @@ import org.xml.sax.XMLReader;
 
 /**
  * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.
- * 
  */
-public class XCasToCasDataSaxHandlerTest {
+class XCasToCasDataSaxHandlerTest {
   @Test
-  public void testParse() throws Exception {
-    try {
-      CasData casData = new CasDataImpl();
-      XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
+  void testParse() throws Exception {
+    var casData = new CasDataImpl();
+    var handler = new XCasToCasDataSaxHandler(casData);
 
-      SAXParserFactory fact = SAXParserFactory.newInstance();
-      SAXParser parser = fact.newSAXParser();
-      XMLReader xmlReader = parser.getXMLReader();
-      xmlReader.setContentHandler(handler);
-      xmlReader.parse(new InputSource(getClass().getResourceAsStream("xcastest.xml")));
+    var fact = SAXParserFactory.newInstance();
+    var parser = fact.newSAXParser();
 
-      // System.out.println(casData);
-      Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
-      boolean foundCrawlUrl = false;
-      while (fsIter.hasNext()) {
-        FeatureStructure fs = fsIter.next();
-        if ("Crawl_colon_URL".equals(fs.getType())) {
-          // System.out.println("[" + fs.getFeatureValue("value") + "]");
-          assertThat(fs.getFeatureValue("value").toString()).isEqualTo(
-                  "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5");
-          foundCrawlUrl = true;
-        }
+    var xmlReader = parser.getXMLReader();
+    xmlReader.setContentHandler(handler);
+    xmlReader.parse(new InputSource(getClass().getResourceAsStream("xcastest.xml")));
+
+    // System.out.println(casData);
+    var fsIter = casData.getFeatureStructures();
+    var foundCrawlUrl = false;
+    while (fsIter.hasNext()) {
+      var fs = fsIter.next();
+      if ("Crawl_colon_URL".equals(fs.getType())) {
+        // System.out.println("[" + fs.getFeatureValue("value") + "]");
+        assertThat(fs.getFeatureValue("value")).hasToString(
+                "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5");
+        foundCrawlUrl = true;
       }
-      assertTrue(foundCrawlUrl);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
     }
+    assertTrue(foundCrawlUrl);
   }
 
   @Test
-  public void testConversions() throws Exception {
-    try {
-      // complex CAS obtained by deserialization
-      File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
-              .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
-      CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              new FsIndexDescription[0]);
+  void testConversions() throws Exception {
+    // complex CAS obtained by deserialization
+    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+    CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
+            FsIndexDescription.EMPTY_FS_INDEX_DESCRIPTIONS);
 
-      InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
 
-      XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
-      ContentHandler deserHandler = deser.getXCASHandler(cas);
-      SAXParserFactory fact = SAXParserFactory.newInstance();
-      SAXParser parser = fact.newSAXParser();
-      XMLReader xmlReader = parser.getXMLReader();
-      xmlReader.setContentHandler(deserHandler);
-      xmlReader.parse(new InputSource(serCasStream));
-      serCasStream.close();
-      _testConversions(cas);
+    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+    ContentHandler deserHandler = deser.getXCASHandler(cas);
+    SAXParserFactory fact = SAXParserFactory.newInstance();
+    SAXParser parser = fact.newSAXParser();
+    XMLReader xmlReader = parser.getXMLReader();
+    xmlReader.setContentHandler(deserHandler);
+    xmlReader.parse(new InputSource(serCasStream));
+    serCasStream.close();
+    _testConversions(cas);
 
-      // a CAS with multiple Sofas
-      InputStream translatorAeStream = new FileInputStream(
-              JUnitExtension.getFile("CpeSofaTest/TransAnnotator.xml"));
-      AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
-              .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
-      AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
-      CAS cas2 = transAnnotator.newCAS();
-      CAS englishView = cas2.createView("EnglishDocument");
-      englishView.setSofaDataString("this beer is good", "text/plain");
-      transAnnotator.process(cas2);
-      _testConversions(cas2);
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    // a CAS with multiple Sofas
+    InputStream translatorAeStream = new FileInputStream(
+            JUnitExtension.getFile("CpeSofaTest/TransAnnotator.xml"));
+    AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
+    AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
+    CAS cas2 = transAnnotator.newCAS();
+    CAS englishView = cas2.createView("EnglishDocument");
+    englishView.setSofaDataString("this beer is good", "text/plain");
+    transAnnotator.process(cas2);
+    _testConversions(cas2);
   }
 
   private void _testConversions(CAS aCAS) throws IOException, ParserConfigurationException,
@@ -184,10 +175,6 @@ public class XCasToCasDataSaxHandlerTest {
     CasComparer.assertEquals(aCAS, cas2);
   }
 
-  /**
-   * @param casData
-   * @param system
-   */
   private void assertValidCasData(CasData casData, TypeSystem typeSystem) {
     Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
@@ -206,10 +193,10 @@ public class XCasToCasDataSaxHandlerTest {
       if (typeSystem.subsumes(annotType, type)) {
         // annotation type - check for presence of begin/end
         FeatureValue beginVal = fs.getFeatureValue("begin");
-        assertThat(beginVal instanceof PrimitiveValue).isTrue();
+        assertThat(beginVal).isInstanceOf(PrimitiveValue.class);
         assertThat(((PrimitiveValue) beginVal).toInt() >= 0).isTrue();
         FeatureValue endVal = fs.getFeatureValue("end");
-        assertThat(endVal instanceof PrimitiveValue).isTrue();
+        assertThat(endVal).isInstanceOf(PrimitiveValue.class);
         assertThat(((PrimitiveValue) endVal).toInt() >= 0).isTrue();
       }
     }

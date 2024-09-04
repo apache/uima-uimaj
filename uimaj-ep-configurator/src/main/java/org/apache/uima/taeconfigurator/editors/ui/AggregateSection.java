@@ -458,7 +458,7 @@ public class AggregateSection extends AbstractSection {
   }
 
   /** The Constant REMOTE_TEMPLATE. */
-  private final static String REMOTE_TEMPLATE = // @formatter:off
+  private static final String REMOTE_TEMPLATE = // @formatter:off
       "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + //
       "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" + //
       "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
@@ -469,7 +469,7 @@ public class AggregateSection extends AbstractSection {
       "\n</uriSpecifier>"; // @formatter:on
 
   /** The Constant REMOTE_JMS_TEMPLATE. */
-  private final static String REMOTE_JMS_TEMPLATE = // @formatter:off
+  private static final String REMOTE_JMS_TEMPLATE = // @formatter:off
       "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + //
       "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" + //
       "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n" + //

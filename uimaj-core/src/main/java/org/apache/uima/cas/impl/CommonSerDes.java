@@ -259,15 +259,15 @@ public class CommonSerDes {
   }
 
   public static DataOutputStream maybeWrapToDataOutputStream(OutputStream os) {
-    if (os instanceof DataOutputStream) {
-      return (DataOutputStream) os;
+    if (os instanceof DataOutputStream dataOutputStream) {
+      return dataOutputStream;
     }
     return new DataOutputStream(os);
   }
 
   public static DataInputStream maybeWrapToDataInputStream(InputStream os) {
-    if (os instanceof DataInputStream) {
-      return (DataInputStream) os;
+    if (os instanceof DataInputStream dataInputStream) {
+      return dataInputStream;
     }
     return new DataInputStream(os);
   }

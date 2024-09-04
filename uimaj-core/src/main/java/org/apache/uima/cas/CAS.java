@@ -141,21 +141,6 @@ public interface CAS extends AbstractCas {
    */
   String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
-  // /**
-  // * Java Object type
-  // */
-  // static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
-  //
-  // /**
-  // * FS Array List
-  // */
-  // static final String TYPE_NAME_FS_ARRAY_LIST = UIMA_CAS_PREFIX + "FSArrayList";
-  //
-  // /**
-  // * int Array List
-  // */
-  // static final String TYPE_NAME_INT_ARRAY_LIST = UIMA_CAS_PREFIX + "IntegerArrayList";
-
   /**
    * ArrayBase type.
    */
@@ -312,8 +297,9 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, this is replaced by {@link #NAME_DEFAULT_SOFA}, and the value has
    *             changed. In general, user code should not need to refer to this name.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   String NAME_DEFAULT_TEXT_SOFA = "_InitialView";
 
   /**
@@ -649,8 +635,9 @@ public interface CAS extends AbstractCas {
    * 
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaFS getSofa(SofaID sofaID);
 
   /**
@@ -705,8 +692,9 @@ public interface CAS extends AbstractCas {
    *           if no Sofa with the given ID exists in this CAS
    * 
    * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   JCas getJCas(SofaID aSofaID) throws CASException;
 
   /**
@@ -876,8 +864,9 @@ public interface CAS extends AbstractCas {
    * @return The sofaFS.
    * 
    * @deprecated As of v2.0, use {@link #createView(String)} instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaFS createSofa(SofaID sofaID, String mimeType);
 
   /**
@@ -973,7 +962,10 @@ public interface CAS extends AbstractCas {
    * @return Feature-value path object.
    * @throws CASRuntimeException
    *           If the input string is not well-formed.
+   * @deprecated Use {@link #createFeaturePath()} instead.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   FeatureValuePath createFeatureValuePath(String featureValuePath) throws CASRuntimeException;
 
   /**
@@ -1272,7 +1264,7 @@ public interface CAS extends AbstractCas {
    */
   default EmptyFloatList emptyFloatList() {
     return ((CASImpl) getLowLevelCAS()).emptyFloatList();
-  };
+  }
 
   /**
    * @param <T>
@@ -1281,21 +1273,21 @@ public interface CAS extends AbstractCas {
    */
   default <T extends TOP> EmptyFSList<T> emptyFSList() {
     return ((CASImpl) getLowLevelCAS()).emptyFSList();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) empty list
    */
   default EmptyIntegerList emptyIntegerList() {
     return ((CASImpl) getLowLevelCAS()).emptyIntegerList();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) empty list
    */
   default EmptyStringList emptyStringList() {
     return ((CASImpl) getLowLevelCAS()).emptyStringList();
-  };
+  }
 
   /**
    * @param <T>
@@ -1313,7 +1305,7 @@ public interface CAS extends AbstractCas {
    */
   default FloatArray emptyFloatArray() {
     return ((CASImpl) getLowLevelCAS()).emptyFloatArray();
-  };
+  }
 
   /**
    * @param <T>
@@ -1322,7 +1314,7 @@ public interface CAS extends AbstractCas {
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     return ((CASImpl) getLowLevelCAS()).emptyFSArray();
-  };
+  }
 
   /**
    * @param type
@@ -1334,56 +1326,56 @@ public interface CAS extends AbstractCas {
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray(Type type) {
     return ((CASImpl) getLowLevelCAS()).emptyFSArray(type);
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default IntegerArray emptyIntegerArray() {
     return ((CASImpl) getLowLevelCAS()).emptyIntegerArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default StringArray emptyStringArray() {
     return ((CASImpl) getLowLevelCAS()).emptyStringArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default DoubleArray emptyDoubleArray() {
     return ((CASImpl) getLowLevelCAS()).emptyDoubleArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default LongArray emptyLongArray() {
     return ((CASImpl) getLowLevelCAS()).emptyLongArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default ShortArray emptyShortArray() {
     return ((CASImpl) getLowLevelCAS()).emptyShortArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default ByteArray emptyByteArray() {
     return ((CASImpl) getLowLevelCAS()).emptyByteArray();
-  };
+  }
 
   /**
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default BooleanArray emptyBooleanArray() {
     return ((CASImpl) getLowLevelCAS()).emptyBooleanArray();
-  };
+  }
 
   /**
    * @param clazz

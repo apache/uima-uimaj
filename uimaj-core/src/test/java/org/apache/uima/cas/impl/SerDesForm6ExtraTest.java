@@ -40,16 +40,16 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasIOUtils;
 import org.junit.jupiter.api.Test;
 
-public class SerDesForm6ExtraTest {
-  private final static String TYPE_NAME_ELEMENT = "Element";
-  private final static String TYPE_NAME_ARRAY_HOLDER = "ArrayHolder";
+class SerDesForm6ExtraTest {
+  private static final String TYPE_NAME_ELEMENT = "Element";
+  private static final String TYPE_NAME_ARRAY_HOLDER = "ArrayHolder";
 
-  private final static String FEATURE_NAME_ARRAY = "array";
+  private static final String FEATURE_NAME_ARRAY = "array";
 
-  private final static String NO_DESCRIPTION = "";
+  private static final String NO_DESCRIPTION = "";
 
   @Test
-  public void thatArraySubtypesCanBeDeserialized() throws Exception {
+  void thatArraySubtypesCanBeDeserialized() throws Exception {
 
     CAS cas = prepCasWithNegativeDeltaReference();
 

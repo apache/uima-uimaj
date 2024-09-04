@@ -67,7 +67,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   private boolean reconfig = false;
 
   /** The Constant featureOnlyKey. */
-  private final static String featureOnlyKey = "feature";
+  private static final String featureOnlyKey = "feature";
 
   /**
    * Initializes this CAS Consumer with the parameters specified in the descriptor.

@@ -72,8 +72,8 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
 
   @Override
   public NonEmptyIntegerList createNonEmptyNode() {
-    NonEmptyIntegerList node = new NonEmptyIntegerList(
-            _casView.getTypeSystemImpl().intNeListType, _casView);
+    NonEmptyIntegerList node = new NonEmptyIntegerList(_casView.getTypeSystemImpl().intNeListType,
+            _casView);
     return node;
   }
 

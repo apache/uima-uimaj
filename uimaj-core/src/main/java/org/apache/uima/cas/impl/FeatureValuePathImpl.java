@@ -223,8 +223,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
     // coveredText() asf. is only valid as the last snippet in a feature
     // path
-    if ((isCoveredTextFeature || isFsIdFeature || isUniqueIdFeature
-            || isTypeNameFeature) && child != null) {
+    if ((isCoveredTextFeature || isFsIdFeature || isUniqueIdFeature || isTypeNameFeature)
+            && child != null) {
       throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
     }
 
@@ -259,8 +259,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -286,8 +285,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       switch (listType) {
         case TYPE_CLASS_FLOATLIST:
@@ -306,8 +304,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     if (childPath != null) {
       int childFS = cas.ll_getRefValue(currentFS, featureCode, CAS_TYPE_CHECKS);
       return childPath.evaluateAsFloat(childFS, cas);
-    } else if (isCoveredTextFeature || isUniqueIdFeature || isFsIdFeature
-            || isTypeNameFeature) {
+    } else if (isCoveredTextFeature || isUniqueIdFeature || isFsIdFeature || isTypeNameFeature) {
       throw new IllegalStateException("feature path does not denote a float");
     } else {
       int typeClass = cas.ll_getTypeClass(featureRangeType);
@@ -334,8 +331,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
@@ -372,8 +368,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -419,8 +414,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -445,8 +439,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       switch (listType) {
         case TYPE_CLASS_INTEGERLIST:
@@ -496,8 +489,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
@@ -534,8 +526,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -592,8 +583,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -618,8 +608,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       if (arrayIndex == USE_ALL_ENTRIES) {
         throw new IllegalStateException("feature path denotes an array");
       }
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       switch (listType) {
         case TYPE_CLASS_STRINGLIST:
@@ -676,8 +665,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the aray. If
       // the path snippet is like authors[], the "authors" feature
       // contains the array
-      int arrayFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int arrayFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
@@ -718,8 +706,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // if the path snippet is [], the currentFS itself is the list. If
       // the path snippet is like authors[], the "authors" feature
       // contains the list
-      int listFS = (isBracketsOnly ? currentFS
-              : cas.ll_getRefValue(currentFS, featureCode));
+      int listFS = (isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS, featureCode));
 
       if (arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -846,8 +833,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     }
 
     if (fsType == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
-      throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH,
-              typeNameInSnippet);
+      throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, typeNameInSnippet);
     }
 
     // the range type denotes what type of FSes (or
@@ -945,8 +931,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     if (childPath != null) {
       // for simple range types, only [] and fsId() are allowed as child
       // path
-      if (isSimpleRangeType
-              && !(childPath.isBracketsOnly() || childPath.isFsIdFeature)) {
+      if (isSimpleRangeType && !(childPath.isBracketsOnly() || childPath.isFsIdFeature)) {
         throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, featureName);
       }
 
@@ -959,8 +944,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, featureName);
       }
 
-      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-              CAS.TYPE_NAME_STRING)];
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES, CAS.TYPE_NAME_STRING)];
     } else if (isFsIdFeature) {
       valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_INTEGER)];
@@ -968,8 +952,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
               CAS.TYPE_NAME_INTEGER)];
     } else if (isTypeNameFeature) {
-      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-              CAS.TYPE_NAME_STRING)];
+      valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES, CAS.TYPE_NAME_STRING)];
     } else {
       if (!isSimpleRangeType) {
         CASRuntimeException exception = new CASRuntimeException(
@@ -988,15 +971,13 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         // accordingly
         valueTypeName = LIST_TO_ARRAYTYPE_MAP.get(type.getName());
       } else {
-        valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-                type.getName())];
+        valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES, type.getName())];
       }
     }
   }
 
   private boolean isBuiltInFeature() {
-    return isFsIdFeature || isUniqueIdFeature || isCoveredTextFeature
-            || isTypeNameFeature;
+    return isFsIdFeature || isUniqueIdFeature || isCoveredTextFeature || isTypeNameFeature;
   }
 
   /**

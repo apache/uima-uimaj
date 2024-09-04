@@ -498,7 +498,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
 
   /*

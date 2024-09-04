@@ -55,7 +55,7 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "externalResourceBinding", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
               new PropertyXmlInfo("resourceName"), });
 }

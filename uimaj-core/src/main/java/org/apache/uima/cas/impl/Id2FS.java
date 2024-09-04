@@ -74,8 +74,8 @@ public class Id2FS implements Iterable<TOP> {
   // public static final boolean IS_DISABLE_FS_GC = // true || // disabled due to performance
   // Misc.getNoValueSystemProperty(DISABLE_FS_GC);
 
-  final private JCasHashMap id2fs;
-  final private int initialSize;
+  private final JCasHashMap id2fs;
+  private final int initialSize;
 
   public Id2FS(int initialHeapSize) {
     initialSize = Math.max(32, initialHeapSize >> 4); // won't shrink below this

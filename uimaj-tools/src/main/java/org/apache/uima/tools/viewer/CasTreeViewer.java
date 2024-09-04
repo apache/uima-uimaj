@@ -381,7 +381,7 @@ public class CasTreeViewer extends JPanel {
    *          the text
    * @return the text
    */
-  static private String getText(String text) {
+  private static String getText(String text) {
     int start = text.indexOf("<TEXT>");
     int end = text.indexOf("</TEXT>");
     if (start != -1 && end != -1) {

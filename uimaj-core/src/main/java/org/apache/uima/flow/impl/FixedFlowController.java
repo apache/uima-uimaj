@@ -88,7 +88,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   //      -- this has the added "benefit" (maybe eventually) of having better semantics for letting existing
   //         Flow objects continue to use the "old" settings, and only the new ones picking up the new ones.
 //@formatter:on
-  final private List<String> mSequence = new CopyOnWriteArrayList<>(); // UIMA-4013
+  private final List<String> mSequence = new CopyOnWriteArrayList<>(); // UIMA-4013
 
   private int mActionAfterCasMultiplier;
 

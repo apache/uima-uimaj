@@ -276,8 +276,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);
-      if (curNode instanceof Element) {
-        Element elem = (Element) curNode;
+      if (curNode instanceof Element elem) {
         if ("configurationParameter".equals(elem.getTagName())) {
           params.add(aParser.buildObject(elem, aOptions));
         } else if ("commonParameters".equals(elem.getTagName())) {
@@ -309,14 +308,14 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    */
 //@formatter:on
   protected String getXMLAttributeString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     if (getDefaultGroupName() != null) {
       buf.append("defaultGroup = \"");
       buf.append(getDefaultGroupName());
       buf.append('"');
     }
     if (getSearchStrategy() != null) {
-      if (buf.length() > 0) {
+      if (!buf.isEmpty()) {
         buf.append(' ');
       }
       buf.append("searchStrategy = \"");

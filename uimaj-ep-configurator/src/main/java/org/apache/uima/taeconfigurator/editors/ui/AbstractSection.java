@@ -139,55 +139,55 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
   }
 
   /** The Constant IMPORTABLE_PART_CONTEXT. */
-  public final static String IMPORTABLE_PART_CONTEXT = "ipc";
+  public static final String IMPORTABLE_PART_CONTEXT = "ipc";
 
   /** The Constant PLUGIN_ID. */
-  public final static String PLUGIN_ID = "org.apache.uima.desceditor";
+  public static final String PLUGIN_ID = "org.apache.uima.desceditor";
 
   /** The Constant SELECTED. */
-  public final static boolean SELECTED = true;
+  public static final boolean SELECTED = true;
 
   /** The Constant NOT_SELECTED. */
-  public final static boolean NOT_SELECTED = false;
+  public static final boolean NOT_SELECTED = false;
 
   /** The Constant ENABLED. */
-  public final static boolean ENABLED = true;
+  public static final boolean ENABLED = true;
 
   /** The Constant EQUAL_WIDTH. */
-  public final static boolean EQUAL_WIDTH = true;
+  public static final boolean EQUAL_WIDTH = true;
 
   /** The Constant treeItemArray0. */
-  public final static TreeItem[] treeItemArray0 = new TreeItem[0];
+  public static final TreeItem[] treeItemArray0 = new TreeItem[0];
 
   /** The Constant configurationGroup0. */
-  public final static ConfigurationGroup[] configurationGroup0 = new ConfigurationGroup[0];
+  public static final ConfigurationGroup[] configurationGroup0 = new ConfigurationGroup[0];
 
   /** The Constant configurationParameter0. */
-  public final static ConfigurationParameter[] configurationParameter0 = new ConfigurationParameter[0];
+  public static final ConfigurationParameter[] configurationParameter0 = new ConfigurationParameter[0];
 
   /** The Constant capabilityArray0. */
-  public final static Capability[] capabilityArray0 = new Capability[0];
+  public static final Capability[] capabilityArray0 = new Capability[0];
 
   /** The Constant featureDescriptionArray0. */
-  public final static FeatureDescription[] featureDescriptionArray0 = new FeatureDescription[0];
+  public static final FeatureDescription[] featureDescriptionArray0 = new FeatureDescription[0];
 
   /** The Constant sofaMapping0. */
-  public final static SofaMapping[] sofaMapping0 = new SofaMapping[0];
+  public static final SofaMapping[] sofaMapping0 = new SofaMapping[0];
 
   /** The Constant fsIndexDescription0. */
-  public final static FsIndexDescription[] fsIndexDescription0 = new FsIndexDescription[0];
+  public static final FsIndexDescription[] fsIndexDescription0 = new FsIndexDescription[0];
 
   /** The Constant externalResourceBinding0. */
-  public final static ExternalResourceBinding[] externalResourceBinding0 = new ExternalResourceBinding[0];
+  public static final ExternalResourceBinding[] externalResourceBinding0 = new ExternalResourceBinding[0];
 
   /** The Constant externalResourceDescription0. */
-  public final static ExternalResourceDescription[] externalResourceDescription0 = new ExternalResourceDescription[0];
+  public static final ExternalResourceDescription[] externalResourceDescription0 = new ExternalResourceDescription[0];
 
   /** The Constant typeDescription0. */
-  public final static TypeDescription[] typeDescription0 = new TypeDescription[0];
+  public static final TypeDescription[] typeDescription0 = new TypeDescription[0];
 
   /** The Constant typePriorityList0. */
-  public final static TypePriorityList[] typePriorityList0 = new TypePriorityList[0];
+  public static final TypePriorityList[] typePriorityList0 = new TypePriorityList[0];
 
   /** The initial form width. */
   protected int initialFormWidth; // width of the form before putting controls in it
@@ -353,10 +353,10 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
   // * Special Composites to hold buttons
   /** The Constant VERTICAL_BUTTONS. */
   // **************************************************
-  final static public int VERTICAL_BUTTONS = 1;
+  public static final int VERTICAL_BUTTONS = 1;
 
   /** The Constant HORIZONTAL_BUTTONS. */
-  final static public int HORIZONTAL_BUTTONS = 2;
+  public static final int HORIZONTAL_BUTTONS = 2;
 
   /**
    * New button container.
@@ -744,20 +744,20 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
   // * Tables
   /** The Constant NO_MIN_HEIGHT. */
   // **************************************************
-  final public static int NO_MIN_HEIGHT = -1;
+  public static final int NO_MIN_HEIGHT = -1;
 
   /** The Constant NOTHING_SELECTED. */
-  final public static int NOTHING_SELECTED = -1;
+  public static final int NOTHING_SELECTED = -1;
 
   /** The Constant LINES_VISIBLE. */
   // these flags can be or-ed together
-  final public static int LINES_VISIBLE = 1;
+  public static final int LINES_VISIBLE = 1;
 
   /** The Constant HEADER_VISIBLE. */
-  final public static int HEADER_VISIBLE = 2;
+  public static final int HEADER_VISIBLE = 2;
 
   /** The Constant WIDTH_NOT_SPECIFIED. */
-  final public static int WIDTH_NOT_SPECIFIED = 0;
+  public static final int WIDTH_NOT_SPECIFIED = 0;
 
   /**
    * New table.
@@ -1329,16 +1329,16 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
   }
 
   /** The Constant stringArray0. */
-  public final static String[] stringArray0 = new String[0];
+  public static final String[] stringArray0 = new String[0];
 
   /** The Constant configurationParameterArray0. */
-  public final static ConfigurationParameter[] configurationParameterArray0 = new ConfigurationParameter[0];
+  public static final ConfigurationParameter[] configurationParameterArray0 = new ConfigurationParameter[0];
 
   /** The Constant configurationGroupArray0. */
-  public final static ConfigurationGroup[] configurationGroupArray0 = new ConfigurationGroup[0];
+  public static final ConfigurationGroup[] configurationGroupArray0 = new ConfigurationGroup[0];
 
   /** The Constant nameValuePairArray0. */
-  public final static NameValuePair[] nameValuePairArray0 = new NameValuePair[0];
+  public static final NameValuePair[] nameValuePairArray0 = new NameValuePair[0];
 
   /**
    * Gets the available type names.
@@ -2483,7 +2483,7 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
   }
 
   /** The Constant RIDICULOUSLY_LARGE. */
-  private final static int RIDICULOUSLY_LARGE = 10000;
+  private static final int RIDICULOUSLY_LARGE = 10000;
 
   /**
    * Produce Unique key for a newly added descriptor file.

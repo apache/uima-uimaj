@@ -70,8 +70,8 @@ public class JCasRegistry {
   /**
    * The <type> argument say the type is a class, which extends TOP
    */
-  final private static ArrayList<WeakRefInt<Class<? extends TOP>>> loadedJCasClasses = new ArrayList<>();
-  final private static ReferenceQueue<Class<? extends TOP>> releasedQueue = new ReferenceQueue<>();
+  private static final ArrayList<WeakRefInt<Class<? extends TOP>>> loadedJCasClasses = new ArrayList<>();
+  private static final ReferenceQueue<Class<? extends TOP>> releasedQueue = new ReferenceQueue<>();
 
   // private static int nextFeatureIndex = 0;
   // /**

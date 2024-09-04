@@ -33,75 +33,62 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests the DataResource_impl class.
- * 
- */
-public class DataResource_implTest {
+class DataResource_implTest {
   @Test
-  public void testInitialize() throws Exception {
+  void testInitialize() throws Exception {
+    // create a FileResourceSpecifier
+    FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
+    File tempDataFile = JUnitExtension
+            .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
+    String fileUrl = tempDataFile.toURL().toString();
+    String localCacheFile = "c:\\temp\\cache";
+    spec.setFileUrl(fileUrl);
+    spec.setLocalCache(localCacheFile);
+
+    // initialize a DataResource
+    DataResource_impl dr = new DataResource_impl();
+    dr.initialize(spec, Collections.EMPTY_MAP);
+
+    // test
+    assertThat(dr.getUrl()).isEqualTo(new URL(fileUrl));
+    assertThat(dr.getLocalCache()).isEqualTo(new File(localCacheFile));
+
+    // test failure for nonexistent data
+    ResourceInitializationException ex = null;
     try {
-      // create a FileResourceSpecifier
-      FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
-      File tempDataFile = JUnitExtension
-              .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
-      String fileUrl = tempDataFile.toURL().toString();
-      String localCacheFile = "c:\\temp\\cache";
-      spec.setFileUrl(fileUrl);
-      spec.setLocalCache(localCacheFile);
-
-      // initialize a DataResource
-      DataResource_impl dr = new DataResource_impl();
-      dr.initialize(spec, Collections.EMPTY_MAP);
-
-      // test
-      assertThat(dr.getUrl()).isEqualTo(new URL(fileUrl));
-      assertThat(dr.getLocalCache()).isEqualTo(new File(localCacheFile));
-
-      // test failure for nonexistent data
-      ResourceInitializationException ex = null;
-      try {
-        FileResourceSpecifier_impl invalidSpec = new FileResourceSpecifier_impl();
-        invalidSpec.setFileUrl("file:/this/file/does/not/exist");
-        DataResource_impl dr2 = new DataResource_impl();
-        dr2.initialize(invalidSpec, Collections.EMPTY_MAP);
-      } catch (ResourceInitializationException e) {
-        ex = e;
-      }
-      assertThat(ex).isNotNull();
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+      FileResourceSpecifier_impl invalidSpec = new FileResourceSpecifier_impl();
+      invalidSpec.setFileUrl("file:/this/file/does/not/exist");
+      DataResource_impl dr2 = new DataResource_impl();
+      dr2.initialize(invalidSpec, Collections.emptyMap());
+    } catch (ResourceInitializationException e) {
+      ex = e;
     }
+    assertThat(ex).isNotNull();
   }
 
   @Test
-  public void testGetInputStream() throws Exception {
-    try {
-      // write a File (APL: changed to use preexisting file - 6/28/04)
-      File tempDataFile = JUnitExtension
-              .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
-      // FileWriter writer = new FileWriter(tempDataFile);
-      String testString = "This is a test.  This is only a test.";
-      // writer.write(testString);
-      // writer.close();
+  void testGetInputStream() throws Exception {
+    // write a File (APL: changed to use preexisting file - 6/28/04)
+    File tempDataFile = JUnitExtension
+            .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
+    // FileWriter writer = new FileWriter(tempDataFile);
+    String testString = "This is a test.  This is only a test.";
+    // writer.write(testString);
+    // writer.close();
 
-      // initialize a DataResource for this file
-      FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
-      spec.setFileUrl(tempDataFile.toURL().toString());
-      DataResource_impl dr = new DataResource_impl();
-      dr.initialize(spec, Collections.EMPTY_MAP);
+    // initialize a DataResource for this file
+    FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
+    spec.setFileUrl(tempDataFile.toURL().toString());
+    DataResource_impl dr = new DataResource_impl();
+    dr.initialize(spec, Collections.EMPTY_MAP);
 
-      // try to get an input stream and read from the file
-      InputStream inStr = dr.getInputStream();
-      BufferedReader bufRdr = new BufferedReader(
-              new InputStreamReader(inStr, StandardCharsets.UTF_8));
-      String result = bufRdr.readLine();
-      inStr.close();
+    // try to get an input stream and read from the file
+    InputStream inStr = dr.getInputStream();
+    BufferedReader bufRdr = new BufferedReader(
+            new InputStreamReader(inStr, StandardCharsets.UTF_8));
+    String result = bufRdr.readLine();
+    inStr.close();
 
-      assertThat(result).isEqualTo(testString);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    assertThat(result).isEqualTo(testString);
   }
-
 }

@@ -109,7 +109,7 @@ public class CasComparer {
       c2Sofas++;
       sofaIter.moveToNext();
     }
-    assertThat(c1Sofas == c2Sofas).isTrue();
+    assertThat(c1Sofas).isSameAs(c2Sofas);
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {

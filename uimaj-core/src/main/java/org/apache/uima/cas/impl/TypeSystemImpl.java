@@ -165,7 +165,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) :
   // null;
 
-  static private final MethodHandle MHC_MINUS_1 = MethodHandles.constant(int.class, -1);
+  private static final MethodHandle MHC_MINUS_1 = MethodHandles.constant(int.class, -1);
 
   /**
    * Type code that is returned on unknown type names.
@@ -192,7 +192,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // Collections.newSetFromMap(
   // new WeakHashMap<TypeSystemImpl, Boolean>()));
 
-  private final static int INIT_SIZE_ARRAYS_BUILT_IN_TYPES = 64; // approximate... used for array
+  private static final int INIT_SIZE_ARRAYS_BUILT_IN_TYPES = 64; // approximate... used for array
                                                                  // sizing only
 
   // static maps ok for now - only built-in mappings stored here
@@ -200,7 +200,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Map from component name to built-in array name
    */
-  private final static Map<String, String> builtInArrayComponentName2ArrayTypeName = new HashMap<>(
+  private static final Map<String, String> builtInArrayComponentName2ArrayTypeName = new HashMap<>(
           9);
 
   static {
@@ -218,7 +218,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   }
 
-  private final static Map<String, SlotKind> slotKindsForNonArrays = new HashMap<>(9);
+  private static final Map<String, SlotKind> slotKindsForNonArrays = new HashMap<>(9);
   static {
     slotKindsForNonArrays.put(CAS.TYPE_NAME_STRING, Slot_StrRef);
     slotKindsForNonArrays.put(CAS.TYPE_NAME_INTEGER, Slot_Int);
@@ -264,7 +264,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // );
   // }
 
-  final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections
+  private static final Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections
           .synchronizedMap(new WeakHashMap<>());
 
   // /** OBSOLETE with BETA and later levels
@@ -3072,7 +3072,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the created callsite
    */
 //@formatter:on
-  public final static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
+  public static final MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
     MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class));
     callSite.setTarget(MHC_MINUS_1); // for error checking
     // ArrayList<Entry<String, MutableCallSite>> callSitesForType =
@@ -3098,7 +3098,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          the short name of the feature
    * @return the created callsite
    */
-  public final static MutableCallSite createCallSiteForBuiltIn(Class<? extends TOP> clazz,
+  public static final MutableCallSite createCallSiteForBuiltIn(Class<? extends TOP> clazz,
           String featName) {
     // If the static TSI has not yet been initialized, we assume that the initialization of the
     // static TSI was not triggered by the given JCas cover class. So we return a default callsite

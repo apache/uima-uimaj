@@ -78,7 +78,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   private static final Class<AggregateAnalysisEngine_impl> CLASS_NAME = AggregateAnalysisEngine_impl.class;
 
-  static public final String PARAM_RESULT_SPECIFICATION = "RESULT_SPECIFICATION";
+  public static final String PARAM_RESULT_SPECIFICATION = "RESULT_SPECIFICATION";
 
   /**
    * The AnalysisEngineDescription for this AnlaysisEngine instance.
@@ -279,14 +279,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       logger.logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_process_end__FINE", resourceName);
       return iterator;
+    } catch (AnalysisEngineProcessException e) {
+      // log and rethrow exception
+      logger.log(Level.SEVERE, "", e);
+      throw e;
     } catch (Exception e) {
       // log and rethrow exception
       logger.log(Level.SEVERE, "", e);
-      if (e instanceof AnalysisEngineProcessException) {
-        throw (AnalysisEngineProcessException) e;
-      } else {
-        throw new AnalysisEngineProcessException(e);
-      }
+      throw new AnalysisEngineProcessException(e);
     }
   }
 
@@ -339,14 +339,14 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       if (flow != null) {
         if (flow instanceof FixedFlow) {
           orderedNodes = ((FixedFlow) flow).getFixedFlow();
-        } else if (flow instanceof CapabilityLanguageFlow) {
-          orderedNodes = ((CapabilityLanguageFlow) flow).getCapabilityLanguageFlow();
+        } else if (flow instanceof CapabilityLanguageFlow capabilityLanguageFlow) {
+          orderedNodes = capabilityLanguageFlow.getCapabilityLanguageFlow();
         }
       }
       // call components in the order specified in the flow
       if (orderedNodes != null) {
-        for (int i = 0; i < orderedNodes.length; i++) {
-          AnalysisEngine component = components.remove(orderedNodes[i]);
+        for (var orderedNode : orderedNodes) {
+          var component = components.remove(orderedNode);
           component.collectionProcessComplete();
         }
       }
@@ -630,9 +630,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       Iterator<AnalysisEngine> aeIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (aeIter.hasNext()) {
         AnalysisEngine ae = aeIter.next();
-        if (ae instanceof AnalysisEngineImplBase) {
-          ProcessTrace subPT = ((AnalysisEngineImplBase) ae).buildProcessTraceFromMBeanStats();
-          if (subPT.getEvents().size() > 0) {
+        if (ae instanceof AnalysisEngineImplBase analysisEngineImplBase) {
+          ProcessTrace subPT = analysisEngineImplBase.buildProcessTraceFromMBeanStats();
+          if (!subPT.getEvents().isEmpty()) {
             procEvt.addSubEvent(subPT.getEvents().get(0));
           }
         }

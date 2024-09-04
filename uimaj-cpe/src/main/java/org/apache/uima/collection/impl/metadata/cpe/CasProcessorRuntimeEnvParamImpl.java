@@ -142,7 +142,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("env",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("env",
           new PropertyXmlInfo[0]);
 
   /**

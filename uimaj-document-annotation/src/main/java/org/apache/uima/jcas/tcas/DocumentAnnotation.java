@@ -39,21 +39,21 @@ import org.apache.uima.jcas.JCasRegistry;
 public class DocumentAnnotation extends Annotation {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
-  public final static String _FeatName_language = "language";
+  public static final String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
+  public static final String _FeatName_language = "language";
 
-  public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
+  public static final int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
 
-  private final static CallSite _FC_language = TypeSystemImpl
+  private static final CallSite _FC_language = TypeSystemImpl
           .createCallSite(DocumentAnnotation.class, "language");
-  private final static MethodHandle _FH_language = _FC_language.dynamicInvoker();
+  private static final MethodHandle _FH_language = _FC_language.dynamicInvoker();
 
   // Never called. Disable default constructor
   protected DocumentAnnotation() {

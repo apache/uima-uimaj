@@ -80,11 +80,11 @@ public class UIMAClassLoader extends URLClassLoader {
    * locks for loading more than 1 class at a time (on different threads) no more than the total
    * number of cores, rounded up to pwr of 2
    */
-  final private static int nbrLocks = Misc
+  private static final int nbrLocks = Misc
           .nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
 
   // not static
-  final private Object[] syncLocks = new Object[nbrLocks];
+  private final Object[] syncLocks = new Object[nbrLocks];
 
   private boolean isClosed = false;
 

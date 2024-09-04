@@ -334,7 +334,7 @@ public class CasToInlineXml {
         if (vals == null) {
           attrVal = "null";
         } else {
-          StringBuffer buf = new StringBuffer();
+          StringBuilder buf = new StringBuilder();
           buf.append('[');
           for (int i = 0; i < vals.length - 1; i++) {
             buf.append(vals[i]);
@@ -354,7 +354,7 @@ public class CasToInlineXml {
           attrs.addAttribute("", featName, featName, "CDATA", "null");
         } else {
           // record type name as value, and covered text if it's an annotation
-          StringBuffer buf = new StringBuffer();
+          StringBuilder buf = new StringBuilder();
           buf.append(fsVal.getType().getShortName());
 
           if (fsVal instanceof AnnotationFS) {

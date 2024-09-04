@@ -107,7 +107,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
    */
  // @formatter:on
 
-  static private String lineEnd = System.getProperty("line.separator");
+  private static String lineEnd = System.getProperty("line.separator");
 
   private static final char[] blanks = new char[80];
   static {
@@ -153,7 +153,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
 
   private static final char[] nlca = new char[] { '\n' };
 
-  final private CharacterValidatingContentHandler cc;
+  private final CharacterValidatingContentHandler cc;
 
   public MetaDataObjectSerializer_indent(CharacterValidatingContentHandler cc) {
     super(cc); // required for plain version to handle some things

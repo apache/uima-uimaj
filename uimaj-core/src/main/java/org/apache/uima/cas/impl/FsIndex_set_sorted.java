@@ -50,7 +50,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *          the Java class type for this index
  */
 // @formatter:on
-final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
+public final class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
 
   // /**h
   // * This impl of sorted set interface allows using the bulk add operation implemented in Java's
@@ -59,7 +59,7 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
   // */
 
   // The index, a custom high-performance array impl
-  final private OrderedFsSet_array<T> indexedFSs;
+  private final OrderedFsSet_array<T> indexedFSs;
 
   // only an optimization used for select.covering for AnnotationIndexes
   private int maxAnnotSpan = -1;

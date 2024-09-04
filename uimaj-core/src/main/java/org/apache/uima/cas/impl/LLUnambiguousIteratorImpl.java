@@ -37,8 +37,8 @@ public class LLUnambiguousIteratorImpl<T extends FeatureStructure>
         extends FsIterator_subtypes_snapshot<T> {
 
   public LLUnambiguousIteratorImpl(LowLevelIterator<T> it) {
-    super((T[]) createItemsArray((LowLevelIterator<FeatureStructure>) it),
-            (LowLevelIndex<T>) it.ll_getIndex(), IS_ORDERED, it.getComparator());
+    super((T[]) createItemsArray((LowLevelIterator<FeatureStructure>) it), it.ll_getIndex(),
+            IS_ORDERED, it.getComparator());
   }
 
   // this is static because can't have instance method call before super call in constructor

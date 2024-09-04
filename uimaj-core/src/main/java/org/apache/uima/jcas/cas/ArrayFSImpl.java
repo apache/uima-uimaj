@@ -25,8 +25,9 @@ import org.apache.uima.cas.FeatureStructure;
  * For backwards compatibility with V2, only Only has methods not in ArrayFS or CommonArrayFSImpl
  * 
  * @deprecated use FSArray instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface ArrayFSImpl<E extends FeatureStructure> extends ArrayFS<E> {
 
 }

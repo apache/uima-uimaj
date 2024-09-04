@@ -33,10 +33,10 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
 
   private OrderedFsSet_array<T> set;
 
-  final public int a_firstUsedslot;
-  final public int a_nextFreeslot;
-  final public OrderedFsSet_array<T> original;
-  final private int original_size;
+  public final int a_firstUsedslot;
+  public final int a_nextFreeslot;
+  public final OrderedFsSet_array<T> original;
+  private final int original_size;
 
   public T[] a; // derived from "set" above
 
@@ -95,7 +95,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
    * @return the size of this version of the index (maybe not the current index size)
    */
   @Override
-  final public int size() {
+  public final int size() {
     return original_size;
   }
 
@@ -139,7 +139,7 @@ public class CopyOnWriteOrderedFsSet_array<T extends FeatureStructure>
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        return (T) a[pos++];
+        return a[pos++];
       }
     };
   }

@@ -18,13 +18,9 @@
  */
 package org.apache.uima.util.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -38,15 +34,15 @@ import org.junit.jupiter.api.Test;
 /**
  * UIMA Logging Test
  */
-public class Log4jLogger_implTest {
+class Log4jLogger_implTest {
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     // BasicConfigurator.configure();
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     // BasicConfigurator.resetConfiguration();
   }
 
@@ -65,15 +61,15 @@ public class Log4jLogger_implTest {
   // }
 
   @Test
-  public void testLogWrapperCreation() throws Exception {
-    org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
-    org.apache.uima.util.Logger classLogger = Log4jLogger_impl.getInstance(this.getClass());
+  void testLogWrapperCreation() throws Exception {
+    var uimaLogger = Log4jLogger_impl.getInstance();
+    var classLogger = Log4jLogger_impl.getInstance(this.getClass());
 
     // check base configuration
-    assertNotNull(uimaLogger);
-    assertNotNull(classLogger);
-    assertTrue(uimaLogger.isLoggable(Level.INFO));
-    assertTrue(classLogger.isLoggable(Level.INFO));
+    assertThat(uimaLogger).isNotNull();
+    assertThat(classLogger).isNotNull();
+    assertThat(uimaLogger.isLoggable(Level.INFO)).isTrue();
+    assertThat(classLogger.isLoggable(Level.INFO)).isTrue();
     classLogger.log("ola");
     classLogger.log(Level.INFO, "OLA in info");
 
@@ -84,7 +80,7 @@ public class Log4jLogger_implTest {
   }
 
   @Test
-  public void testIsLoggable() throws Exception {
+  void testIsLoggable() throws Exception {
     // create logger
     org.apache.uima.util.Logger uimaLogger = null;
     try {
@@ -94,97 +90,106 @@ public class Log4jLogger_implTest {
       e.printStackTrace(System.err);
       throw e;
     }
-    org.apache.uima.util.Logger classLogger = Log4jLogger_impl.getInstance(this.getClass());
+    var classLogger = Log4jLogger_impl.getInstance(this.getClass());
 
-    assertNotNull(uimaLogger);
-    assertNotNull(classLogger);
-    Logger log4jLogger = org.apache.logging.log4j.LogManager.getLogger("org.apache.uima");
+    assertThat(uimaLogger).isNotNull();
+    assertThat(classLogger).isNotNull();
+    var log4jLogger = org.apache.logging.log4j.LogManager.getLogger("org.apache.uima");
     while (log4jLogger.getLevel() == null) {
       log4jLogger = LogManager.getRootLogger();
     }
 
-    String key = "INFO"; // log4jLogger.getLevel().toString();
+    var key = "INFO"; // log4jLogger.getLevel().toString();
 
-    Level defaultLogLevel = Level.INFO; // logLevels.get(key); // doesn't work
+    var defaultLogLevel = Level.INFO; // logLevels.get(key); // doesn't work
 
-    assertNotNull(defaultLogLevel);
+    assertThat(defaultLogLevel).isNotNull();
     // check message logging for root logger based on default log level
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), uimaLogger.isLoggable(Level.ALL));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST),
-            uimaLogger.isLoggable(Level.FINEST));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER), uimaLogger.isLoggable(Level.FINER));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), uimaLogger.isLoggable(Level.FINE));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG),
-            uimaLogger.isLoggable(Level.CONFIG));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), uimaLogger.isLoggable(Level.INFO));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING),
-            uimaLogger.isLoggable(Level.WARNING));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE),
-            uimaLogger.isLoggable(Level.SEVERE));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), uimaLogger.isLoggable(Level.OFF));
+    assertThat(uimaLogger.isLoggable(Level.ALL))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.ALL));
+    assertThat(uimaLogger.isLoggable(Level.FINEST))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINEST));
+    assertThat(uimaLogger.isLoggable(Level.FINER))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINER));
+    assertThat(uimaLogger.isLoggable(Level.FINE))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINE));
+    assertThat(uimaLogger.isLoggable(Level.CONFIG))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.CONFIG));
+    assertThat(uimaLogger.isLoggable(Level.INFO))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.INFO));
+    assertThat(uimaLogger.isLoggable(Level.WARNING))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.WARNING));
+    assertThat(uimaLogger.isLoggable(Level.SEVERE))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.SEVERE));
+    assertThat(uimaLogger.isLoggable(Level.OFF))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.OFF));
 
     // check message logging for class logger based on default log level
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), classLogger.isLoggable(Level.ALL));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST),
-            classLogger.isLoggable(Level.FINEST));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER),
-            classLogger.isLoggable(Level.FINER));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), classLogger.isLoggable(Level.FINE));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG),
-            classLogger.isLoggable(Level.CONFIG));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), classLogger.isLoggable(Level.INFO));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING),
-            classLogger.isLoggable(Level.WARNING));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE),
-            classLogger.isLoggable(Level.SEVERE));
-    assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), classLogger.isLoggable(Level.OFF));
+    assertThat(classLogger.isLoggable(Level.ALL))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.ALL));
+    assertThat(classLogger.isLoggable(Level.FINEST))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINEST));
+    assertThat(classLogger.isLoggable(Level.FINER))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINER));
+    assertThat(classLogger.isLoggable(Level.FINE))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.FINE));
+    assertThat(classLogger.isLoggable(Level.CONFIG))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.CONFIG));
+    assertThat(classLogger.isLoggable(Level.INFO))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.INFO));
+    assertThat(classLogger.isLoggable(Level.WARNING))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.WARNING));
+    assertThat(classLogger.isLoggable(Level.SEVERE))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.SEVERE));
+    assertThat(classLogger.isLoggable(Level.OFF))
+            .isEqualTo(defaultLogLevel.isGreaterOrEqual(Level.OFF));
 
     // reset class logger level to OFF
     // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.OFF);
     classLogger.setLevel(Level.OFF);
-    assertFalse(classLogger.isLoggable(Level.ALL));
-    assertFalse(classLogger.isLoggable(Level.FINEST));
-    assertFalse(classLogger.isLoggable(Level.FINER));
-    assertFalse(classLogger.isLoggable(Level.FINE));
-    assertFalse(classLogger.isLoggable(Level.CONFIG));
-    assertFalse(classLogger.isLoggable(Level.INFO));
-    assertFalse(classLogger.isLoggable(Level.WARNING));
-    assertFalse(classLogger.isLoggable(Level.SEVERE));
-    assertTrue(classLogger.isLoggable(Level.OFF));
+    assertThat(classLogger.isLoggable(Level.ALL)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINEST)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINER)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINE)).isFalse();
+    assertThat(classLogger.isLoggable(Level.CONFIG)).isFalse();
+    assertThat(classLogger.isLoggable(Level.INFO)).isFalse();
+    assertThat(classLogger.isLoggable(Level.WARNING)).isFalse();
+    assertThat(classLogger.isLoggable(Level.SEVERE)).isFalse();
+    assertThat(classLogger.isLoggable(Level.OFF)).isTrue();
 
     // reset class logger level to ALL
     // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.ALL);
     classLogger.setLevel(Level.ALL);
-    assertTrue(classLogger.isLoggable(Level.ALL));
-    assertTrue(classLogger.isLoggable(Level.FINEST));
-    assertTrue(classLogger.isLoggable(Level.FINER));
-    assertTrue(classLogger.isLoggable(Level.FINE));
-    assertTrue(classLogger.isLoggable(Level.CONFIG));
-    assertTrue(classLogger.isLoggable(Level.INFO));
-    assertTrue(classLogger.isLoggable(Level.WARNING));
-    assertTrue(classLogger.isLoggable(Level.SEVERE));
-    assertTrue(classLogger.isLoggable(Level.OFF));
+    assertThat(classLogger.isLoggable(Level.ALL)).isTrue();
+    assertThat(classLogger.isLoggable(Level.FINEST)).isTrue();
+    assertThat(classLogger.isLoggable(Level.FINER)).isTrue();
+    assertThat(classLogger.isLoggable(Level.FINE)).isTrue();
+    assertThat(classLogger.isLoggable(Level.CONFIG)).isTrue();
+    assertThat(classLogger.isLoggable(Level.INFO)).isTrue();
+    assertThat(classLogger.isLoggable(Level.WARNING)).isTrue();
+    assertThat(classLogger.isLoggable(Level.SEVERE)).isTrue();
+    assertThat(classLogger.isLoggable(Level.OFF)).isTrue();
 
     // reset class logger level to WARNING
     // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.WARNING);
     classLogger.setLevel(Level.WARNING);
-    assertFalse(classLogger.isLoggable(Level.ALL));
-    assertFalse(classLogger.isLoggable(Level.FINEST));
-    assertFalse(classLogger.isLoggable(Level.FINER));
-    assertFalse(classLogger.isLoggable(Level.FINE));
-    assertFalse(classLogger.isLoggable(Level.CONFIG));
-    assertFalse(classLogger.isLoggable(Level.INFO));
-    assertTrue(classLogger.isLoggable(Level.WARNING));
-    assertTrue(classLogger.isLoggable(Level.SEVERE));
-    assertTrue(classLogger.isLoggable(Level.OFF));
+    assertThat(classLogger.isLoggable(Level.ALL)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINEST)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINER)).isFalse();
+    assertThat(classLogger.isLoggable(Level.FINE)).isFalse();
+    assertThat(classLogger.isLoggable(Level.CONFIG)).isFalse();
+    assertThat(classLogger.isLoggable(Level.INFO)).isFalse();
+    assertThat(classLogger.isLoggable(Level.WARNING)).isTrue();
+    assertThat(classLogger.isLoggable(Level.SEVERE)).isTrue();
+    assertThat(classLogger.isLoggable(Level.OFF)).isTrue();
 
     // reset log level to default log level
     classLogger.setLevel(defaultLogLevel);
   }
 
   @Test
-  public void testMessageLogMethods() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void testMessageLogMethods() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       org.apache.uima.util.Logger tempLogger = null;
       try {
         tempLogger = Log4jLogger_impl.getInstance(getClass());
@@ -195,7 +200,7 @@ public class Log4jLogger_implTest {
         throw e;
       }
 
-      final org.apache.uima.util.Logger logger = tempLogger;
+      final var logger = tempLogger;
       logger.setLevel(Level.INFO);
 
       logger.log(Level.INFO, "My first test message");
@@ -221,7 +226,7 @@ public class Log4jLogger_implTest {
       logger.log(Level.INFO, null, "");
 
       // log test with method log(Level,String,Throwable)
-      Throwable thrown = new Throwable();
+      var thrown = new Throwable();
       logger.log(Level.INFO, "My fourth test message", thrown);
       logger.log(Level.INFO, "", thrown);
       logger.log(Level.INFO, null, thrown);
@@ -241,12 +246,12 @@ public class Log4jLogger_implTest {
       logger.log(null);
 
       // test deprecated logException method
-      Exception ex = new Exception("My sixth test message");
+      var ex = new Exception("My sixth test message");
       logger.logException(ex);
       logger.logException(null);
 
       // all calls except those with null or "" msgs (including non-null throwable/exception)
-      assertEquals(16, capture.getAllEvents().size());
+      assertThat(capture.getAllEvents().size()).isEqualTo(16);
 
       // https://issues.apache.org/jira/browse/UIMA-5719
       logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
@@ -255,15 +260,15 @@ public class Log4jLogger_implTest {
   }
 
   @Test
-  public void testMessageKeyLogMethods() throws Exception {
-    final int[] nbrcalls = new int[1];
+  void testMessageKeyLogMethods() throws Exception {
+    final var nbrcalls = new int[1];
     nbrcalls[0] = 0;
 
     // Tell the logger to log everything
-    org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager
+    var rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager
             .getRootLogger();
     // create Logger
-    org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
+    var logger = Log4jLogger_impl.getInstance();
 
     try {
       rootLogger.get().setLevel(org.apache.logging.log4j.Level.ALL);
@@ -276,17 +281,17 @@ public class Log4jLogger_implTest {
         @Override
         public Result filter(LogEvent event) {
           nbrcalls[0]++;
-          StackTraceElement ste = event.getSource();
+          var ste = event.getSource();
           System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(),
                   event.getMessage().getFormattedMessage());
-          assertEquals(Log4jLogger_implTest.this.getClass().getSimpleName() + ".java",
-                  ste.getFileName());
+          assertThat(ste.getFileName())
+                  .isEqualTo(Log4jLogger_implTest.this.getClass().getSimpleName() + ".java");
           return Result.DENY;
         }
       };
 
-      ConsoleAppender app = (ConsoleAppender) rootLogger.get().getAppenders().values().stream()
-              .findFirst().get();
+      var app = (ConsoleAppender) rootLogger.get().getAppenders().values().stream().findFirst()
+              .get();
       app.addFilter(filter);
       try {
         // @Override
@@ -311,8 +316,8 @@ public class Log4jLogger_implTest {
         // logger.setOutputStream(new PrintStream(new FileOutputStream(file)));
 
         // test deprecated log(String, String, Object[])
-        String msgKey = "UIMA_logger_test";
-        String bundle = "org.apache.uima.util.impl.logger_test_messages";
+        var msgKey = "UIMA_logger_test";
+        var bundle = "org.apache.uima.util.impl.logger_test_messages";
         logger.log(bundle, msgKey, new Object[] { "message key test" });
         logger.log(bundle, null, new Object[] { "message key test" });
         logger.log(bundle, msgKey, new Object[] { "" });
@@ -347,7 +352,7 @@ public class Log4jLogger_implTest {
         logger.logrb(Level.INFO, "testClass", "testMethod", null, null, objects);
 
         // test method logrb(Level, String, String, String, String, thrown)
-        Throwable thrown = new Throwable();
+        var thrown = new Throwable();
         logger.logrb(Level.INFO, null, null, bundle, msgKey, thrown);
         logger.logrb(Level.INFO, null, null, bundle, null, thrown);
         logger.logrb(Level.INFO, null, null, null, msgKey, thrown);
@@ -356,7 +361,7 @@ public class Log4jLogger_implTest {
         logger.logrb(Level.INFO, "testClass", "testMethod", bundle, msgKey, thrown);
         logger.logrb(Level.INFO, "testClass", "testMethod", null, null, thrown);
 
-        assertEquals(18, nbrcalls[0]);
+        assertThat(nbrcalls[0]).isEqualTo(18);
       } finally {
         app.removeFilter(filter); // otherwise, subsequent test's filter gets appended, not replace
       }
@@ -368,8 +373,8 @@ public class Log4jLogger_implTest {
   }
 
   @Test
-  public void testLoggerFromUIMAFramework() {
-    org.apache.uima.util.Logger logger = UIMAFramework.getLogger(this.getClass());
+  void testLoggerFromUIMAFramework() {
+    var logger = UIMAFramework.getLogger(this.getClass());
 
     logger.setLevel(Level.INFO);
 
@@ -389,6 +394,5 @@ public class Log4jLogger_implTest {
     // https://issues.apache.org/jira/browse/UIMA-5719
     logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages",
             "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
-
   }
 }

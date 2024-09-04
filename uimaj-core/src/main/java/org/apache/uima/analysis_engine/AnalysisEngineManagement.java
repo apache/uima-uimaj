@@ -35,7 +35,7 @@ import org.apache.uima.resource.ManagementObject;
 public interface AnalysisEngineManagement extends ManagementObject {
   public enum State {
     Unavailable, Initializing, Ready
-  };
+  }
 
   /**
    * Gets a name for this AnalysisEngineManagement object, which will be unique among all of its

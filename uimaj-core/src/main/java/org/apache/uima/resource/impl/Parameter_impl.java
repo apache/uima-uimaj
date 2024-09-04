@@ -97,6 +97,6 @@ public class Parameter_impl extends MetaDataObject_impl implements Parameter {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
           new PropertyXmlInfo[0]);
 }

@@ -69,12 +69,12 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter.FixedSpaceIndenter;
 // @formatter:on
 public class JsonContentHandlerJacksonWrapper implements ContentHandler {
 
-  private final static char[] BLANKS = new char[80];
+  private static final char[] BLANKS = new char[80];
   static {
     Arrays.fill(BLANKS, ' ');
   }
 
-  public final static String SYSTEM_LINE_FEED;
+  public static final String SYSTEM_LINE_FEED;
   static {
     String lf = System.getProperty("line.separator");
     SYSTEM_LINE_FEED = (lf == null) ? "\n" : lf;

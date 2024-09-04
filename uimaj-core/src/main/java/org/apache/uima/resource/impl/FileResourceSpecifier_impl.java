@@ -93,7 +93,7 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fileResourceSpecifier",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fileResourceSpecifier",
           new PropertyXmlInfo[] { new PropertyXmlInfo("fileUrl"),
               new PropertyXmlInfo("localCache"), });
 }

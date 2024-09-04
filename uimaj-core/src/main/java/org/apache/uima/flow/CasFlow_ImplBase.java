@@ -38,14 +38,15 @@ public abstract class CasFlow_ImplBase implements Flow {
    * @param aCAS
    *          the CAS to be routed by this Flow object
    * @deprecated this is automatically done by the framework after a new flow object is created
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setCas(CAS aCAS) {
     mCAS = aCAS;
   }
 
   /**
-   * Overriden to check that <code>newCas</code> is an instanceof {@link CAS}. If it is, then
+   * Overridden to check that <code>newCas</code> is an instanceof {@link CAS}. If it is, then
    * {@link #newCasProduced(CAS,String)} is called. If not, an exception is thrown.
    * 
    * @see Flow#newCasProduced(AbstractCas, String)
@@ -53,8 +54,8 @@ public abstract class CasFlow_ImplBase implements Flow {
   @Override
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
           throws AnalysisEngineProcessException {
-    if (newCas instanceof CAS) {
-      return newCasProduced((CAS) newCas, producedBy);
+    if (newCas instanceof CAS cas) {
+      return newCasProduced(cas, producedBy);
     } else {
       throw new AnalysisEngineProcessException(
               AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,

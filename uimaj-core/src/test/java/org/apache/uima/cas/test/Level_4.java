@@ -27,13 +27,11 @@ import org.apache.uima.jcas.JCasRegistry;
 public class Level_4 extends Level_3 {
  
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.cas.test.Level_2";
+  public static final String _TypeName = "org.apache.uima.cas.test.Level_2";
   
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(Level_4.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(Level_4.class);
 
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   
   @Override
   public              int getTypeIndexID() {return typeIndexID;}

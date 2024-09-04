@@ -155,11 +155,11 @@ public class IntArrayRBTcommon {
 
   protected static final int default_size = 8; // must be pwr of 2 for useklrp true
 
-  final protected int initialSize;
+  protected final int initialSize;
 
-  final protected int growth_factor = 2; // must be pwr of 2 for useklrp true
+  protected final int growth_factor = 2; // must be pwr of 2 for useklrp true
 
-  final protected int multiplication_limit = 1024 * 1024 * 16; // must be pwr of 2 for useklrp true
+  protected final int multiplication_limit = 1024 * 1024 * 16; // must be pwr of 2 for useklrp true
 
   // The NIL sentinel
   public static final int NIL = 0;
@@ -365,8 +365,7 @@ public class IntArrayRBTcommon {
 
   // times 32 to have the same tuning for expanding that int arrays do, for booleans
   private final boolean[] ensureBooleanArraySize(boolean[] array, int newSize) {
-    return IntArrayUtils.ensure_size(array, newSize, growth_factor,
-            multiplication_limit * 32);
+    return IntArrayUtils.ensure_size(array, newSize, growth_factor, multiplication_limit * 32);
   }
 
   protected final void leftRotate(final int x) {

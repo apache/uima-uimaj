@@ -79,7 +79,7 @@ public class ResourceManager_impl implements ResourceManager {
    * </ul>
    * These are used to validate multiple declarations, and to get a resource to tie it to a binding
    */
-  static protected class ResourceRegistration {
+  protected static class ResourceRegistration {
     /**
      * For ParameterizedDataResources or DataResources, is the implementation object, which is an
      * arbitrary Java class implementing SharedDataResource (which has the "load" method)
@@ -133,7 +133,7 @@ public class ResourceManager_impl implements ResourceManager {
    * Keeping the Map's 2nd argument as Object, although it could be Resource, for backwards
    * compatibility
    */
-  final protected Map<String, Object> mResourceMap;
+  protected final Map<String, Object> mResourceMap;
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
@@ -142,7 +142,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * This is a one-to-one map.
    */
-  final protected Map<String, ResourceRegistration> mInternalResourceRegistrationMap;
+  protected final Map<String, ResourceRegistration> mInternalResourceRegistrationMap;
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
@@ -155,7 +155,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * key = aQualifiedContextName + the key name in an external resource binding
    */
-  final protected Map<String, Class<?>> mParameterizedResourceImplClassMap;
+  protected final Map<String, Class<?>> mParameterizedResourceImplClassMap;
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects for
@@ -169,7 +169,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * key = external resource declared name.
    */
-  final protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap;
+  protected final Map<String, Class<?>> mInternalParameterizedResourceImplClassMap;
 
   /**
    * Map from ParameterizedResourceKey to SharedResourceObject or DataResource instances.
@@ -181,7 +181,7 @@ public class ResourceManager_impl implements ResourceManager {
    * This map is for ParameterizedResources only, and stores the SharedResourceObjects or
    * DataResource objects that have already been instantiated and loaded.
    */
-  final protected Map<List<Object>, Object> mParameterizedResourceInstanceMap;
+  protected final Map<List<Object>, Object> mParameterizedResourceInstanceMap;
 
   /**
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at

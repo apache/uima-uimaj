@@ -26,7 +26,6 @@ import static org.apache.uima.util.CasLoadMode.DEFAULT;
 import static org.apache.uima.util.CasLoadMode.LENIENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class CasIOUtilsTest {
+class CasIOUtilsTest {
 
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE = 7;
   private static final int SIMPLE_CAS_DEFAULT_INDEX_SIZE_LENIENT = 5;
@@ -258,20 +257,17 @@ public class CasIOUtilsTest {
   void testWrongInputStream() throws Exception {
     byte[] casBytes;
     try (var bos = new ByteArrayOutputStream(); var os = new ObjectOutputStream(bos)) {
-      os.writeObject(new String("WRONG OBJECT"));
+      os.writeObject("WRONG OBJECT");
       casBytes = bos.toByteArray();
     }
 
     try (ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes)) {
-      CasIOUtils.load(casInputStream, cas);
-    } catch (Exception e) {
-      assertThat(e instanceof CASRuntimeException).isTrue();
-      assertThat(((CASRuntimeException) e).getMessageKey()
-              .equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT")).isTrue();
-      return;
-    }
+      assertThatExceptionOfType(CASRuntimeException.class) //
+              .isThrownBy(() -> CasIOUtils.load(casInputStream, cas)).satisfies(e -> {
+                assertThat(e.getMessageKey()).isEqualTo("UNRECOGNIZED_SERIALIZED_CAS_FORMAT");
+              });
 
-    fail("An exception should have been thrown for wrong input.");
+    }
   }
 
   @Test
@@ -340,7 +336,7 @@ public class CasIOUtilsTest {
   }
 
   @Test
-  public void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
+  void thatBinaryForm6DoesOnlyIncludeReachableFSes() throws Exception {
     CASImpl cas = (CASImpl) createCas();
     byte[] buf;
     try (var ctx = cas.ll_enableV2IdRefs(true)) {

@@ -50,7 +50,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class CustomSerializationTest {
+class CustomSerializationTest {
 
   private static void toXmiFile(JCas jCas, String filePath) throws IOException {
     File file = new File(filePath);
@@ -104,46 +104,38 @@ public class CustomSerializationTest {
 
   @Test
   @Disabled
-  public void saveFixtureToXmiFile()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void saveFixtureToXmiFile() throws Exception {
     EnrichedEntity test = fixture();
     toXmiFile(test.getJCas(), "output/custom-serialization-fixture.xmi");
   }
 
   @Test
-  public void verifyCustomSerializationForXmi()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForXmi() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.XMI);
   }
 
   @Test
-  public void verifyCustomSerializationForCompressedBinary4()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForCompressedBinary4() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.COMPRESSED);
   }
 
   @Test
-  public void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary4()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary4() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_TSI);
   }
 
   @Test
-  public void verifyCustomSerializationForCompressedFilteredBinary6()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForCompressedFilteredBinary6() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED);
   }
 
   @Test
-  public void verifyCustomSerializationForCompressedFilteredEmbeddedTSBinary6()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForCompressedFilteredEmbeddedTSBinary6() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED_TS);
   }
 
   @Test
-  public void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary6()
-          throws CASException, ResourceInitializationException, IOException, InvalidXMLException {
+  void verifyCustomSerializationForCompressedFilteredEmbeddedTSAndIndexBinary6() throws Exception {
     verifyFeatureMapDeserialization(SerialFormat.COMPRESSED_FILTERED_TSI);
   }
-
 }

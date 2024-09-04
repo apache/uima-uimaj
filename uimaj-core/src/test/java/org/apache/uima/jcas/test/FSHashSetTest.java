@@ -37,11 +37,7 @@ import org.junit.jupiter.api.Test;
 import x.y.z.EndOfSentence;
 import x.y.z.Token;
 
-/**
- * Test FSHashSet
- * 
- */
-public class FSHashSetTest {
+class FSHashSetTest {
 
   private CAS cas;
 
@@ -50,7 +46,7 @@ public class FSHashSetTest {
   public EndOfSentence endOfSentenceInstance;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     cas = CASInitializer.initCas(new CASTestSetup(), null
     // (tsm -> {
     // Type fsat = tsm.addType("org.apache.uima.jcas.cas.FSHashSet", tsm.getTopType());
@@ -84,13 +80,13 @@ public class FSHashSetTest {
   }
 
   @Test
-  public void testBasic() {
+  void testBasic() {
     basic(new FSHashSet<>(jcas));
     basic(new FSLinkedHashSet<>(jcas));
   }
 
   @Test
-  public void testBasicInt2FS() {
+  void testBasicInt2FS() {
     Int2FS<Token> m = new Int2FS<>(jcas);
     Int2FS<Token> m2 = new Int2FS<>(jcas, 11);
 
@@ -112,7 +108,5 @@ public class FSHashSetTest {
     FSArray fa = (FSArray) m.getFeatureValue(m.getType().getFeatureByBaseName("fsArray"));
     assertNotNull(fa);
     assertEquals(fa.get(0), k.getValue());
-
   }
-
 }

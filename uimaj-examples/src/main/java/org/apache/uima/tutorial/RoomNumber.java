@@ -41,7 +41,7 @@ public class RoomNumber extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.RoomNumber";
+  public static final String _TypeName = "org.apache.uima.tutorial.RoomNumber";
 
   /**
    * The Constant typeIndexID.
@@ -74,12 +74,12 @@ public class RoomNumber extends Annotation {
    * ******************* Feature Offsets *
    *******************/
 
-  public final static String _FeatName_building = "building";
+  public static final String _FeatName_building = "building";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_building = TypeSystemImpl.createCallSite(RoomNumber.class,
+  private static final CallSite _FC_building = TypeSystemImpl.createCallSite(RoomNumber.class,
           "building");
-  private final static MethodHandle _FH_building = _FC_building.dynamicInvoker();
+  private static final MethodHandle _FH_building = _FC_building.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

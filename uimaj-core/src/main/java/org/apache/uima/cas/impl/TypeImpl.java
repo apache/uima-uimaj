@@ -982,7 +982,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /**
    * A special instance used in CasCopier to identify a missing type
    */
-  public final static TypeImpl singleton = new TypeImpl();
+  public static final TypeImpl singleton = new TypeImpl();
 
   private long hashCodeLong = 0;
   private final long hashCodeNameLong;

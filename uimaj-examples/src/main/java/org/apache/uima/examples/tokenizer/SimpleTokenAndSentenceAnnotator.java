@@ -36,7 +36,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
   /**
    * The Class Maker.
    */
-  static abstract class Maker {
+  abstract static class Maker {
 
     /**
      * New annotation.

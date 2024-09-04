@@ -54,9 +54,9 @@ import org.apache.vinci.transport.util.XMLConverter;
  */
 public abstract class Frame extends FrameComponent implements Transportable {
 
-  static private final String XML_INDENT = "   ";
+  private static final String XML_INDENT = "   ";
 
-  static private FrameTransporter parser = new XTalkTransporter();
+  private static FrameTransporter parser = new XTalkTransporter();
 
   protected Frame() {
   }
@@ -69,7 +69,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * @param transporter
    *          The new marshaller to plug in.
    */
-  static public void setFrameTransporter(FrameTransporter transporter) {
+  public static void setFrameTransporter(FrameTransporter transporter) {
     parser = transporter;
   }
 
@@ -78,7 +78,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @return The currently installed document marshaller.
    */
-  static public FrameTransporter getFrameTransporter() {
+  public static FrameTransporter getFrameTransporter() {
     return parser;
   }
 

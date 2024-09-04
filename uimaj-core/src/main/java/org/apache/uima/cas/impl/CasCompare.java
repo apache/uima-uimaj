@@ -161,8 +161,8 @@ import org.apache.uima.util.IntEntry;
 // @formatter:on
 public class CasCompare {
 
-  private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = false;
-  private final static boolean IS_MEAS_LIST_2_ARRAY = false;
+  private static final boolean IS_DEBUG_STOP_ON_MISCOMPARE = false;
+  private static final boolean IS_MEAS_LIST_2_ARRAY = false;
   private static final String BLANKS_89 = Misc.blanks.substring(0, 89);
 
   private static boolean IS_SHOW_PROGRESS = false;
@@ -367,10 +367,10 @@ public class CasCompare {
 
     FeatLists(List<FeatureImpl> easy, List<FeatureImpl> easyArrays, List<FeatureImpl> refs,
             List<FeatureImpl> refArrays) {
-      featsByEase[0] = (FeatureImpl[]) easy.toArray(new FeatureImpl[easy.size()]);
-      featsByEase[1] = (FeatureImpl[]) easyArrays.toArray(new FeatureImpl[easyArrays.size()]);
-      featsByEase[2] = (FeatureImpl[]) refs.toArray(new FeatureImpl[refs.size()]);
-      featsByEase[3] = (FeatureImpl[]) refArrays.toArray(new FeatureImpl[refArrays.size()]);
+      featsByEase[0] = easy.toArray(FeatureImpl[]::new);
+      featsByEase[1] = easyArrays.toArray(FeatureImpl[]::new);
+      featsByEase[2] = refs.toArray(FeatureImpl[]::new);
+      featsByEase[3] = refArrays.toArray(FeatureImpl[]::new);
     }
   }
 
@@ -385,29 +385,29 @@ public class CasCompare {
   /**
    * key = _id, value = arraylist holding well-formed list with this node in it
    */
-  final private Int2ObjHashMap<ArrayList<CommonList>, ArrayList<CommonList>> map_e_to_a_list = new Int2ObjHashMap(
+  private final Int2ObjHashMap<ArrayList<CommonList>, ArrayList<CommonList>> map_e_to_a_list = new Int2ObjHashMap(
           ArrayList.class);
 
   /**
    * set of list elements determined to be members of a non-linear structure
    */
-  final private PositiveIntSet non_linear_list_elements = new PositiveIntSet_impl();
+  private final PositiveIntSet non_linear_list_elements = new PositiveIntSet_impl();
 
   /**
    * a map from list nodes which might be removed, to their place in the fss array list The index is
    * 1 more, to avoid colliding with the 0 value, used for missing value
    */
-  final private Obj2IntIdentityHashMap<CommonList> node_indexes = new Obj2IntIdentityHashMap<>(
+  private final Obj2IntIdentityHashMap<CommonList> node_indexes = new Obj2IntIdentityHashMap<>(
           CommonList.class, removed_list_marker);
 
-  final private PositiveIntSet list_successor_seen = new PositiveIntSet_impl();
+  private final PositiveIntSet list_successor_seen = new PositiveIntSet_impl();
 
-  final private Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
+  private final Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
 
-  final private CASImpl c1;
-  final private CASImpl c2;
-  final private TypeSystemImpl ts1;
-  final private TypeSystemImpl ts2;
+  private final CASImpl c1;
+  private final CASImpl c2;
+  private final TypeSystemImpl ts1;
+  private final TypeSystemImpl ts2;
 
   // private boolean compareStringArraysAsSets = false;
   // private boolean compareArraysByElement = false;
@@ -415,8 +415,8 @@ public class CasCompare {
   private boolean isCompareAll = false;
   private boolean isCompareIds = false;
   private Pair<TOP, TOP> leafErrorReported = null;
-  final private Set<String> excludedRootNames = new HashSet<String>(0);
-  final private Set<String> includedTypeNames = new HashSet<String>(0);
+  private final Set<String> excludedRootNames = new HashSet<String>(0);
+  private final Set<String> includedTypeNames = new HashSet<String>(0);
   // /** key is feature long name (with type) */
   // final private Set<String> fsArraysToSort = new HashSet<>();
   // /** key is feature long name (with type) */
@@ -445,7 +445,7 @@ public class CasCompare {
   // private TOP fs1, fs2;
   private boolean isSrcCas; // used for sorting with a CAS, to differentiate between src and target
                             // CASes
-  final private StringBuilder mismatchSb = new StringBuilder();
+  private final StringBuilder mismatchSb = new StringBuilder();
   private boolean inSortContext = false;
   private boolean isSkipMismatch = false;
 
@@ -790,7 +790,7 @@ public class CasCompare {
                                                                                                      // ones.
 
       // filter out items only of interest when reached via ref
-      if (excludedRootNames.size() > 0) {
+      if (!excludedRootNames.isEmpty()) {
         System.out.println("Excluding Root Names with: "
                 + Misc.ppList(Arrays.asList(excludedRootNames.toArray())));
         c1FoundFSs = c1FoundFSs.stream()
@@ -799,7 +799,7 @@ public class CasCompare {
         c2FoundFSs = c2FoundFSs.stream()
                 .filter(fs -> !excludedRootNames.contains(fs.getType().getName()))
                 .collect(Collectors.toCollection(ArrayList::new));
-      } else if (includedTypeNames.size() > 0) {
+      } else if (!includedTypeNames.isEmpty()) {
         System.out.println("Including only Root Names: "
                 + Misc.ppList(Arrays.asList(includedTypeNames.toArray())));
         c1FoundFSs = c1FoundFSs.stream()
@@ -854,7 +854,7 @@ public class CasCompare {
         if (IS_SHOW_PROGRESS) {
           int done = Math.max(i1, i2);
           if (done - prev_done >= fsz100) {
-            System.out.format("percent done: %d%n", (int) Math.round((done * 100F) / fsz));
+            System.out.format("percent done: %d%n", Math.round((done * 100F) / fsz));
             prev_done = done;
           }
         }
@@ -1265,7 +1265,7 @@ public class CasCompare {
 
     CommonList e = al.get(0);
     if (e instanceof FSList) {
-      assert al.size() > 0;
+      assert !al.isEmpty();
       FSArray<TOP> fsa = new FSArray<>(tsi.fsArrayType, view, al.size());
       int i = 0;
       for (CommonList n : al) {
@@ -1638,8 +1638,8 @@ public class CasCompare {
         // }
         // } // else compared ==
         // } else { // was in sort context
-        r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs((TOP) ((FSArray<?>) a1).get(i),
-                (TOP) ((FSArray<?>) a2).get(i), callerTi, callerFi), callerTi, callerFi);
+        r = compareAllArrayElements(fs1, fs2, len1, i -> compareRefs(((FSArray<?>) a1).get(i),
+                ((FSArray<?>) a2).get(i), callerTi, callerFi), callerTi, callerFi);
         // }
         break;
       }
@@ -1881,7 +1881,7 @@ public class CasCompare {
 
     prev1.add(rfs1);
     prev2.add(rfs2);
-    assert prev1.fsList.size() > 0;
+    assert !prev1.fsList.isEmpty();
     // TOP savedFs1 = fs1;
     // TOP savedFs2 = fs2;
 

@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -53,27 +52,22 @@ public class IndexRepositoryTest {
 
   private String running;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     cas = CASInitializer.initCas(new CASTestSetup(), null);
     typeSystem = cas.getTypeSystem();
     indexRep = cas.getIndexRepository();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
     typeSystem = null;
     indexRep = null;
   }
 
   @Test
-  public void testMissingSofaRef() throws Exception {
+  void testMissingSofaRef() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
     FeatureImpl feat = (FeatureImpl) cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE)
@@ -89,7 +83,7 @@ public class IndexRepositoryTest {
   }
 
   @Test
-  public void testDefaultBagIndex() throws Exception {
+  void testDefaultBagIndex() throws Exception {
     // create an instance of a non-annotation type
     Type tokenTypeType = typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
     FeatureStructure tokenTypeFs1 = cas.createFS(tokenTypeType);
@@ -119,7 +113,7 @@ public class IndexRepositoryTest {
   }
 
   @Test
-  public void testSetIndex() throws Exception {
+  void testSetIndex() throws Exception {
     Feature beginFeat = typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     // create an instance of an annotation type
     Type tokenTypeType = typeSystem.getType(CASTestSetup.TOKEN_TYPE);
@@ -144,8 +138,7 @@ public class IndexRepositoryTest {
     // Annotation is supertype of token
     // test if set observes implicit key of type
     Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
-    Feature annotBeginFeat = typeSystem
-            .getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
+    Feature annotBeginFeat = typeSystem.getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
     cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
 
     FeatureStructure annotTypeFs3 = cas.createFS(annotType);
@@ -160,17 +153,14 @@ public class IndexRepositoryTest {
     // shows type is implicit key for set compares
     index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX_NO_TYPEORDER);
     assertEquals(2, index.size());
-
   }
 
   /**
    * To test non-normal case, change Eclipse run config by adding the jvm arg:
-   * -Duima.allow_duplicate_add_to_indexes
-   * 
-   * @throws CASException
+   * {@literal -Duima.allow_duplicate_add_to_indexes}
    */
   @Test
-  public void testDupFsIndex() throws CASException {
+  void testDupFsIndex() throws Exception {
     cas.setSofaDataString("something", "text"); // otherwise triggers failure in addFsToIndex - no
                                                 // sofa ref
     JCas jcas = cas.getJCas();
@@ -187,7 +177,7 @@ public class IndexRepositoryTest {
   public static int NBR_ITEMS = 40000;
 
   @Test
-  public void testRemovalSpeed() throws Exception {
+  void testRemovalSpeed() throws Exception {
     // create an instance of an annotation type
     Feature beginFeat = typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     Type fsType = typeSystem.getType(CASTestSetup.TOKEN_TYPE);
@@ -220,13 +210,13 @@ public class IndexRepositoryTest {
   }
 
   @Test
-  public void testAddSpeed() {
+  void testAddSpeed() {
     running = "testAddSpeed - 2 sorted, 1 set, 1 bag";
     runAddSpeed();
   }
 
   @Test
-  public void testAddSpeedSorted() {
+  void testAddSpeedSorted() {
     FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
     ir.removeIndex(CASTestSetup.ANNOT_SET_INDEX);
     ir.removeIndex(CASTestSetup.ANNOT_SORT_INDEX);
@@ -273,7 +263,7 @@ public class IndexRepositoryTest {
   }
 
   @Test
-  public void testRemovalSpeedBagAlone() throws Exception {
+  void testRemovalSpeedBagAlone() throws Exception {
 
     FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
     // run with bag only
@@ -357,5 +347,4 @@ public class IndexRepositoryTest {
     }
     return System.nanoTime() - start;
   }
-
 }

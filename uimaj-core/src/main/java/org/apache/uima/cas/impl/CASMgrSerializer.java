@@ -230,7 +230,7 @@ public class CASMgrSerializer implements Serializable {
         pos = indexVector.size() - 1; // set the pos to the entry just added
       }
       nameToIndexMap[i] = pos; // store the position of the index in the indexVector in this
-                                    // map
+                               // map
     }
     // Now we know how many indexes there are.
     final int numIndexes = indexVector.size();
@@ -306,7 +306,8 @@ public class CASMgrSerializer implements Serializable {
     stringSubtypeValuePos = new int[size];
     List<String> strVals = new ArrayList<>();
     TypeImpl_string type;
-    int pos = 0, typeCode;
+    int pos = 0;
+    int typeCode;
     String[] stringSet;
     for (int i = 0; i < size; i++) {
       type = (TypeImpl_string) list.get(i);
@@ -488,8 +489,8 @@ public class CASMgrSerializer implements Serializable {
       comp = ir.createComparator();
       // assert(pos == comparatorIndex[i]);
       pos = comparatorIndex[nameToIndexMap[i]]; // pos jumps by odd numbers, 1: type, 2-3,
-                                                          // 4-5 etc are pairs: feature code and
-                                                          // direction
+                                                // 4-5 etc are pairs: feature code and
+                                                // direction
       type = cas.getTypeSystemImpl().ll_getTypeForCode(comparators[pos]);
       comp.setType(type);
       ++pos;
@@ -518,7 +519,7 @@ public class CASMgrSerializer implements Serializable {
           LinearTypeOrder order = ir.getDefaultTypeOrder();
           ++pos;
           comp.addKey(order, comparators[pos]); // the direction is always standard, never
-                                                     // reverse
+                                                // reverse
         }
         ++pos;
       }

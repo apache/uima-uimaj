@@ -26,11 +26,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * UIMA Logging interface implementation test without using an logging toolkit
- * 
  */
-public class Logger_implTest {
+class Logger_implTest {
   @Test
-  public void testLogWrapperCreation() throws Exception {
+  void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
     org.apache.uima.util.Logger rootLogger1 = Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
@@ -51,7 +50,7 @@ public class Logger_implTest {
   }
 
   @Test
-  public void testMessageLeveling() throws Exception {
+  void testMessageLeveling() throws Exception {
     // create logger
 
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();

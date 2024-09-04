@@ -43,13 +43,13 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   private static final long serialVersionUID = -2176626241850938032L;
 
   /** The Constant PLAY_BUTTON. */
-  static public final int PLAY_BUTTON = 0;
+  public static final int PLAY_BUTTON = 0;
 
   /** The Constant PAUSE_BUTTON. */
-  static public final int PAUSE_BUTTON = 1;
+  public static final int PAUSE_BUTTON = 1;
 
   /** The Constant STOP_BUTTON. */
-  static public final int STOP_BUTTON = 2;
+  public static final int STOP_BUTTON = 2;
 
   /** The play button. */
   private ToggleButton playButton;

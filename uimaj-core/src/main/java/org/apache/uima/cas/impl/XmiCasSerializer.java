@@ -148,13 +148,13 @@ public class XmiCasSerializer {
   // XML1_1_SUPPORTED = v;
   // }
 
-  public final static String SYSTEM_LINE_FEED;
+  public static final String SYSTEM_LINE_FEED;
   static {
     String lf = System.getProperty("line.separator");
     SYSTEM_LINE_FEED = (lf == null) ? "\n" : lf;
   }
 
-  public final static char[] INT_TO_HEX = "0123456789ABCDEF".toCharArray();
+  public static final char[] INT_TO_HEX = "0123456789ABCDEF".toCharArray();
 
   private final CasSerializerSupport css = new CasSerializerSupport();
 
@@ -804,7 +804,7 @@ public class XmiCasSerializer {
 
     @Override
     protected void writeListsAsIndividualFSs(TOP fs, int typeCode) throws SAXException {
-      writeFsOrLists((TOP) fs, typeCode, true);
+      writeFsOrLists(fs, typeCode, true);
     }
 
     private void writeFsOrLists(TOP fs, int typeCode, boolean isListAsFSs) throws SAXException {
@@ -822,11 +822,11 @@ public class XmiCasSerializer {
     protected void writeArrays(TOP fsArray, int typeCode, int typeClass) throws SAXException {
       XmlElementName xmlElementName = cds.typeCode2namespaceNames[typeCode];
 
-      if (fsArray instanceof StringArray && ((StringArray) fsArray).size() != 0) {
+      if (fsArray instanceof StringArray stringArray && !stringArray.isEmpty()) {
 
         // string arrays are encoded as elements, in case they contain whitespace
         List<XmlElementNameAndContents> childElements = new ArrayList<>();
-        stringArrayToElementList("elements", (StringArray) fsArray, childElements);
+        stringArrayToElementList("elements", stringArray, childElements);
         startElement(xmlElementName, workAttrs, childElements.size());
         sendElementEvents(childElements);
         endElement(xmlElementName);
@@ -1129,13 +1129,13 @@ public class XmiCasSerializer {
       String elemStr = null;
 
       // FS arrays: handle shared data items
-      if (fs instanceof FSArray) {
+      if (fs instanceof FSArray fsArray) {
         List<XmiArrayElement> ootsArrayElementsList = cds.sharedData == null ? null
-                : cds.sharedData.getOutOfTypeSystemArrayElements((FSArray) fs);
+                : cds.sharedData.getOutOfTypeSystemArrayElements(fsArray);
         int ootsIndex = 0;
 
         int j = -1;
-        for (TOP elemFS : ((FSArray) fs)._getTheArray()) {
+        for (TOP elemFS : fsArray._getTheArray()) {
           j++;
           if (elemFS == null) { // null case
             // special NULL object with xmi:id=0 is used to represent
@@ -1173,10 +1173,10 @@ public class XmiCasSerializer {
 
         return buf.toString();
 
-      } else if (fs instanceof ByteArray) {
+      } else if (fs instanceof ByteArray byteArray) {
 
         // special case for byte arrays: serialize as hex digits
-        byte[] ba = ((ByteArray) fs)._getTheArray();
+        byte[] ba = byteArray._getTheArray();
 
         char[] r = new char[ba.length * 2];
 
@@ -1227,7 +1227,7 @@ public class XmiCasSerializer {
         // }
 
         for (String s : fsvalues) {
-          if (buf.length() > 0) {
+          if (!buf.isEmpty()) {
             buf.append(' ');
           }
           buf.append(s);
@@ -1268,7 +1268,7 @@ public class XmiCasSerializer {
       }
       final StringBuilder sb = new StringBuilder();
       fs.anyListToOutput(cds.sharedData, cds, s -> {
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
           sb.append(' ').append(s);
         } else {
           sb.append(s);
@@ -1377,7 +1377,7 @@ public class XmiCasSerializer {
     protected XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
       if (uimaTypeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {
         // can't write out xyz[] as the qname. Use FSArray instead
-        uimaTypeName = CASImpl.TYPE_NAME_FS_ARRAY;
+        uimaTypeName = CAS.TYPE_NAME_FS_ARRAY;
       }
 
       // split uima type name into namespace and short name

@@ -39,12 +39,12 @@ import org.junit.jupiter.api.Test;
  * <p>
  * This implementation was adapted from <a href="http://lucene.apache.org/">Apache Lucene</a>.
  */
-public class WeakIdentityMapTest {
+class WeakIdentityMapTest {
 
   private Random random = new Random();
 
   @Test
-  public void testSimpleHashMap() {
+  void testSimpleHashMap() {
     final WeakIdentityMap<String, String> map = WeakIdentityMap.newHashMap(random.nextBoolean());
     // we keep strong references to the keys,
     // so WeakIdentityMap will not forget about them:
@@ -176,7 +176,7 @@ public class WeakIdentityMapTest {
   }
 
   @Test
-  public void testConcurrentHashMap() throws Exception {
+  void testConcurrentHashMap() throws Exception {
     // don't make threadCount and keyCount random, otherwise easily OOMs or fails otherwise:
     final int threadCount = 4;
     final int keyCount = 1024;
@@ -262,5 +262,4 @@ public class WeakIdentityMapTest {
       } catch (InterruptedException ie) {
       }
   }
-
 }

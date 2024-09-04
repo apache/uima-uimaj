@@ -36,8 +36,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class DataIO {
 
-  public static final Charset UTF8 = Charset.forName("UTF-8"); // use with String is a java 6, not
-                                                               // 5, feature
+  public static final Charset UTF8 = StandardCharsets.UTF_8; // use with String is a java 6, not
+                                                             // 5, feature
   private static final int SIGNED_INT_VALUE_0x80 = 0x80;
   private static final int MASK_LOW_7 = 0x7f;
   private static final long MASK_LOW_7_LONG = 0x7fL;

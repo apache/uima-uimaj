@@ -1124,8 +1124,9 @@ public class InstallationDescriptor implements Serializable {
    * @param id
    *          The given new ID of the main component.
    * @deprecated Use setMainComponentId() method instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public synchronized void updateMainComponentId(String id) {
     setMainComponentId(id);
   }

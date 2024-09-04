@@ -1443,13 +1443,13 @@ public class TypeSection extends AbstractImportablePartSection {
   }
 
   /** The Constant FIND_EQUAL_TYPE. */
-  private final static int FIND_EQUAL_TYPE = 1;
+  private static final int FIND_EQUAL_TYPE = 1;
 
   /** The Constant REMOVE_EQUAL_TYPE. */
-  private final static int REMOVE_EQUAL_TYPE = 2;
+  private static final int REMOVE_EQUAL_TYPE = 2;
 
   /** The Constant UPDATE_TYPE_NAME. */
-  private final static int UPDATE_TYPE_NAME = 4;
+  private static final int UPDATE_TYPE_NAME = 4;
 
   /**
    * Type priority lists visit.
@@ -1542,10 +1542,10 @@ public class TypeSection extends AbstractImportablePartSection {
   }
 
   /** The Constant TYPES. */
-  private final static boolean TYPES = true;
+  private static final boolean TYPES = true;
 
   /** The Constant FEATURES. */
-  private final static boolean FEATURES = false;
+  private static final boolean FEATURES = false;
 
   /** The Constant fsIndexDescCompare. */
   private static final Comparator fsIndexDescCompare = new Comparator() {

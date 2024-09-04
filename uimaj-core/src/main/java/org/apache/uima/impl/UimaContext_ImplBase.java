@@ -80,12 +80,12 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * refers to fields in this (containing, outer) class. So it seems the method could just be used
    * directly, and putting it into an inner class is silly.
    */
-  final private ComponentInfo mComponentInfo = new ComponentInfoImpl();
+  private final ComponentInfo mComponentInfo = new ComponentInfoImpl();
 
   /**
    * Fully-qualified name of this context.
    */
-  final protected String mQualifiedContextName;
+  protected final String mQualifiedContextName;
 
   /**
    * Mapping between sofa names assigned by an aggregate engine to sofa names assigned by the
@@ -95,7 +95,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * Multi-threading: This map is constructed at Constructor time, and never updated, only
    * referenced, subsequently.
    */
-  final protected Map<String, String> mSofaMappings;
+  protected final Map<String, String> mSofaMappings;
 
   /**
    * Size of the CAS pool used to support the {@link #getEmptyCas(Class)} method. Note: CASes
@@ -162,16 +162,16 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * or size operations. The size check followed by an add is in one sync block within
    * getEmptyCas(), locked on the set object itself (not shared with any other locks).
    */
-  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
+  protected final Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   /**
    * Object that implements management interface to the AE.
    */
-  final protected AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
+  protected final AnalysisEngineManagementImpl mMBean = new AnalysisEngineManagementImpl();
 
-  final private String uniqueIdentifier;
+  private final String uniqueIdentifier;
 
-  final private String mdcUniqueId;
+  private final String mdcUniqueId;
 
   /**
    * A number to throttle logging from Annotators If not the max value, it wraps loggers obtained
@@ -505,21 +505,11 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String, java.lang.String[])
-   */
   @Override
   public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceURIfromURL(getResourceURL(aKey, aParams));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String, java.lang.String[])
-   */
   @Override
   public String getResourceFilePath(String aKey, String[] aParams) throws ResourceAccessException {
     URI resourceUri = getResourceURI(aKey, aParams);
@@ -534,7 +524,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
   }
 
-  @Deprecated
+  @Deprecated(since = "3.4.0")
   @Override
   public String getDataPath() {
     return getResourceManager().getDataPath();
@@ -554,11 +544,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return mQualifiedContextName;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getConfigurationGroupNames()
-   */
   @Override
   public String[] getConfigurationGroupNames() {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
@@ -577,14 +562,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       names.addAll(Arrays.asList(groups[i].getNames()));
     }
 
-    return names.toArray(new String[names.size()]);
+    return names.toArray(String[]::new);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getConfigurationParameterNames()
-   */
   @Override
   public String[] getConfigParameterNames() {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
@@ -601,11 +581,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return Arrays.stream(params).map(ConfigurationParameter::getName).toArray(String[]::new);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getConfigurationParameterNames(java.lang.String)
-   */
   @Override
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationParameterDeclarations paramDecls = getConfigurationManager()
@@ -622,36 +597,26 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     List<String> names = new ArrayList<>();
     ConfigurationParameter[] commonParams = paramDecls.getCommonParameters();
     if (commonParams != null) {
-      for (int i = 0; i < commonParams.length; i++) {
-        names.add(commonParams[i].getName());
+      for (var commonParam : commonParams) {
+        names.add(commonParam.getName());
       }
     }
 
-    for (int i = 0; i < groups.length; i++) {
-      ConfigurationParameter[] groupParams = groups[i].getConfigurationParameters();
-      for (int j = 0; j < groupParams.length; j++) {
-        names.add(groupParams[j].getName());
+    for (ConfigurationGroup group : groups) {
+      ConfigurationParameter[] groupParams = group.getConfigurationParameters();
+      for (ConfigurationParameter groupParam : groupParams) {
+        names.add(groupParam.getName());
       }
     }
 
     return names.toArray(new String[names.size()]);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContextAdmin#getExternalOverrides()
-   */
   @Override
   public Settings getExternalOverrides() {
     return getRootContext().getExternalOverrides();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContextAdmin#setExternalOverrides(org.apache.uima.util.Settings)
-   */
   @Override
   public void setExternalOverrides(Settings externalOverrides) {
     getRootContext().setExternalOverrides(externalOverrides);
@@ -688,11 +653,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return sofaid;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#mapSofaIDToComponentSofaName(java.lang.String)
-   */
   @Override
   public String mapSofaIDToComponentSofaName(String aSofaID) {
     String componentSofaName = aSofaID;
@@ -705,11 +665,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return componentSofaName;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getSofaMappings()
-   */
   @Override
   public SofaID[] getSofaMappings() {
     Set<Map.Entry<String, String>> sofamap = mSofaMappings.entrySet();
@@ -727,11 +682,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return sofaArr;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContextAdmin#getSofaMap()
-   */
   @Override
   public Map<String, String> getSofaMap() {
     return Collections.unmodifiableMap(mSofaMappings);
@@ -747,27 +697,18 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     // in the middle of initialization when the entire merged type system is not yet known.
   }
 
-  /**
-   * @see UimaContextAdmin#returnedCAS(AbstractCas)
-   */
   @Override
   public void returnedCAS(AbstractCas aCAS) {
     // remove Base CAS from outstanding CASes set
     CAS baseCas = null;
-    if (aCAS instanceof JCas) {
-      baseCas = ((JCas) aCAS).getCasImpl().getBaseCAS();
-    } else if (aCAS instanceof CASImpl) {
-      baseCas = ((CASImpl) aCAS).getBaseCAS();
+    if (aCAS instanceof JCas jCas) {
+      baseCas = jCas.getCasImpl().getBaseCAS();
+    } else if (aCAS instanceof CASImpl cas) {
+      baseCas = cas.getBaseCAS();
     }
     mOutstandingCASes.remove(baseCas); // mOutstandingCASes is thread-safe (Concurrent hash map)
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class) see
-   * http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
-   */
   @Override
   public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface) {
     if (!mCasPoolCreated) {
@@ -828,11 +769,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     return mComponentInfo;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.UimaContextAdmin#getManagementInterface()
-   */
   @Override
   public AnalysisEngineManagement getManagementInterface() {
     return mMBean;

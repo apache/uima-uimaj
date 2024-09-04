@@ -42,9 +42,9 @@ import org.apache.vinci.debug.Debug;
  */
 public class BaseClient {
 
-  static public final int DEFAULT_SOCKET_TIMEOUT = 120000;
+  public static final int DEFAULT_SOCKET_TIMEOUT = 120000;
 
-  static public final int DEFAULT_CONNECT_TIMEOUT = 30000;
+  public static final int DEFAULT_CONNECT_TIMEOUT = 30000;
 
   private String host = null;
 
@@ -591,7 +591,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public Transportable sendAndReceive(Transportable in, String host_name, int p,
+  public static Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f) throws IOException, ServiceException {
     BaseClient tempClient = new BaseClient(host_name, p, f);
     tempClient.setRetry(false);
@@ -626,7 +626,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public Transportable sendAndReceive(Transportable in, String host_name, int p,
+  public static Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout) throws IOException, ServiceException {
     BaseClient tempClient = new BaseClient(host_name, p, f);
     tempClient.setSocketTimeout(socket_timeout);
@@ -665,7 +665,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public Transportable sendAndReceive(Transportable in, String host_name, int p,
+  public static Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout, int connect_timeout)
           throws IOException, ServiceException {
     BaseClient tempClient = new BaseClient(host_name, p, f, connect_timeout);
@@ -698,7 +698,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public VinciFrame rpc(Transportable in, String host_name, int p)
+  public static VinciFrame rpc(Transportable in, String host_name, int p)
           throws IOException, ServiceException {
     return (VinciFrame) sendAndReceive(in, host_name, p, VinciFrame.getVinciFrameFactory());
   }
@@ -725,7 +725,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout)
+  public static VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout)
           throws IOException, ServiceException {
     return (VinciFrame) sendAndReceive(in, host_name, p, VinciFrame.getVinciFrameFactory(),
             socket_timeout);
@@ -755,7 +755,7 @@ public class BaseClient {
    * @throws ServiceException
    *           -
    */
-  static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout,
+  public static VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout,
           int connect_timeout) throws IOException, ServiceException {
     return (VinciFrame) sendAndReceive(in, host_name, p, VinciFrame.getVinciFrameFactory(),
             socket_timeout, connect_timeout);

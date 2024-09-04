@@ -58,7 +58,7 @@ import org.junit.jupiter.api.Test;
  *   Verify appropriate mapping is there.
  */
 //@formatter:on
-public class CasTypeSystemMapperTest {
+class CasTypeSystemMapperTest {
 
   private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem(); // just to get
                                                                                       // the
@@ -113,7 +113,7 @@ public class CasTypeSystemMapperTest {
   // }
 
   @Test
-  public void testCasTypeSystemMapperFull() throws ResourceInitializationException {
+  void testCasTypeSystemMapperFull() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff); // become == type systems
     m = new CasTypeSystemMapper(ts1, ts2);
@@ -122,7 +122,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType1() throws ResourceInitializationException {
+  void testMissingType1() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t2 = t2t;
     ts2 = createTs(1, 0x1ffff, 0x1ffff); // missing t2t
@@ -134,7 +134,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType2() throws ResourceInitializationException {
+  void testMissingType2() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;
@@ -150,7 +150,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType3() throws ResourceInitializationException {
+  void testMissingType3() throws ResourceInitializationException {
     ts1 = createTs(1, 0x1ffff, 0x1ffff);
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
 
@@ -161,7 +161,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType4() throws ResourceInitializationException {
+  void testMissingType4() throws ResourceInitializationException {
     ts1 = createTs(2, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
@@ -176,7 +176,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType5() throws ResourceInitializationException {
+  void testMissingType5() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeImpl ts1t1 = t1t;
     TypeImpl ts1t2 = t2t;
@@ -190,7 +190,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingType6() throws ResourceInitializationException {
+  void testMissingType6() throws ResourceInitializationException {
     ts1 = createTs(0, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;
@@ -204,7 +204,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingFeature0() throws ResourceInitializationException {
+  void testMissingFeature0() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;
@@ -224,7 +224,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingFeature0r() throws ResourceInitializationException {
+  void testMissingFeature0r() throws ResourceInitializationException {
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
     ts1t2 = t2t;
@@ -244,7 +244,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingFeature0f() throws ResourceInitializationException {
+  void testMissingFeature0f() throws ResourceInitializationException {
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
     ts2t1 = t1t;
     ts2t2 = t2t;
@@ -264,7 +264,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingFeature0f2() throws ResourceInitializationException {
+  void testMissingFeature0f2() throws ResourceInitializationException {
     ts2 = createTs(3, 0x1ffff, 0x1ffff);
     ts2t1 = t1t;
     ts2t2 = t2t;
@@ -284,7 +284,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingAllFeat1() throws ResourceInitializationException {
+  void testMissingAllFeat1() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff);
     ts1t1 = t1t;
@@ -303,7 +303,7 @@ public class CasTypeSystemMapperTest {
   }
 
   @Test
-  public void testMissingAllFeat2() throws ResourceInitializationException {
+  void testMissingAllFeat2() throws ResourceInitializationException {
     int mf = 0x1ffff;
     ts1 = createTs(3, 0x1ffff, 0x1ffff - mf);
     ts1t1 = t1t;

@@ -32,15 +32,14 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class BinaryCasSerDesPerformance {
+class BinaryCasSerDesPerformance {
 
   // Note: This test case requires an input directory that has
   // 1) a file typesystem.xml which has the type system for the serialized files
   // 2) a bunch of files having compressed serialized CASes
   // Set the directory in the 2nd line below
   @Test
-  public void testBinaryCasDeserialization6Performance() throws Exception {
-
+  void testBinaryCasDeserialization6Performance() throws Exception {
     File dir = new File("" /* "/au/t/data/bin-compr-6/shakespeare.txt_40_processed" */);
 
     if (!dir.exists()) {
@@ -74,12 +73,8 @@ public class BinaryCasSerDesPerformance {
         // (System.nanoTime() - ist) / 1000000L, ((CASImpl)cas).getHeap().getHeapSize());
       }
     }
-    System.out.format("Time to deserialize all files was %,d milliseconds%n", accumDeser / 1000000); // (System.nanoTime()
-                                                                                                     // -
-                                                                                                     // startTime)
-                                                                                                     // /
-                                                                                                     // 1000000L);
+    // (System.nanoTime() - startTime) / 1000000L);
+    System.out.format("Time to deserialize all files was %,d milliseconds%n", accumDeser / 1000000);
     System.out.format("Time to serialize   all files was %,d milliseconds%n", accumSer / 1000000);
   }
-
 }

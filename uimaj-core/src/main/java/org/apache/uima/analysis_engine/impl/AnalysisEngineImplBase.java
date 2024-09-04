@@ -40,6 +40,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.Language;
@@ -71,6 +72,7 @@ import org.slf4j.MDC;
 public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase
         implements TextAnalysisEngine {
 
+  @SuppressWarnings("java:S1185")
   @Override
   protected void setMetaData(ResourceMetaData aMetaData) {
     // *****************************************************************************************
@@ -172,6 +174,10 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     return result;
   }
 
+  /**
+   * @deprecated Need to find a better solution since {@link Object#finalize()} has been deprecated
+   *             by Java.
+   */
   @Deprecated(since = "3.6.0")
   @Override
   protected void finalize() throws Throwable {
@@ -261,19 +267,19 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
 
+  /**
+   * @deprecated This is no longer used by the framework and was never intended for users to call.
+   *             Use {#link #process(CAS)} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
           ResultSpecification aResultSpec)
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#process(org.apache.uima.cas.CAS)
-   */
   @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
@@ -320,7 +326,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
 
     TypeImpl t = ts.getType(aTypeName);
     return (t == null) ? null
-            : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
+            : t.getFeaturesAsStream().map(FeatureImpl::getShortName).toArray(String[]::new);
   }
 
   @Override
@@ -557,7 +563,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     try {
       withContexts(component, context, null, () -> component.initialize(context));
     } catch (Exception e) {
-      throw (e instanceof ResourceInitializationException) ? ((ResourceInitializationException) e)
+      throw e instanceof ResourceInitializationException resourceInitializationException //
+              ? resourceInitializationException //
               : new ResourceInitializationException(e);
     }
   }

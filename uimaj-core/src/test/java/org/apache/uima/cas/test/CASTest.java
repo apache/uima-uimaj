@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,40 +36,35 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Class comment for CASTest.java goes here.
- * 
  */
-public class CASTest {
+class CASTest {
 
   private CAS cas;
 
   private TypeSystem ts;
 
   @BeforeEach
-  public void setUp() {
-    try {
-      cas = CASInitializer.initCas(new CASTestSetup(), null);
-      ts = cas.getTypeSystem();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+  void setUp() {
+    cas = CASInitializer.initCas(new CASTestSetup(), null);
+    ts = cas.getTypeSystem();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
     ts = null;
   }
 
   @Test
-  public void testGetTypeSystem() {
-    assertTrue(cas.getTypeSystem() != null);
+  void testGetTypeSystem() {
+    assertNotNull(cas.getTypeSystem());
   }
 
   @Test
-  public void testGetAnnotationIndex() {
+  void testGetAnnotationIndex() {
     AnnotationIndex index = cas.getAnnotationIndex();
     assertNotNull(index);
-    assertTrue(index.iterator() != null);
+    assertNotNull(index.iterator());
     boolean caughtException = false;
     try {
       cas.getAnnotationIndex(cas.getTypeSystem().getType(CAS.TYPE_NAME_TOP));
@@ -79,16 +75,16 @@ public class CASTest {
   }
 
   @Test
-  public void testCreateFS() {
+  void testCreateFS() {
     // Can create FS of type "Top"
-    assertTrue(cas.createFS(ts.getType(CAS.TYPE_NAME_TOP)) != null);
+    assertNotNull(cas.createFS(ts.getType(CAS.TYPE_NAME_TOP)));
     boolean caughtExc = false;
     // Can't create int FS.
     try {
       cas.createFS(ts.getType(CAS.TYPE_NAME_INTEGER));
     } catch (CASRuntimeException e) {
       caughtExc = true;
-      assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
+      assertEquals(CASRuntimeException.NON_CREATABLE_TYPE, e.getMessageKey());
     }
     assertTrue(caughtExc);
     caughtExc = false;
@@ -97,7 +93,7 @@ public class CASTest {
       cas.createFS(ts.getType(CAS.TYPE_NAME_FS_ARRAY));
     } catch (CASRuntimeException e) {
       caughtExc = true;
-      assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
+      assertEquals(CASRuntimeException.NON_CREATABLE_TYPE, e.getMessageKey());
     }
     assertTrue(caughtExc);
     caughtExc = false;
@@ -108,17 +104,8 @@ public class CASTest {
     // Make sure that the structure we're trying to create is actually larger
     // than the page size we're testing with.
     // assertTrue(arraySize > Heap.DEFAULT_SIZE);
-    IntArrayFS array = null;
-    try {
-      array = cas.createIntArrayFS(arraySize);
-    } catch (CASRuntimeException e) {
-      assertTrue(false);
-    }
-    try {
-      array.set(arraySize - 1, 1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      assertTrue(false);
-    }
+    IntArrayFS array = cas.createIntArrayFS(arraySize);
+    array.set(arraySize - 1, 1);
 
     // Can't create array subtype with CAS.createFS().
     // try {
@@ -131,7 +118,7 @@ public class CASTest {
   }
 
   @Test
-  public void testCreateCAS() {
+  void testCreateCAS() {
     TypeSystemMgr tsm = CASFactory.createTypeSystem();
     tsm.commit();
   }

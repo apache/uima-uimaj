@@ -42,7 +42,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 public class TypesWithNameSpaces32 implements IContentProposalProvider {
 
   /** The sorted names. */
-  final private SortedMap sortedNames;
+  private final SortedMap sortedNames;
 
   /**
    * Instantiates a new types with name spaces 32.

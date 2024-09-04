@@ -42,8 +42,9 @@ import org.w3c.dom.Element;
 
 /**
  * @deprecated As of v2.0, CAS Initializers are deprecated.
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl
         implements CasInitializerDescription {
 
@@ -65,21 +66,11 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
     getCasInitializerMetaData().setOperationalProperties(opProps);
   }
 
-  /**
-   * @see org.apache.uima.collection.CasInitializerDescription#getCasInitializerMetaData()
-   */
   @Override
   public ProcessingResourceMetaData getCasInitializerMetaData() {
     return (ProcessingResourceMetaData) getMetaData();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.
-   * ResourceManager)
-   */
   @Override
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException {
@@ -132,7 +123,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "casInitializerDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("frameworkImplementation"),
               new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),

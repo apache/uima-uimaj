@@ -308,7 +308,7 @@ public class PooledVinciClient {
   /**
    * Release a client that has been obtained from getClientFromPool.
    */
-  synchronized private void releaseClient(VinciClient c) {
+  private synchronized void releaseClient(VinciClient c) {
     if (closed) {
       --availableClientsStartIndex;
       this.notify();

@@ -75,7 +75,7 @@ public class AFrame extends VinciFrame {
    * 
    * @return -
    */
-  static public TransportableFactory getAFrameFactory() {
+  public static TransportableFactory getAFrameFactory() {
     return aFrameFactory;
   }
 
@@ -454,7 +454,7 @@ public class AFrame extends VinciFrame {
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
-  static public AFrame rpc(Transportable in, String service_name)
+  public static AFrame rpc(Transportable in, String service_name)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory());
   }
@@ -482,7 +482,7 @@ public class AFrame extends VinciFrame {
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
-  static public AFrame rpc(Transportable in, String service_name, int socket_timeout)
+  public static AFrame rpc(Transportable in, String service_name, int socket_timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory(),
             socket_timeout);
@@ -516,7 +516,7 @@ public class AFrame extends VinciFrame {
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
-  static public AFrame rpc(Transportable in, String service_name, int socket_timeout,
+  public static AFrame rpc(Transportable in, String service_name, int socket_timeout,
           int connect_timeout)
           throws IOException, ServiceException, ServiceDownException, VNSException {
     return (AFrame) VinciClient.sendAndReceive(in, service_name, getAFrameFactory(), socket_timeout,

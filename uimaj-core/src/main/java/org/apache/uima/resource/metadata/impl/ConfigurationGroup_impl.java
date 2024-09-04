@@ -108,7 +108,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     String[] names = getNames();
     buf.append(names[0]);
     for (int i = 1; i < names.length; i++) {
@@ -151,7 +151,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
           new PropertyXmlInfo[] {
               // NOTE: names property is XMLized as an attribute
               new PropertyXmlInfo("configurationParameters", null), });

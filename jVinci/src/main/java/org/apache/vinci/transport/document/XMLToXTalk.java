@@ -273,7 +273,7 @@ public class XMLToXTalk {
     }
   }
 
-  static private int updateElement(RandomAccessFile raf, ArrayList counts, int index)
+  private static int updateElement(RandomAccessFile raf, ArrayList counts, int index)
           throws IOException {
     skipString(raf);
     int skipCount = raf.readInt();
@@ -302,7 +302,7 @@ public class XMLToXTalk {
     return index;
   }
 
-  static private void skipString(RandomAccessFile raf) throws IOException {
+  private static void skipString(RandomAccessFile raf) throws IOException {
     final int count = raf.readInt();
     // Debug.p("Skipping string of size: " + count);
     final int skipped = raf.skipBytes(count);

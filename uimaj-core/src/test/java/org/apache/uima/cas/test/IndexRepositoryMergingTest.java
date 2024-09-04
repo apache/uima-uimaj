@@ -18,9 +18,7 @@
  */
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -45,7 +43,7 @@ import org.junit.jupiter.api.Test;
  *   2) two index definitions with the same kind and comparator, but different starting types - subindexes merged?
  */
 //@formatter:on
-public class IndexRepositoryMergingTest {
+class IndexRepositoryMergingTest {
 
   CASImpl cas;
 
@@ -61,7 +59,7 @@ public class IndexRepositoryMergingTest {
    * @see junit.framework.TestCase#setUp()
    */
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     cas = (CASImpl) CASFactory.createCAS();
 
     TypeSystemImpl ts = typeSystem = cas.getTypeSystemImpl();
@@ -90,7 +88,7 @@ public class IndexRepositoryMergingTest {
                                                                           // AnnotationIndex
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
-      assertTrue(false);
+      assertThat(false).isTrue();
     }
     ir.createIndex(comp, "Annot Index"); // should not be the same as the built-in one due to
                                          // different type order
@@ -104,16 +102,15 @@ public class IndexRepositoryMergingTest {
   }
 
   @Test
-  public void testIndexes() {
+  void testIndexes() {
     FSIndex<Annotation> ix1 = ir.getIndex("Annot Index");
     FSIndex<Annotation> ix2 = ir.getIndex("Annot Index2");
     FSIndex<Annotation> ix3 = ir.getIndex("Annot Index", annotSubtype);
     FSIndex<Annotation> ix4 = ir.getIndex("Annot Index Subtype");
 
-    assertEquals(ix1, ix2);
-    assertFalse(ix1.equals(cas.getAnnotationIndex()));
-    assertFalse(ix1.equals(ix3));
-    assertEquals(ix3, ix4);
+    assertThat(ix2).isEqualTo(ix1);
+    assertThat(ix1).isNotEqualTo(cas.getAnnotationIndex());
+    assertThat(ix1).isNotEqualTo(ix3);
+    assertThat(ix4).isEqualTo(ix3);
   }
-
 }

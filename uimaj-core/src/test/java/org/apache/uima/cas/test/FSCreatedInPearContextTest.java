@@ -35,10 +35,10 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class FSCreatedInPearContextTest {
+class FSCreatedInPearContextTest {
 
   @Test
-  public void thatOneTrampolineIsUsedWhenClassLoaderIsSwitched() throws Exception, IOException {
+  void thatOneTrampolineIsUsedWhenClassLoaderIsSwitched() throws Exception, IOException {
 
     var rootCl = getClass().getClassLoader();
 
@@ -71,7 +71,7 @@ public class FSCreatedInPearContextTest {
   }
 
   @Test
-  public void thatResettingCasInPearContextWorks() throws Exception, IOException {
+  void thatResettingCasInPearContextWorks() throws Exception, IOException {
     var rootCl = getClass().getClassLoader();
 
     var clForToken = new IsolatingClassloader("Token", rootCl)

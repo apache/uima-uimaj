@@ -100,10 +100,10 @@ import org.apache.uima.jcas.tcas.Annotation;
 //@formatter:on
 public class SelectFSs_impl<T extends FeatureStructure> implements SelectFSs<T> {
 
-  private final static boolean IS_UNORDERED = true;
-  private final static boolean IS_ORDERED = false;
-  private final static boolean IS_UNAMBIGUOUS = false;
-  private final static boolean IS_NOT_STRICT = false;
+  private static final boolean IS_UNORDERED = true;
+  private static final boolean IS_ORDERED = false;
+  private static final boolean IS_UNAMBIGUOUS = false;
+  private static final boolean IS_NOT_STRICT = false;
 
   private CASImpl view;
   private JCasImpl jcas;

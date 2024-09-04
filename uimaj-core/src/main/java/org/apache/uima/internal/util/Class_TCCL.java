@@ -45,16 +45,16 @@ import org.apache.uima.resource.ResourceManager;
 //@formatter:on
 public class Class_TCCL {
 
-  static public <T> Class<T> forName(String className) throws ClassNotFoundException {
+  public static <T> Class<T> forName(String className) throws ClassNotFoundException {
     return forName(className, null, true);
   }
 
-  static public <T> Class<T> forName(String className, ResourceManager rm)
+  public static <T> Class<T> forName(String className, ResourceManager rm)
           throws ClassNotFoundException {
     return forName(className, rm, true);
   }
 
-  static public <T> Class<T> forName(String className, ResourceManager rm, boolean resolve)
+  public static <T> Class<T> forName(String className, ResourceManager rm, boolean resolve)
           throws ClassNotFoundException {
     List<ClassLoader> clsTried = new ArrayList<>();
     List<ClassNotFoundException> suppressedExceptions = new ArrayList<>();
@@ -98,7 +98,7 @@ public class Class_TCCL {
     throw e;
   }
 
-  static public <T> Class<T> forName(String className, Map<String, Object> additionalParams)
+  public static <T> Class<T> forName(String className, Map<String, Object> additionalParams)
           throws ClassNotFoundException {
     ResourceManager rm = (additionalParams != null)
             ? (ResourceManager) additionalParams.get(Resource.PARAM_RESOURCE_MANAGER)
@@ -112,7 +112,7 @@ public class Class_TCCL {
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.5.0")
-  static public ClassLoader get_cl(ResourceManager rm) {
+  public static ClassLoader get_cl(ResourceManager rm) {
 
     ClassLoader cl = (rm == null) ? null : rm.getExtensionClassLoader();
 
@@ -129,7 +129,7 @@ public class Class_TCCL {
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.5.0")
-  static public ClassLoader get_parent_cl() {
+  public static ClassLoader get_parent_cl() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     return (cl == null) ? Class_TCCL.class.getClassLoader() : cl;
   }

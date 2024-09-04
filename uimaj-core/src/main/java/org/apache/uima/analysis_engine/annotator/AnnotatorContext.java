@@ -447,8 +447,9 @@ public interface AnnotatorContext {
    * @deprecated As of v2.0, annotators no longer need to explicitly call this method. CAS views can
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaID mapToSofaID(String aSofaName);
 
   /**
@@ -458,8 +459,8 @@ public interface AnnotatorContext {
    * @deprecated As of v2.0, annotators no longer need to explicitly call this method. CAS views can
    *             now be obtained directly by the method {@link CAS#getView(String)}, and the
    *             framework will automatically do the necessary Sofa mappings.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   SofaID[] getSofaMappings();
-
 }

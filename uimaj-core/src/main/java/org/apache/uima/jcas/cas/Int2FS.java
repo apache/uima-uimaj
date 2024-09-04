@@ -50,20 +50,20 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.cas.Int2FS";
+  public static final String _TypeName = "org.apache.uima.jcas.cas.Int2FS";
 
   /**
    * @generated
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static int typeIndexID = JCasRegistry.register(Int2FS.class);
+  public static final int typeIndexID = JCasRegistry.register(Int2FS.class);
   /**
    * @generated
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   /**
    * @generated
@@ -92,19 +92,19 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
    *   Feature Offsets *
    * *******************/ 
 //@formatter:on
-  public final static String _FeatName_fsArray = "fsArray";
+  public static final String _FeatName_fsArray = "fsArray";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class,
+  private static final CallSite _FC_fsArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class,
           "fsArray");
-  private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
+  private static final MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
-  public final static String _FeatName_intArray = "intArray";
+  public static final String _FeatName_intArray = "intArray";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class,
+  private static final CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(Int2FS.class,
           "intArray");
-  private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
+  private static final MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor
@@ -258,7 +258,7 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
       }
 
       // using element by element instead of bulk operations
-      // in case fsa was preallocated and right size, may need journaling
+      // in case fsa was pre-allocated and right size, may need journaling
 
       Iterator<IntEntry<T>> it = int2FS.iterator();
       int[] i = new int[1];
@@ -268,7 +268,7 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
 
       it.forEachRemaining(e -> {
         ia_final.set(i[0], e.getKey());
-        fsa_final.set_without_PEAR_conversion(i[0], (T) e.getValue());
+        fsa_final.set_without_PEAR_conversion(i[0], e.getValue());
         i[0]++;
       });
     }
@@ -381,7 +381,7 @@ public class Int2FS<T extends TOP> extends TOP implements UimaSerializableFSs, C
   public T remove(int key) {
     maybeLazyInit();
     isSaveNeeded = true;
-    return (T) int2FS.remove(key);
+    return int2FS.remove(key);
   }
 
   public void clear() {

@@ -74,18 +74,18 @@ public class CasPool {
 
   // no sync needed because this list is filled during initialization of this instance, and
   // from then on is read-only, which can occur in parallel
-  final private Set<CAS> mAllInstances;
+  private final Set<CAS> mAllInstances;
 
   // We use this rather than a form of BlockingQueue, to achieve an (arbitrary) LIFO-like reuse of
   // CASes
   // this is a set rather than an array, to speed up "contains()" check used when releasing
   // (user code could call release multiple times on same cas...)
-  final private Set<CAS> mFreeInstances;
+  private final Set<CAS> mFreeInstances;
 
-  final private int mNumInstances;
+  private final int mNumInstances;
 
   // a fair lock to prevent starvation of a thread
-  final private Semaphore permits;
+  private final Semaphore permits;
 
   private CasPool(int aNumInstances, Set<CAS> allInstances) {
     mNumInstances = aNumInstances;
@@ -175,9 +175,7 @@ public class CasPool {
 
   /**
    * Creates a new CasPool.
-   * 
-   * TODO: do we need this method AND the one that takes a CasManager?
-   * 
+   *
    * @param aNumInstances
    *          the number of CAS instances in the pool
    * @param aCasDefinition
@@ -189,6 +187,7 @@ public class CasPool {
    * @throws ResourceInitializationException
    *           -
    */
+  // TODO: do we need this method AND the one that takes a CasManager?
   public CasPool(int aNumInstances, CasDefinition aCasDefinition,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     this(aNumInstances, fillPool(aNumInstances, aCasDefinition, aPerformanceTuningSettings));
@@ -282,7 +281,7 @@ public class CasPool {
    * Checks in a CAS to the pool. This automatically calls the {@link CAS#reset()} method, to ensure
    * that when the CAS is later retrieved from the pool it will be ready to use. Also notifies other
    * Threads that may be waiting for an instance to become available.
-   * 
+   * <p>
    * Synchronized on the CAS to avoid the unnatural case where multiple threads attempt to return
    * the same CAS to the pool at the same time.
    * 
@@ -339,11 +338,6 @@ public class CasPool {
     return mFreeInstances.size();
   }
 
-  /**
-   * @param componentDescriptionsOrMetaData
-   * @param performanceTuningSettings
-   * @param resourceManager
-   */
   private static Set<CAS> fillPool(int aNumInstances,
           Collection<? extends ProcessingResourceMetaData> mdList,
           Properties performanceTuningSettings, ResourceManager resourceManager)

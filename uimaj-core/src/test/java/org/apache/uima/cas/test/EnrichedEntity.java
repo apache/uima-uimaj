@@ -42,19 +42,16 @@ public class EnrichedEntity extends Annotation {
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.cas.test.EnrichedEntity";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.cas.test.EnrichedEntity";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(EnrichedEntity.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(EnrichedEntity.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -66,12 +63,12 @@ public class EnrichedEntity extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_features = "features";
+  public static final String _FeatName_features = "features";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_features = TypeSystemImpl.createCallSite(EnrichedEntity.class, "features");
-  private final static MethodHandle _FH_features = _FC_features.dynamicInvoker();
+  private static final CallSite _FC_features = TypeSystemImpl.createCallSite(EnrichedEntity.class, "features");
+  private static final MethodHandle _FH_features = _FC_features.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

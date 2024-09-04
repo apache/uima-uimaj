@@ -118,7 +118,7 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("externalResource",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("externalResource",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("description", false),
               new PropertyXmlInfo("resourceSpecifier", null),

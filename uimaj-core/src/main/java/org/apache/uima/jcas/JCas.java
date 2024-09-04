@@ -210,13 +210,14 @@ public interface JCas extends AbstractCas {
   }
 
   /**
-   * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
-   *             call {@link #getSofa()} if you truly need to access the SofaFS object.
    * @param sofaID
    *          -
    * @return the Sofa
+   * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
+   *             call {@link #getSofa()} if you truly need to access the SofaFS object.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   Sofa getSofa(SofaID sofaID);
 
   /**

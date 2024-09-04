@@ -88,8 +88,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   /**
    * logger object from the underlying Slf4j logging framework
    */
-  final private org.slf4j.Logger logger;
-  final private boolean isLocationCapable; // the slf4j simple logger is not
+  private final org.slf4j.Logger logger;
+  private final boolean isLocationCapable; // the slf4j simple logger is not
 
   /**
    * create a new LogWrapper class for the specified source class

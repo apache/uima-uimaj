@@ -46,7 +46,7 @@ import org.apache.uima.jcas.cas.TOP;
 class FsIterator_aggregation_common<T extends FeatureStructure>
         extends FsIterator_multiple_indexes<T> {
 
-  private final static AtomicInteger moveTo_error_msg_count = new AtomicInteger(0);
+  private static final AtomicInteger moveTo_error_msg_count = new AtomicInteger(0);
 
   // /** only used for moveTo */
   // final private boolean ignoreTypePriority;

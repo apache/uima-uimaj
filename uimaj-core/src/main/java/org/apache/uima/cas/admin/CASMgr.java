@@ -46,8 +46,9 @@ public interface CASMgr {
    * the type system, the indexes etc. Call before processing a new document.
    * 
    * @deprecated Use {@link #reset reset()} instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   void flush() throws CASAdminException;
 
   /**
@@ -74,12 +75,12 @@ public interface CASMgr {
   void enableReset(boolean flag);
 
   /**
-   * Does nothing, kept only for backwards compatibility
-   * 
    * @param cas
    *          -
+   * @forRemoval 4.0.0
+   * @deprecated Does nothing, kept only for backwards compatibility
    */
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   void setCAS(CAS cas);
 
   /**

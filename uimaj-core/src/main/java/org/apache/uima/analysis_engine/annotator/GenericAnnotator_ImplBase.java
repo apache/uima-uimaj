@@ -24,8 +24,9 @@ package org.apache.uima.analysis_engine.annotator;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  * 
  * @deprecated As of release 2.3.0, use CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public abstract class GenericAnnotator_ImplBase extends Annotator_ImplBase
         implements GenericAnnotator {
   // overrides no methods

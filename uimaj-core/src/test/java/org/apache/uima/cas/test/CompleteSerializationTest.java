@@ -25,8 +25,6 @@ import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.apache.uima.util.CasIOUtils.load;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,24 +55,24 @@ import org.junit.jupiter.api.Test;
 /**
  * CAS complete serialization test class
  */
-public class CompleteSerializationTest {
+class CompleteSerializationTest {
 
   @BeforeAll
-  public static void setupClass() {
+  static void setupClass() {
     System.setProperty("uima.enable_strict_type_source_check", "true");
   }
 
   @AfterAll
-  public static void tearDownClass() {
+  static void tearDownClass() {
     System.getProperties().remove("uima.enable_strict_type_source_check");
   }
 
   @Test
-  public void testSerialization() throws Exception {
+  void testSerialization() throws Exception {
     CASMgr cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
 
     ((CAS) cas).setDocumentText("Create the sofa for the inital view");
-    assertTrue(((CASImpl) cas).isBackwardCompatibleCas());
+    assertThat(((CASImpl) cas).isBackwardCompatibleCas()).isTrue();
     CASCompleteSerializer ser = Serialization.serializeCASComplete(cas);
 
     // deserialize into a new CAS with a type system that only contains the builtins
@@ -82,9 +80,9 @@ public class CompleteSerializationTest {
 
     Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
 
-    assertTrue(((CASImpl) newCas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-    assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
-    assertEquals("Create the sofa for the inital view", newCas.getDocumentText());
+    assertThat(((CASImpl) newCas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1)).isNotNull();
+    assertThat(((CASImpl) newCas).isBackwardCompatibleCas()).isTrue();
+    assertThat(newCas.getDocumentText()).isEqualTo("Create the sofa for the inital view");
 
     // make sure JCas can be created
     newCas.getJCas();
@@ -92,21 +90,21 @@ public class CompleteSerializationTest {
     // deserialize into newCas a second time (OF bug found 7/7/2006)
     Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
 
-    assertTrue(cas.getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-    assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
+    assertThat(cas.getTypeSystemMgr().getType(CASTestSetup.GROUP_1)).isNotNull();
+    assertThat(((CASImpl) newCas).isBackwardCompatibleCas()).isTrue();
 
     assertThatExceptionOfType(IllegalStateException.class)
             .isThrownBy(() -> ((LowLevelCAS) newCas).ll_enableV2IdRefs());
   }
 
   @Test
-  public void testSerializationV2IdRefs() throws Exception {
+  void testSerializationV2IdRefs() throws Exception {
     try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
       CAS cas = CASInitializer.initCas(new CASTestSetup(), null);
       JCas jcas = cas.getJCas();
 
       cas.setDocumentText("Create the sofa for the inital view");
-      assertTrue(((CASImpl) cas).isBackwardCompatibleCas());
+      assertThat(((CASImpl) cas).isBackwardCompatibleCas()).isTrue();
 
       Type t1 = cas.getTypeSystem().getType(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE);
       Feature feat1 = t1.getFeatureByBaseName(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE_FEAT);
@@ -123,7 +121,7 @@ public class CompleteSerializationTest {
       int id = myAnnot._id();
       myAnnot = new Annotation(jcas);
       int id2 = myAnnot._id();
-      assertEquals(4, id2 - id); // type code, sofa, begin, end
+      assertThat(id2 - id).isEqualTo(4); // type code, sofa, begin, end
 
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas);
 
@@ -134,20 +132,20 @@ public class CompleteSerializationTest {
 
       LowLevelCAS ll = newCas.getLowLevelCAS();
 
-      assertEquals(id, ll.ll_getFSForRef(id)._id());
+      assertThat(ll.ll_getFSForRef(id)._id()).isEqualTo(id);
 
       CasCompare cc = new CasCompare((CASImpl) cas, (CASImpl) newCas);
       cc.compareIds(true);
-      assertTrue(cc.compareCASes());
+      assertThat(cc.compareCASes()).isTrue();
 
       Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
-      assertEquals(id, ll.ll_getFSForRef(id)._id());
-      assertEquals(id2, ll.ll_getFSForRef(id2)._id());
+      assertThat(ll.ll_getFSForRef(id)._id()).isEqualTo(id);
+      assertThat(ll.ll_getFSForRef(id2)._id()).isEqualTo(id2);
 
-      assertEquals(id2, ll.ll_getFSForRef(id2)._id());
-      assertTrue(((CASImpl) newCas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-      assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
-      assertEquals("Create the sofa for the inital view", newCas.getDocumentText());
+      assertThat(ll.ll_getFSForRef(id2)._id()).isEqualTo(id2);
+      assertThat(((CASImpl) newCas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1)).isNotNull();
+      assertThat(((CASImpl) newCas).isBackwardCompatibleCas()).isTrue();
+      assertThat(newCas.getDocumentText()).isEqualTo("Create the sofa for the inital view");
 
       // make sure JCas can be created
       newCas.getJCas();
@@ -155,13 +153,13 @@ public class CompleteSerializationTest {
       // deserialize into newCas a second time (OF bug found 7/7/2006)
       Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
 
-      assertTrue(((CASMgr) cas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-      assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
+      assertThat(((CASMgr) cas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1)).isNotNull();
+      assertThat(((CASImpl) newCas).isBackwardCompatibleCas()).isTrue();
     }
   }
 
   @Test
-  public void thatReplacingTypeSystemInCasWorks() throws Exception {
+  void thatReplacingTypeSystemInCasWorks() throws Exception {
     String initialViewText = "First view text";
     String secondViewId = "secondView";
     String secondViewText = "Second view text";

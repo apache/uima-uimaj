@@ -26,16 +26,16 @@ import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AnnotationTest {
+class AnnotationTest {
   private CAS cas;
 
   @BeforeEach
-  public void setup() throws Exception {
+  void setup() throws Exception {
     cas = CasCreationUtils.createCas();
   }
 
   @Test
-  public void thatEmptySpanIsTrimmedToEmptySpan() throws Exception {
+  void thatEmptySpanIsTrimmedToEmptySpan() throws Exception {
     cas.setDocumentText("    ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 2);
@@ -47,7 +47,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void thatSpanIsTrimmedToEmptySpanStartingAtOriginalStart() {
+  void thatSpanIsTrimmedToEmptySpanStartingAtOriginalStart() {
     cas.setDocumentText("    ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 3);
@@ -59,7 +59,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void thatLeadingAndTrailingWhitespaceIsRemoved() {
+  void thatLeadingAndTrailingWhitespaceIsRemoved() {
     cas.setDocumentText(" ab ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 4);
@@ -71,7 +71,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void thatInnerWhitespaceIsRemoved1() {
+  void thatInnerWhitespaceIsRemoved1() {
     cas.setDocumentText(" a b ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 2);
@@ -83,7 +83,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void thatInnerWhitespaceIsRemoved2() {
+  void thatInnerWhitespaceIsRemoved2() {
     cas.setDocumentText(" a b ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 2, 5);
@@ -95,7 +95,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testSingleCharacter() {
+  void testSingleCharacter() {
     cas.setDocumentText(".");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 1);
@@ -107,7 +107,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testLeadingWhitespace() {
+  void testLeadingWhitespace() {
     cas.setDocumentText(" \t\n\r.");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
@@ -119,7 +119,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testLeadingWhitespaceWithSurrogates() {
+  void testLeadingWhitespaceWithSurrogates() {
     cas.setDocumentText(" \t\n\r😀");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
@@ -131,7 +131,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testTrailingWhitespace() {
+  void testTrailingWhitespace() {
     cas.setDocumentText(". \n\r\t");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
@@ -143,7 +143,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testTrailingWhitespaceWithSurrogates() {
+  void testTrailingWhitespaceWithSurrogates() {
     cas.setDocumentText("😀 \n\r\t");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 6);
@@ -155,7 +155,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testLeadingTrailingWhitespace() {
+  void testLeadingTrailingWhitespace() {
     cas.setDocumentText(" \t\n\r. \n\r\t");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 0, 9);
@@ -165,7 +165,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate() {
+  void testLeadingTrailingWhitespaceWithSurrogatesAndCustomPredicate() {
     // 𝪀 (U+1DA80) is the SIGNWRITING LOCATION-FLOORPLANE SPACE. It is not recognized by
     // Character.isWhitespace(...), so we use a custom predicate to filter it out
     cas.setDocumentText(" \t𝪀\n\r. \n𝪀\r\t");
@@ -179,7 +179,7 @@ public class AnnotationTest {
   }
 
   @Test
-  public void testBlankString() {
+  void testBlankString() {
     cas.setDocumentText("   ");
 
     AnnotationFS ann = cas.createAnnotation(cas.getAnnotationType(), 1, 2);

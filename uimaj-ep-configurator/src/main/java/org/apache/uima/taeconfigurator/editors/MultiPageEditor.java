@@ -3051,7 +3051,7 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
   }
 
   /** The Constant PATH_SEPARATOR. */
-  final public static String PATH_SEPARATOR = System.getProperty("path.separator"); //$NON-NLS-1$
+  public static final String PATH_SEPARATOR = System.getProperty("path.separator"); //$NON-NLS-1$
 
   /** The cached stamp. */
   private long cachedStamp = -1;

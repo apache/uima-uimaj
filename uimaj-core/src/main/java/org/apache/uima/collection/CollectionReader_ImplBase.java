@@ -37,7 +37,7 @@ import org.apache.uima.util.Level;
  */
 public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase
         implements CollectionReader {
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   private CasInitializer mCasInitializer;
 
   /**
@@ -135,9 +135,10 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * @see org.apache.uima.collection.CollectionReader#getCasInitializer()
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public CasInitializer getCasInitializer() {
     return mCasInitializer;
   }
@@ -149,9 +150,10 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    * @see org.apache.uima.collection.CollectionReader#setCasInitializer(org.apache.uima.collection.CasInitializer)
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public void setCasInitializer(CasInitializer aCasInitializer) {
     mCasInitializer = aCasInitializer;
   }

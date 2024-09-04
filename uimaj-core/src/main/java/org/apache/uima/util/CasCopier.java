@@ -250,7 +250,7 @@ public class CasCopier {
 
   // final private Feature mDestSofaFeature;
 
-  final private boolean lenient; // true: ignore feature structures and features that are not
+  private final boolean lenient; // true: ignore feature structures and features that are not
                                  // defined in the destination CAS
 
   /**
@@ -260,12 +260,12 @@ public class CasCopier {
    * 
    * Target not set if lenient specified and src type isn't in target
    */
-  final private Map<TOP, TOP> mFsMap; // is identity hash map
+  private final Map<TOP, TOP> mFsMap; // is identity hash map
 
   /**
    * Deferred calls to copy Features of a FS
    */
-  final private Deque<Runnable> fsToDo = new ArrayDeque<>();
+  private final Deque<Runnable> fsToDo = new ArrayDeque<>();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
@@ -723,8 +723,7 @@ public class CasCopier {
 
     // Sofa - cannot be created by normal methods. Instead, we return the Sofa with the
     // same Sofa ID in the target CAS. If it does not exist it will be created.
-    if (srcFs instanceof Sofa) {
-      Sofa srcSofa = (Sofa) srcFs;
+    if (srcFs instanceof Sofa srcSofa) {
       return getCorrespondingTgtView(srcSofa.getSofaID()).getSofa();
     }
 
@@ -740,7 +739,7 @@ public class CasCopier {
       tgtView = tgtCasViewImpl;
     }
 
-    TypeImpl tgtTi = getTargetType(((TOP) srcFs)._getTypeImpl());
+    TypeImpl tgtTi = getTargetType(srcFs._getTypeImpl());
     if (null == tgtTi) {
       return null; // not in target, no FS to create
     }
@@ -816,7 +815,7 @@ public class CasCopier {
     TOP tgtFs = tgtView.createFS(tgtTi);
 
     // add to map so we don't try to copy this more than once
-    mFsMap.put((TOP) srcFs, tgtFs);
+    mFsMap.put(srcFs, tgtFs);
 
     fsToDo.addLast(() -> {
       if (srcFs instanceof UimaSerializable) {
@@ -1028,8 +1027,8 @@ public class CasCopier {
   private TOP copyArray(TOP srcFS) {
     final CommonArrayFS srcCA = (CommonArrayFS) srcFS;
     final int size = srcCA.size();
-    final TypeImpl tgtTi = getTargetType(((TOP) srcFS)._getTypeImpl()); // could be null for src =
-                                                                        // e.g. Annotation[]
+    // could be null for src = e.g. Annotation[]
+    final TypeImpl tgtTi = getTargetType(srcFS._getTypeImpl());
 
     if (tgtTi == null) {
       return null; // can't copy

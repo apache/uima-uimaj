@@ -65,7 +65,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *   publish the updated results to other threads
    */
 //@formatter:on
-  final private Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<>();
+  private final Map<String, ConfigurationParameterDeclarations> mContextNameToParamDeclsMap = new HashMap<>();
 
 //@formatter:off
   /**
@@ -76,7 +76,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *   The setup is done under a sync'd control to insure only one setup is done
    */
 //@formatter:on
-  final protected Map<String, String> mLinkMap = new HashMap<>();
+  protected final Map<String, String> mLinkMap = new HashMap<>();
 
   /**
    * Set of parameters (fully qualified names) that explicitly declare overrides. This is used to

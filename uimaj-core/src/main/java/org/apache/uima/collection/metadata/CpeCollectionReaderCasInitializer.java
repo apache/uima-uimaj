@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.MetaDataObject;
  * @deprecated As of v2.0 CAS Initializers are deprecated.
  * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
   /**
    * Sets descriptor path containing configuration for the CasInitializer

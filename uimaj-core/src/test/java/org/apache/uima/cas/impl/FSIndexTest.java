@@ -37,14 +37,14 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.Test;
 
-public class FSIndexTest {
+class FSIndexTest {
 
   // static {
   // System.setProperty(TypeSystemImpl.ENABLE_STRICT_TYPE_SOURCE_CHECK, "true");
   // }
 
   @Test
-  public void thatTypeSystemChangesCanBeHandled() throws Exception {
+  void thatTypeSystemChangesCanBeHandled() throws Exception {
 
     String myTypeName = "my.MyType";
 

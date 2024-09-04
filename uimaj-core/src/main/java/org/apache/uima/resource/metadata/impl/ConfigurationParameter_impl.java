@@ -214,17 +214,17 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
 
     // not multi-valued
     switch (aTypeName) {
-      case ConfigurationParameter.TYPE_STRING:
+      case TYPE_STRING:
         return aClass == String.class;
-      case ConfigurationParameter.TYPE_BOOLEAN:
+      case TYPE_BOOLEAN:
         return aClass == Boolean.class;
-      case ConfigurationParameter.TYPE_INTEGER:
+      case TYPE_INTEGER:
         return aClass == Integer.class;
-      case ConfigurationParameter.TYPE_LONG:
+      case TYPE_LONG:
         return aClass == Long.class;
-      case ConfigurationParameter.TYPE_FLOAT:
+      case TYPE_FLOAT:
         return aClass == Float.class;
-      case ConfigurationParameter.TYPE_DOUBLE:
+      case TYPE_DOUBLE:
         return aClass == Double.class;
       default:
         throw new IllegalArgumentException("Unsupported parameter type [" + aTypeName + "]");
@@ -247,17 +247,10 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
       return false;
     }
 
-    switch ((String) aTypeName) {
-      case ConfigurationParameter.TYPE_STRING: // fall-through
-      case ConfigurationParameter.TYPE_BOOLEAN: // fall-through
-      case ConfigurationParameter.TYPE_INTEGER: // fall-through
-      case ConfigurationParameter.TYPE_LONG: // fall-through
-      case ConfigurationParameter.TYPE_FLOAT: // fall-through
-      case ConfigurationParameter.TYPE_DOUBLE: // fall-through
-        return true;
-      default:
-        return false;
-    }
+    return switch ((String) aTypeName) {
+      case TYPE_STRING, TYPE_BOOLEAN, TYPE_INTEGER, TYPE_LONG, TYPE_FLOAT, TYPE_DOUBLE -> true;
+      default -> false;
+    };
   }
 
   /**
@@ -289,9 +282,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
       List<String> valueList = new ArrayList<>();
       for (int i = 0; i < numChildren; i++) {
         Node curNode = elems.item(i);
-        if (curNode instanceof Element) {
-          Element curElem = (Element) curNode;
-
+        if (curNode instanceof Element curElem) {
           // does the PropertyXmlInfo specify the expected tag name?
           if ("parameter".equals(curElem.getTagName()) || "param".equals(curElem.getTagName())) {
             // get text of element
@@ -319,7 +310,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationParameter",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationParameter",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("externalOverrideName"), new PropertyXmlInfo("description"),
               new PropertyXmlInfo("type"), new PropertyXmlInfo("multiValued"),

@@ -66,7 +66,7 @@ public class UimaDecompiler {
   /**
    * special message issued by the decompiler if it fails to load the class
    */
-  private final static byte[] errorMsg;
+  private static final byte[] errorMsg;
   static {
     errorMsg = "!!! ERROR: Failed to load class".getBytes(StandardCharsets.UTF_8);
   }

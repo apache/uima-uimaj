@@ -19,17 +19,15 @@
 package org.apache.uima.resource.impl;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.resource.CasManager;
 import org.junit.jupiter.api.Test;
 
-public class CasManager_implTest {
+class CasManager_implTest {
   @Test
-  public void testEnableReset() throws Exception {
-    CasManager mgr = UIMAFramework.newDefaultResourceManager().getCasManager();
+  void testEnableReset() throws Exception {
+    var mgr = UIMAFramework.newDefaultResourceManager().getCasManager();
     mgr.defineCasPool("test", 1, null);
-    CAS cas = mgr.getCas("test");
+    var cas = mgr.getCas("test");
 
     ((CASImpl) cas).enableReset(false);
 
@@ -46,7 +44,5 @@ public class CasManager_implTest {
     cas = mgr.getCas("test");
     ((CASImpl) cas).enableReset(true);
     cas.release();
-
   }
-
 }

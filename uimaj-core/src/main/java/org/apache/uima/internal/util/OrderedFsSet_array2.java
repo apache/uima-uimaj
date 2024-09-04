@@ -70,11 +70,11 @@ import org.apache.uima.util.impl.Constants;
 //@formatter:on
 public class OrderedFsSet_array2 implements NavigableSet<TOP> {
   // public boolean specialDebug = false;
-  final private static boolean TRACE = false;
-  final private static boolean MEASURE = false;
-  final private static int DEFAULT_MIN_SIZE = 8; // power of 2 please
-  final private static int MAX_DOUBLE_SIZE = 1024 * 1024 * 4; // 4 million, power of 2 please
-  final private static int MIN_SIZE = 8;
+  private static final boolean TRACE = false;
+  private static final boolean MEASURE = false;
+  private static final int DEFAULT_MIN_SIZE = 8; // power of 2 please
+  private static final int MAX_DOUBLE_SIZE = 1024 * 1024 * 4; // 4 million, power of 2 please
+  private static final int MIN_SIZE = 8;
 
   // final private static MethodHandle getActualArray;
   //
@@ -107,8 +107,8 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
 
   private final ArrayList<TOP> batch = new ArrayList<>();
 
-  final public Comparator<TOP> comparatorWithID;
-  final public Comparator<TOP> comparatorWithoutID;
+  public final Comparator<TOP> comparatorWithID;
+  public final Comparator<TOP> comparatorWithoutID;
   private int size = 0;
   private int maxSize = 0;
 
@@ -1736,16 +1736,16 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
 //@formatter:on
   public static class SubSet implements NavigableSet<TOP> {
     final Supplier<OrderedFsSet_array2> theSet;
-    final private TOP fromElement;
-    final private TOP toElement;
-    final private boolean fromInclusive;
-    final private boolean toInclusive;
+    private final TOP fromElement;
+    private final TOP toElement;
+    private final boolean fromInclusive;
+    private final boolean toInclusive;
 
-    final private int firstPosInRange;
-    final private int lastPosInRange; // inclusive
+    private final int firstPosInRange;
+    private final int lastPosInRange; // inclusive
 
-    final private TOP firstElementInRange;
-    final private TOP lastElementInRange;
+    private final TOP firstElementInRange;
+    private final TOP lastElementInRange;
 
     private int sizeSubSet = -1; // lazy - computed on first ref
 
@@ -2125,15 +2125,15 @@ public class OrderedFsSet_array2 implements NavigableSet<TOP> {
   }
 
   // these are approximate - don't take into account multi-thread access
-  static private int addToEndCount = 0;
-  static private int addNotToEndCount = 0;
-  static private int batchCountHistogram[];
-  static private int batchAddCount = 0;
-  static private int batchAddTotal = 0; // includes things not added because of dups
-  static private int moveSizeHistogram[];
-  static private int movePctHistogram[];
-  static private int fillHistogram[];
-  static private int iterPctEmptySkip[];
+  private static int addToEndCount = 0;
+  private static int addNotToEndCount = 0;
+  private static int batchCountHistogram[];
+  private static int batchAddCount = 0;
+  private static int batchAddTotal = 0; // includes things not added because of dups
+  private static int moveSizeHistogram[];
+  private static int movePctHistogram[];
+  private static int fillHistogram[];
+  private static int iterPctEmptySkip[];
 
   static {
     if (MEASURE) {

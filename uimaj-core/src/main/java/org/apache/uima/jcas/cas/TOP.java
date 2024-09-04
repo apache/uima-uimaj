@@ -37,14 +37,14 @@ import org.apache.uima.jcas.impl.JCasImpl;
 public class TOP extends FeatureStructureImplC {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_TOP; // the official xml name
+  public static final String _TypeName = CAS.TYPE_NAME_TOP; // the official xml name
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasRegistry.register(TOP.class);
+  public static final int typeIndexID = JCasRegistry.register(TOP.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   /**
    * 
@@ -123,5 +123,5 @@ public class TOP extends FeatureStructureImplC {
   /**
    * Internal use - used as removed marker in maps
    */
-  final public static TOP _singleton = new TOP();
+  public static final TOP _singleton = new TOP();
 }

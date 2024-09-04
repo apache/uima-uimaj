@@ -71,9 +71,9 @@ public class XCASDeserializer {
  // @formatter:on
   private static class FSInfo {
 
-    final private TOP fs;
+    private final TOP fs;
 
-    final private IntVector indexRep;
+    private final IntVector indexRep;
 
     private FSInfo(TOP fs, IntVector indexRep) {
       this.fs = fs;
@@ -132,7 +132,7 @@ public class XCASDeserializer {
     private static final String unknownXMLSource = "<unknown>";
 
     // SofaFS type
-    static final private int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
+    private static final int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
 
     // private long time;
 
@@ -140,19 +140,19 @@ public class XCASDeserializer {
     private Locator locator;
 
     // The CAS we're filling.
-    final private CASImpl cas;
+    private final CASImpl cas;
 
     // Store FSs with ID in a search tree (for later reference resolution).
     /**
      * Map from extId to FSInfo (including fs)
      */
-    final private RedBlackTree<FSInfo> fsTree;
+    private final RedBlackTree<FSInfo> fsTree;
 
     // Store IDless FSs in a vector;
-    final private List<FSInfo> idLess;
+    private final List<FSInfo> idLess;
 
-    final private List<Runnable> fixupToDos = new ArrayList<>();
-    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
+    private final List<Runnable> fixupToDos = new ArrayList<>();
+    private final List<Runnable> uimaSerializableFixups = new ArrayList<>();
 
     // What we expect next.
     private int state;
@@ -177,14 +177,14 @@ public class XCASDeserializer {
     private FSData currentOotsFs;
 
     /** map from index -> indexRepository, [0] = base view, [1] initial view, [2 +] other views */
-    final private List<FSIndexRepository> indexRepositories;
+    private final List<FSIndexRepository> indexRepositories;
 
     /** map for index -> cas views, */
-    final private List<CAS> views;
+    private final List<CAS> views;
 
     // for processing v1.x format XCAS
     // map from sofaNum int values to external id references
-    final private IntVector sofaRefMap;
+    private final IntVector sofaRefMap;
 
     // map incoming _indexed values
     /**
@@ -192,7 +192,7 @@ public class XCASDeserializer {
      * 
      * internal sofaNums also used to index indexRepositories -> ref to FsIndexRepositoryImpl
      */
-    final private IntVector indexMap;
+    private final IntVector indexMap;
 
     // working with initial view
     private int nextIndex;
@@ -444,7 +444,7 @@ public class XCASDeserializer {
           CAS casView;
           if (extSofaNum != null) {
             casView = cas.getView((indexMap.size() == 1) ? 1 // case of no Sofa, but view ref =
-                                                                  // 1 = _InitialView
+                                                             // 1 = _InitialView
                     : indexMap.get(Integer.parseInt(extSofaNum)));
           } else {
             String extSofaRefString = attrs
@@ -1218,7 +1218,7 @@ public class XCASDeserializer {
     }
   }
 
-  final private TypeSystemImpl ts;
+  private final TypeSystemImpl ts;
 
   // private HashMap featureMap; -APL
   // ///private int[] featureType;
