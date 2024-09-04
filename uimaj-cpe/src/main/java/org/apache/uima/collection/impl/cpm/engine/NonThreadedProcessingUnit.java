@@ -655,8 +655,7 @@ public class NonThreadedProcessingUnit {
         }
       }
       // enqueue CASes. If the CPM is in shutdown mode due to hard kill dont allow enqueue of CASes
-      if (outputQueue != null && (cpm.isRunning()
-              || (!cpm.isRunning() && !cpm.isHardKilled()))) {
+      if (outputQueue != null && (cpm.isRunning() || (!cpm.isRunning() && !cpm.isHardKilled()))) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_add_cas_to_queue__FINEST",

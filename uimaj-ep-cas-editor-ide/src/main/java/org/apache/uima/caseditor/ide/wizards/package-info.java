@@ -17,6 +17,8 @@
  * under the License.
  */
 /**
- * <p>This package contains the wizards classes.</p>
+ * <p>
+ * This package contains the wizards classes.
+ * </p>
  */
 package org.apache.uima.caseditor.ide.wizards;

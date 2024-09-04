@@ -545,8 +545,8 @@ class IndexComparitorTest {
                                                             // values
     FeatureStructure testprobe2 = createFs(type1, 1, 1);
 
-    assertThat(sortedType1.size()).isEqualTo(2);
-    assertThat(setType1.size()).isEqualTo(2);
+    assertThat(sortedType1).hasSize(2);
+    assertThat(setType1).hasSize(2);
 
     FSIterator<FeatureStructure> it = setType1.iterator();
     it.moveTo(testprobe);

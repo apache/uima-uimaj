@@ -56,8 +56,8 @@ class GrowingTheCasNoJcasCacheTest {
   @BeforeEach
   void setUp() throws Exception {
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/TokensAndSentences.xml");
-    assertThat(descriptorFile.exists())
-            .as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
+    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath())
+            .exists();
 
     XMLParser parser = UIMAFramework.getXMLParser();
     ResourceSpecifier spec = parser.parseResourceSpecifier(new XMLInputSource(descriptorFile));

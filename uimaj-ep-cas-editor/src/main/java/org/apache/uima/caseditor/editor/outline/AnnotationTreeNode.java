@@ -112,8 +112,7 @@ public class AnnotationTreeNode implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     // TODO:
     // use ModelFeatureStructure
     // create a AdapterFactory which just calls the

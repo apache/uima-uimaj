@@ -53,20 +53,17 @@ public class SubPageSite implements IPageSite {
   }
 
   @Override
-  public boolean hasService(@SuppressWarnings("rawtypes")
-  Class api) {
+  public boolean hasService(@SuppressWarnings("rawtypes") Class api) {
     return site.hasService(api);
   }
 
   @Override
-  public Object getService(@SuppressWarnings("rawtypes")
-  Class api) {
+  public Object getService(@SuppressWarnings("rawtypes") Class api) {
     return site.getService(api);
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     return site.getAdapter(adapter);
   }
 

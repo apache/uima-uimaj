@@ -1132,7 +1132,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         // class is compiled for Java 5.0, but the CDE is running Java 1.4.2
         Utility.popMessage(Messages.getString("MultiPageEditor.failedCollRdrValidation"), //$NON-NLS-1$
                 Messages.getString("MultiPageEditor.failedCollRdrValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                        + getMessagesToRootCause(e),
+                MessageDialog.ERROR);
         return false;
       }
     } else if (isCasInitializerDescriptor()) {
@@ -1143,7 +1144,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (Throwable e) {
         Utility.popMessage(Messages.getString("MultiPageEditor.failedCasInitValidation"), //$NON-NLS-1$
                 Messages.getString("MultiPageEditor.failedCasInitValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                        + getMessagesToRootCause(e),
+                MessageDialog.ERROR);
         return false;
       }
     } else if (isCasConsumerDescriptor()) {
@@ -1153,7 +1155,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (Throwable e) {
         Utility.popMessage(Messages.getString("MultiPageEditor.failedCasConsValidation"), //$NON-NLS-1$
                 Messages.getString("MultiPageEditor.failedCasConsValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                        + getMessagesToRootCause(e),
+                MessageDialog.ERROR);
         return false;
       }
 
@@ -1186,7 +1189,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       } catch (Throwable e) {
         Utility.popMessage(Messages.getString("MultiPageEditor.failedAeValidation"), //$NON-NLS-1$
                 Messages.getString("MultiPageEditor.failedAeValidationMsg") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                        + getMessagesToRootCause(e),
+                MessageDialog.ERROR);
         return false;
       }
     }
@@ -1477,7 +1481,8 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
       e.printStackTrace();
       Utility.popMessage(Messages.getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
               Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                      + getMessagesToRootCause(e), MessageDialog.ERROR);
+                      + getMessagesToRootCause(e),
+              MessageDialog.ERROR);
 
     } catch (ResourceInitializationException e) {
       // occurs if bad xml

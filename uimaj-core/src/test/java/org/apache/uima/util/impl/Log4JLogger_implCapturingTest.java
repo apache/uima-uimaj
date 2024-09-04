@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.uima.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,9 +124,9 @@ class Log4JLogger_implCapturingTest {
 
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
-                      logEvent1 -> logEvent1.getLevel(), //
+                      LogEvent::getLevel, //
                       e -> e.getMessage().getFormattedMessage(), //
-                      logEvent -> logEvent.getThrown()) //
+                      LogEvent::getThrown) //
               .containsExactly( //
                       tuple(Level.TRACE, "1 2", ex), //
                       tuple(Level.DEBUG, "1 2", ex), //
@@ -146,9 +147,9 @@ class Log4JLogger_implCapturingTest {
 
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
-                      logEvent1 -> logEvent1.getLevel(), //
+                      LogEvent::getLevel, //
                       e -> e.getMessage().getFormattedMessage(), //
-                      logEvent -> logEvent.getThrown()) //
+                      LogEvent::getThrown) //
               .containsExactly( //
                       tuple(Level.TRACE, "1 2 3", ex), //
                       tuple(Level.DEBUG, "1 2 3", ex), //
@@ -177,7 +178,7 @@ class Log4JLogger_implCapturingTest {
         assertThat(capture.getAndClearLatestEvents()) //
                 .extracting( //
                         e -> e.getMessage().getFormattedMessage(), //
-                        logEvent -> logEvent.getThrown()) //
+                        LogEvent::getThrown) //
                 .containsExactly( //
                         tuple(String.join(" ", values), ex));
       }

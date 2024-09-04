@@ -1306,8 +1306,7 @@ public class ProcessingUnit implements Runnable {
         maybeLogFinest("UIMA_CPM_done_notify_listeners__FINEST");
       }
       // enqueue CASes. If the CPM is in shutdown mode due to hard kill dont allow enqueue of CASes
-      if (outputQueue != null && (cpm.isRunning()
-              || (!cpm.isRunning() && !cpm.isHardKilled()))) {
+      if (outputQueue != null && (cpm.isRunning() || (!cpm.isRunning() && !cpm.isHardKilled()))) {
         maybeLogFinestWorkQueue("UIMA_CPM_add_cas_to_queue__FINEST", outputQueue);
         WorkUnit workUnit = new WorkUnit(aCasObjectList);
         if (casCache != null && casCache[0] != null) {

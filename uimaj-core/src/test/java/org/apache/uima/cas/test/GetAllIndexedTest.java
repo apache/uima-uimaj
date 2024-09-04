@@ -87,8 +87,8 @@ public class GetAllIndexedTest {
   public void setUp() throws Exception {
     File descriptorFile = JUnitExtension
             .getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
-    assertThat(descriptorFile.exists())
-            .as("Descriptor must exist: " + descriptorFile.getAbsolutePath()).isTrue();
+    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath())
+            .exists();
 
     XMLParser parser = UIMAFramework.getXMLParser();
     ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
@@ -109,7 +109,7 @@ public class GetAllIndexedTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
     // this.tokenType = null;
     // this.sentenceType = null;

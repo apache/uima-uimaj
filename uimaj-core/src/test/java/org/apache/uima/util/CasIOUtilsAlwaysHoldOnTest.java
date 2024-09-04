@@ -49,7 +49,7 @@ class CasIOUtilsAlwaysHoldOnTest {
     if (oldHoldOntoFss != null) {
       System.setProperty(CASImpl.ALWAYS_HOLD_ONTO_FSS, oldHoldOntoFss);
     } else {
-      System.getProperties().remove(CASImpl.ALWAYS_HOLD_ONTO_FSS);
+      System.clearProperty(CASImpl.ALWAYS_HOLD_ONTO_FSS);
     }
   }
 

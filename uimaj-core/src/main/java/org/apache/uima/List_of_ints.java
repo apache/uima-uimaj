@@ -27,39 +27,24 @@ import org.apache.uima.util.impl.Constants;
 
 /**
  * a List API that returns ints instead of T
+ * 
+ * @deprecated To become package private in {@code org.apache.uima.jcas.cas} or possibly removed.
+ *             Should also be renamed.
+ * @forRemoval 4.0.0
  */
+@Deprecated(since = "3.6.0")
 public interface List_of_ints extends Iterable<Integer> {
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#size()
-   */
   int size();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#isEmpty()
-   */
   default boolean isEmpty() {
     return size() == 0;
   };
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#contains(java.lang.Object)
-   */
   default boolean contains(int i) {
     return indexOf(i) != -1;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#toArray()
-   */
   int[] toArray();
 
   /**
@@ -69,67 +54,22 @@ public interface List_of_ints extends Iterable<Integer> {
    */
   int[] toArrayMinCopy();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#add(java.lang.Object)
-   */
   boolean add(int i);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#remove(java.lang.Object)
-   */
   boolean remove(int i);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#clear()
-   */
   void clear();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#get(int)
-   */
   int get(int index);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#set(int, java.lang.Object)
-   */
   int set(int index, int element);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#add(int, java.lang.Object)
-   */
   void add(int index, int element);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#remove(int)
-   */
   int removeAtIndex(int index);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#indexOf(java.lang.Object)
-   */
   int indexOf(int i);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.List#lastIndexOf(java.lang.Object)
-   */
   int lastIndexOf(int i);
 
   List_of_ints subList(int fromIndex, int toIndex);

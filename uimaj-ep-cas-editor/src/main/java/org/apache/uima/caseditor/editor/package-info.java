@@ -18,6 +18,8 @@
  */
 
 /**
- * <p>This package contains the editor classes.</p>
+ * <p>
+ * This package contains the editor classes.
+ * </p>
  */
 package org.apache.uima.caseditor.editor;

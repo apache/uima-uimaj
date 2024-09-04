@@ -31,8 +31,8 @@ import org.apache.uima.jcas.JCas;
 public class Scenario3TestAnnotator
     extends TestAnnotator_ImplBase
 {
-  private static final String TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE = "org.apache.uima.it.pear_with_typesystem.type.ComplexAnnotationSubtype";
-  
+    private static final String TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE = "org.apache.uima.it.pear_with_typesystem.type.ComplexAnnotationSubtype";
+
     @SuppressWarnings("unused")
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
@@ -42,7 +42,7 @@ public class Scenario3TestAnnotator
 
         // The unit test should have prepared the CAS with one of these
         assertFalse(aJCas.select(TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE).isEmpty());
-        
+
         // Iterating over the ComplexAnnotation instances should also return a ComplexAnnotationSubtype
         // and that will trigger a ClassCastException - we have the assertion for this in the unit test
         var complexAnnotation = aJCas.select(ComplexAnnotation.class).get();

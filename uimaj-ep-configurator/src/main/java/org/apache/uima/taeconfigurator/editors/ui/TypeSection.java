@@ -1570,7 +1570,7 @@ public class TypeSection extends AbstractImportablePartSection {
       TypeOrFeature tf = (TypeOrFeature) o2;
       return ((tf.isType() == true && tf.getName().equals(o1)) ||
       // remove features belong to type if type is removed
-      tf.getName().startsWith(((String) o1) + ':')) ? 0 : 1;
+              tf.getName().startsWith(((String) o1) + ':')) ? 0 : 1;
     }
   };
 

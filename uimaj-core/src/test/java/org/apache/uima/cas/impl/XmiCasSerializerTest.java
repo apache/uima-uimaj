@@ -71,6 +71,13 @@ class XmiCasSerializerTest {
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
   }
 
+  @AfterEach
+  void tearDown() throws Exception {
+    if ((outputFile != null) && outputFile.exists()) {
+      outputFile.delete();
+    }
+  }
+
   @Test
   void testInvalidCharsInDocumentText() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystemDesc, null, null);
@@ -136,18 +143,6 @@ class XmiCasSerializerTest {
       } finally {
         out.close();
       }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#tearDown()
-   */
-  @AfterEach
-  public void tearDown() throws Exception {
-    if ((outputFile != null) && outputFile.exists()) {
-      outputFile.delete();
     }
   }
 }

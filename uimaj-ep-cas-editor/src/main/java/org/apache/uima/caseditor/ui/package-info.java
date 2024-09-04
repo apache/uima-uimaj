@@ -18,6 +18,8 @@
  */
 
 /**
- * <p>This package contains the ui classes and packages.</p>
+ * <p>
+ * This package contains the ui classes and packages.
+ * </p>
  */
 package org.apache.uima.caseditor.ui;
