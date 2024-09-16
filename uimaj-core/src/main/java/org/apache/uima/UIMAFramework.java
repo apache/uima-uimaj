@@ -1088,7 +1088,10 @@ public abstract class UIMAFramework {
    *          Parameter settings.
    * 
    * @return a new UIMA Context to be used by the application.
+   * @deprecated Use {@link #newUimaContext()} or {@link #uimaContextBuider()} instead.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   public static UimaContextAdmin newUimaContext(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigManager) {
     // We use an ugly trick to make the 3 values available to the new UIMA context during its
@@ -1103,8 +1106,16 @@ public abstract class UIMAFramework {
       newContextResourceManager.set(null);
       newContextConfigManager.set(null);
     }
-    context.initializeRoot(aLogger, aResourceManager, aConfigManager);
+    context.initializeRoot(aLogger);
     return context;
+  }
+
+  public static UimaContextAdmin newUimaContext() {
+    return uimaContextBuider().build();
+  }
+
+  public static UimaContextAdminBuilder uimaContextBuider() {
+    return new UimaContextAdminBuilder();
   }
 
   /**
