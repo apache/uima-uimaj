@@ -39,7 +39,7 @@ public class Scenario1TestAnnotator
 
         var simpleAnnotation = new SimpleAnnotation(aJCas);
         simpleAnnotation.addToIndexes();
-        
+
         var complexAnnotation = new ComplexAnnotation(aJCas);
         complexAnnotation.setDelegate(simpleAnnotation);
         complexAnnotation.addToIndexes();

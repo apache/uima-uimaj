@@ -21,13 +21,7 @@ package org.apache.uima.resource.metadata.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.metadata.FsIndexCollection;
-import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -48,37 +42,31 @@ class FsIndexCollection_implTest {
 
   @Test
   void testBuildFromXmlElement() throws Exception {
-    try {
-      File descriptor = JUnitExtension
-              .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
-      FsIndexCollection indexColl = UIMAFramework.getXMLParser()
-              .parseFsIndexCollection(new XMLInputSource(descriptor));
+    var descriptor = JUnitExtension.getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
+    var indexColl = UIMAFramework.getXMLParser()
+            .parseFsIndexCollection(new XMLInputSource(descriptor));
 
-      assertThat(indexColl.getName()).isEqualTo("TestFsIndexCollection");
-      assertThat(indexColl.getDescription()).isEqualTo("This is a test.");
-      assertThat(indexColl.getVendor()).isEqualTo("The Apache Software Foundation");
-      assertThat(indexColl.getVersion()).isEqualTo("0.1");
-      Import[] imports = indexColl.getImports();
-      assertThat(imports).hasSize(2);
-      assertThat(imports[0].getName()).isEqualTo("FsIndexCollectionImportedFromDataPath");
-      assertThat(imports[0].getLocation()).isNull();
-      assertThat(imports[1].getName()).isNull();
-      assertThat(imports[1].getLocation()).isEqualTo("FsIndexCollectionImportedByLocation.xml");
+    assertThat(indexColl.getName()).isEqualTo("TestFsIndexCollection");
+    assertThat(indexColl.getDescription()).isEqualTo("This is a test.");
+    assertThat(indexColl.getVendor()).isEqualTo("The Apache Software Foundation");
+    assertThat(indexColl.getVersion()).isEqualTo("0.1");
+    var imports = indexColl.getImports();
+    assertThat(imports).hasSize(2);
+    assertThat(imports[0].getName()).isEqualTo("FsIndexCollectionImportedFromDataPath");
+    assertThat(imports[0].getLocation()).isNull();
+    assertThat(imports[1].getName()).isNull();
+    assertThat(imports[1].getLocation()).isEqualTo("FsIndexCollectionImportedByLocation.xml");
 
-      FsIndexDescription[] indexes = indexColl.getFsIndexes();
-      assertThat(indexes).hasSize(2);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    var indexes = indexColl.getFsIndexes();
+    assertThat(indexes).hasSize(2);
   }
 
   @Test
   void testResolveImports() throws Exception {
-    File descriptor = JUnitExtension.getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
-    FsIndexCollection ic = UIMAFramework.getXMLParser()
-            .parseFsIndexCollection(new XMLInputSource(descriptor));
+    var descriptor = JUnitExtension.getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
+    var ic = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(descriptor));
 
-    FsIndexDescription[] indexes = ic.getFsIndexes();
+    var indexes = ic.getFsIndexes();
     assertThat(indexes).hasSize(2);
 
     // resolving imports without setting data path should fail
@@ -93,7 +81,7 @@ class FsIndexCollection_implTest {
     // thrown
 
     // set data path correctly and it should work
-    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    var resMgr = UIMAFramework.newDefaultResourceManager();
     resMgr.setDataPathElements(
             JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsoluteFile());
     ic.resolveImports(resMgr);

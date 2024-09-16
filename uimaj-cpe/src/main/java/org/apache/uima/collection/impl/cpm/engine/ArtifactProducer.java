@@ -771,8 +771,7 @@ public class ArtifactProducer implements Runnable {
             // while the CPM is in normal shutdown state.
             // (Moved this code inside if (casObjectList != null)
             // block to avoid NullPointerException. -Adam
-            if (cpm.isRunning()
-                    || (!cpm.isRunning() && !cpm.isHardKilled())) {
+            if (cpm.isRunning() || (!cpm.isRunning() && !cpm.isHardKilled())) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
               // synchronized (workQueue) { // redundant, enqueue does this

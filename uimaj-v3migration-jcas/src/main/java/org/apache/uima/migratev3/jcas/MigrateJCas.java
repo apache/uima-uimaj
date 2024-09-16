@@ -391,8 +391,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
                   false);
           String newClasspath = ip.buildComponentClassPath();
           String parentClasspath = parent.pearClasspath;
-          pearClasspath = (null == parentClasspath || 0 == parentClasspath.length())
-                  ? newClasspath
+          pearClasspath = (null == parentClasspath || 0 == parentClasspath.length()) ? newClasspath
                   : newClasspath + File.pathSeparator + parentClasspath;
         }
 
@@ -458,18 +457,18 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     @Override
     public boolean equals(Object obj) {
       if (this == obj) {
-		return true;
-	}
+        return true;
+      }
       if (obj == null) {
-		return false;
-	}
+        return false;
+      }
       if (getClass() != obj.getClass()) {
-		return false;
-	}
+        return false;
+      }
       Container other = (Container) obj;
       if (id != other.id) {
-		return false;
-	}
+        return false;
+      }
       return true;
     }
 
@@ -918,8 +917,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       // copy the pear or jar so we don't change the original
       Path lastPartOfPath = container.rootOrig.getFileName();
       if (null == lastPartOfPath) {
-		throw new RuntimeException("Internal Error");
-	}
+        throw new RuntimeException("Internal Error");
+      }
       Path pearOrJarCopy = Paths.get(outputDirectory, container.isJar ? "jars" : "pears",
               Integer.toString(container.id), lastPartOfPath.toString());
 
@@ -1031,10 +1030,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     indent[0] += 2;
     boolean isEmpty = true;
     for (CommonConverted cc : container.convertedItems) {
-      if (cc.v3SourcePath == null)
-	 {
-		continue; // skip items that failed migration
-	}
+      if (cc.v3SourcePath == null) {
+        continue; // skip items that failed migration
+      }
       isEmpty = false;
       // relativePathInContainer = the whole path with the first part (up to the end of the
       // container root) stripped off
@@ -1730,16 +1728,16 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         List<Parameter> ps = n.getParameters();
         if (isGetter) {
           if (ps.size() > 1) {
-			break;
-		}
+            break;
+          }
         } else { // is setter
           if (ps.size() > 2 || ps.size() == 0) {
-			break;
-		}
+            break;
+          }
           if (ps.size() == 2) {
             if (!getParmTypeName(ps, 0).equals("int")) {
-				break;
-			}
+              break;
+            }
             isArraySetter = true;
           }
         }
@@ -1748,8 +1746,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         String bodyString = n.getBody().get().toString(printWithoutComments);
         int i = bodyString.indexOf("jcasType.ll_cas.ll_");
         if (i < 0) {
-			break;
-		}
+          break;
+        }
         String s = bodyString.substring(i + "jcasType.ll_cas.ll_get".length()); // also for
                                                                                 // ...ll_set - same
                                                                                 // length!
@@ -1918,8 +1916,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
     do {
       if (get_set_method == null) {
-		break;
-	}
+        break;
+      }
 
       /** remove checkArraybounds statement **/
       if (n.getNameAsString().equals("checkArrayBounds")
@@ -1937,8 +1935,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
               .startsWith("ll_" + (useGetter ? "get" : "set") + rangeNameV2Part + "Value")) {
         args = n.getArguments();
         if (args.size() != (useGetter ? 2 : 3)) {
-			break;
-		}
+          break;
+        }
         String suffix = useGetter ? "Nc" : rangeNamePart.equals("Feature") ? "NcWj" : "Nfc";
         String methodName = "_" + (useGetter ? "get" : "set") + rangeNamePart + "Value" + suffix;
         args.remove(0); // remove the old addr arg
@@ -1955,11 +1953,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         String s = nname.substring(z.length());
         s = s.substring(0, s.length() - "Value".length()); // s = "ShortArray", etc.
         if (s.equals("RefArray")) {
-			s = "FSArray";
-		}
+          s = "FSArray";
+        }
         if (s.equals("IntArray")) {
-			s = "IntegerArray";
-		}
+          s = "IntegerArray";
+        }
         EnclosedExpr ee = new EnclosedExpr(
                 new CastExpr(new ClassOrInterfaceType(s), n.getArguments().get(0)));
 
@@ -2215,8 +2213,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       reportPathWorkaround(parent.toString(), p2.toString());
       Path lastPartOfPath = p.getFileName();
       if (null == lastPartOfPath) {
-		throw new RuntimeException();
-	}
+        throw new RuntimeException();
+      }
       return Paths.get(p2.toString(), lastPartOfPath.toString());
     }
     return p;
@@ -2256,8 +2254,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     }
     System.out.println("\n" + title);
     for (int i = 0; i < title.length(); i++) {
-		System.out.print('=');
-	}
+      System.out.print('=');
+    }
     System.out.println("");
 
     try (BufferedWriter bw = Files.newBufferedWriter(makePath(outDirLog + fileName),
@@ -2775,8 +2773,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         List<Expression> args = ((ObjectCreationExpr) parent).getArguments();
         int i = args.indexOf(n);
         if (i < 0) {
-			throw new RuntimeException();
-		}
+          throw new RuntimeException();
+        }
         args.set(i, v);
       } else {
         System.out.println(parent.getClass().getName());
@@ -2833,11 +2831,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             if (vd.getType().equals(intType)) {
               String n = vd.getNameAsString();
               if (n.equals("type")) {
-				hasType = true;
-			}
+                hasType = true;
+              }
               if (n.equals("typeIndexID")) {
-				hasTypeId = true;
-			}
+                hasTypeId = true;
+              }
               if (hasTypeId && hasType) {
                 return true;
               }
@@ -2874,8 +2872,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       if (bd instanceof ConstructorDeclaration) {
         List<Parameter> ps = ((ConstructorDeclaration) bd).getParameters();
         if (ps.size() == 0) {
-			has0ArgConstructor = true;
-		}
+          has0ArgConstructor = true;
+        }
         if (ps.size() == 1 && getParmTypeName(ps, 0).equals("JCas")) {
           has1ArgJCasConstructor = true;
         }

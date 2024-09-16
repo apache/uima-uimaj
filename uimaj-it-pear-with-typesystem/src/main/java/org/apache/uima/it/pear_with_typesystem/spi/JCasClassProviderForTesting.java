@@ -28,10 +28,14 @@ import org.apache.uima.it.pear_with_typesystem.type.SimpleAnnotation;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.spi.JCasClassProvider;
 
-public class JCasClassProviderForTesting implements JCasClassProvider {
+public class JCasClassProviderForTesting
+    implements JCasClassProvider
+{
 
-  @Override
-  public List<Class<? extends TOP>> listJCasClasses() {
-    return asList(ComplexAnnotation.class, SimpleAnnotation.class, ComplexAnnotationSubtype.class);
-  }
+    @Override
+    public List<Class<? extends TOP>> listJCasClasses()
+    {
+        return asList(ComplexAnnotation.class, SimpleAnnotation.class,
+                ComplexAnnotationSubtype.class);
+    }
 }

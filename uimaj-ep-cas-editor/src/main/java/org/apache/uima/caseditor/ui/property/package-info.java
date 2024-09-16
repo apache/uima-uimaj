@@ -18,6 +18,8 @@
  */
 
 /**
- * <p>This package contains the property page classes.</p>
+ * <p>
+ * This package contains the property page classes.
+ * </p>
  */
 package org.apache.uima.caseditor.ui.property;

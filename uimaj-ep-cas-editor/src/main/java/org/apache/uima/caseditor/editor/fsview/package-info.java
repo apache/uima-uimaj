@@ -17,6 +17,8 @@
  * under the License.
  */
 /**
- * <p>This package contains the feature structure view classes.</p>
+ * <p>
+ * This package contains the feature structure view classes.
+ * </p>
  */
 package org.apache.uima.caseditor.editor.fsview;

@@ -314,7 +314,7 @@ public class Base64Converter {
   }
 
   private static void b64encodeOctet(byte[] to, int to_offset, byte[] from, int from_offset,
-                                     int count) {
+          int count) {
     int A = 0;
     int B = 0;
     int C = 0;

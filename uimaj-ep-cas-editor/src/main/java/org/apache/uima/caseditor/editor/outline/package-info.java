@@ -17,6 +17,8 @@
  * under the License.
  */
 /**
- * <p>This package contains the outline classes.</p>
+ * <p>
+ * This package contains the outline classes.
+ * </p>
  */
 package org.apache.uima.caseditor.editor.outline;
