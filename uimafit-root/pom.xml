@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>uimafit</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache UIMA uimaFIT</name>
+  <description>Factories, Injection, and Testing library for UIMA</description>
+  <url>${uimaWebsiteUrl}</url>
+  <inceptionYear>2012</inceptionYear>
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimafit-parent</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
+    <relativePath>uimafit-parent</relativePath>
+  </parent>
+  <properties>
+    <jiraVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}uimaFIT</jiraVersion>
+  </properties>
+  <scm>
+    <tag>uimafit-3.5.0</tag>
+    <connection>scm:git:https://github.com/apache/uima-uimafit/</connection>
+    <developerConnection>scm:git:https://github.com/apache/uima-uimafit/</developerConnection>
+    <url>https://github.com/apache/uima-uimafit/</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-core</artifactId>
+      <version>3.6.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-cpe</artifactId>
+      <version>3.6.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-junit</artifactId>
+      <version>3.6.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-assertj</artifactId>
+      <version>3.6.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+        </configuration>
+        <executions>
+          <execution>
+            <id>javadocs-distr</id> <!-- name should match one in parent-pom -->
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <configuration>
+              <doctitle>Apache uimaFIT ${project.version} User-Level API Documentation</doctitle>
+              <windowtitle>Apache uimaFIT ${project.version} User-Level API Documentation</windowtitle>
+              <notimestamp>true</notimestamp>
+              <groups>
+                <group>
+                  <title>uimaFIT</title>
+                  <packages>org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.testing*:org.apache.uima.fit.util*</packages>
+                </group>
+                <group>
+                  <title>CPE support</title>
+                  <packages>org.apache.uima.fit.cpe*</packages>
+                </group>
+              </groups>
+              <sourcepath>uimafit-core/src/main/java;uimafit-cpe/src/main/java</sourcepath>
+              <!-- Exclude UIMA types and internal API -->
+              <excludePackageNames>*.type:*.internal.*:*.impl.*</excludePackageNames>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>.github/**/*</exclude>
+                  <exclude>CONTRIBUTING.md</exclude>
+                  <exclude>src/main/eclipse/org.eclipse.jdt.core.prefs</exclude>
+                  <exclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <modules>
+    <module>uimafit-bom</module>
+    <module>uimafit-core</module>
+    <module>uimafit-junit</module>
+    <module>uimafit-assertj</module>
+    <module>uimafit-examples</module>
+    <module>uimafit-spring</module>
+    <module>uimafit-maven-plugin</module>
+    <module>uimafit-documentation</module>
+    <module>uimafit-cpe</module>
+    <module>uimafit-benchmark</module>
+    <module>uimafit-parent</module>
+  </modules>
+  
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${staging-local-root}/${staging-folder}" />
+                    <copy todir="${staging-local-root}/${staging-folder}">
+                      <fileset dir="${project.build.directory}">
+                        <include name="uimafit-${project.version}-*.zip" />
+                        <include name="uimafit-${project.version}-*.zip.asc" />
+                        <include name="uimafit-${project.version}-*.zip.sha512" />
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Apache UIMA Forum/Mailing list
+    url: https://lists.apache.org/list.html?user@uima.apache.org
+    about: Community support.
+  - name: Apache UIMA Gitter/Matrix Channel
+    url: https://gitter.im/apache/uima
+    about: Public chat channel.

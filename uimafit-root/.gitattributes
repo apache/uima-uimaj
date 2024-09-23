@@ -1,0 +1,8 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Make sure that these files are treated as binary so that newlines are preserved.
+*.bin binary
+*.dump binary
+*.xcas binary
+*.xmi binary

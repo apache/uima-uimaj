@@ -1,0 +1,1 @@
+classpath*:org/apache/uima/fit/typepriorities/**/*.xml

@@ -1,0 +1,101 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.validation]]
+= Validating CASes
+
+The uimaFIT CAS validation feature allows you to define consistency rules for your type system and
+to automatically check that CASes comply with these rules.
+
+== Example use case
+
+Imagine a system which uses machine learning to automatically identify persons in a text. Such a
+system might define an annotation type called `Person` having a feature called `confidence` of type
+`float`. However, a requirement of the system should be that the confidence score must be within
+range from 0 to 1. Any value outside that range would probably be a bug in the systems
+implementation. Now imagine that you want to implement not only one, but a bunch of different UIMA analysis engines,
+each based on a different machine learning approach and plug these into the system. Instead of
+repeating the test code that checks the range of the confidence feature with each implementation, it
+would be much nicer if the range check could be included with the type system that all these
+implementations share. The unit tests should be able to pick this check (any any other consistency
+checks) up automatically and use them.
+
+
+== Defining a validation check
+
+To define a validation check, all you need to do is to create a class implementing the 
+`org.apache.uima.fit.validation.CasValidationCheck` interface. This interfaces defines a single
+method `List<CasValidationResult> check(CAS cas)`. Or if you prefer working against the JCas API, 
+you can implement the `org.apache.uima.fit.validation.JCasValidationCheck` interface.
+Implementations of both interfaces (`CasValidationCheck` and `JCasValidationCheck`) can be applied
+to CAS as well as JCas instances - so it does not matter against which interface you build your
+check.
+
+[source,java]
+----
+public class ConfidenceRangeCheck implements JCasValidationCheck {
+  @Override
+  public List<ValidationResult> validate(JCas aJCas) throws ValidationException {
+    List<ValidationResult> results = new ArrayList<>();
+    for (Person person : JCasUtil.select(aJCas, Person.class)) {
+      if (person.getConfidence() < 0.0d || person.getConfidence() > 1.0d) {
+        results.add(ValidationResult.error(this, "Invalid confidence score (%f) on %s at [%d,%d]",
+                person.getConfidence(), person.getType().getName(), 
+                person.getBegin(), person.getEnd()));
+      }
+    }
+    return results;
+  }
+}
+----
+
+[NOTE]
+====
+Checks are instantiated by the system as singletons. This means that their implementations must be
+stateless and must have a zero-argument constructor (or no constructor at all). 
+====
+
+
+== Registering the check for auto-detection
+
+uimaFIT uses the Java Service Locator mechanism to locate validation check implementations. So to
+make a check available for auto-detection, its fully-qualified class name must be added to a file 
+`META-INF/services/org.apache.uima.fit.validation.ValidationCheck`. Multiple checks can be added by
+putting each class name on separate lines.
+
+== Validating a CAS
+
+The `org.apache.uima.fit.validation.Validator` class can be used to validate your (J)CASes. This
+class is typically constructed using a builder:
+
+[source,java]
+----
+CAS cas = ...
+
+// By default, the builder auto-detects all registered checks
+Validator validator = new Validator.Builder().build();
+
+// You could also pass in a JCas here instead of a CAS
+ValidationSummary summary = validator.check(cas);
+----
+
+The output of a check is a `ValidationSummary` which contains a bunch of `ValidationResult` items.
+A `ValidationResult` essentially is a message with a severity level. When a summary contains any
+result with an error-level severity, the validation should be considered as failed.
+
+The `Validator.Builder` can be configured, e.g. to exclude certain checks or to entirely disable the
+auto-detection of checks and instead work with only a set of explicitly specified checks.

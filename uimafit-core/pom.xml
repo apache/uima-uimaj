@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimafit-parent</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
+    <relativePath>../uimafit-parent</relativePath>
+  </parent>
+
+  <artifactId>uimafit-core</artifactId>
+  <packaging>bundle</packaging>
+  
+  <name>Apache UIMA uimaFIT - Core</name>
+  <description>Factories, Injection, and Testing library for UIMA</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-assertj3</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
+            <_dsannotations>*</_dsannotations>
+            <_metatypeannotations>*</_metatypeannotations>
+            <Import-Package>
+              !com.apple.eio,
+              org.apache.uima.fit.legacy;resolution:=optional,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.apache.uima.fit.*
+            </Export-Package>
+            <Require-Capability>
+            	osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypePrioritiesProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.FsIndexCollectionProvider)";cardinality:=multiple;resolution:=optional,
+            	osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.fit.validation.ValidationCheck)";cardinality:=multiple;resolution:=optional
+            </Require-Capability>
+          </instructions>
+        </configuration>
+      </plugin>
+    
+      <plugin>
+        <groupId>org.apache.uima</groupId>
+        <artifactId>jcasgen-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <typeSystemIncludes>
+                <typeSystemInclude>src/test/resources/org/apache/uima/fit/type/**/*.xml</typeSystemInclude>
+              </typeSystemIncludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!--
+          This plug-in adds the jcasgen generated source code folder as a project
+          source folder
+        -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/jcasgen</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <!-- These test files are unreasonable to bear a license header -->
+                  <exclude>src/test/resources/log4j.properties</exclude>
+                  <!-- Plain documentation -->
+                  <exclude>README*</exclude>
+                  <!-- Release files -->
+                  <exclude>RELEASE_NOTES*</exclude>
+                  <exclude>issuesFixed/**</exclude>
+                  <exclude>release.properties</exclude>
+                  <!-- Build controls -->
+                  <exclude>.activate-enforce-compatibility</exclude>
+                  <!-- These test files are unreasonable to bear a license header -->
+                  <exclude>src/test/resources/data/docs/unix-newlines.txt.bin</exclude>
+                  <exclude>src/test/resources/data/docs/windows-newlines.txt.bin</exclude>
+                  <exclude>src/test/resources/data/docs/bad.xcas</exclude>
+                  <exclude>src/test/resources/data/docs/test.xcas</exclude>
+                  <exclude>src/test/resources/data/docs/test.xmi</exclude>
+                  <exclude>src/test/resources/data/reference/JCasBuilderTest.dump</exclude>
+                  <exclude>src/test/resources/data/reference/test.xmi.dump</exclude>
+                  <exclude>src/test/resources/data/reference/SerializationTestAnnotator.xml</exclude>
+                  <exclude>src/test/resources/pear/DateTime.pear</exclude>
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/fsindexes.txt</exclude>
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/typepriorities.txt</exclude>
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.fit.validation.ValidationCheck</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.FsIndexCollectionProvider</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.TypePrioritiesProvider</exclude>
+                  <exclude>src/test/resources/META-INF/services/org.apache.uima.spi.TypeSystemDescriptionProvider</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

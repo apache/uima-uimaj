@@ -1,0 +1,141 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.configurationparameters]]
+= Configuration Parameters
+
+uimaFIT defines the `@ConfigurationParameter` annotation which can be used to annotate the fields of an analysis engine or collection reader.
+The purpose of this annotation is twofold:
+
+* injection of parameters from the UIMA context into fields
+* declaration of parameter metadata (mandatory, default value, description) which can be used to generate XML descriptors
+
+In a regular UIMA component, parameters need to be manually extracted from the UIMA context, typically requiring a type cast. 
+
+[source,java]
+----
+class MyAnalysisEngine extends CasAnnotator_ImplBase {
+  public static final String PARAM_SOURCE_DIRECTORY = "sourceDirectory";
+  private File sourceDirectory;
+
+  public void initialize(UimaContext context) 
+      throws ResourceInitializationException {
+
+    sourceDirectory = new File((String) context.getConfigParameterValue(
+      PARAM_SOURCE_DIRECTORY));
+  }
+}
+----
+
+The component has no way to declare a default value or to declare if a parameter is optional or mandatory.
+In addition, any documentation needs to be maintained in !JavaDoc and in the XML descriptor for the component.
+
+With uimaFIT, all this information can be declared in the component using the [class]``@ConfigurationParameter`` annotation.
+
+.`@ConfigurationParameter` annotation
+[cols="1,1,1", frame="all", options="header"]
+|===
+| Parameter
+| Description
+| Default
+
+|name
+|parameter name
+|name of annotated field
+
+|description
+|description of the parameter
+|
+
+|mandatory
+|whether a non-null value must be specified 
+|true
+
+|defaultValue
+|the default value if no value is specified
+|
+|===
+
+[source,java]
+----
+class MyAnalysisEngine 
+    extends org.apache.uima.fit.component.CasAnnotator_ImplBase {
+
+  /**
+   * Directory to read the data from.
+   */
+  public static final String PARAM_SOURCE_DIRECTORY = "sourceDirectory";
+  @ConfigurationParameter(name=PARAM_SOURCE_DIRECTORY, defaultValue=".")
+  private File sourceDirectory;
+}
+----
+
+Note, that it is no longer necessary to implement the [method]``initialize()`` method.
+uimaFIT takes care of locating the parameter [parameter]``sourceDirectory`` in the UIMA context.
+It recognizes that the [class]``File`` class has a [class]``String`` constructor and uses that to instantiate a new [class]``File`` object from the parameter.
+A parameter is mandatory unless specified otherwise.
+If a mandatory parameter is not specified in the context, an exception is thrown.
+
+The `defaultValue` is used when generating an UIMA component description from the class.
+It should be pointed out in particular, that uimaFIT does not make use of the default value when injecting parameters into fields.
+For this reason, it is possible to have a parameter that is mandatory but does have a default value.
+The default value is used as a parameter value when a component description is generated via the uimaFIT factories unless a parameter is specified in the factory call.
+If a component description in created manually without specifying a value for a mandatory parameter, uimaFIT will generate an exception.
+
+[NOTE]
+====
+You can use the _enhance_ goal of the uimaFIT Maven plugin to pick up the parameter description from the JavaDoc and post it to the [parameter]``description`` field of the [class]``@ConfigurationParameter`` annotation.
+This should be preferred to specifying the description explicitly as part of the annotation.
+====
+
+The parameter injection mechanism is implemented in the `ConfigurationParameterInitializer` class.
+uimaFIT provides several base classes that already come with an `initialize()` method using the initializer:
+
+* `CasAnnotator_ImplBase`
+* `CasCollectionReader_ImplBase`
+* `CasConsumer_ImplBase`
+* `CasFlowController_ImplBase`
+* `CasMultiplier_ImplBase`
+* `JCasAnnotator_ImplBase`
+* `JCasCollectionReader_ImplBase`
+* `JCasConsumer_ImplBase`
+* `JCasFlowController_ImplBase`
+* `JCasMultiplier_ImplBase`
+* `Resource_ImplBase`
+
+The `ConfigurationParameterInitializer` can also be used with shared resources:
+
+[source,java]
+----
+class MySharedResourceObject implements SharedResourceObject {
+  public static final String PARAM_VALUE = "Value";
+  @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
+  private String value;
+
+  public void load(DataResource aData)
+      throws ResourceInitializationException {
+
+    ConfigurationParameterInitializer.initialize(this, aData);
+  }
+}
+----
+
+Fields that can be annotated with the `@ConfigurationParameter` annotation are any array or collection types (including if they are only typed via interfaces such as `List` or `Set`) of primitive types (`int`, `boolean`, `float`, `double`). Enum types, as well as, fields of the types `Charset`, `File`, `Locale`, `Pattern`, `URI`, and `URL` can also be used.
+These can be initialized either using an object value (e.g. `StandardChartsets.UTF_8``) or a string value (e.g. `"UTF-8"`). Additionally it is possible to inject any fields of types that define a constructor accepting a single `String`.
+These must be initialized from a string value.
+
+Multi-valued parameters can be initialized from single values without having to wrap these into a container.
