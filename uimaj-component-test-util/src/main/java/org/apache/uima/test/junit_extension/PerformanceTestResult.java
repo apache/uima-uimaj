@@ -26,7 +26,10 @@ import org.apache.uima.internal.util.TimeSpan;
 /**
  * PerformanceTestResult interfance contains all the methods to access the performance test results.
  * 
+ * @deprecated To be removed without replacement.
+ * @forRemoval 4.0.0
  */
+@Deprecated
 public interface PerformanceTestResult {
 
   /**
