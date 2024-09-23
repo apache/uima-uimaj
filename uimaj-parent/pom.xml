@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Licensed to the Apache Software Foundation (ASF) under one
-   or more contributor license agreements.  See the NOTICE file
-   distributed with this work for additional information
-   regarding copyright ownership.  The ASF licenses this file
-   to you under the Apache License, Version 2.0 (the
-   "License"); you may not use this file except in compliance
-   with the License.  You may obtain a copy of the License at
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing,
-   software distributed under the License is distributed on an
-   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-   KIND, either express or implied.  See the License for the
-   specific language governing permissions and limitations
-   under the License.
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
 -->
 
 <!-- This pom serves as the the UIMA Java SDK (uimaj) common parent pom,
@@ -25,7 +25,7 @@
      project-wide parent pom.
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -36,8 +36,9 @@
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
-  <packaging>pom</packaging>
   <version>3.6.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the UIMA Java SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -133,48 +134,74 @@
   </pluginRepositories>
 
   <properties>
-    <tycho-version>4.0.3</tycho-version>
+    <tycho-version>4.0.9</tycho-version>
     
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
     -->
-    <slf4j-version>1.7.36</slf4j-version>
-    <maven.version>3.8.1</maven.version>
-
-    <log4j-version>2.20.0</log4j-version>
-    <commons-io-version>2.13.0</commons-io-version>
-    <commons-csv-version>1.10.0</commons-csv-version>
-    <commons-lang3-version>3.13.0</commons-lang3-version>
-    <jackson-version>2.15.2</jackson-version>
-    <junit-version>5.10.0</junit-version>
-    <junit-vintage-version>4.13.2</junit-vintage-version>
-    <mockito-version>5.4.0</mockito-version>
-    <assertj-version>3.24.2</assertj-version>
-    <xmlunit-version>2.9.1</xmlunit-version>
-
-    <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
-    <asciidoctor.version>2.5.10</asciidoctor.version>
-    <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
-
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.release>17</maven.compiler.release>
     <execution.environment>JavaSE-17</execution.environment>
+    
+    <maven.version>3.8.1</maven.version>
+
+    <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
+    <asciidoctor.version>2.5.10</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
+    <assertj-version>3.24.2</assertj-version>
+    <commons-csv-version>1.10.0</commons-csv-version>
+    <commons-io-version>2.15.0</commons-io-version>
+    <commons-lang3-version>3.13.0</commons-lang3-version>
+    <commons-math3-version>3.6.1</commons-math3-version>
+    <jackson-version>2.15.2</jackson-version>
+    <junit-version>5.10.1</junit-version>
+    <junit-platform-version>1.10.1</junit-platform-version>
+    <junit-vintage-version>4.13.2</junit-vintage-version>
+    <log4j-version>2.20.0</log4j-version>
+    <mockito-version>5.7.0</mockito-version>
+    <opentest4j-version>1.3.0</opentest4j-version>
+    <slf4j-version>1.7.36</slf4j-version>
+    <spring-version>5.3.30</spring-version>
+    <xmlunit-version>2.9.1</xmlunit-version>
 
     <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.4.1</api_check_oldVersion>
+    <api_check_oldVersion>3.5.0</api_check_oldVersion>
 
     <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
     
     <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
     <github-repository>uima-uimaj</github-repository>
     <git-branch>main</git-branch>
-    <previous-release-version>3.4.1</previous-release-version>
+    <previous-release-version>3.5.0</previous-release-version>
     <!-- END PROFILE SETTINGS: generate-release-notes-->
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -184,6 +211,11 @@
         <version>${junit-version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j-version}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -214,7 +246,6 @@
         <artifactId>xmlunit-assertj3</artifactId>
         <version>${xmlunit-version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-jdk14</artifactId>
@@ -240,6 +271,11 @@
       </dependency>
       
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv-version}</version>
+      </dependency>
+      <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io-version}</version>
@@ -251,8 +287,28 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-csv</artifactId>
-        <version>${commons-csv-version}</version>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring-version}</version>
       </dependency>
       <dependency>
         <groupId>org.sonatype.plexus</groupId>
@@ -260,9 +316,24 @@
         <version>0.0.7</version>
       </dependency>
       <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.4.1</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
         <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -278,6 +349,11 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-compat</artifactId>
         <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.29.2-GA</version>
       </dependency>
       
       <dependency>
@@ -462,6 +538,11 @@
             </tags>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>jcasgen-maven-plugin</artifactId>
+          <version>${project.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -469,7 +550,7 @@
       <plugin>
         <groupId>org.openntf.maven</groupId>
         <artifactId>p2-layout-resolver</artifactId>
-        <version>1.7.0</version>
+        <version>1.9.0</version>
         <extensions>true</extensions>
       </plugin>
 
@@ -516,7 +597,31 @@
           </toolchains>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Load postNoticeText from NOTICE file -->
+            <id>read-notice</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source><![CDATA[
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
+                if (noticeFile.exists()) {
+                  project.properties.postNoticeText = noticeFile.text;
+                  println "Loaded NOTICE file content into property [postNoticeText]"
+                } else {
+                  println "No NOTICE file was found - content not loaded into property [postNoticeText]"
+                }
+              ]]></source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
         <groupId>com.github.siom79.japicmp</groupId>
@@ -607,7 +712,51 @@
         </plugins>
       </build>
     </profile>
-    
+
+    <profile>
+      <id>dependency-check</id>
+      <activation>
+        <property>
+          <name>!disable-dependency-check</name>
+        </property>
+        <file>
+          <exists>marker-file-enabling-dependency-check</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>analyze-only</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
+                <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
+                <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
+                <ignoredDependency>junit:junit</ignoredDependency>
+                <!-- 
+                  - Logging is used via reflection and cannot be detected by Maven
+                -->
+                <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+      
     <!-- ************** m2e  profile ************* -->
     <profile>
       <id>m2e</id>
@@ -647,7 +796,20 @@
                         <ignore />
                       </action>
                     </pluginExecution>
-                  </pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.gmaven</groupId>
+                         <artifactId>groovy-maven-plugin</artifactId>
+                         <versionRange>[1.4,)</versionRange>
+                         <goals>
+                           <goal>execute</goal>
+                         </goals>
+                       </pluginExecutionFilter>
+                       <action>
+                         <ignore />
+                       </action>
+                     </pluginExecution>
+                   </pluginExecutions>
                 </lifecycleMappingMetadata>
               </configuration>
             </plugin>

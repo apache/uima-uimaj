@@ -22,9 +22,9 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimafit-parent</artifactId>
+    <artifactId>uimaj-parent</artifactId>
     <version>3.6.0-SNAPSHOT</version>
-    <relativePath>../uimafit-parent</relativePath>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimafit-core</artifactId>
@@ -41,7 +41,14 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
   <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -49,10 +56,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

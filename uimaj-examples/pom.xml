@@ -43,31 +43,26 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-cpe</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-document-annotation</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>compile</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.uima</groupId>-->
+<!--      <artifactId>uimaj-document-annotation</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>  <!-- needed for run config to find Migrate tool -->
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-v3migration-jcas</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -89,6 +84,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -111,6 +107,25 @@
               </configuration>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>analyze-only</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <failOnWarning>true</failOnWarning>
+            <ignoredDependencies combine.children="append">
+              <ignoredDependency>org.apache.uima:uimaj-v3migration-jcas</ignoredDependency>
+            </ignoredDependencies>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

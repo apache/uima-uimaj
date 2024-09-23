@@ -38,14 +38,15 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-test-util</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.apache.uima</groupId>-->
+<!--      <artifactId>uimaj-test-util</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+
     <dependency>    <!-- apache v2 license  2016 checked -->
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
@@ -62,10 +63,10 @@
     
     <!-- Apache v2 license  2016 checked. Also transitive include from above, 
          listed here so that binary assembly for distribution includes the jar -->
-    <dependency>
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-core</artifactId>
-      <version>0.5.32</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.bitbucket.mstrobel</groupId>-->
+<!--      <artifactId>procyon-core</artifactId>-->
+<!--      <version>0.5.32</version>-->
+<!--    </dependency>-->
   </dependencies>
 </project>
