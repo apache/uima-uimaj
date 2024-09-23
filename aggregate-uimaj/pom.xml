@@ -56,7 +56,6 @@
     <module>../uimafit-examples</module>
     <module>../uimafit-spring</module>
     <module>../uimafit-maven-plugin</module>
-    <module>../uimafit-documentation</module>
     <module>../uimafit-cpe</module>
     <module>../uimafit-benchmark</module>
 

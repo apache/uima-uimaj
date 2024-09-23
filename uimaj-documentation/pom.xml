@@ -74,7 +74,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./tug</imagesDir>
+                <imagesdir>./tug</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -89,7 +89,7 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./tug</imagesDir>
+                <imagesdir>./tug</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -104,7 +104,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./oas</imagesDir>
+                <imagesdir>./oas</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -119,7 +119,7 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./oas</imagesDir>
+                <imagesdir>./oas</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -134,7 +134,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./ref</imagesDir>
+                <imagesdir>./ref</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -149,7 +149,7 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./ref</imagesDir>
+                <imagesdir>./ref</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -164,7 +164,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./tools</imagesDir>
+                <imagesdir>./tools</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -179,7 +179,7 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./tools</imagesDir>
+                <imagesdir>./tools</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -194,7 +194,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./maint</imagesDir>
+                <imagesdir>./maint</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -209,7 +209,7 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./maint</imagesDir>
+                <imagesdir>./maint</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -224,7 +224,7 @@
               <backend>html5</backend>
               <attributes>
                 <toc>left</toc>
-                <imagesDir>./user</imagesDir>
+                <imagesdir>./user</imagesdir>
               </attributes>
             </configuration>
           </execution>
@@ -239,7 +239,37 @@
               <backend>pdf</backend>
               <attributes>
                 <toc>preamble</toc>
-                <imagesDir>./user</imagesDir>
+                <imagesdir>./user</imagesdir>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fit-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>fit.adoc</sourceDocumentName>
+              <backend>html5</backend>
+              <attributes>
+                <toc>left</toc>
+                <imagesdir>./fit</imagesdir>
+              </attributes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fit-pdf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <sourceDocumentName>fit.adoc</sourceDocumentName>
+              <backend>pdf</backend>
+              <attributes>
+                <toc>preamble</toc>
+                <imagesdir>./fit</imagesdir>
               </attributes>
             </configuration>
           </execution>
