@@ -1,7 +1,7 @@
-# How to contribute to Apache UIMA uimaFIT
+# How to contribute to Apache UIMA Java SDK
 
-Thank you for your intention to contribute to the Apache uimaFIT project. As an open-source 
-community, we highly appreciate external contributions to our project.
+Thank you for your intention to contribute to the Apache UIMA Java SDK project. 
+As an open-source community, we highly appreciate external contributions to our project.
 
 To make the process smooth for the project *committers* (those who review and accept changes) and *contributors* (those who propose new changes via pull requests), there are a few rules to follow.
 
@@ -13,13 +13,14 @@ For pull requests, there is a [check list](PULL_REQUEST_TEMPLATE.md) with criter
 
 ## Preparing a Pull Request (PR)
 
-In order to contribute to the uimaFIT project, you need to create a **pull request**. This section briefly guides you through the best way of doing this:
+In order to contribute to the  project, you need to create a **pull request**. 
+This section briefly guides you through the best way of doing this:
 
 * Before creating a pull request, create an issue in the issue tracker of the project to which
   you wish to contribute
 * Fork the project on GitHub
 * Create a branch based on the branch to which you wish to contribute. Normally, you should create
-  this branch from the **master** branch of the respective project. In the case you want to fix
+  this branch from the **main** branch of the respective project. In the case you want to fix
   a bug in the latest released version, you should consider to branch off the latest maintenance
   branch (e.g. **2.4.x**). If you are not sure, ask via the issue you have just created. Do **not**
   make changes directly to the master or maintenance branches in your fork. The name of the branch

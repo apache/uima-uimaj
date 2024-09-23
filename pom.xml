@@ -207,9 +207,17 @@
                   <title>Packages</title>
                   <packages>*</packages>
                 </group>
+                <group>
+                  <title>uimaFIT</title>
+                  <packages>org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.testing*:org.apache.uima.fit.util*</packages>
+                </group>
+                <group>
+                  <title>CPE support</title>
+                  <packages>org.apache.uima.fit.cpe*</packages>
+                </group>
               </groups>
-              <sourcepath>uimaj-core/src/main/java;uimaj-json/src/main/java;uimaj-document-annotation/src/main/java</sourcepath>
-              <excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
+              <sourcepath>uimaj-core/src/main/java;uimaj-json/src/main/java;uimaj-document-annotation/src/main/java;uimafit-core/src/main/java;uimafit-cpe/src/main/java</sourcepath>
+              <excludePackageNames>*.type:*.internal.*:*.impl.*</excludePackageNames>
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
               <additionalDependencies>
@@ -268,6 +276,7 @@
                   <exclude>marker-file-rc-auto-staging-module</exclude>
                   <!-- These markdown files cannot bear a license header -->
                   <exclude>NOTICE.md</exclude>
+                  <exclude>CONTRIBUTING.md</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE.md</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</exclude>
                   <!-- These configuration files cannot bear a license header -->
