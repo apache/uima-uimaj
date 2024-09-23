@@ -298,6 +298,17 @@
                   <exclude>uimaj-json/**</exclude>
                   <exclude>uimaj-v3migration-jcas/**</exclude>
                   <exclude>uimaj-it-pear-with-typesystem/**</exclude>
+                  <exclude>uimafit-assertj/**</exclude>
+                  <exclude>uimafit-benchmark/**</exclude>
+                  <exclude>uimafit-core/**</exclude>
+                  <exclude>uimafit-cpe/**</exclude>
+                  <exclude>uimafit-documentation/**</exclude>
+                  <exclude>uimafit-examples/**</exclude>
+                  <exclude>uimafit-junit/**</exclude>
+                  <exclude>uimafit-maven-plugin/**</exclude>
+                  <exclude>uimafit-parent/**</exclude>
+                  <exclude>uimafit-root/**</exclude>
+                  <exclude>uimafit-spring/**</exclude>
                 </excludes>
               </configuration>
             </execution>

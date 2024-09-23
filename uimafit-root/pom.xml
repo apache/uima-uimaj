@@ -131,7 +131,6 @@
   </build>
 
   <modules>
-    <module>uimafit-bom</module>
     <module>uimafit-core</module>
     <module>uimafit-junit</module>
     <module>uimafit-assertj</module>
