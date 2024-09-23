@@ -17,8 +17,10 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.uima</groupId>
@@ -27,44 +29,44 @@
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
-	<artifactId>uimafit-assertj</artifactId>
-	<packaging>bundle</packaging>
+  <artifactId>uimafit-assertj</artifactId>
+  <packaging>bundle</packaging>
 
-	<name>Apache UIMA uimaFIT - AssertJ support</name>
+  <name>Apache UIMA uimaFIT - AssertJ support</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit-core</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-core</artifactId>
       <version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
       <version>${project.version}</version>
-		</dependency>
+    </dependency>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
             <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
-						<Require-Capability>
-							osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
-							osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.fit.validation.ValidationCheck)";cardinality:=multiple;resolution:=optional
-						</Require-Capability>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <Require-Capability>
+              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
+              osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.fit.validation.ValidationCheck)";cardinality:=multiple;resolution:=optional
+            </Require-Capability>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

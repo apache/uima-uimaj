@@ -28,7 +28,6 @@
   </parent>
 
   <artifactId>uimaj-bootstrap</artifactId>
-  <packaging>jar</packaging>
   <name>Apache UIMA Base: ${project.artifactId}</name>
   <description>Configures a classpath from directories, and runs
     a Java application using that</description>
