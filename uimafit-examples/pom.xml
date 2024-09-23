@@ -122,7 +122,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
+                <excludes combine.children="append">
                   <exclude>release.properties</exclude>
                   <!-- These example are unreasonable to bear a license header -->
                   <exclude>src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt</exclude>
