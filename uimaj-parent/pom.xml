@@ -134,6 +134,7 @@
   </pluginRepositories>
 
   <properties>
+    <commons-collections4-version>4.4</commons-collections4-version>
     <tycho-version>4.0.9</tycho-version>
     
     <!-- 
@@ -202,8 +203,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -295,6 +296,12 @@
         <artifactId>commons-math3</artifactId>
         <version>${commons-math3-version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons-collections4-version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
@@ -749,6 +756,7 @@
                 <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
                 <ignoredDependency>org.xmlunit:xmlunit-assertj3</ignoredDependency>
                 <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
                 <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
