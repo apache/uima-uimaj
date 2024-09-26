@@ -18,6 +18,8 @@
  */
 package org.apache.uima.resource.metadata.impl;
 
+import static org.apache.uima.resource.metadata.Import.EMPTY_IMPORTS;
+
 import java.util.Collection;
 
 import org.apache.uima.UIMAFramework;
@@ -43,7 +45,7 @@ class TypeSystemDescriptionImportResolverAdapter
 
   @Override
   public void clearImports() {
-    delegate.setImports(Import.EMPTY_IMPORTS);
+    delegate.setImports(EMPTY_IMPORTS);
   }
 
   @Override

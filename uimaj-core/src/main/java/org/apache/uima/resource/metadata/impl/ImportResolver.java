@@ -19,12 +19,12 @@
 package org.apache.uima.resource.metadata.impl;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.newSetFromMap;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -39,7 +39,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
@@ -82,11 +81,7 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
    *          {@code null} then a new default resource manager is created.
    * @throws InvalidXMLException
    *           if an import could not be processed.
-   * @deprecated Exists only to support a deprecated methods like
-   *             {@link TypeSystemDescription#resolveImports(Collection, ResourceManager)}.
-   * @forRemoval 4.0.0
    */
-  @Deprecated(since = "3.3.0")
   void resolveImports(DESCRIPTOR aDesc, Collection<String> aAlreadyImportedURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
     DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> wrapper = adapterFactory.apply(aDesc);
@@ -95,23 +90,23 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       return;
     }
 
-    Set<COLLECTIBLE> originalTypes = Collections.newSetFromMap(new IdentityHashMap<>());
+    Set<COLLECTIBLE> originalTypes = newSetFromMap(new IdentityHashMap<>());
     originalTypes.addAll(asList(wrapper.getCollectibles()));
 
-    ResourceManager resourceManager = aResourceManager;
+    var resourceManager = aResourceManager;
     if (aResourceManager == null) {
       resourceManager = UIMAFramework.newDefaultResourceManager();
     }
 
-    Set<String> alreadyImportedURLs = new HashSet<>();
-    Deque<String> stack = new LinkedList<>();
+    var alreadyImportedURLs = new HashSet<String>();
+    var stack = new LinkedList<String>();
 
     if (aAlreadyImportedURLs != null) {
       alreadyImportedURLs.addAll(aAlreadyImportedURLs);
       aAlreadyImportedURLs.forEach(stack::push);
     }
 
-    Map<Key, COLLECTIBLE> collectedObjects = new LinkedHashMap<>();
+    var collectedObjects = new LinkedHashMap<Key, COLLECTIBLE>();
 
     stack.push(wrapper.unwrap().getSourceUrlString());
     resolveImports(wrapper, new HashSet<>(), collectedObjects, stack, resourceManager);
@@ -143,19 +138,16 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
           Set<String> aAlreadyVisited, Map<Key, COLLECTIBLE> aAllCollectedObjects,
           Deque<String> aStack, ResourceManager aResourceManager) throws InvalidXMLException {
 
-    if (aAlreadyVisited.contains(aWrapper.unwrap().getSourceUrlString())) {
-      collectAll(aWrapper, aAllCollectedObjects);
-      return;
-    }
-
-    Import[] imports = aWrapper.getImports();
-
-    if (imports.length == 0) {
-      collectAll(aWrapper, aAllCollectedObjects);
-      return;
-    }
-
     collectAll(aWrapper, aAllCollectedObjects);
+
+    if (aAlreadyVisited.contains(aWrapper.unwrap().getSourceUrlString())) {
+      return;
+    }
+
+    var imports = aWrapper.getImports();
+    if (imports.length == 0) {
+      return;
+    }
 
     Map<String, XMLizable> importCache = ((ResourceManager_impl) aResourceManager).getImportCache();
     for (var imp : imports) {
@@ -170,7 +162,7 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
         continue;
       }
 
-      URL absUrl = imp.findAbsoluteUrl(aResourceManager);
+      var absUrl = imp.findAbsoluteUrl(aResourceManager);
       String absUrlString = absUrl.toString();
 
       // Loop cancellation - skip imports of descriptors that lie on the path from the
@@ -182,10 +174,10 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       aStack.push(absUrlString);
 
       synchronized (importCache) {
-        DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> importedTSAdapter = adapterFactory
+        var importedDescriptionAdapter = adapterFactory
                 .apply(getOrLoadDescription(imp, absUrl, importCache, aWrapper));
 
-        resolveImports(importedTSAdapter, aAlreadyVisited, aAllCollectedObjects, aStack,
+        resolveImports(importedDescriptionAdapter, aAlreadyVisited, aAllCollectedObjects, aStack,
                 aResourceManager);
       }
 
@@ -208,7 +200,7 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
           throws InvalidXMLException {
     Class<DESCRIPTOR> descClass = aWrapper.getDescriptorClass();
 
-    XMLizable cachedDescriptor = aImportCache.get(aAbsUrl.toString());
+    var cachedDescriptor = aImportCache.get(aAbsUrl.toString());
     if (descClass.isInstance(cachedDescriptor)) {
       return descClass.cast(cachedDescriptor);
     }
@@ -219,9 +211,9 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
   private DESCRIPTOR loadDescriptor(Import aImport, URL aAbsUrl,
           Map<String, XMLizable> aImportCache, ParserFunction<DESCRIPTOR> aParserFunction)
           throws InvalidXMLException {
-    String urlString = aAbsUrl.toString();
+    var urlString = aAbsUrl.toString();
     try {
-      XMLInputSource input = new XMLInputSource(aAbsUrl);
+      var input = new XMLInputSource(aAbsUrl);
       DESCRIPTOR descriptor = aParserFunction.apply(input);
       aImportCache.put(urlString, descriptor);
       return descriptor;

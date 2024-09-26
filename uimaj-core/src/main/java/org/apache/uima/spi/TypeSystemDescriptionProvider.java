@@ -18,10 +18,40 @@
  */
 package org.apache.uima.spi;
 
-import java.util.List;
+import static java.util.Optional.empty;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 public interface TypeSystemDescriptionProvider {
+  /**
+   * @return the type system descriptions exported by this provider. The provider should resolve any
+   *         imports in the type systems before returning them. Also, the provider should internally
+   *         cache the parsed type systems instead of parsing them on every call to this method.
+   */
   List<TypeSystemDescription> listTypeSystemDescriptions();
+
+  /**
+   * @param aName
+   *          the name of the type system. This should be something like
+   *          {@code some.package.TypeSystem} just as you would put it into the
+   *          {@link Import#setName(String)} of a {@link Import} for a name-based import.
+   * @return the type system description(s) exported from the given location. The provider should
+   *         resolve any imports in the type systems before returning them.
+   * 
+   * @apiNote For backwards compatibility, this is currently a default method, so implementations do
+   *          not have to provide it - although by-name importing type systems provided via SPIs
+   *          will not work then unless the type systems are also simply available via the
+   *          classpath. However, in the next major version, the default implementation will be
+   *          removed so implementers have to provide it.a
+   * @forRemoval 4.0.0 (just the default implementation)
+   * @since 3.6.0
+   */
+  default Optional<URL> findTypeSystemUrl(String aName) {
+    return empty();
+  }
 }
