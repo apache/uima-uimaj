@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 /**
  * uimaFIT-enhanced base classes for UIMA components and some simple components.
  */

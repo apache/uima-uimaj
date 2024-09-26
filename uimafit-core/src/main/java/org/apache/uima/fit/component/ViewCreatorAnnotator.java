@@ -33,8 +33,6 @@ import org.apache.uima.jcas.JCas;
  * - but if you have mapped the default view to some other view, then the view provided to your
  * annotator (when it asks for the default view) will not be created unless you have explicitly
  * created it.
- * 
- * 
  */
 public class ViewCreatorAnnotator extends JCasAnnotator_ImplBase {
 

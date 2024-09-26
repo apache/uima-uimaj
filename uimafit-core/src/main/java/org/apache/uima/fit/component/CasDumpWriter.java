@@ -51,7 +51,6 @@ import org.springframework.util.DigestUtils;
  * Dumps CAS content to a text file. This is useful when setting up test cases which contain a
  * reference output to which an actually produced CAS is compared. The format produced by this
  * component is more easily comparable than a XCAS or XMI format.
- * 
  */
 public class CasDumpWriter extends CasConsumer_ImplBase {
   /**

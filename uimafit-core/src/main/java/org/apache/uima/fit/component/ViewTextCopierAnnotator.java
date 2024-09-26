@@ -32,10 +32,7 @@ import org.apache.uima.jcas.JCas;
  * the end you can compare the annotations in the system view with those in the gold view. It is
  * convenient to have an annotator that simply copies the text from the gold view to the system view
  * before running a pipeline on the system view.
- * 
- * 
  */
-
 public class ViewTextCopierAnnotator extends JCasAnnotator_ImplBase {
 
   /**
@@ -67,5 +64,4 @@ public class ViewTextCopierAnnotator extends JCasAnnotator_ImplBase {
       throw new AnalysisEngineProcessException(e);
     }
   }
-
 }

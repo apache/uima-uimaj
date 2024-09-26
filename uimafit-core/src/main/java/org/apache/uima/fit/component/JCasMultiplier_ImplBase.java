@@ -26,7 +26,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Base class for a JCas multiplier which initializes itself based on annotations.
- * 
  */
 @OperationalProperties(outputsNewCases = true)
 public abstract class JCasMultiplier_ImplBase

@@ -23,7 +23,6 @@ import org.apache.uima.cas.CAS;
 
 /**
  * No-operation annotator. This annotator performs no operation whatsoever.
- * 
  */
 public class NoOpAnnotator extends CasAnnotator_ImplBase {
   @Override

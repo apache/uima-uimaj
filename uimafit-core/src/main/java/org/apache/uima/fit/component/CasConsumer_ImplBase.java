@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * Base class for CAS consumers (actually a
  * {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase}) which initializes itself based
  * on annotations.
- * 
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
 public abstract class CasConsumer_ImplBase

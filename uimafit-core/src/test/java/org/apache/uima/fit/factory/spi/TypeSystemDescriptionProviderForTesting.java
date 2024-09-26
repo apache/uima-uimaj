@@ -33,8 +33,7 @@ public class TypeSystemDescriptionProviderForTesting implements TypeSystemDescri
 
   @Override
   public List<TypeSystemDescription> listTypeSystemDescriptions() {
-    TypeSystemDescription tsd = UIMAFramework.getResourceSpecifierFactory()
-            .createTypeSystemDescription();
+    var tsd = UIMAFramework.getResourceSpecifierFactory().createTypeSystemDescription();
     tsd.addType(TEST_TYPE_A, "", CAS.TYPE_NAME_ANNOTATION);
     return asList(tsd);
   }

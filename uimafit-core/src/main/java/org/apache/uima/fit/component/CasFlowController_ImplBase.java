@@ -23,9 +23,6 @@ import org.apache.uima.fit.component.initialize.ExternalResourceInitializer;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.resource.ResourceInitializationException;
 
-/**
- */
-
 public abstract class CasFlowController_ImplBase
         extends org.apache.uima.flow.CasFlowController_ImplBase {
   @Override

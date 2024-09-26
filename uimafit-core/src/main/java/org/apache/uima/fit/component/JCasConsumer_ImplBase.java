@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
  * Base class for JCas consumers (actually a
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}) which initializes itself based
  * on annotations.
- * 
  */
 @OperationalProperties(multipleDeploymentAllowed = false)
 public abstract class JCasConsumer_ImplBase

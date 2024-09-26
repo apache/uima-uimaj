@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Base class for external resources which initializes itself based on annotations.
- * 
  */
 public abstract class Resource_ImplBase extends org.apache.uima.resource.Resource_ImplBase
         implements ExternalResourceAware {

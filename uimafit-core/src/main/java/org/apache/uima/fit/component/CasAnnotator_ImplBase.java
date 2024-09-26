@@ -26,7 +26,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Base class for CAS annotators which initializes itself based on annotations.
- * 
  */
 public abstract class CasAnnotator_ImplBase
         extends org.apache.uima.analysis_component.CasAnnotator_ImplBase {

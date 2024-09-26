@@ -33,7 +33,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Base class for JCas collection readers which initializes itself based on annotations.
- * 
  */
 @OperationalProperties(outputsNewCases = true)
 public abstract class JCasCollectionReader_ImplBase extends CollectionReader_ImplBase {
