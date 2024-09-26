@@ -44,7 +44,6 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>
       <version>${project.parent.version}</version>
-      <scope>compile</scope>
     </dependency>
 
     <!-- Eclipse dependencies -->

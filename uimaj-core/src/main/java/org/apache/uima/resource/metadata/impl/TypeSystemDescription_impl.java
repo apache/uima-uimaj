@@ -169,8 +169,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
-    ImportResolver<TypeSystemDescription, TypeDescription> resolver = new ImportResolver<>(
-            TypeSystemDescriptionImportResolverAdapter::new);
+    var resolver = new ImportResolver<>(TypeSystemDescriptionImportResolverAdapter::new);
     resolver.resolveImports(this, aAlreadyImportedTypeSystemURLs, aResourceManager);
   }
 

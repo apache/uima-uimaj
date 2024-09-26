@@ -28,8 +28,8 @@
   </parent>
 
   <artifactId>uimaj-component-test-util</artifactId>
-  <packaging>jar</packaging>
-  <name>Apache UIMA Base: ${project.artifactId}: for JUnit</name>
+
+  <name>Apache UIMA Base: ${project.artifactId}: for JUnit (deprecated)</name>
   <description>Supporting utilities used in various JUnit tests</description>
   <url>${uimaWebsiteUrl}</url>
 

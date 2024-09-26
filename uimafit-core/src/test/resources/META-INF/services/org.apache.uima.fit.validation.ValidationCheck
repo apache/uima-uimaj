@@ -1,0 +1,2 @@
+org.apache.uima.fit.validation.checks.EndAfterBeginCheckForTesting
+org.apache.uima.fit.validation.checks.EndSameAsBeginCheckForTesting

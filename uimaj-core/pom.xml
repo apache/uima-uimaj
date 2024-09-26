@@ -61,7 +61,7 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-test-util</artifactId>
@@ -75,17 +75,7 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -119,7 +109,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
+  
   <build>
     <pluginManagement>
       <plugins>
@@ -288,11 +278,6 @@
             <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-api/${log4j-version}/log4j-api-${log4j-version}.jar</additionalClasspathElement>
             <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-slf4j-impl/${log4j-version}/log4j-slf4j-impl-${log4j-version}.jar</additionalClasspathElement>
           </additionalClasspathElements>
-          <!-- exclude log4j slf bridge for testing 
-          <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
-          </classpathDependencyExcludes>
-          -->
         </configuration>
       </plugin>
     </plugins>

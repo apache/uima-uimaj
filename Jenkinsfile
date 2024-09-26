@@ -19,4 +19,5 @@
 
 defaultPipeline {
   // extraMavenArguments = '-Pjacoco,spotbugs,pmd'
+  extraMavenArguments = '-Ddisable-rc-auto-staging'
 }

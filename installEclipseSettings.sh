@@ -68,3 +68,14 @@ installPrefs uima-doc-v3-users-guide
 installPrefs uima-docbook-tools
 installPrefs uimaj-eclipse-feature-tools
 installPrefs uimaj-cpe
+installPrefs uimafit-doc
+installPrefs uimafit-docbook
+installPrefs uimafit-parent
+installPrefs uimafit-assertj
+installPrefs uimafit-benchmark
+installPrefs uimafit-core
+installPrefs uimafit-cpe
+installPrefs uimafit-examples
+installPrefs uimafit-junit
+installPrefs uimafit-maven-plugin
+installPrefs uimafit-spring

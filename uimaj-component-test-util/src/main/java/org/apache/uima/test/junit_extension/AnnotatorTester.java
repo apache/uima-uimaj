@@ -45,7 +45,11 @@ import org.junit.Assert;
 
 /**
  * AnnotatorTester is the helper class to test annotators.
+ * 
+ * @deprecated To be removed without replacement.
+ * @forRemoval 4.0.0
  */
+@Deprecated
 public class AnnotatorTester {
 
   /** The desc file. */

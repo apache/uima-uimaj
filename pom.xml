@@ -199,41 +199,74 @@
             <phase>prepare-package</phase>  <!-- must come before package which uses the results -->
             <!--phase>deploy</phase--> <!-- comment above and uncomment to disable javadocs, for testing/experimentation, with assembly:assembly-->
             <goals>
-              <goal>javadoc</goal>
+              <goal>aggregate-no-fork</goal>
             </goals>
+            <inherited>false</inherited>
             <configuration>
               <groups>
                 <group>
-                  <title>Packages</title>
-                  <packages>*</packages>
+                  <title>Core</title>
+                  <packages>
+                    org.apache.uima:org.apache.uima.analysis_component:org.apache.uima.analysis_engine*:org.apache.uima.cas:org.apache.uima.cas_data*:org.apache.uima.cas.*:org.apache.uima.collection*:org.apache.uima.flow*:org.apache.uima.impl*:org.apache.uima.jcas*:org.apache.uima.resource*:org.apache.uima.search*:org.apache.uima.spi*:org.apache.uima.uimacpp*:org.apache.uima.util*
+                  </packages>
+                </group>
+                <group>
+                  <title>uimaFIT</title>
+                  <packages>
+                    org.apache.uima.fit.component*:org.apache.uima.fit.descriptor*:org.apache.uima.fit.factory*:org.apache.uima.fit.pipeline*:org.apache.uima.fit.util*:org.apache.uima.fit.validation
+                  </packages>
+                </group>
+                <group>
+                  <title>CPE</title>
+                  <packages>
+                    org.apache.uima.fit.cpe*:org.apache.uima.collection.impl*
+                  </packages>
+                </group>
+                <group>
+                  <title>IO</title>
+                  <packages>
+                    org.apache.uima.json
+                  </packages>
+                </group>
+                <group>
+                  <title>PEAR</title>
+                  <packages>
+                    org.apache.uima.pear:org.apache.uima.pear.*
+                  </packages>
+                </group>
+                <group>
+                  <title>Spring</title>
+                  <packages>
+                    org.apache.uima.fit.spring:org.apache.uima.fit.spring.*
+                  </packages>
+                </group>
+                <group>
+                  <title>Tools</title>
+                  <packages>
+                    org.apache.uima.tools:org.apache.uima.tools.*:org.apache.uima.jcas.jcasgenp:org.apache.uima.bootstrap:org.apache.uima.migratev3.jcas
+                  </packages>
+                </group>
+                <group>
+                  <title>Testing</title>
+                  <packages>
+                    org.apache.uima.test*:org.apache.uima.fit.testing.*:org.apache.uima.fit.benchmark
+                  </packages>
+                </group>
+                <group>
+                  <title>Examples</title>
+                  <packages>
+                    org.apache.uima.examples:org.apache.uima.fit.examples.*
+                  </packages>
+                </group>
+                <group>
+                  <title>Internal</title>
+                  <packages>
+                    *.type:*.internal:*.internal.*:*.impl.*:org.apache.vinci.*:org.apache.uima.adapter.vinci*:org.apache.uima.PearPackagingMavenPlugin:org.apache.uima.fit.maven:org.apache.uima.fit.maven.*:org.apache.uima.it.*:org.apache.uima.taeconfigurator:org.apache.uima.taeconfigurator.*:org.apache.uima.ep*:org.apache.uima.caseditor:org.apache.uima.caseditor.*:org.apache.uima.analysis_engine.service.impl:org.apache.uima.analysis_engine.metadata.impl:org.apache.uima.analysis_engine.impl:org.apache.uima.analysis_engine.asb.impl:org.apache.uima.analysis_engine.asb:org.apache.uima.cas_data.impl:org.apache.uima.impl:org.apache.uima.flow.impl:org.apache.uima.jcas.impl:org.apache.uima.cas.impl:org.apache.uima.util.impl:org.apache.uima.cas_data.impl.vinci:org.apache.uima.analysis_engine.impl.compatibility:org.apache.uima.jcasgen_maven_plugin:org.apache.uima.search.impl:org.apache.uima.resource.impl:org.apache.uima.uimacpp:org.apache.uima.resource.metadata.impl:org.apache.uima.resource.service.impl:org.apache.uima.fit.internal:org.apache.uima.fit.internal.*:org.apache.uima.internal.*:org.apache.uima.json.impl
+                  </packages>
                 </group>
               </groups>
-              <sourcepath>uimaj-core/src/main/java;uimaj-json/src/main/java;uimaj-document-annotation/src/main/java</sourcepath>
-              <excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
-              <additionalDependencies>
-                <additionalDependency>
-                  <groupId>com.fasterxml.jackson.core</groupId>
-                  <artifactId>jackson-core</artifactId>
-                  <version>${jackson-version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>slf4j-api</artifactId>
-                  <version>${slf4j-version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-api</artifactId>
-                  <version>${log4j-version}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core</artifactId>
-                  <version>${log4j-version}</version>
-                </additionalDependency>
-              </additionalDependencies>
             </configuration>
           </execution>
         </executions>
@@ -268,6 +301,7 @@
                   <exclude>marker-file-rc-auto-staging-module</exclude>
                   <!-- These markdown files cannot bear a license header -->
                   <exclude>NOTICE.md</exclude>
+                  <exclude>CONTRIBUTING.md</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE.md</exclude>
                   <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</exclude>
                   <!-- These configuration files cannot bear a license header -->
@@ -298,6 +332,17 @@
                   <exclude>uimaj-json/**</exclude>
                   <exclude>uimaj-v3migration-jcas/**</exclude>
                   <exclude>uimaj-it-pear-with-typesystem/**</exclude>
+                  <exclude>uimafit-assertj/**</exclude>
+                  <exclude>uimafit-benchmark/**</exclude>
+                  <exclude>uimafit-core/**</exclude>
+                  <exclude>uimafit-cpe/**</exclude>
+                  <exclude>uimafit-documentation/**</exclude>
+                  <exclude>uimafit-examples/**</exclude>
+                  <exclude>uimafit-junit/**</exclude>
+                  <exclude>uimafit-maven-plugin/**</exclude>
+                  <exclude>uimafit-parent/**</exclude>
+                  <exclude>uimafit-root/**</exclude>
+                  <exclude>uimafit-spring/**</exclude>
                 </excludes>
               </configuration>
             </execution>
