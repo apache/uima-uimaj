@@ -39,8 +39,12 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
+import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.spi.FsIndexCollectionProvider;
+import org.apache.uima.spi.TypePrioritiesProvider;
 import org.apache.uima.spi.TypeSystemDescriptionProvider;
 
 public class TypeSystemUtil {
@@ -66,22 +70,22 @@ public class TypeSystemUtil {
    * @param aContext
    *          a context class. If the locations are not absolute, then they are looked up relative
    *          to this context class as per {@link Class#getResource(String)}.
-   * @param typeSystemDescriptionLocations
+   * @param aLocations
    *          type system description locations to load.
    * @return list of the loaded and resolved descriptions.
    */
   public static List<TypeSystemDescription> loadTypeSystemDescriptionsFromClasspath(
-          Class<?> aContext, String... typeSystemDescriptionLocations) {
+          Class<?> aContext, String... aLocations) {
 
     var resMgr = new ResourceManager_impl(aContext.getClassLoader());
     try {
       var typeSystemDescriptions = new ArrayList<TypeSystemDescription>();
 
-      for (var typeSystem : typeSystemDescriptionLocations) {
-        var resource = aContext.getResource(typeSystem);
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
         if (resource == null) {
           getLogger().error("Unable to locate type system description as a resource [{}]",
-                  typeSystem);
+                  location);
           continue;
         }
 
@@ -91,12 +95,118 @@ public class TypeSystemUtil {
           tsd.resolveImports(resMgr);
           typeSystemDescriptions.add(tsd);
         } catch (InvalidXMLException | IOException e) {
-          getLogger().error("Error loading type system description [{}] from [{}]", typeSystem,
+          getLogger().error("Error loading type system description [{}] from [{}]", location,
                   resource, e);
         }
       }
 
       return typeSystemDescriptions;
+    } finally {
+      resMgr.destroy();
+    }
+  }
+
+  /**
+   * Loads type priorities and resolves their imports. For example when you place a
+   * {@link TypePrioritiesProvider} implementation and place the type priorities it should provide
+   * in the same package, you can use this method to conveniently load them simply by name in the
+   * provider implementation.
+   * 
+   * <pre>
+   * public class MyTypePrioritiesProvider implements TypePrioritiesProvider {
+   *   {@code @Override}
+   *   {@code public List<TypePriorities> listTypePriorities()} {
+   *     return TypeSystemUtil.loadTypePrioritiesFromClasspath(getClass(), "TypePriorities1.xml",
+   *             "TypePriorities2.xml");
+   *   }
+   * }
+   * </pre>
+   * 
+   * @param aContext
+   *          a context class. If the locations are not absolute, then they are looked up relative
+   *          to this context class as per {@link Class#getResource(String)}.
+   * @param aLocations
+   *          type priorities locations to load.
+   * @return list of the loaded and resolved descriptions.
+   */
+  public static List<TypePriorities> loadTypePrioritiesFromClasspath(Class<?> aContext,
+          String... aLocations) {
+
+    var resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    try {
+      var typePriorities = new ArrayList<TypePriorities>();
+
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
+        if (resource == null) {
+          getLogger().error("Unable to locate type priorities as a resource [{}]", location);
+          continue;
+        }
+
+        try {
+          var tps = UIMAFramework.getXMLParser().parseTypePriorities(new XMLInputSource(resource));
+          tps.resolveImports(resMgr);
+          typePriorities.add(tps);
+        } catch (InvalidXMLException | IOException e) {
+          getLogger().error("Error loading type priorities [{}] from [{}]", location, resource, e);
+        }
+      }
+
+      return typePriorities;
+    } finally {
+      resMgr.destroy();
+    }
+  }
+
+  /**
+   * Loads FS index collections and resolves their imports. For example when you place a
+   * {@link FsIndexCollectionProvider} implementation and place the FS index collections it should
+   * provide in the same package, you can use this method to conveniently load them simply by name
+   * in the provider implementation.
+   * 
+   * <pre>
+   * public class MyFsIndexCollectionProvider implements FsIndexCollectionProvider {
+   *   {@code @Override}
+   *   {@code public List<FsIndexCollection> listFsIndexCollections()} {
+   *     return TypeSystemUtil.loadFsIndexCollectionsFromClasspath(getClass(), "FsIndexCollection1.xml",
+   *             "FsIndexCollection2.xml");
+   *   }
+   * }
+   * </pre>
+   * 
+   * @param aContext
+   *          a context class. If the locations are not absolute, then they are looked up relative
+   *          to this context class as per {@link Class#getResource(String)}.
+   * @param aLocations
+   *          FS index collections locations to load.
+   * @return list of the loaded and resolved descriptions.
+   */
+  public static List<FsIndexCollection> loadFsIndexCollectionsFromClasspath(Class<?> aContext,
+          String... aLocations) {
+
+    var resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    try {
+      var fsIndexCollections = new ArrayList<FsIndexCollection>();
+
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
+        if (resource == null) {
+          getLogger().error("Unable to locate FS index collections as a resource [{}]", location);
+          continue;
+        }
+
+        try {
+          var fsic = UIMAFramework.getXMLParser()
+                  .parseFsIndexCollection(new XMLInputSource(resource));
+          fsic.resolveImports(resMgr);
+          fsIndexCollections.add(fsic);
+        } catch (InvalidXMLException | IOException e) {
+          getLogger().error("Error loading FS index collections [{}] from [{}]", location, resource,
+                  e);
+        }
+      }
+
+      return fsIndexCollections;
     } finally {
       resMgr.destroy();
     }

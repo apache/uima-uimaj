@@ -26,7 +26,7 @@ import java.util.ServiceLoader;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
-import org.apache.uima.spi.TypeSystemDescriptionProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLParser;
@@ -130,9 +130,9 @@ public class Import_impl extends MetaDataObject_impl implements Import {
 
     // If that fails, try loading through the SPIs
     if (url == null) {
-      var providers = ServiceLoader.load(TypeSystemDescriptionProvider.class);
+      var providers = ServiceLoader.load(TypeSystemProvider.class);
       for (var provider : providers) {
-        var maybeTypeSystemUrl = provider.findTypeSystemUrl(name);
+        var maybeTypeSystemUrl = provider.findResourceUrl(name);
         if (maybeTypeSystemUrl.isPresent()) {
           url = maybeTypeSystemUrl.get();
           break;
