@@ -52,6 +52,7 @@ import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.internal.util.WeakIdentityMap;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.spi.JCasClassProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
@@ -980,13 +981,21 @@ public abstract class FSClassRegistry {
       }
 
       var spiJCasClasses = new LinkedHashMap<String, Class<? extends TOP>>();
-      var loader = ServiceLoader.load(JCasClassProvider.class, cl);
-      loader.forEach(provider -> {
+
+      ServiceLoader.load(JCasClassProvider.class, cl).forEach(provider -> {
         var list = provider.listJCasClasses();
         if (list != null) {
           list.forEach(item -> spiJCasClasses.put(item.getName(), item));
         }
       });
+
+      ServiceLoader.load(TypeSystemProvider.class, cl).forEach(provider -> {
+        var list = provider.listJCasClasses();
+        if (list != null) {
+          list.forEach(item -> spiJCasClasses.put(item.getName(), item));
+        }
+      });
+
       cl_to_spiJCas.put(cl, spiJCasClasses);
 
       return spiJCasClasses;

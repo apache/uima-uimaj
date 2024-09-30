@@ -21,10 +21,12 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLParser;
@@ -54,7 +56,6 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * the value if the evaluation succeeds (later fetches may not have the settings defined!) Leave
    * value unmodified if any settings are undefined.
    */
-
   @Override
   public String getName() {
     if (mName != null && mName.contains("${")) {
@@ -98,38 +99,65 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
     String location, name;
     if ((location = getLocation()) != null) {
-      try {
-        URL url = new URL(getRelativePathBase(), location);
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
-                new Object[] { "location", url });
-        return url;
-      } catch (MalformedURLException e) {
-        throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL,
-                new Object[] { location, getSourceUrlString() }, e);
+      return findResourceUrlByLocation(location);
+    }
+
+    if ((name = getName()) != null) {
+      return findResouceUrlByName(aResourceManager, name);
+    }
+
+    // no name or location -- this should be caught at XML parse time but we still need to
+    // check here in case object was modified or was created programmatically.
+    throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
+            new Object[] { getSourceUrlString() });
+  }
+
+  private URL findResouceUrlByName(ResourceManager aResourceManager, String name)
+          throws InvalidXMLException {
+    var filename = name.replace('.', '/') + byNameSuffix;
+    URL url;
+
+    // Try loading through the classpath
+    try {
+      url = aResourceManager.resolveRelativePath(filename);
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
+              new Object[] { "name", url });
+    } catch (MalformedURLException e) {
+      throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
+              new Object[] { filename, getSourceUrlString() }, e);
+    }
+
+    // If that fails, try loading through the SPIs
+    if (url == null) {
+      var providers = ServiceLoader.load(TypeSystemProvider.class);
+      for (var provider : providers) {
+        var maybeTypeSystemUrl = provider.findResourceUrl(name);
+        if (maybeTypeSystemUrl.isPresent()) {
+          url = maybeTypeSystemUrl.get();
+          break;
+        }
       }
-    } else if ((name = getName()) != null) {
-      String filename = name.replace('.', '/') + byNameSuffix;
-      URL url;
-      try {
-        url = aResourceManager.resolveRelativePath(filename);
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
-                new Object[] { "name", url });
-      } catch (MalformedURLException e) {
-        throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                new Object[] { filename, getSourceUrlString() }, e);
-      }
-      if (url == null) {
-        throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                new Object[] { filename, getSourceUrlString() });
-      }
+    }
+
+    if (url == null) {
+      throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
+              new Object[] { filename, getSourceUrlString() });
+    }
+
+    return url;
+  }
+
+  private URL findResourceUrlByLocation(String location) throws InvalidXMLException {
+    try {
+      var url = new URL(getRelativePathBase(), location);
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
+              new Object[] { "location", url });
       return url;
-    } else {
-      // no name or location -- this should be caught at XML parse time but we still need to
-      // check here in case object was modified or was created progrmatically.
-      throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
-              new Object[] { getSourceUrlString() });
+    } catch (MalformedURLException e) {
+      throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL,
+              new Object[] { location, getSourceUrlString() }, e);
     }
   }
 

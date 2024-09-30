@@ -26,7 +26,9 @@ import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotati
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -48,6 +50,7 @@ import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.spi.FsIndexCollectionProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
@@ -330,10 +333,26 @@ public final class FsIndexFactory {
   }
 
   static void loadFsIndexCollectionsfromSPIs(List<FsIndexDescription> fsIndexList) {
-    ServiceLoader<FsIndexCollectionProvider> loader = ServiceLoader
-            .load(FsIndexCollectionProvider.class);
-    loader.forEach(provider -> {
-      for (FsIndexCollection fsIdxCol : provider.listFsIndexCollections()) {
+    var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    ServiceLoader.load(FsIndexCollectionProvider.class).forEach(provider -> {
+      loaded.add(provider);
+      for (var fsIdxCol : provider.listFsIndexCollections()) {
+        loaded.add(fsIdxCol);
+        fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
+        LOG.debug("Loaded SPI-provided index collection at [{}]", fsIdxCol.getSourceUrlString());
+      }
+    });
+
+    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+      if (loaded.contains(provider)) {
+        return;
+      }
+
+      for (var fsIdxCol : provider.listFsIndexCollections()) {
+        if (loaded.contains(fsIdxCol)) {
+          continue;
+        }
         fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
         LOG.debug("Loaded SPI-provided index collection at [{}]", fsIdxCol.getSourceUrlString());
       }

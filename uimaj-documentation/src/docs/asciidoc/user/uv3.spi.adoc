@@ -23,8 +23,9 @@
 JCas types and associated type system descriptions can be made discoverable by UIMA using Java's
 SPI mechanism. 
 
-NOTE: The core UIMA Java SDK currently only this mechanism to discover JCas classes. SPI-based
-      auto-discovery of type system descriptions is supported by uimaFIT 3.4.0 and higher.
+NOTE: The core UIMA Java SDK currently only this mechanism to discover JCas classes. The SPI-based
+      auto-discovery of type system descriptions described here is supported by uimaFIT 3.6.0 and higher.
+      A legacy implementation has been supported since 3.4.0
 
 SPI-based JCas class discovery is important in situation where multiple classloaders are used, e.g.
 in OSGi environments. This is because JCas classes must be globally unique in the entire system
@@ -33,45 +34,16 @@ provided through different class loaders (e.g. OSGI bundle classloaders), they m
 SPI, otherwise UIMA will not be able to reliably associated the JCas classes with their unique 
 classloader.
 
-To announce JCas classes via SPI, create a file `META-INF/services/org.apache.uima.spi.JCasClassProvider`
-and in the file, place implementations of the interface `org.apache.uima.spi.JCasClassProvider`, one 
+To announce JCas classes via SPI, create a file `META-INF/services/org.apache.uima.spi.TypeSystemProvider`
+and in the file, place implementations of the interface `org.apache.uima.spi.TypeSystemProvider`, one 
 per line.
 
-Here is a trivial example implementation of the interface that announces two JCas classes.
-
-[source]
-----
-public class MyJCasClassProvider implements JCasClassProvider {
-
-  @Override
-  public List<Class<? extends TOP>> listJCasClasses() {
-    return asList(MyToken.class, MySentence.class);
-  }
-}
-----
-
-More elaborate implementations might e.g. use uimaFIT to auto-detect types and if there is a JCas
-class for any of these types, announce them.
+Typically, these implementations are done by sub-classing `org.apache.uima.spi.TypeSystemProvider_ImplBase` and setting the exported resources in the constructor implementation.
 
 == Type system description discovery
 
-The core UIMA framework defines the `TypeSystemDescriptionProvider` interface to also enable
+The core UIMA framework defines the `TypeSystemProvider` interface to also enable
 type system discovery via SPI. However, note that currently only uimaFIT actually implements
 the type system discovery.
 
-Here is an example of how to implement a type system description provider for use with 
-uimaFIT:
-
-
-[source]
-----
-import org.apache.uima.util.TypeSystemUtil;
-
-public class MyTypeSystemDescriptionProvider implements TypeSystemDescriptionProvider {
-  @Override}
-  public List<TypeSystemDescription> listTypeSystemDescriptions() {
-    return TypeSystemUtil.loadTypeSystemDescriptionsFromClasspath(getClass(), "TypeSystem1.xml",
-        "TypeSystem2.xml");
-  }
-}
-----
+Again, you typically subclass `org.apache.uima.spi.TypeSystemProvider_ImplBase` to provide implementations.

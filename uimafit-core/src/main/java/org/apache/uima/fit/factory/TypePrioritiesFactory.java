@@ -24,7 +24,9 @@ import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -40,6 +42,7 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.spi.TypePrioritiesProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -143,9 +146,9 @@ public final class TypePrioritiesFactory {
 
   static void loadTypePrioritiesFromScannedLocations(List<TypePriorities> typePrioritiesList,
           ResourceManager aResMgr) throws ResourceInitializationException {
-    for (String location : scanTypePrioritiesDescriptors()) {
+    for (var location : scanTypePrioritiesDescriptors()) {
       try {
-        TypePriorities priorities = typePriorities.get(location);
+        var priorities = typePriorities.get(location);
 
         if (priorities == PLACEHOLDER) {
           // If the description has not yet been loaded, load it
@@ -165,9 +168,27 @@ public final class TypePrioritiesFactory {
   }
 
   static void loadTypePrioritiesFromSPIs(List<TypePriorities> typePrioritiesList) {
-    ServiceLoader<TypePrioritiesProvider> loader = ServiceLoader.load(TypePrioritiesProvider.class);
-    loader.forEach(provider -> {
-      for (TypePriorities desc : provider.listTypePriorities()) {
+    var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    ServiceLoader.load(TypePrioritiesProvider.class).forEach(provider -> {
+      loaded.add(provider);
+
+      for (var desc : provider.listTypePriorities()) {
+        loaded.add(desc);
+        typePrioritiesList.add(desc);
+        LOG.debug("Loaded SPI-provided type priorities at [{}]", desc.getSourceUrlString());
+      }
+    });
+
+    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+      if (loaded.contains(provider)) {
+        return;
+      }
+
+      for (var desc : provider.listTypePriorities()) {
+        if (loaded.contains(desc)) {
+          continue;
+        }
         typePrioritiesList.add(desc);
         LOG.debug("Loaded SPI-provided type priorities at [{}]", desc.getSourceUrlString());
       }
@@ -185,8 +206,8 @@ public final class TypePrioritiesFactory {
    */
   public static String[] scanTypePrioritiesDescriptors() throws ResourceInitializationException {
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassLoaderUtils.findClassloader();
-      String[] typePrioritesLocations = typePrioritesLocationsByClassloader.get(cl);
+      var cl = ClassLoaderUtils.findClassloader();
+      var typePrioritesLocations = typePrioritesLocationsByClassloader.get(cl);
       if (typePrioritesLocations == null) {
         typePrioritesLocations = scanDescriptors(MetaDataType.TYPE_PRIORITIES);
         internTypePrioritiesLocations(typePrioritesLocations);

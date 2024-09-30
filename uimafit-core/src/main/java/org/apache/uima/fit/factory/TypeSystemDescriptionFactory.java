@@ -24,9 +24,10 @@ import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
@@ -40,6 +41,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.spi.TypeSystemDescriptionProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
@@ -81,14 +83,14 @@ public final class TypeSystemDescriptionFactory {
    */
   public static TypeSystemDescription createTypeSystemDescription(String... descriptorNames) {
 
-    TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
-    List<Import> imports = new ArrayList<>();
-    for (String descriptorName : descriptorNames) {
-      Import imp = new Import_impl();
+    var typeSystem = new TypeSystemDescription_impl();
+    var imports = new ArrayList<Import>();
+    for (var descriptorName : descriptorNames) {
+      var imp = new Import_impl();
       imp.setName(descriptorName);
       imports.add(imp);
     }
-    Import[] importArray = new Import[imports.size()];
+    var importArray = new Import[imports.size()];
     typeSystem.setImports(imports.toArray(importArray));
     return typeSystem;
   }
@@ -103,14 +105,14 @@ public final class TypeSystemDescriptionFactory {
   public static TypeSystemDescription createTypeSystemDescriptionFromPath(
           String... descriptorURIs) {
 
-    TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
-    List<Import> imports = new ArrayList<>();
-    for (String descriptorURI : descriptorURIs) {
-      Import imp = new Import_impl();
+    var typeSystem = new TypeSystemDescription_impl();
+    var imports = new ArrayList<Import>();
+    for (var descriptorURI : descriptorURIs) {
+      var imp = new Import_impl();
       imp.setLocation(descriptorURI);
       imports.add(imp);
     }
-    Import[] importArray = new Import[imports.size()];
+    var importArray = new Import[imports.size()];
     typeSystem.setImports(imports.toArray(importArray));
     return typeSystem;
   }
@@ -127,12 +129,12 @@ public final class TypeSystemDescriptionFactory {
   public static TypeSystemDescription createTypeSystemDescription()
           throws ResourceInitializationException {
 
-    ClassLoader cl = ClassLoaderUtils.findClassloader();
-    TypeSystemDescription tsd = typeDescriptorByClassloader.get(cl);
+    var cl = ClassLoaderUtils.findClassloader();
+    var tsd = typeDescriptorByClassloader.get(cl);
     if (tsd == null) {
       synchronized (CREATE_LOCK) {
-        ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-        List<TypeSystemDescription> tsdList = new ArrayList<>();
+        var resMgr = ResourceManagerFactory.newResourceManager();
+        var tsdList = new ArrayList<TypeSystemDescription>();
 
         loadTypeSystemDescriptionsFromScannedLocations(tsdList, resMgr);
         loadTypeSystemDescriptionsFromSPIs(tsdList);
@@ -147,9 +149,9 @@ public final class TypeSystemDescriptionFactory {
 
   static void loadTypeSystemDescriptionsFromScannedLocations(List<TypeSystemDescription> tsdList,
           ResourceManager aResMgr) throws ResourceInitializationException {
-    for (String location : scanTypeDescriptors()) {
+    for (var location : scanTypeDescriptors()) {
       try {
-        TypeSystemDescription description = typeDescriptors.get(location);
+        var description = typeDescriptors.get(location);
 
         if (description == PLACEHOLDER) {
           // If the description has not yet been loaded, load it
@@ -169,10 +171,26 @@ public final class TypeSystemDescriptionFactory {
   }
 
   static void loadTypeSystemDescriptionsFromSPIs(List<TypeSystemDescription> tsdList) {
-    ServiceLoader<TypeSystemDescriptionProvider> loader = ServiceLoader
-            .load(TypeSystemDescriptionProvider.class);
-    loader.forEach(provider -> {
-      for (TypeSystemDescription desc : provider.listTypeSystemDescriptions()) {
+    var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    ServiceLoader.load(TypeSystemDescriptionProvider.class).forEach(provider -> {
+      loaded.add(provider);
+      for (var desc : provider.listTypeSystemDescriptions()) {
+        loaded.add(desc);
+        tsdList.add(desc);
+        LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
+      }
+    });
+
+    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+      if (loaded.contains(provider)) {
+        return;
+      }
+
+      for (var desc : provider.listTypeSystemDescriptions()) {
+        if (loaded.contains(desc)) {
+          continue;
+        }
         tsdList.add(desc);
         LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
       }
@@ -191,8 +209,8 @@ public final class TypeSystemDescriptionFactory {
   public static String[] scanTypeDescriptors() throws ResourceInitializationException {
 
     synchronized (SCAN_LOCK) {
-      ClassLoader cl = ClassLoaderUtils.findClassloader();
-      String[] typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
+      var cl = ClassLoaderUtils.findClassloader();
+      var typeDescriptorLocations = typeDescriptorLocationsByClassloader.get(cl);
 
       if (typeDescriptorLocations == null) {
         typeDescriptorLocations = scanDescriptors(MetaDataType.TYPE_SYSTEM);
@@ -210,10 +228,10 @@ public final class TypeSystemDescriptionFactory {
     // We "intern" the location strings because we will use them as keys in the WeakHashMap
     // caching the parsed type systems. As part of this process, we put a PLACEHOLDER into the
     // map which is replaced when the type system is actually loaded
-    Map<String, String> locationStrings = new HashMap<>();
+    var locationStrings = new HashMap<String, String>();
     typeDescriptors.keySet().stream().forEach(loc -> locationStrings.put(loc, loc));
     for (int i = 0; i < typeDescriptorLocations.length; i++) {
-      String existingLocString = locationStrings.get(typeDescriptorLocations[i]);
+      var existingLocString = locationStrings.get(typeDescriptorLocations[i]);
       if (existingLocString == null) {
         typeDescriptors.put(typeDescriptorLocations[i], PLACEHOLDER);
         locationStrings.put(typeDescriptorLocations[i], typeDescriptorLocations[i]);

@@ -19,26 +19,32 @@
 
 package org.apache.uima.util;
 
+import static java.lang.Character.isDigit;
+import static java.lang.Character.isLetter;
+import static org.apache.uima.UIMAFramework.getLogger;
+import static org.apache.uima.cas.CAS.TYPE_NAME_ANNOTATION;
+import static org.apache.uima.cas.CAS.TYPE_NAME_FS_ARRAY;
+import static org.apache.uima.cas.CAS.TYPE_NAME_STRING;
+import static org.apache.uima.cas.CAS.TYPE_NAME_TOP;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.LowLevelTypeSystem;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
+import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.spi.FsIndexCollectionProvider;
+import org.apache.uima.spi.TypePrioritiesProvider;
 import org.apache.uima.spi.TypeSystemDescriptionProvider;
 
 public class TypeSystemUtil {
@@ -61,41 +67,146 @@ public class TypeSystemUtil {
    * }
    * </pre>
    * 
-   * 
    * @param aContext
    *          a context class. If the locations are not absolute, then they are looked up relative
    *          to this context class as per {@link Class#getResource(String)}.
-   * @param typeSystemDescriptionLocations
+   * @param aLocations
    *          type system description locations to load.
    * @return list of the loaded and resolved descriptions.
    */
   public static List<TypeSystemDescription> loadTypeSystemDescriptionsFromClasspath(
-          Class<?> aContext, String... typeSystemDescriptionLocations) {
+          Class<?> aContext, String... aLocations) {
 
-    ResourceManager resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    var resMgr = new ResourceManager_impl(aContext.getClassLoader());
     try {
-      List<TypeSystemDescription> typeSystemDescriptions = new ArrayList<>();
+      var typeSystemDescriptions = new ArrayList<TypeSystemDescription>();
 
-      for (String typeSystem : typeSystemDescriptionLocations) {
-        URL resource = aContext.getResource(typeSystem);
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
         if (resource == null) {
-          UIMAFramework.getLogger()
-                  .error("Unable to locate type system description as a resource [{}]", typeSystem);
+          getLogger().error("Unable to locate type system description as a resource [{}]",
+                  location);
           continue;
         }
 
         try {
-          TypeSystemDescription tsd = UIMAFramework.getXMLParser()
+          var tsd = UIMAFramework.getXMLParser()
                   .parseTypeSystemDescription(new XMLInputSource(resource));
           tsd.resolveImports(resMgr);
           typeSystemDescriptions.add(tsd);
         } catch (InvalidXMLException | IOException e) {
-          UIMAFramework.getLogger().error("Error loading type system description [{}] from [{}]",
-                  typeSystem, resource, e);
+          getLogger().error("Error loading type system description [{}] from [{}]", location,
+                  resource, e);
         }
       }
 
       return typeSystemDescriptions;
+    } finally {
+      resMgr.destroy();
+    }
+  }
+
+  /**
+   * Loads type priorities and resolves their imports. For example when you place a
+   * {@link TypePrioritiesProvider} implementation and place the type priorities it should provide
+   * in the same package, you can use this method to conveniently load them simply by name in the
+   * provider implementation.
+   * 
+   * <pre>
+   * public class MyTypePrioritiesProvider implements TypePrioritiesProvider {
+   *   {@code @Override}
+   *   {@code public List<TypePriorities> listTypePriorities()} {
+   *     return TypeSystemUtil.loadTypePrioritiesFromClasspath(getClass(), "TypePriorities1.xml",
+   *             "TypePriorities2.xml");
+   *   }
+   * }
+   * </pre>
+   * 
+   * @param aContext
+   *          a context class. If the locations are not absolute, then they are looked up relative
+   *          to this context class as per {@link Class#getResource(String)}.
+   * @param aLocations
+   *          type priorities locations to load.
+   * @return list of the loaded and resolved descriptions.
+   */
+  public static List<TypePriorities> loadTypePrioritiesFromClasspath(Class<?> aContext,
+          String... aLocations) {
+
+    var resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    try {
+      var typePriorities = new ArrayList<TypePriorities>();
+
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
+        if (resource == null) {
+          getLogger().error("Unable to locate type priorities as a resource [{}]", location);
+          continue;
+        }
+
+        try {
+          var tps = UIMAFramework.getXMLParser().parseTypePriorities(new XMLInputSource(resource));
+          tps.resolveImports(resMgr);
+          typePriorities.add(tps);
+        } catch (InvalidXMLException | IOException e) {
+          getLogger().error("Error loading type priorities [{}] from [{}]", location, resource, e);
+        }
+      }
+
+      return typePriorities;
+    } finally {
+      resMgr.destroy();
+    }
+  }
+
+  /**
+   * Loads FS index collections and resolves their imports. For example when you place a
+   * {@link FsIndexCollectionProvider} implementation and place the FS index collections it should
+   * provide in the same package, you can use this method to conveniently load them simply by name
+   * in the provider implementation.
+   * 
+   * <pre>
+   * public class MyFsIndexCollectionProvider implements FsIndexCollectionProvider {
+   *   {@code @Override}
+   *   {@code public List<FsIndexCollection> listFsIndexCollections()} {
+   *     return TypeSystemUtil.loadFsIndexCollectionsFromClasspath(getClass(), "FsIndexCollection1.xml",
+   *             "FsIndexCollection2.xml");
+   *   }
+   * }
+   * </pre>
+   * 
+   * @param aContext
+   *          a context class. If the locations are not absolute, then they are looked up relative
+   *          to this context class as per {@link Class#getResource(String)}.
+   * @param aLocations
+   *          FS index collections locations to load.
+   * @return list of the loaded and resolved descriptions.
+   */
+  public static List<FsIndexCollection> loadFsIndexCollectionsFromClasspath(Class<?> aContext,
+          String... aLocations) {
+
+    var resMgr = new ResourceManager_impl(aContext.getClassLoader());
+    try {
+      var fsIndexCollections = new ArrayList<FsIndexCollection>();
+
+      for (var location : aLocations) {
+        var resource = aContext.getResource(location);
+        if (resource == null) {
+          getLogger().error("Unable to locate FS index collections as a resource [{}]", location);
+          continue;
+        }
+
+        try {
+          var fsic = UIMAFramework.getXMLParser()
+                  .parseFsIndexCollection(new XMLInputSource(resource));
+          fsic.resolveImports(resMgr);
+          fsIndexCollections.add(fsic);
+        } catch (InvalidXMLException | IOException e) {
+          getLogger().error("Error loading FS index collections [{}] from [{}]", location, resource,
+                  e);
+        }
+      }
+
+      return fsIndexCollections;
     } finally {
       resMgr.destroy();
     }
@@ -109,18 +220,18 @@ public class TypeSystemUtil {
    * @return a TypeSystemDescription that is equivalent to <code>aTypeSystem</code>
    */
   public static TypeSystemDescription typeSystem2TypeSystemDescription(TypeSystem aTypeSystem) {
-    ResourceSpecifierFactory fact = UIMAFramework.getResourceSpecifierFactory();
-    TypeSystemDescription tsDesc = fact.createTypeSystemDescription();
-    Iterator<Type> typeIter = aTypeSystem.getTypeIterator();
-    List<TypeDescription> typeDescs = new ArrayList<>();
+    var fact = UIMAFramework.getResourceSpecifierFactory();
+    var tsDesc = fact.createTypeSystemDescription();
+    var typeIter = aTypeSystem.getTypeIterator();
+    var typeDescs = new ArrayList<TypeDescription>();
     while (typeIter.hasNext()) {
-      Type type = typeIter.next();
-      if (!type.getName().startsWith("uima.cas") && !type.getName().equals("uima.tcas.Annotation")
+      var type = typeIter.next();
+      if (!type.getName().startsWith("uima.cas") && !type.getName().equals(TYPE_NAME_ANNOTATION)
               && !type.isArray()) {
         typeDescs.add(type2TypeDescription(type, aTypeSystem));
       }
     }
-    TypeDescription[] typeDescArr = new TypeDescription[typeDescs.size()];
+    var typeDescArr = new TypeDescription[typeDescs.size()];
     typeDescs.toArray(typeDescArr);
     tsDesc.setTypes(typeDescArr);
 
@@ -137,29 +248,29 @@ public class TypeSystemUtil {
    * @return a TypeDescription that is equivalent to <code>aType</code>
    */
   public static TypeDescription type2TypeDescription(Type aType, TypeSystem aTypeSystem) {
-    TypeDescription typeDesc = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
+    var typeDesc = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
     typeDesc.setName(aType.getName());
-    Type superType = aTypeSystem.getParent(aType);
+    var superType = aTypeSystem.getParent(aType);
     typeDesc.setSupertypeName(superType.getName());
     // special handling for string subtypes (which have "allowed values", rather than features)
-    Type stringType = aTypeSystem.getType("uima.cas.String");
+    var stringType = aTypeSystem.getType(TYPE_NAME_STRING);
     if (aTypeSystem.subsumes(stringType, aType)) {
-      String[] allowedValues = getAllowedValuesForType(aType, aTypeSystem);
-      AllowedValue[] avObjs = new AllowedValue[allowedValues.length];
+      var allowedValues = getAllowedValuesForType(aType, aTypeSystem);
+      var avObjs = new AllowedValue[allowedValues.length];
       for (int i = 0; i < allowedValues.length; i++) {
-        AllowedValue av = UIMAFramework.getResourceSpecifierFactory().createAllowedValue();
+        var av = UIMAFramework.getResourceSpecifierFactory().createAllowedValue();
         av.setString(allowedValues[i]);
         avObjs[i] = av;
       }
       typeDesc.setAllowedValues(avObjs);
     } else {
-      List<FeatureDescription> featDescs = new ArrayList<>();
-      for (Feature feat : aType.getFeatures()) {
+      var featDescs = new ArrayList<FeatureDescription>();
+      for (var feat : aType.getFeatures()) {
         if (!superType.getFeatures().contains(feat)) {
           featDescs.add(feature2FeatureDescription(feat));
         }
       }
-      FeatureDescription[] featDescArr = new FeatureDescription[featDescs.size()];
+      var featDescArr = new FeatureDescription[featDescs.size()];
       featDescs.toArray(featDescArr);
       typeDesc.setFeatures(featDescArr);
     }
@@ -174,19 +285,18 @@ public class TypeSystemUtil {
    * @return a FeatureDescription that is equivalent to <code>aFeature</code>
    */
   public static FeatureDescription feature2FeatureDescription(Feature aFeature) {
-    FeatureDescription featDesc = UIMAFramework.getResourceSpecifierFactory()
-            .createFeatureDescription();
+    var featDesc = UIMAFramework.getResourceSpecifierFactory().createFeatureDescription();
     featDesc.setName(aFeature.getShortName());
     if (aFeature.isMultipleReferencesAllowed()) {
       featDesc.setMultipleReferencesAllowed(true);
     }
-    Type rangeType = aFeature.getRange();
+    var rangeType = aFeature.getRange();
     // special check for array range types, which are represented in the CAS as
     // elementType[] but in the descriptor as an FSArray with an <elementType>
     if (rangeType.isArray() && !rangeType.getComponentType().isPrimitive()) {
-      featDesc.setRangeTypeName(CAS.TYPE_NAME_FS_ARRAY);
-      String elementTypeName = rangeType.getComponentType().getName();
-      if (!CAS.TYPE_NAME_TOP.equals(elementTypeName)) {
+      featDesc.setRangeTypeName(TYPE_NAME_FS_ARRAY);
+      var elementTypeName = rangeType.getComponentType().getName();
+      if (!TYPE_NAME_TOP.equals(elementTypeName)) {
         featDesc.setElementType(elementTypeName);
       }
     } else {
@@ -205,7 +315,7 @@ public class TypeSystemUtil {
    * @return array of allowed values for <code>aType</code> TODO - this should be a method on Type.
    */
   public static String[] getAllowedValuesForType(Type aType, TypeSystem aTypeSystem) {
-    LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
+    var lts = aTypeSystem.getLowLevelTypeSystem();
     return lts.ll_getStringSet(lts.ll_getCodeForType(aType));
   }
 
@@ -273,10 +383,10 @@ public class TypeSystemUtil {
   }
 
   private static boolean isIdentifierStart(char c) {
-    return Character.isLetter(c);
+    return isLetter(c);
   }
 
   private static boolean isIdentifierChar(char c) {
-    return (Character.isLetter(c) || Character.isDigit(c) || (c == '_'));
+    return (isLetter(c) || isDigit(c) || (c == '_'));
   }
 }
