@@ -171,20 +171,14 @@ public final class TypePrioritiesFactory {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
     ServiceLoader.load(TypePrioritiesProvider.class).forEach(provider -> {
-      loaded.add(provider);
-
       for (var desc : provider.listTypePriorities()) {
         loaded.add(desc);
         typePrioritiesList.add(desc);
-        LOG.debug("Loaded SPI-provided type priorities at [{}]", desc.getSourceUrlString());
+        LOG.debug("Loaded legacy SPI-provided type priorities at [{}]", desc.getSourceUrlString());
       }
     });
 
     ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
-      if (loaded.contains(provider)) {
-        return;
-      }
-
       for (var desc : provider.listTypePriorities()) {
         if (loaded.contains(desc)) {
           continue;
