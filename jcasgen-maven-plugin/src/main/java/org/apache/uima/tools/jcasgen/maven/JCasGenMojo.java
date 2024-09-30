@@ -19,6 +19,8 @@
 package org.apache.uima.tools.jcasgen.maven;
 
 import static java.util.Arrays.asList;
+import static org.apache.maven.plugins.annotations.LifecyclePhase.PROCESS_RESOURCES;
+import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,10 +41,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  * descriptor files to already be at the appropriate places on the classpath, and the
  * generate-resources phase runs before resources are copied.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "generate", defaultPhase = PROCESS_RESOURCES, requiresDependencyResolution = COMPILE, threadSafe = true)
 public class JCasGenMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}", readonly = true)
