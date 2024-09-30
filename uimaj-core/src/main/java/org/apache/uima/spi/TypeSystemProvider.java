@@ -21,14 +21,75 @@ package org.apache.uima.spi;
 import static java.util.Optional.empty;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.Import;
+import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 
+/**
+ * Allows the UIMA framework to discover globally available resources such as JCas classes, type
+ * system descriptions, etc.
+ * 
+ * @see TypeSystemProvider_ImplBase
+ */
+@SuppressWarnings("deprecation")
 public interface TypeSystemProvider extends TypeSystemDescriptionProvider, JCasClassProvider,
         FsIndexCollectionProvider, TypePrioritiesProvider {
 
   /**
+   * @return the type system descriptions exported by this provider. The provider should resolve any
+   *         imports in these before returning them. If possible, the provider should internally
+   *         cache the parsed type systems instead of parsing them on every call to this method.
+   */
+  @Override
+  default List<TypeSystemDescription> listTypeSystemDescriptions() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return the FS index collections exported by this provider. The provider should resolve any
+   *         imports in these before returning them. If possible, the provider should internally
+   *         cache the parsed type systems instead of parsing them on every call to this method.
+   */
+  @Override
+  default List<FsIndexCollection> listFsIndexCollections() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return the type priorities exported by this provider. The provider should resolve any imports
+   *         in these before returning them. If possible, the provider should internally cache the
+   *         parsed type systems instead of parsing them on every call to this method.
+   */
+  @Override
+  default List<TypePriorities> listTypePriorities() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return the JCas classes exported by this provider. The provider should only supply JCas
+   *         classes for types it exports via {@link #listTypeSystemDescriptions()}. If possible,
+   *         the provider should internally cache the parsed type systems instead of parsing them on
+   *         every call to this method.
+   */
+  @Override
+  default List<Class<? extends TOP>> listJCasClasses() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * Returns the URL for a resource exported by this provider by name. This is necessary if any
+   * descriptors outside of this provider import resources owned by this provider by name. Note that
+   * by convention, any descriptors returned by this provide via
+   * {@link #listTypeSystemDescriptions()}, {@link #listTypePriorities()} and
+   * {@link #listFsIndexCollections()} should already have resolved their imports, so for these
+   * methods to access local imports, implementing this method is not required.
+   * 
    * @param aName
    *          the name of the type system. This should be something like
    *          {@code some.package.TypeSystem} just as you would put it into the

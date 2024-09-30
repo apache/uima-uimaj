@@ -22,7 +22,13 @@ import java.util.List;
 
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
+/**
+ * @deprecated Use {@link TypeSystemProvider} instead.
+ * @forRemoval 4.0.0
+ */
+@Deprecated
 public interface TypeSystemDescriptionProvider {
+
   /**
    * @return the type system descriptions exported by this provider. The provider should resolve any
    *         imports in the type systems before returning them. Also, the provider should internally

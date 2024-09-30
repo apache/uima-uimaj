@@ -32,91 +32,22 @@ extensible software. In our case, we want to make uimaFIT aware of type system d
 definitions or type priority lists so that when we create a new CAS or analysis component, they are
 automatically pre-configured with these.
 
-To enable this auto-detection, the UIMA Core Java SDK provides defines interfaces:
+To enable this auto-detection, the UIMA Core Java SDK provides defines the interface `org.apache.uima.spi.TypeSystemProvider`.
 
-* `org.apache.uima.spi.FsIndexCollectionProvider`
-* `org.apache.uima.spi.TypePrioritiesProvider`
-* `org.apache.uima.spi.TypeSystemDescriptionProvider`
-
-Java code that wants to announce types, indexes or type priorities must implement one or more of
-these interfaces in a provider class. We will make an example for type system descriptions. It works
-in the same way for indexes and type priorities.
-
-The following provider class publishes types from a type system description XML file located it can
-access via the classpath at `/org/apache/uima/examples/types/TypeSystem.xml`:
-
-[source,java]
-----
-import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
-
-import java.util.List;
-
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.spi.TypeSystemDescriptionProvider;
-
-public class MyTypeSystemProvider implements TypeSystemDescriptionProvider {
-
-  @Override
-  public List<TypeSystemDescription> listTypeSystemDescriptions() {
-    return asList(createTypeSystemDescription("org.apache.uima.examples.types.TypeSystem"));
-  }
-}
-----
-
-You may also consider a slightly more advanced implementation that pre-resolves any imports that
-may be contained in the loaded descriptors. This is important if you are in an environment with
-multiple classloaders such as an OSGI environment.
-
-[source,java]
-----
-import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.impl.ResourceManager_impl;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.spi.TypeSystemDescriptionProvider;
-import org.apache.uima.util.InvalidXMLException;
-
-public class MyAdvancedTypeSystemProvider implements TypeSystemDescriptionProvider {
-
-  @Override
-  public List<TypeSystemDescription> listTypeSystemDescriptions() {
-    ResourceManager resMgr = new ResourceManager_impl(getClass().getClassLoader());
-    try {
-      TypeSystemDescription tsd = createTypeSystemDescription(
-              "org.apache.uima.examples.types.TypeSystem");
-      tsd.resolveImports(resMgr);
-      return asList(tsd);
-    } catch (InvalidXMLException e) {
-      UIMAFramework.getLogger().error("Unable to load type system", e);
-      return Collections.emptyList();
-    } finally {
-      resMgr.destroy();
-    }
-  }
-}
-----
-
-In a proper implementation, you might care to use a better error handling, use your own loggers
-instead of the framework logger, maybe load additional type system descriptions, etc.
+Java code that wants to announce types, indexes or type priorities must implement this interface in a provider class.
+Typically, this is done by sub-classing `org.apache.uima.spi.TypeSystemProvider_ImplBase` and setting the exported resources in the constructor implementation.
 
 Once the provider class has been implemented, it needs to be registered with the SPI mechanism.
 To do that, create a text file with the name of the implemented interface in `META-INF/services`, e.g.
-`META-INF/services/org.apache.uima.spi.TypeSystemDescriptionProvider`. Into that file, add the name of
+`META-INF/services/org.apache.uima.spi.TypeSystemProvider`. Into that file, add the name of
 the provider class implementation, e.g. `foo.bar.MyTypeSystemProvider`. If you have multiple provider
 classes for the given interface, add them all, one class per line.
 
 === Legacy approach
 
-The provider of a type system should create a file [path]_META-INF/org.apache.uima.fit/types.txt_ in the classpath.
+The provider of a type system should create a file `META-INF/org.apache.uima.fit/types.txt` in the classpath.
 This file should define the locations of the type system descriptions.
-Assume that a type `org.apache.uima.fit.type.Token` is specified in the TSD [path]_org/apache/uima/fit/type/Token.xml_, then the file should have the following contents:
+Assume that a type `org.apache.uima.fit.type.Token` is specified in the TSD `org/apache/uima/fit/type/Token.xml`, then the file should have the following contents:
 
 [source]
 ----
@@ -125,13 +56,13 @@ classpath*:org/apache/uima/fit/type/Token.xml
 
 [NOTE]
 ====
-Mind that the file [path]_types.txt_ is must be located in [path]_META-INF/org.apache.uima.fit_ where [path]_org.apache.uima.fit_ is the name of a sub-directory inside [path]_META-INF_. _We are not using the Java package notation
-          here!_
+Mind that the file `types.txt` is must be located in `META-INF/org.apache.uima.fit` where `org.apache.uima.fit` is the name of a sub-directory inside `META-INF`. 
+_We are not using the Java package notation here!_
 ====
 
 To specify multiple TSDs, add additional lines to the file.
 If you have a large number of TSDs, you may prefer to add a pattern.
-Assume that we have a large number of TSDs under [path]_org/apache/uima/fit/type_, we can use the following pattern which recursively scans the package [package]#org.apache.uima.fit.type# and all sub-packages for XML files and tries to load them as TSDs.
+Assume that we have a large number of TSDs under `org/apache/uima/fit/type`, we can use the following pattern which recursively scans the package `org.apache.uima.fit.type` and all sub-packages for XML files and tries to load them as TSDs.
 
 [source]
 ----
@@ -166,15 +97,14 @@ The auto-detected type system can be obtained from the `TypeSystemDescriptionFac
 
 [source,java]
 ----
-TypeSystemDescription tsd = 
-  TypeSystemDescriptionFactory.createTypeSystemDescription()
+var tsd = TypeSystemDescriptionFactory.createTypeSystemDescription()
 ----
 
 Popular factory methods also support auto-detection:
 
 [source,java]
 ----
-AnalysisEngine ae = createEngine(MyEngine.class);
+var ae = AnalysisEngineFactory.createEngine(MyEngine.class);
 ----
 
 == Multiple META-INF/org.apache.uima.fit/types.txt files

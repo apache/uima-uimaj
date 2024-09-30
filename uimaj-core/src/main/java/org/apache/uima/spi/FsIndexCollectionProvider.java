@@ -22,6 +22,11 @@ import java.util.List;
 
 import org.apache.uima.resource.metadata.FsIndexCollection;
 
+/**
+ * @deprecated Use {@link TypeSystemProvider} instead.
+ * @forRemoval 4.0.0
+ */
+@Deprecated
 public interface FsIndexCollectionProvider {
   List<FsIndexCollection> listFsIndexCollections();
 }

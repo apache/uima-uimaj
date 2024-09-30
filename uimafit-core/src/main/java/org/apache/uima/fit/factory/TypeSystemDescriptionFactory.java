@@ -24,7 +24,9 @@ import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
@@ -39,6 +41,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.spi.TypeSystemDescriptionProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.slf4j.Logger;
@@ -168,9 +171,26 @@ public final class TypeSystemDescriptionFactory {
   }
 
   static void loadTypeSystemDescriptionsFromSPIs(List<TypeSystemDescription> tsdList) {
-    var loader = ServiceLoader.load(TypeSystemDescriptionProvider.class);
-    loader.forEach(provider -> {
+    var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    ServiceLoader.load(TypeSystemDescriptionProvider.class).forEach(provider -> {
+      loaded.add(provider);
       for (var desc : provider.listTypeSystemDescriptions()) {
+        loaded.add(desc);
+        tsdList.add(desc);
+        LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
+      }
+    });
+
+    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+      if (loaded.contains(provider)) {
+        return;
+      }
+
+      for (var desc : provider.listTypeSystemDescriptions()) {
+        if (loaded.contains(desc)) {
+          continue;
+        }
         tsdList.add(desc);
         LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
       }
