@@ -213,6 +213,7 @@
             <Require-Capability>
               osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)";resolution:=optional,
               osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.JCasClassProvider)";cardinality:=multiple;resolution:=optional,
+              osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypeSystemProvider)";cardinality:=multiple;resolution:=optional,
               osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider)";cardinality:=multiple;resolution:=optional,
               osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.TypePrioritiesProvider)";cardinality:=multiple;resolution:=optional,
               osgi.serviceloader;filter:="(osgi.serviceloader=org.apache.uima.spi.FsIndexCollectionProvider)";cardinality:=multiple;resolution:=optional

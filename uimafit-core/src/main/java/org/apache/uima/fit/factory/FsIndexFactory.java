@@ -336,19 +336,15 @@ public final class FsIndexFactory {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
     ServiceLoader.load(FsIndexCollectionProvider.class).forEach(provider -> {
-      loaded.add(provider);
       for (var fsIdxCol : provider.listFsIndexCollections()) {
         loaded.add(fsIdxCol);
         fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
-        LOG.debug("Loaded SPI-provided index collection at [{}]", fsIdxCol.getSourceUrlString());
+        LOG.debug("Loaded legacy SPI-provided index collection at [{}]",
+                fsIdxCol.getSourceUrlString());
       }
     });
 
     ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
-      if (loaded.contains(provider)) {
-        return;
-      }
-
       for (var fsIdxCol : provider.listFsIndexCollections()) {
         if (loaded.contains(fsIdxCol)) {
           continue;

@@ -174,19 +174,14 @@ public final class TypeSystemDescriptionFactory {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
     ServiceLoader.load(TypeSystemDescriptionProvider.class).forEach(provider -> {
-      loaded.add(provider);
       for (var desc : provider.listTypeSystemDescriptions()) {
         loaded.add(desc);
         tsdList.add(desc);
-        LOG.debug("Loaded SPI-provided type system at [{}]", desc.getSourceUrlString());
+        LOG.debug("Loaded legacy SPI-provided type system at [{}]", desc.getSourceUrlString());
       }
     });
 
     ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
-      if (loaded.contains(provider)) {
-        return;
-      }
-
       for (var desc : provider.listTypeSystemDescriptions()) {
         if (loaded.contains(desc)) {
           continue;
