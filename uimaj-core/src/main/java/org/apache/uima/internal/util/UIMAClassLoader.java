@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.impl.FSClassRegistry;
-import org.apache.uima.cas.impl.FsGenerator3;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 /**
@@ -248,11 +248,11 @@ public class UIMAClassLoader extends URLClassLoader {
             c = findClass(name);
           }
         } catch (ClassNotFoundException e) {
-          if (name.startsWith(FsGenerator3.class.getPackage().getName() + ".")) {
+          if (isUimaInternalPackage(name)) {
             // There may be cases where the target class uses a classloader that has no access
             // to the UIMA internal classes - in particular to the FSGenerator3 - so we force using
             // the UIMA classloader in this case.
-            c = FsGenerator3.class.getClassLoader().loadClass(name);
+            c = UIMAFramework.class.getClassLoader().loadClass(name);
           } else {
             // delegate class loading for this class-name
             c = super.loadClass(name, false);
@@ -266,6 +266,11 @@ public class UIMAClassLoader extends URLClassLoader {
 
       return c;
     }
+  }
+
+  private boolean isUimaInternalPackage(String name) {
+    return name.startsWith("org.apache.uima.cas.impl.")
+            || name.startsWith("org.apache.uima.jcas.cas.");
   }
 
   /*
