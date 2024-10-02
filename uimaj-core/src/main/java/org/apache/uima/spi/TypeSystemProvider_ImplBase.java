@@ -104,8 +104,6 @@ public abstract class TypeSystemProvider_ImplBase implements TypeSystemProvider 
         path = packagePath + path;
       }
 
-      path += ".xml";
-
       paths.add(path);
     }
 
