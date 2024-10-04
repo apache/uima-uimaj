@@ -31,7 +31,7 @@ import org.apache.uima.resource.ResourceManager;
 //@formatter:off
 /**
  * Utilities supporting a unified approach to loading classes,
- * incorporating the resource manager's classloader if available,
+ * incorporating the resource manager's class loader if available,
  * and making use of the Thread Context Class Loader (TCCL)
  *
  * For backwards compatibility, if a class is not found using the 
@@ -108,7 +108,7 @@ public class Class_TCCL {
 
   /**
    * @deprecated Method should not be used because if an extension classloader is set, the thread
-   *             context classloader. It will be ignored and will be removed in a future version.
+   *             context classloader will be ignored. It will be removed in a future version.
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.5.0")

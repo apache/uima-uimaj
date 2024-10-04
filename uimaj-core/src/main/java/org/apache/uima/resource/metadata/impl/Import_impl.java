@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.internal.util.ClassLoaderUtils;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.spi.TypeSystemProvider;
@@ -130,7 +131,8 @@ public class Import_impl extends MetaDataObject_impl implements Import {
 
     // If that fails, try loading through the SPIs
     if (url == null) {
-      var providers = ServiceLoader.load(TypeSystemProvider.class);
+      var cl = ClassLoaderUtils.findClassLoader(aResourceManager);
+      var providers = ServiceLoader.load(TypeSystemProvider.class, cl);
       for (var provider : providers) {
         var maybeTypeSystemUrl = provider.findResourceUrl(name);
         if (maybeTypeSystemUrl.isPresent()) {
