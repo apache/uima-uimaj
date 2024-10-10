@@ -49,6 +49,7 @@
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
     <module>../uimaj-v3migration-jcas</module>
+    <module>../uima-bnd-plugin</module>
 
     <module>../uimafit-core</module>
     <module>../uimafit-junit</module>

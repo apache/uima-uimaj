@@ -32,7 +32,7 @@
   <artifactId>jcasgen-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
 
-  <name>Apache UIMA Maven: ${project.artifactId}</name>
+  <name>Apache UIMA Tools: ${project.artifactId}</name>
   <description>A Maven Plugin for using JCasGen to generate Java classes from
     XML type system descriptions</description>
 
