@@ -19,14 +19,17 @@
 package org.apache.uima.fit.internal;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.resource.ResourceManager;
 import org.springframework.util.ClassUtils;
 
 /**
  * INTERNAL API - Helper functions to obtain a suitable classloader.
+ * 
+ * @deprecated Use {@link org.apache.uima.internal.util.ClassLoaderUtils} instead.
+ * @forRemoval 4.0.0
  */
+@Deprecated(since = "3.6.0")
 public final class ClassLoaderUtils {
   private ClassLoaderUtils() {
     // No instances
@@ -45,23 +48,7 @@ public final class ClassLoaderUtils {
    * @return a classloader or {@code null} if no suitable classloader could be found.
    */
   public static ClassLoader findClassloader() {
-    ClassLoader uimaThreadContextClassLoader = getExtensionClassloader(
-            UimaContextHolder.getContext());
-    if (uimaThreadContextClassLoader != null) {
-      return uimaThreadContextClassLoader;
-    }
-
-    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-    if (contextClassLoader != null) {
-      return contextClassLoader;
-    }
-
-    ClassLoader uimaFITClassLoader = ClassLoaderUtils.class.getClassLoader();
-    if (uimaFITClassLoader != null) {
-      return uimaFITClassLoader;
-    }
-
-    return ClassUtils.getDefaultClassLoader();
+    return org.apache.uima.internal.util.ClassLoaderUtils.findClassLoader();
   }
 
   /**
@@ -74,12 +61,7 @@ public final class ClassLoaderUtils {
    * @return a classloader or {@code null} if no suitable classloader could be found.
    */
   public static ClassLoader findClassloader(ResourceManager aResMgr) {
-    ClassLoader resourceManagerExtensionClassloader = getExtensionClassloader(aResMgr);
-    if (resourceManagerExtensionClassloader != null) {
-      return resourceManagerExtensionClassloader;
-    }
-
-    return findClassloader();
+    return org.apache.uima.internal.util.ClassLoaderUtils.findClassLoader(aResMgr);
   }
 
   /**
@@ -93,32 +75,6 @@ public final class ClassLoaderUtils {
    * @return a classloader or {@code null} if no suitable classloader could be found.
    */
   public static ClassLoader findClassloader(UimaContext aContext) {
-    ClassLoader uimaContextExtensionClassloader = getExtensionClassloader(aContext);
-    if (uimaContextExtensionClassloader != null) {
-      return uimaContextExtensionClassloader;
-    }
-
-    return findClassloader((ResourceManager) null);
-  }
-
-  private static ClassLoader getExtensionClassloader(UimaContext aContext) {
-    if (aContext instanceof UimaContextAdmin) {
-      return getExtensionClassloader(((UimaContextAdmin) aContext).getResourceManager());
-    }
-
-    return null;
-  }
-
-  private static ClassLoader getExtensionClassloader(ResourceManager aResMgr) {
-    if (aResMgr == null) {
-      return null;
-    }
-
-    ClassLoader cl = aResMgr.getExtensionClassLoader();
-    if (cl != null) {
-      return aResMgr.getExtensionClassLoader();
-    }
-
-    return null;
+    return org.apache.uima.internal.util.ClassLoaderUtils.findClassLoader(aContext);
   }
 }
