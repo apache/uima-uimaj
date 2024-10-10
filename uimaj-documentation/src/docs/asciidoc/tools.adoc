@@ -37,6 +37,8 @@ include::tools/tools.caseditor.adoc[leveloffset=+1]
 
 include::tools/tools.jcasgen.adoc[leveloffset=+1]
 
+include::tools/tools.bnd.adoc[leveloffset=+1]
+
 include::tools/tools.pear.packager.adoc[leveloffset=+1]
 
 include::tools/tools.pear.packager.maven.adoc[leveloffset=+1]
