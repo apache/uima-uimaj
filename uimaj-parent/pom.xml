@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>18-SNAPSHOT</version>
+    <version>18</version>
     <relativePath />
   </parent>
 
@@ -153,6 +153,7 @@
     <asciidoctor.version>2.5.10</asciidoctor.version>
     <asciidoctor.pdf.version>2.3.9</asciidoctor.pdf.version>
     <assertj-version>3.24.2</assertj-version>
+    <bnd-version>7.0.0</bnd-version>
     <commons-csv-version>1.10.0</commons-csv-version>
     <commons-io-version>2.15.0</commons-io-version>
     <commons-lang3-version>3.13.0</commons-lang3-version>
@@ -366,6 +367,12 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.29.2-GA</version>
+      </dependency>
+
+      <dependency>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>biz.aQute.bndlib</artifactId>
+        <version>${bnd-version}</version>
       </dependency>
       
       <dependency>
@@ -666,6 +673,7 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
+                <exclude>**/dependency-reduced-pom.xml</exclude>
                 <exclude>**/.asciidoctorconfig.adoc</exclude>
                 <!-- Eclipse launch files - no need for a license -->
                 <exclude>**/run_configuration/*.launch</exclude>
