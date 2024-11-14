@@ -1088,7 +1088,7 @@ public abstract class UIMAFramework {
    *          Parameter settings.
    * 
    * @return a new UIMA Context to be used by the application.
-   * @deprecated Use {@link #newUimaContext()} or {@link #uimaContextBuider()} instead.
+   * @deprecated Use {@link #newUimaContext()} or {@link #uimaContextBuilder()} instead.
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.6.0")
@@ -1111,10 +1111,10 @@ public abstract class UIMAFramework {
   }
 
   public static UimaContextAdmin newUimaContext() {
-    return uimaContextBuider().build();
+    return uimaContextBuilder().build();
   }
 
-  public static UimaContextAdminBuilder uimaContextBuider() {
+  public static UimaContextAdminBuilder uimaContextBuilder() {
     return new UimaContextAdminBuilder();
   }
 
