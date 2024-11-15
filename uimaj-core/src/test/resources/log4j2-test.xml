@@ -25,6 +25,8 @@
     </Console>
   </Appenders>
   <Loggers>
+    <Logger name="org.apache.uima.cas.impl.TypeSystemImplTest" level="INFO" />
+  
     <Root level="WARN">
       <AppenderRef ref="Console"/>
     </Root>
