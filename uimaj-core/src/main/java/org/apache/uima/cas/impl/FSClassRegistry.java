@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
+import static java.util.Collections.emptyMap;
 
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -393,7 +394,7 @@ public abstract class FSClassRegistry {
 
     if (BuiltinTypeKinds.creatableBuiltinJCas.contains(typeName)
             || typeName.equals(CAS.TYPE_NAME_SOFA)) {
-      JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, defaultLookup);
+      JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, emptyMap());
       assert jcci != null;
       // done while beginning to commit the staticTsi (before committed flag is set), for builtins
       updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
@@ -481,12 +482,12 @@ public abstract class FSClassRegistry {
        */
       // @formatter:on
 
-      ArrayList<MutableCallSite> callSites_toSync = new ArrayList<>();
+      var spiJCasClasses = loadJCasClassesFromSPI(cl);
+      var callSites_toSync = new ArrayList<MutableCallSite>();
       maybeLoadJCasAndSubtypes(ts, ts.topType, type2jcci.get(TOP.class.getCanonicalName()), cl,
-              type2jcci, callSites_toSync);
+              type2jcci, callSites_toSync, spiJCasClasses);
 
-      MutableCallSite[] sync = callSites_toSync
-              .toArray(new MutableCallSite[callSites_toSync.size()]);
+      var sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
       MutableCallSite.syncAll(sync);
 
       checkConformance(ts, ts.topType, type2jcci);
@@ -531,9 +532,10 @@ public abstract class FSClassRegistry {
   // @formatter:on
   private static void maybeLoadJCasAndSubtypes(TypeSystemImpl tsi, TypeImpl ti,
           JCasClassInfo copyDownDefault_jcasClassInfo, ClassLoader cl,
-          Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync) {
+          Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
 
-    var jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, null);
+    var jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, aSpiJCasClasses);
 
     if (null != jcci && tsi.isCommitted()) {
       updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
@@ -623,7 +625,8 @@ public abstract class FSClassRegistry {
     }
 
     for (var subType : ti.getDirectSubtypes()) {
-      maybeLoadJCasAndSubtypes(tsi, subType, jcci_or_copyDown, cl, type2jcci, callSites_toSync);
+      maybeLoadJCasAndSubtypes(tsi, subType, jcci_or_copyDown, cl, type2jcci, callSites_toSync,
+              aSpiJCasClasses);
     }
   }
 
@@ -638,17 +641,36 @@ public abstract class FSClassRegistry {
    * 
    * @return jcci or null, if no JCas class for this type was able to be loaded
    * 
-   * @deprecated This will become a package private method.
+   * @deprecated This will be removed without replacement
    * @forRemoval 4.0.0
    */
   @Deprecated(since = "3.5.1")
   public static JCasClassInfo getOrCreateJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
           Map<String, JCasClassInfo> aType2Jcci, Lookup aUnusedLookup) {
 
+    return getOrCreateJCasClassInfo(aTypeInfo, aClassLoader, aType2Jcci,
+            loadJCasClassesFromSPI(aClassLoader));
+  }
+
+  /**
+   * For a particular type name, get the JCasClassInfo
+   * <ul>
+   * <li>by fetching the cached value
+   * <li>by loading the class
+   * <li>return null if no JCas class for this name
+   * </ul>
+   * only called for non-Pear callers
+   * 
+   * @return jcci or null, if no JCas class for this type was able to be loaded
+   */
+  static JCasClassInfo getOrCreateJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
+          Map<String, JCasClassInfo> aType2Jcci,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
+
     var jcci = aType2Jcci.get(aTypeInfo.getJCasClassName());
 
     if (jcci == null) {
-      jcci = maybeCreateJCasClassInfo(aTypeInfo, aClassLoader, aType2Jcci, aUnusedLookup);
+      jcci = maybeCreateJCasClassInfo(aTypeInfo, aClassLoader, aType2Jcci, aSpiJCasClasses);
     }
 
     // do this setup for new type systems using previously loaded jcci, as well as
@@ -665,10 +687,10 @@ public abstract class FSClassRegistry {
    */
   @Deprecated(since = "3.5.1")
   static JCasClassInfo maybeCreateJCasClassInfo(TypeImpl ti, ClassLoader cl,
-          Map<String, JCasClassInfo> type2jcci, Lookup aUnusedLookup) {
+          Map<String, JCasClassInfo> type2jcci, Map<String, Class<? extends TOP>> aSpiJCasClasses) {
 
     // does update of callsites if was able find JCas class
-    var jcci = createJCasClassInfo(ti, cl, aUnusedLookup);
+    var jcci = createJCasClassInfo(ti, cl, aSpiJCasClasses);
 
     if (null != jcci) {
       type2jcci.put(ti.getJCasClassName(), jcci);
@@ -678,14 +700,19 @@ public abstract class FSClassRegistry {
   }
 
   /**
-   * @deprecated This will become a private method.
+   * @deprecated This will be removed without replacement.
    * @forRemoval 4.0.0
    */
   @SuppressWarnings("javadoc")
   @Deprecated(since = "3.5.1")
   public static JCasClassInfo createJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
           Lookup aUnusedLookup) {
-    var jcasClass = maybeJCasWrapperClass(aTypeInfo, aClassLoader);
+    return createJCasClassInfo(aTypeInfo, aClassLoader, loadJCasClassesFromSPI(aClassLoader));
+  }
+
+  private static JCasClassInfo createJCasClassInfo(TypeImpl aTypeInfo, ClassLoader aClassLoader,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
+    var jcasClass = maybeJCasWrapperClass(aTypeInfo, aClassLoader, aSpiJCasClasses);
     if (null == jcasClass || !TOP.class.isAssignableFrom(jcasClass)) {
       return null;
     }
@@ -705,7 +732,6 @@ public abstract class FSClassRegistry {
     var lookup = getLookup(jcasClass.getClassLoader());
     return createJCasClassInfo(jcasClass, aTypeInfo, jcasType, lookup);
   }
-
   // static AtomicLong time = IS_TIME_AUGMENT_FEATURES ? new AtomicLong(0) : null;
   //
   // static {
@@ -957,7 +983,8 @@ public abstract class FSClassRegistry {
    * @return the loaded / resolved class
    */
   @SuppressWarnings("unchecked")
-  private static Class<? extends TOP> maybeJCasWrapperClass(TypeImpl ti, ClassLoader cl) {
+  private static Class<? extends TOP> maybeJCasWrapperClass(TypeImpl ti, ClassLoader cl,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
     var className = ti.getJCasClassName();
 
     // First we try the local classloader - this is necessary because it might be a PEAR situation
@@ -970,7 +997,7 @@ public abstract class FSClassRegistry {
     }
 
     // If the local classloader does not have the JCas wrapper, we try the SPI
-    return loadJCasClassesFromSPI(cl).get(className);
+    return aSpiJCasClasses.get(className);
   }
 
   static Map<String, Class<? extends TOP>> loadJCasClassesFromSPI(ClassLoader cl) {
