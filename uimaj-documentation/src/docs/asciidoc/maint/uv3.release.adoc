@@ -19,7 +19,7 @@
 
 The Apache UIMA project mainly releases:
 
-* Sub-projects like Apache UIMA Java SDK, uimaFIT, RUTA etc.
+* Sub-projects like Apache UIMA Java SDK, RUTA etc.
 * Some Maven build tooling components that need to be in the Maven repositories to support our Maven processes.
 
 Releases show up in the Maven central repository and/or as downloadable artifacts listed on our downloads pages.
