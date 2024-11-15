@@ -1479,9 +1479,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     type2jcci = FSClassRegistry.get_className_to_jcci(cl, false /* is not PEAR */);
     lookup = FSClassRegistry.getLookup(cl);
+    var spiJCasClasses = FSClassRegistry.loadJCasClassesFromSPI(cl);
     cl_for_commit = cl;
 
-    computeAdjustedFeatureOffsets(topType); // must preceed the FSClassRegistry JCas stuff below
+    computeAdjustedFeatureOffsets(topType, spiJCasClasses); // must preceed the FSClassRegistry JCas
+                                                            // stuff below
 
     // Load all the available JCas classes (if not already loaded).
     // Has to follow above, because information computed above is used when
@@ -1529,7 +1531,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          - the type
    */
 //@formatter:on
-  private void computeAdjustedFeatureOffsets(TypeImpl ti) {
+  private void computeAdjustedFeatureOffsets(TypeImpl ti,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
 
     List<FeatureImpl> tempIntFis = new ArrayList<>();
     List<FeatureImpl> tempRefFis = new ArrayList<>();
@@ -1549,10 +1552,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // this includes any superClass of a jcas class which is not in this type system
 
     if (!skip_loading_user_jcas) {
-      JCasClassInfo jcci = getOrCreateJcci(ti);
+      JCasClassInfo jcci = getOrCreateJcci(ti, aSpiJCasClasses);
 
       if (jcci != null) {
-        addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr);
+        addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr, aSpiJCasClasses);
       }
     }
 
@@ -1582,7 +1585,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // ti.hasNoSlots = ti.nbrOfUsedIntDataSlots == 0 && ti.nbrOfUsedRefDataSlots == 0;
 
     for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeAdjustedFeatureOffsets(sub);
+      computeAdjustedFeatureOffsets(sub, aSpiJCasClasses);
     }
   }
 
@@ -1610,7 +1613,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
 //@formatter:on
   private void addJCasOffsetsWithSupers(Class<?> clazz, List<FeatureImpl> tempIntFis,
-          List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsrFis) {
+          List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsrFis,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
 
     Class<?> superClass = clazz.getSuperclass();
     // **********************
@@ -1634,7 +1638,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       String uimaTypeName = Misc.javaClassName2UimaTypeName(className);
       TypeImpl ti = getType(uimaTypeName);
       if (ti != null) {
-        maybeAddJCasOffsets(ti, tempIntFis, tempRefFis, tempNsrFis);
+        maybeAddJCasOffsets(ti, tempIntFis, tempRefFis, tempNsrFis, aSpiJCasClasses);
       }
       return;
     }
@@ -1643,7 +1647,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // If they exist, they will have been loaded/created by FSClassRegistry.augmentFeaturesFromJCas
     // some intermediate superclasses may not have jccis, just skip over them.
 
-    addJCasOffsetsWithSupers(superClass, tempIntFis, tempRefFis, tempNsrFis);
+    addJCasOffsetsWithSupers(superClass, tempIntFis, tempRefFis, tempNsrFis, aSpiJCasClasses);
     // maybeAddJCasOffsets(clazz, tempIntFis, tempRefFis, tempNsrFis); // already done by above
     // statement
   }
@@ -1661,9 +1665,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *          list to augment with additional slots
    */
   private void maybeAddJCasOffsets(TypeImpl ti, List<FeatureImpl> tempIntFis,
-          List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsrFis) {
+          List<FeatureImpl> tempRefFis, List<FeatureImpl> tempNsrFis,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
 
-    JCasClassInfo jcci = getOrCreateJcci(ti);
+    JCasClassInfo jcci = getOrCreateJcci(ti, aSpiJCasClasses);
     if (null != jcci) { // could be null if class is not a JCas class
       addJCasOffsets(jcci, tempIntFis, tempRefFis, tempNsrFis);
     }
@@ -1735,8 +1740,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
   }
 
-  private JCasClassInfo getOrCreateJcci(TypeImpl ti) {
-    return FSClassRegistry.getOrCreateJCasClassInfo(ti, cl_for_commit, type2jcci, lookup);
+  private JCasClassInfo getOrCreateJcci(TypeImpl ti,
+          Map<String, Class<? extends TOP>> aSpiJCasClasses) {
+    return FSClassRegistry.getOrCreateJCasClassInfo(ti, cl_for_commit, type2jcci, aSpiJCasClasses);
   }
 
   JCasClassInfo getJcci(String typeName) {

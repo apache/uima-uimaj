@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.InstanceOfAssertFactories.throwable;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.management.ManagementFactory;
 
 import org.apache.uima.cas.CAS;
@@ -36,11 +37,15 @@ import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import x.y.z.Sentence;
 
 class TypeSystemImplTest {
   private TypeSystemDescription tsd;
+
+  static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @BeforeEach
   void setup() {
@@ -109,7 +114,12 @@ class TypeSystemImplTest {
     var type = tsd.addType(Sentence._TypeName, "", CAS.TYPE_NAME_ANNOTATION);
     type.addFeature(Sentence._FeatName_sentenceLength, null, CAS.TYPE_NAME_INTEGER);
 
+    var target = threshold * 2;
     for (var i = 0; i < threshold * 2; i++) {
+      if ((i + 1) % 250 == 0) {
+        LOG.info("Metaspace exhaustion test - progress: {} / {}", i + 1, target);
+      }
+
       var resMgr = new ResourceManager_impl();
       resMgr.setExtensionClassPath(".", false);
       createCas(tsd, null, null, null, resMgr).getJCas();
