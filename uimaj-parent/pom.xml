@@ -145,6 +145,7 @@
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.proc>none</maven.compiler.proc>
     <execution.environment>JavaSE-17</execution.environment>
     
     <maven.version>3.8.1</maven.version>
@@ -548,13 +549,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
-            <tags combine.children="append">
-              <tag>
-                <name>forRemoval</name>
-                <placement>a</placement>
-                <head>To be removed in version:</head>
-              </tag>
-            </tags>
+            <javadocVersion>${maven.compiler.release}}</javadocVersion>
           </configuration>
         </plugin>
         <plugin>
@@ -655,6 +650,7 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
+                <exclude>**/marker-file-maven-plugin-module</exclude>
                 <exclude>**/dependency-reduced-pom.xml</exclude>
                 <exclude>**/.asciidoctorconfig.adoc</exclude>
                 <!-- Eclipse launch files - no need for a license -->
@@ -668,6 +664,61 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>maven-plugin-module</id>
+      <activation>
+        <file>
+          <exists>marker-file-maven-plugin-module</exists>
+        </file>
+      </activation>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-plugin-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven.plugin-tools</groupId>
+          <artifactId>maven-plugin-annotations</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-core</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-model</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-artifact</artifactId>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>org.apache.maven:maven-plugin-api</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-core</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-model</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-artifact</ignoredDependency>
+                <ignoredDependency>org.apache.maven.plugin-tools:maven-plugin-annotations</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  
     <profile>
       <id>apache-release</id>
       <build>
