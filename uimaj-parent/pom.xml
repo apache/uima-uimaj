@@ -134,7 +134,7 @@
   </pluginRepositories>
 
   <properties>
-    <tycho-version>4.0.9</tycho-version>
+    <tycho-version>4.0.10</tycho-version>
     
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -148,7 +148,7 @@
     
     <maven.version>3.8.1</maven.version>
 
-    <asciidoctor.plugin.version>2.2.4</asciidoctor.plugin.version>
+    <asciidoctor.plugin.version>3.1.1</asciidoctor.plugin.version>
     <asciidoctor.version>3.0.0</asciidoctor.version>
     <asciidoctor.pdf.version>2.3.19</asciidoctor.pdf.version>
     <assertj-version>3.26.3</assertj-version>
