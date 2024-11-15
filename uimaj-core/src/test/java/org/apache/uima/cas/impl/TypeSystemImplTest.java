@@ -18,6 +18,7 @@
  */
 package org.apache.uima.cas.impl;
 
+import static java.lang.System.currentTimeMillis;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,10 +115,14 @@ class TypeSystemImplTest {
     var type = tsd.addType(Sentence._TypeName, "", CAS.TYPE_NAME_ANNOTATION);
     type.addFeature(Sentence._FeatName_sentenceLength, null, CAS.TYPE_NAME_INTEGER);
 
+    LOG.info("Metaspace exhaustion test starting - this may take a while...");
+    var startTime = currentTimeMillis();
     var target = threshold * 2;
     for (var i = 0; i < threshold * 2; i++) {
       if ((i + 1) % 250 == 0) {
-        LOG.info("Metaspace exhaustion test - progress: {} / {}", i + 1, target);
+        var duration = currentTimeMillis() - startTime;
+        LOG.info("Metaspace exhaustion test - progress: {} / {} -- {}ms per CAS", i + 1, target,
+                duration / i + 1);
       }
 
       var resMgr = new ResourceManager_impl();
@@ -131,5 +136,10 @@ class TypeSystemImplTest {
               .as("High number of new loaded classes during test indicates leak")
               .isLessThan(classesLoadedAtStart + threshold);
     }
+    LOG.info("Classes accumulated during test: {}",
+            classLoadingMXBean.getLoadedClassCount() - classesLoadedAtStart);
+    var duration = currentTimeMillis() - startTime;
+    LOG.info("Metaspace exhaustion test finished in {}ms ({}ms per CAS)", duration,
+            duration / target);
   }
 }
