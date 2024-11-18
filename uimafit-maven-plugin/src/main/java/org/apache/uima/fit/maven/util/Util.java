@@ -21,10 +21,10 @@ package org.apache.uima.fit.maven.util;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -32,25 +32,25 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaField;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaSource;
 
 public final class Util {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private Util() {
     // No instances
   }
 
   public static JavaSource parseSource(String aSourceFile, String aEncoding) throws IOException {
-    JavaDocBuilder builder = new JavaDocBuilder();
+    var builder = new JavaProjectBuilder();
     builder.setEncoding(aEncoding);
-    builder.addSource(new FileReader(aSourceFile));
-    return builder.getSources()[0];
+    return builder.addSource(new FileReader(aSourceFile));
   }
 
   public static String getComponentDocumentation(JavaSource aAst, String aComponentTypeName) {
@@ -62,8 +62,8 @@ public final class Util {
     // return null;
     // }
 
-    for (JavaClass clazz : aAst.getClasses()) {
-      if (clazz.asType().getFullyQualifiedName().equals(aComponentTypeName)) {
+    for (var clazz : aAst.getClasses()) {
+      if (clazz.getFullyQualifiedName().equals(aComponentTypeName)) {
         return postProcessJavaDoc(clazz.getComment());
       }
     }
@@ -84,23 +84,23 @@ public final class Util {
 
     String javadoc = null;
 
-    JavaClass clazz = aAst.getClasses()[0];
+    var clazz = aAst.getClasses().get(0);
     // CASE 1: JavaDoc is located on parameter name constant
     if (aParameterNameConstantField != null) {
-      JavaField field = clazz.getFieldByName(aParameterNameConstantField);
+      var field = clazz.getFieldByName(aParameterNameConstantField);
       if (field == null) {
         throw new IllegalArgumentException("Parameter name constant [" + aParameterNameConstantField
-                + "] not found in class [" + clazz.asType().getFullyQualifiedName() + "]");
+                + "] not found in class [" + clazz.getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }
 
     // CASE 2: JavaDoc is located on the parameter field itself
     if (javadoc == null) {
-      JavaField field = clazz.getFieldByName(aParameterField);
+      var field = clazz.getFieldByName(aParameterField);
       if (field == null) {
         throw new IllegalArgumentException("No parameter field [" + aParameterField + "] in class ["
-                + clazz.asType().getFullyQualifiedName() + "]");
+                + clazz.getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
     }
@@ -121,13 +121,13 @@ public final class Util {
    * Create a class loader which covers the classes compiled in the current project and all
    * dependencies.
    */
-  public static URLClassLoader getClassloader(MavenProject aProject, Log aLog,
-          String aIncludeScopeThreshold) throws MojoExecutionException {
-    List<URL> urls = new ArrayList<URL>();
+  public static URLClassLoader getClassloader(MavenProject aProject, String aIncludeScopeThreshold)
+          throws MojoExecutionException {
+    var urls = new ArrayList<URL>();
     try {
-      for (Object object : aProject.getCompileClasspathElements()) {
-        String path = (String) object;
-        aLog.debug("Classpath entry: " + object);
+      for (var object : aProject.getCompileClasspathElements()) {
+        var path = (String) object;
+        LOG.debug("Classpath entry: {}", object);
         urls.add(new File(path).toURI().toURL());
       }
     } catch (IOException e) {
@@ -138,27 +138,25 @@ public final class Util {
               "Unable to resolve dependencies: " + ExceptionUtils.getRootCauseMessage(e), e);
     }
 
-    ScopeArtifactFilter filter = new ScopeArtifactFilter(aIncludeScopeThreshold);
+    var filter = new ScopeArtifactFilter(aIncludeScopeThreshold);
 
-    for (Artifact dep : (Set<Artifact>) aProject.getArtifacts()) {
+    for (var dep : (Set<Artifact>) aProject.getArtifacts()) {
       try {
         if (!filter.include(dep)) {
-          aLog.debug("Not generating classpath entry for out-of-scope artifact: " + dep.getGroupId()
-                  + ":" + dep.getArtifactId() + ":" + dep.getVersion() + " (" + dep.getScope()
-                  + ")");
+          LOG.debug("Not generating classpath entry for out-of-scope artifact: {}:{}:{} ({})",
+                  dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getScope());
           continue;
         }
 
         if (dep.getFile() == null) {
-          aLog.debug("Not generating classpath entry for unresolved artifact: " + dep.getGroupId()
-                  + ":" + dep.getArtifactId() + ":" + dep.getVersion() + " (" + dep.getScope()
-                  + ")");
+          LOG.debug("Not generating classpath entry for unresolved artifact: {}:{}:{} ({})",
+                  dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getScope());
           // Unresolved file because it is in the wrong scope (e.g. test?)
           continue;
         }
 
-        aLog.debug("Classpath entry: " + dep.getGroupId() + ":" + dep.getArtifactId() + ":"
-                + dep.getVersion() + " -> " + dep.getFile());
+        LOG.debug("Classpath entry: {}:{}:{} -> {}", dep.getGroupId(), dep.getArtifactId(),
+                dep.getVersion(), dep.getFile());
         urls.add(dep.getFile().toURI().toURL());
       } catch (Exception e) {
         throw new MojoExecutionException("Unable get dependency artifact location for "
@@ -166,6 +164,7 @@ public final class Util {
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
     }
+
     return new URLClassLoader(urls.toArray(new URL[] {}), Util.class.getClassLoader());
   }
 
@@ -180,13 +179,14 @@ public final class Util {
    * @param aClassLoader
    *          the class loader by which the component was loaded.
    */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings({ "rawtypes" })
   public static ComponentType getType(ClassLoader aClassLoader, Class aClass)
           throws ClassNotFoundException {
     // Loading this through the component class loader to make sure we really get the right
     // class instance.
-    Class iCR = aClassLoader.loadClass("org.apache.uima.collection.CollectionReader");
-    Class iAE = aClassLoader.loadClass("org.apache.uima.analysis_component.AnalysisComponent");
+    var iCR = aClassLoader.loadClass("org.apache.uima.collection.CollectionReader");
+    var iAE = aClassLoader.loadClass("org.apache.uima.analysis_component.AnalysisComponent");
+
     if (iCR.isAssignableFrom(aClass)) {
       return ComponentType.COLLECTION_READER;
     } else if (iAE.isAssignableFrom(aClass)) {

@@ -80,13 +80,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
+      <groupId>com.github.h-thurow</groupId>
+      <artifactId>simple-jndi</artifactId>
+      <version>0.24.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -172,7 +173,8 @@
               <configuration>
                 <excludes combine.children="append">
                   <!-- These test files are unreasonable to bear a license header -->
-                  <exclude>src/test/resources/log4j.properties</exclude>
+                  <exclude>src/test/resources/jndi.properties</exclude>
+                  <exclude>src/test/resources/jndi/DO-NOT-DELETE</exclude>
                   <!-- Plain documentation -->
                   <exclude>README*</exclude>
                   <!-- Release files -->
@@ -203,6 +205,16 @@
               </configuration>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <configuration>
+            <ignoredDependencies combine.children="append">
+              <!-- Used via reflection -->
+              <ignoredDependency>com.github.h-thurow:simple-jndi</ignoredDependency>
+            </ignoredDependencies>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

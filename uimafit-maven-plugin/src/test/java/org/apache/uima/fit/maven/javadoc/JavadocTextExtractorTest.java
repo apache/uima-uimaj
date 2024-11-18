@@ -18,50 +18,47 @@
  */
 package org.apache.uima.fit.maven.javadoc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
 import org.apache.uima.fit.maven.util.Util;
 import org.junit.jupiter.api.Test;
 
-import com.thoughtworks.qdox.model.JavaSource;
-
-public class JavadocTextExtractorTest {
+class JavadocTextExtractorTest {
 
   @Test
-  public void testDocOnName() throws Exception {
-    String doc = getJavadoc("value1", "PARAM_VALUE_1");
-    assertEquals("Documentation for value 1", doc);
+  void testDocOnName() throws Exception {
+    assertThat(getJavadoc("value1", "PARAM_VALUE_1")).as("JavaDoc for parameter 'value1'")
+            .isEqualTo("Documentation for value 1");
   }
 
   @Test
-  public void testDocOnParameterWithName() throws Exception {
-    String doc = getJavadoc("value2", "PARAM_VALUE_2");
-    assertEquals("Documentation for value 2", doc);
+  void testDocOnParameterWithName() throws Exception {
+    assertThat(getJavadoc("value2", "PARAM_VALUE_2")).as("JavaDoc for parameter 'PARAM_VALUE_2'")
+            .isEqualTo("Documentation for value 2");
   }
 
   @Test
-  public void testDocOnParameterWithoutName() throws Exception {
-    String doc = getJavadoc("value3", null);
-    assertEquals("Documentation for value 3", doc);
+  void testDocOnParameterWithoutName() throws Exception {
+    assertThat(getJavadoc("value3", null)).as("JavaDoc for parameter 'value3'")
+            .isEqualTo("Documentation for value 3");
   }
 
   @Test
-  public void testWithoutDoc() throws Exception {
-    String doc = getJavadoc("value4", null);
-    assertEquals(null, doc);
+  void testWithoutDoc() throws Exception {
+    assertThat(getJavadoc("value4", null)).as("JavaDoc for parameter 'value4'").isNull();
   }
 
   @Test
-  public void testDocOnParameterWithNonLiteralName() throws Exception {
-    String doc = getJavadoc("value5", "PARAM_VALUE_5");
-    assertEquals("Documentation for value 5", doc);
+  void testDocOnParameterWithNonLiteralName() throws Exception {
+    assertThat(getJavadoc("value5", "PARAM_VALUE_5")).as("JavaDoc for parameter 'value5'")
+            .isEqualTo("Documentation for value 5");
   }
 
   private String getJavadoc(String aParameter, String aNameConstant) throws IOException {
     // Create the Java parser and parse the source code into an abstract syntax tree
-    JavaSource source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
+    var source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
 
     return Util.getParameterDocumentation(source, aParameter, aNameConstant);
   }

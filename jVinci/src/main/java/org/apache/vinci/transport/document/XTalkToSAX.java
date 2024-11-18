@@ -96,7 +96,7 @@ public class XTalkToSAX {
    * the document. Use bufferSize() and resizeBuffers to manage memory in applications where very
    * large strings may be encountered and the same object is used to parse many incoming documents.
    * 
-   * @param is
+   * @param aIs
    *          -
    * @param handler
    *          -
@@ -108,19 +108,17 @@ public class XTalkToSAX {
    * @pre handler != null
    * @pre is != null
    */
-  public void parse(InputStream is, ContentHandler handler) throws IOException, SAXException {
-    this.is = is;
+  public void parse(InputStream aIs, ContentHandler handler) throws IOException, SAXException {
+    this.is = aIs;
     this.handler = handler;
     try {
-      int marker = is.read();
-      if (marker == -1) {
-        throw new EOFException();
-      }
+      var marker = readByte(aIs);
+
       if ((byte) marker != XTalkTransporter.DOCUMENT_MARKER) {
         throw new IOException("Expected document marker: " + (char) marker);
       }
-      int version = is.read();
-      if ((byte) version != XTalkTransporter.VERSION_CODE) {
+      var version = readByte(aIs);
+      if (version != XTalkTransporter.VERSION_CODE) {
         throw new IOException("Xtalk version code doesn't match "
                 + (int) XTalkTransporter.VERSION_CODE + ": " + version);
       }
@@ -129,7 +127,7 @@ public class XTalkToSAX {
       handler.endDocument();
     } finally {
       // nullify refs to allow GC
-      is = null;
+      aIs = null;
       handler = null;
     }
   }
@@ -137,11 +135,12 @@ public class XTalkToSAX {
   private void doTopLevelParse() throws IOException, SAXException {
     int top_field_count = XTalkTransporter.readInt(is);
     // Skip over intro PI's.
-    int marker;
+    byte marker;
     if (top_field_count < 1) {
       throw new IOException("No top level element.");
     }
-    while ((marker = is.read()) == XTalkTransporter.PI_MARKER) {
+
+    while ((marker = readByte(is)) == XTalkTransporter.PI_MARKER) {
       String target = consumeString();
       String data = consumeString();
       handler.processingInstruction(target, data);
@@ -157,7 +156,7 @@ public class XTalkToSAX {
     top_field_count--;
     // Handle trailing PI's
     while (top_field_count > 0) {
-      if (is.read() != XTalkTransporter.PI_MARKER) {
+      if (readByte(is) != XTalkTransporter.PI_MARKER) {
         throw new IOException("Expected PI marker.");
       }
       doProcessingInstruction();
@@ -198,8 +197,8 @@ public class XTalkToSAX {
     handler.startElement("", tagName, tagName, workAttributes);
     int field_count = XTalkTransporter.readInt(is);
     for (int i = 0; i < field_count; i++) {
-      int marker = is.read();
-      switch ((byte) marker) {
+      var marker = readByte(is);
+      switch (marker) {
         case XTalkTransporter.PI_MARKER:
           doProcessingInstruction();
           break;
@@ -220,4 +219,17 @@ public class XTalkToSAX {
     handler.endElement(null, null, tagName);
   }
 
+  private static byte readByte(InputStream aIs) throws IOException {
+    int byteAsInt = aIs.read();
+
+    if (byteAsInt == -1) {
+      throw new EOFException("Unexpected end of stream");
+    }
+
+    if (byteAsInt < Byte.MIN_VALUE || byteAsInt > Byte.MAX_VALUE) {
+      throw new IOException("Illegal byte value [" + byteAsInt + "]");
+    }
+
+    return (byte) byteAsInt;
+  }
 }

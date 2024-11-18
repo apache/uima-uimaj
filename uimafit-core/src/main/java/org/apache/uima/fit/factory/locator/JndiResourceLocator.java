@@ -31,7 +31,11 @@ import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Locate an object via JNDI.
+ * 
+ * @deprecated To be removed without replacement
+ * @forRemoval 4.0.0
  */
+@Deprecated
 public class JndiResourceLocator extends Resource_ImplBase implements ExternalResourceLocator {
   /**
    * The name of the JNDI resource to look up.
@@ -60,6 +64,7 @@ public class JndiResourceLocator extends Resource_ImplBase implements ExternalRe
     return true;
   }
 
+  @Override
   public Object getResource() {
     return resource;
   }

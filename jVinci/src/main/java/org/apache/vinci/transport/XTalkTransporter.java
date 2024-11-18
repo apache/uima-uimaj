@@ -63,13 +63,12 @@ public class XTalkTransporter implements FrameTransporter {
   public KeyValuePair fromStream(InputStream is, Frame f) throws IOException, EOFException {
     char[] cbuffer = new char[128];
     byte[] buffer = new byte[128];
-    int marker = is.read();
-    if (marker == -1) {
-      throw new EOFException();
-    }
+    var marker = readByte(is);
+
     if ((byte) marker != DOCUMENT_MARKER) {
       throw new IOException("Expected document marker: " + (char) marker);
     }
+
     return fromStreamWork(is, f, buffer, cbuffer);
   }
 
@@ -93,15 +92,15 @@ public class XTalkTransporter implements FrameTransporter {
 
   public KeyValuePair fromStreamWork(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
           throws IOException {
-    int version = is.read();
-    if ((byte) version != VERSION_CODE) {
+    var version = readByte(is);
+    if (version != VERSION_CODE) {
       throw new IOException(
               "Xtalk version code doesn't match " + (int) VERSION_CODE + ": " + version);
     }
     int top_field_count = readInt(is);
     // Skip over intro PI's.
-    int marker;
-    while ((marker = is.read()) == PI_MARKER) {
+    byte marker;
+    while ((marker = readByte(is)) == PI_MARKER) {
       ignorePI(is);
       top_field_count--;
     }
@@ -112,7 +111,7 @@ public class XTalkTransporter implements FrameTransporter {
     top_field_count--;
     // Skip over trailing PI's
     while (top_field_count > 0) {
-      marker = is.read();
+      marker = readByte(is);
       if ((byte) marker != 'p') {
         throw new IOException("Expected pi marker: " + (char) marker);
       }
@@ -187,12 +186,12 @@ public class XTalkTransporter implements FrameTransporter {
     int field_count = readInt(is);
     KeyValuePair return_me = null;
     if (field_count != 0) {
-      int marker = is.read();
+      var marker = readByte(is);
       if ((byte) marker == ELEMENT_MARKER) {
         return_me = consumeRootElement(is, f, buffer, cbuffer);
         field_count--;
         if (field_count > 0) {
-          marker = is.read();
+          marker = readByte(is);
         } else {
           return return_me;
         }
@@ -238,7 +237,7 @@ public class XTalkTransporter implements FrameTransporter {
         // it is of a different type.
       }
     } else {
-      int sub_marker = is.read();
+      var sub_marker = readByte(is);
       if (sub_field_count == 1 && (byte) sub_marker == STRING_MARKER) {
         value = consumeLeaf(is, f);
         if (tag_name.startsWith(TransportConstants.VINCI_NAMESPACE)) {
@@ -301,7 +300,7 @@ public class XTalkTransporter implements FrameTransporter {
           if (sub_field_count == 0) {
             value = f.createSubFrame(tag_name, sub_field_count);
           } else {
-            int sub_marker = is.read();
+            var sub_marker = readByte(is);
             if (sub_field_count == 1 && (byte) sub_marker == STRING_MARKER) {
               value = consumeLeaf(is, f);
             } else {
@@ -319,7 +318,7 @@ public class XTalkTransporter implements FrameTransporter {
       }
       field_count--;
       if (field_count > 0) {
-        marker = is.read();
+        marker = readByte(is);
       }
     }
   }
@@ -671,4 +670,17 @@ public class XTalkTransporter implements FrameTransporter {
     }
   }
 
-} // class
+  private static byte readByte(InputStream aIs) throws IOException {
+    int byteAsInt = aIs.read();
+
+    if (byteAsInt == -1) {
+      throw new EOFException("Unexpected end of stream");
+    }
+
+    if (byteAsInt < Byte.MIN_VALUE || byteAsInt > Byte.MAX_VALUE) {
+      throw new IOException("Illegal byte value [" + byteAsInt + "]");
+    }
+
+    return (byte) byteAsInt;
+  }
+}
