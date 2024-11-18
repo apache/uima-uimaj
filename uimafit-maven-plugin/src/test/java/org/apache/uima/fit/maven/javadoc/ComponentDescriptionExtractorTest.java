@@ -18,22 +18,21 @@
  */
 package org.apache.uima.fit.maven.javadoc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.fit.maven.util.Util;
 import org.junit.jupiter.api.Test;
 
-import com.thoughtworks.qdox.model.JavaSource;
-
-public class ComponentDescriptionExtractorTest {
+class ComponentDescriptionExtractorTest {
 
   @Test
-  public void test() throws Exception {
+  void test() throws Exception {
     // Create the Java parser and parse the source code into an abstract syntax tree
-    JavaSource source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
+    var source = Util.parseSource("src/test/resources/TestComponent.java", "UTF-8");
 
-    String javadoc = Util.getComponentDocumentation(source, "some.test.mypackage.TestComponent");
+    var javadoc = Util.getComponentDocumentation(source, "some.test.mypackage.TestComponent");
 
-    assertEquals("A test component used to test JavadocTextExtractor.", javadoc);
+    assertThat(javadoc).as("JavaDoc for TestComponent.java")
+            .isEqualTo("A test component used to test JavadocTextExtractor.");
   }
 }

@@ -3538,7 +3538,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       // approximate histogram
       if (doMeasurements) {
         // len is utf-8 encoding
-        float len = dosZipSources[strChars_i].size() - startPos;
+        var len = dosZipSources[strChars_i].size() - startPos;
         // if len == chars, then all got coded as 1 byte
         // if len > chars, some were utf-8 coded as 2 bytes
         float excess = len / commonStrings[i].length() - 1; // excess over length 1
@@ -3557,7 +3557,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     if (doMeasurements) {
       long commonStringsLength = 0;
       sm.stringsNbrCommon = commonStrings.length;
-      int r = 0;
+      long r = 0;
       for (int i = 0; i < commonStrings.length; i++) {
         r += DataIO.lengthUTFv(commonStrings[i]);
         commonStringsLength += commonStrings[i].length();

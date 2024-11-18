@@ -658,7 +658,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         // approximate histogram
         if (doMeasurements) {
           // len is utf-8 encoding
-          float len = out.size() - startPos;
+          var len = out.size() - startPos;
           // if len == chars, then all got coded as 1 byte
           // if len > chars, some were utf-8 coded as 2 bytes
           float excess = (len / commonStrings[i].length()) - 1; // excess over length 1

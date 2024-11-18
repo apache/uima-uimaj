@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.fit.factory;
 
 import static java.util.Arrays.asList;
@@ -49,6 +48,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.naming.InitialContext;
+
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -76,13 +77,8 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.util.CasCreationUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-/**
- * Test case for {@link ExternalResource} annotations.
- * 
- */
-public class ExternalResourceFactoryTest extends ComponentTestBase {
+class ExternalResourceFactoryTest extends ComponentTestBase {
   // https://issues.apache.org/jira/browse/UIMA-5555
   // private static final String EX_URI = "http://dum.my";
 
@@ -92,12 +88,11 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
   @BeforeAll
   public static void initJNDI() throws Exception {
-    // Set up JNDI context to test the JndiResourceLocator
-    final SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-    Properties deDict = new Properties();
+    var deDict = new Properties();
     deDict.setProperty("Hans", "proper noun");
-    builder.bind("dictionaries/german", deDict);
-    builder.activate();
+
+    var ctx = new InitialContext();
+    ctx.rebind("dictionaries/german", deDict);
   }
 
   /**
@@ -113,7 +108,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * @see <a href="https://issues.apache.org/jira/browse/UIMA-3776">UIMA-3776</a>
    */
   @Test
-  public void testNoDelegatesToResolve() throws Exception {
+  void testNoDelegatesToResolve() throws Exception {
     ResourceSpecifierFactory f = UIMAFramework.getResourceSpecifierFactory();
     AnalysisEngineDescription outer = f.createAnalysisEngineDescription();
     AnalysisEngineDescription inner = f.createAnalysisEngineDescription();
@@ -137,7 +132,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * @see <a href="http://markmail.org/thread/tdd24gdbtoa3hje2">Apache UIMA user mailing list</a>
    */
   @Test
-  public void testAccessResourceFromAE() throws Exception {
+  void testAccessResourceFromAE() throws Exception {
     AnalysisEngine ae = createEngine(DummyAE3.class, DummyAE3.RES_KEY_1,
             createNamedResourceDescription("lala", AnnotatedResource.class,
                     AnnotatedResource.PARAM_VALUE, "1"));
@@ -151,7 +146,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testScanBind() throws Exception {
+  void testScanBind() throws Exception {
     // Create analysis enginge description
     AnalysisEngineDescription desc = createEngineDescription(DummyAE.class);
 
@@ -164,7 +159,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testDirectInjection() throws Exception {
+  void testDirectInjection() throws Exception {
     // Create analysis enginge description
     AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
@@ -192,7 +187,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testDirectInjectionAutowire() throws Exception {
+  void testDirectInjectionAutowire() throws Exception {
     // Create analysis engine description
     AnalysisEngineDescription desc = createEngineDescription(DummyAE2.class);
 
@@ -217,7 +212,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testMultiBinding() throws Exception {
+  void testMultiBinding() throws Exception {
     ExternalResourceDescription extDesc = createResourceDescription(ResourceWithAssert.class);
 
     // Binding external resource to each Annotator individually
@@ -238,7 +233,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testMultiBoundNested() throws Exception {
+  void testMultiBoundNested() throws Exception {
     ExternalResourceDescription extDesc = createResourceDescription(
             IntermediateResourceWithAssert.class,
             IntermediateResourceWithAssert.PARAM_NESTED_RESOURCE,
@@ -266,7 +261,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * Test resource list.
    */
   @Test
-  public void testMultiValue() throws Exception {
+  void testMultiValue() throws Exception {
     ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
@@ -282,7 +277,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * Test sharing a resource list between two AEs on the same aggregate.
    */
   @Test
-  public void testMultiValue2() throws Exception {
+  void testMultiValue2() throws Exception {
     MultiValuedResourceAE.resources.clear();
 
     ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
@@ -306,7 +301,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * Test sharing a resource list across aggregates.
    */
   @Test
-  public void testMultiValue3() throws Exception {
+  void testMultiValue3() throws Exception {
     MultiValuedResourceAE.resources.clear();
 
     ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
@@ -330,7 +325,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
    * Test nested resource lists.
    */
   @Test
-  public void testMultiValue4() throws Exception {
+  void testMultiValue4() throws Exception {
     ExternalResourceDescription extDesc1 = createResourceDescription(ResourceWithAssert.class);
     ExternalResourceDescription extDesc2 = createResourceDescription(ResourceWithAssert.class);
 
@@ -354,7 +349,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   }
 
   @Test
-  public void testNestedAggregateBinding() throws Exception {
+  void testNestedAggregateBinding() throws Exception {
     ExternalResourceDescription resourceDescription = createSharedResourceDescription("",
             DummyResource.class);
 

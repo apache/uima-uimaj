@@ -55,7 +55,12 @@ import org.xml.sax.SAXException;
 /**
  * Generate descriptor files for uimaFIT-based UIMA components.
  */
-@Mojo(name = "generate", defaultPhase = PROCESS_CLASSES, requiresDependencyResolution = TEST, requiresDependencyCollection = TEST)
+@Mojo( //
+        name = "generate", //
+        defaultPhase = PROCESS_CLASSES, //
+        requiresDependencyResolution = TEST, //
+        requiresDependencyCollection = TEST, //
+        threadSafe = true)
 public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
@@ -141,7 +146,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     String[] files = FileUtils.getFilesFromExtension(project.getBuild().getOutputDirectory(),
             new String[] { "class" });
 
-    componentLoader = Util.getClassloader(project, getLog(), includeScope);
+    componentLoader = Util.getClassloader(project, includeScope);
 
     // List of components that is later written to META-INF/org.apache.uima.fit/components.txt
     StringBuilder componentsManifest = new StringBuilder();

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.pear.util;
 
 import java.io.BufferedInputStream;
@@ -41,6 +40,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -767,14 +767,9 @@ public class FileUtil {
     long totalBytes = 0;
     byte[] block = new byte[4096];
 
-    String prefix = normalizeToUnix(targetDir.getCanonicalPath());
-    if (!prefix.endsWith(UNIX_SEPARATOR)) {
-      prefix = prefix + UNIX_SEPARATOR_CHAR;
-    }
-
-    Enumeration<JarEntry> jarList = jarFile.entries();
+    var jarList = jarFile.entries();
     while (jarList.hasMoreElements()) {
-      JarEntry jarEntry = jarList.nextElement();
+      var jarEntry = jarList.nextElement();
       // check that file is accepted
       if (jarEntry.isDirectory()
               || (filter != null && !filter.accept(new File(jarEntry.getName())))) {
@@ -782,21 +777,22 @@ public class FileUtil {
       }
 
       // make sure the file directory exists
-      File file = new File(targetDir, jarEntry.getName());
+      var entryName = jarEntry.getName();
+      var file = new File(targetDir, entryName).toPath().normalize();
 
-      if (!normalizeToUnix(file.getCanonicalPath()).startsWith(prefix)) {
+      if (!file.startsWith(targetDir.toPath().normalize())) {
         throw new IOException("Can only write within target folder [" + targetDir.getAbsolutePath()
                 + "]. Please validate ZIP contents.");
       }
 
-      File dir = file.getParentFile();
-      if (!dir.exists() && !dir.mkdirs()) {
-        throw new IOException("Could not create directory [" + dir.getAbsolutePath() + "]");
+      var dir = file.getParent();
+      if (!Files.exists(dir)) {
+        Files.createDirectories(dir);
       }
 
       // extract file
-      try (BufferedInputStream iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
-              BufferedOutputStream oStream = new BufferedOutputStream(new FileOutputStream(file))) {
+      try (var iStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
+              var oStream = Files.newOutputStream(file)) {
         int bCount = 0;
         while ((bCount = iStream.read(block)) > 0) {
           totalBytes += bCount;

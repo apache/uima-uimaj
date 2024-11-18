@@ -37,7 +37,7 @@ public class BaseServerRunnable implements Runnable {
 
   private BaseServer parent;
 
-  private static final ThreadLocal THREAD_LOCAL_SOCKET = new ThreadLocal();
+  private static final ThreadLocal<Socket> THREAD_LOCAL_SOCKET = new ThreadLocal<>();
 
   /**
    * Allows anyone in the calling chain of the 'run' method to get access to the socket being used
@@ -46,7 +46,7 @@ public class BaseServerRunnable implements Runnable {
    * @return -
    */
   public static Socket getSocket() {
-    return (Socket) THREAD_LOCAL_SOCKET.get();
+    return THREAD_LOCAL_SOCKET.get();
   }
 
   /**
@@ -104,7 +104,7 @@ public class BaseServerRunnable implements Runnable {
     } catch (Throwable e) {
       Debug.reportException(e);
     } finally {
-      THREAD_LOCAL_SOCKET.set(null);
+      THREAD_LOCAL_SOCKET.remove();
       try {
         socket.close();
       } catch (IOException f) {
