@@ -30,7 +30,7 @@
   <artifactId>uimaj-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>Apache UIMA - BOM</name>
+  <name>Apache UIMA Java SDK: BOM</name>
 
   <dependencyManagement>
     <dependencies>

@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>org.apache.uima</groupId>
-    <artifactId>uimaj-parent</artifactId>
+    <artifactId>uimaj-parent-internal</artifactId>
     <version>3.6.0-SNAPSHOT</version>
-    <relativePath>../uimaj-parent/pom.xml</relativePath>
+    <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
   <artifactId>uimafit-examples</artifactId>
-  <name>Apache UIMA uimaFIT - Examples</name>
+  <name>Apache UIMA uimaFIT: Examples</name>
   <description>Factories, Injection, and Testing library for UIMA</description>
   <url>${uimaWebsiteUrl}</url>
 

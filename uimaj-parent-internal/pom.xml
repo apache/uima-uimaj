@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements. See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership. The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<!-- This pom serves as the the UIMA Java SDK (uimaj) common parent pom,
+     and may include overrides to the project-wide parent-pom.
+     Over time, things in this pom which apply to
+     other projects within UIMA are migrated to the
+     project-wide parent pom.
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>uimaj-parent-internal</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Apache UIMA Java SDK: ${project.artifactId}</name>
+  <description>The internal parent POM for the UIMA Java SDK</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <properties>
+    <!-- 
+     Configuring settings is best done through default properties that multiple plugins.
+     Local configurations within plugins should be avoided. Where plugins do not pick up default
+     properties already, they should be injected manually into the plugins. 
+    -->
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.proc>none</maven.compiler.proc>
+    <execution.environment>JavaSE-17</execution.environment>
+    
+    <maven.version>3.8.1</maven.version>
+
+    <asciidoctor.plugin.version>3.1.1</asciidoctor.plugin.version>
+    <asciidoctor.version>3.0.0</asciidoctor.version>
+    <asciidoctor.pdf.version>2.3.19</asciidoctor.pdf.version>
+    <assertj-version>3.26.3</assertj-version>
+    <bnd-version>7.0.0</bnd-version>
+    <bytebuddy-version>1.15.10</bytebuddy-version>
+    <commons-csv-version>1.12.0</commons-csv-version>
+    <commons-collections4-version>4.4</commons-collections4-version>
+    <commons-io-version>2.17.0</commons-io-version>
+    <commons-lang3-version>3.17.0</commons-lang3-version>
+    <commons-math3-version>3.6.1</commons-math3-version>
+    <jackson-version>2.18.1</jackson-version>
+    <javassist-version>3.30.2-GA</javassist-version>
+    <junit-version>5.11.3</junit-version>
+    <junit-platform-version>1.11.3</junit-platform-version>
+    <junit-vintage-version>4.13.2</junit-vintage-version>
+    <log4j-version>2.24.1</log4j-version>
+    <mockito-version>5.14.2</mockito-version>
+    <opentest4j-version>1.3.0</opentest4j-version>
+    <qdox-version>2.1.0</qdox-version>
+    <slf4j-version>1.7.36</slf4j-version>
+    <spring-version>6.0.23</spring-version>
+    <tycho-version>4.0.10</tycho-version>
+    <xmlunit-version>2.10.0</xmlunit-version>
+
+    <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
+
+    <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
+    
+    <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
+    <github-repository>uima-uimaj</github-repository>
+    <git-branch>main</git-branch>
+    <previous-release-version>3.5.0</previous-release-version>
+    <!-- END PROFILE SETTINGS: generate-release-notes-->
+    
+    <api_check_oldVersion>${previous-release-version}</api_check_oldVersion>
+    <uima-maven-plugins-version>${previous-release-version}</uima-maven-plugins-version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-assertj3</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${bytebuddy-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-agent</artifactId>
+        <version>${bytebuddy-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-vintage-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-bom</artifactId>
+        <version>${assertj-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockito-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${xmlunit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj3</artifactId>
+        <version>${xmlunit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j-version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons-collections4-version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jcl</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring-version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-build-api</artifactId>
+        <version>0.0.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-archiver</artifactId>
+        <version>3.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>3.3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${javassist-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.thoughtworks.qdox</groupId>
+        <artifactId>qdox</artifactId>
+        <version>${qdox-version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>biz.aQute.bndlib</artifactId>
+        <version>${bnd-version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jface</artifactId>
+        <version>3.27.0.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jface.text</artifactId>
+        <version>3.21.0.v20220817-1340</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+        <version>3.121.0.v20220829-1402</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.runtime</artifactId>
+        <version>3.26.0.v20220813-0916</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.resources</artifactId>
+        <version>3.18.0.v20220828-0546</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.core.filesystem</artifactId>
+        <version>1.9.500.v20220817-1539</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.debug.core</artifactId>
+        <version>3.20.0.v20220811-0741</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.debug.ui</artifactId>
+        <version>3.17.0.v20220817-1312</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.emf.codegen</artifactId>
+        <version>2.22.0.v20210420-0623</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.app</artifactId>
+        <version>1.6.200.v20220720-2012</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.common</artifactId>
+        <version>3.16.200.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.registry</artifactId>
+        <version>3.11.200.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.equinox.preferences</artifactId>
+        <version>3.10.100.v20220710-1223</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.osgi</artifactId>
+        <version>3.18.100.v20220817-1601</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.text</artifactId>
+        <version>3.12.200.v20220817-1340</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.editors</artifactId>
+        <version>3.14.400.v20220730-1844</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.forms</artifactId>
+        <version>3.11.400.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.ide</artifactId>
+        <version>3.19.100.v20220820-0412</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.views</artifactId>
+        <version>3.11.200.v20220817-1444</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.workbench</artifactId>
+        <version>3.126.0.v20220823-0718</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+        <version>3.16.600.v20220809-1658</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.core</artifactId>
+        <version>3.31.0.v20220831-1439</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.launching</artifactId>
+        <version>3.19.700.v20220730-1850</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.debug</artifactId>
+        <version>3.19.300.v20220812-1529</version>
+        <exclusions>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with the "icu-data" classifier
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>com.ibm.icu</artifactId>
+          </exclusion>
+          <exclusion>
+            <!-- 
+              The p2 resolver appears to have trouble with this one and tries to download it with 
+              "tools" as the classifier.
+             -->
+            <groupId>${eclipseP2RepoId}</groupId>
+            <artifactId>org.eclipse.jdt.debug</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.ui</artifactId>
+        <version>3.27.0.v20220824-0714</version>
+      </dependency>
+      <dependency>
+        <groupId>${eclipseP2RepoId}</groupId>
+        <artifactId>org.eclipse.jdt.debug.ui</artifactId>
+        <version>3.12.800.v20220813-1738</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.vintage</groupId>
+              <artifactId>junit-vintage-engine</artifactId>
+              <version>${junit-version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <javadocVersion>${maven.compiler.release}</javadocVersion>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>jcasgen-maven-plugin</artifactId>
+          <version>${uima-maven-plugins-version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>PearPackagingMavenPlugin</artifactId>
+          <version>${uima-maven-plugins-version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.openntf.maven</groupId>
+        <artifactId>p2-layout-resolver</artifactId>
+        <version>1.9.0</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <environments>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Load postNoticeText from NOTICE file -->
+            <id>read-notice</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source><![CDATA[
+                def noticeFile = new File(project.basedir.path + "/NOTICE");
+                if (noticeFile.exists()) {
+                  project.properties.postNoticeText = noticeFile.text;
+                  println "Loaded NOTICE file content into property [postNoticeText]"
+                } else {
+                  println "No NOTICE file was found - content not loaded into property [postNoticeText]"
+                }
+              ]]></source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- See: https://issues.apache.org/jira/browse/UIMA-6349 -->
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <configuration>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.build.finalName}.jar</path>
+            </file>
+          </newVersion>
+          <parameter>
+            <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>com\.strobel\..*</ignoreMissingClassesByRegularExpression>
+              <ignoreMissingClassesByRegularExpression>org\.apache\.logging\.log4j\..*</ignoreMissingClassesByRegularExpression>
+            </ignoreMissingClassesByRegularExpressions>
+          </parameter>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+              <!-- default configuration -->
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>**/marker-file-maven-plugin-module</exclude>
+                <exclude>**/dependency-reduced-pom.xml</exclude>
+                <exclude>**/.asciidoctorconfig.adoc</exclude>
+                <!-- Eclipse launch files - no need for a license -->
+                <exclude>**/run_configuration/*.launch</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>maven-plugin-module</id>
+      <activation>
+        <file>
+          <exists>marker-file-maven-plugin-module</exists>
+        </file>
+      </activation>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-plugin-api</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven.plugin-tools</groupId>
+          <artifactId>maven-plugin-annotations</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-core</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-model</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-artifact</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-compat</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven.plugin-testing</groupId>
+          <artifactId>maven-plugin-testing-harness</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <!-- Required by maven-plugin-testing-harness -->
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.13.2</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>org.apache.maven:maven-artifact</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-compat</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-core</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-model</ignoredDependency>
+                <ignoredDependency>org.apache.maven:maven-plugin-api</ignoredDependency>
+                <ignoredDependency>org.apache.maven.plugin-tools:maven-plugin-annotations</ignoredDependency>
+                <ignoredDependency>org.apache.maven.plugin-testing:maven-plugin-testing-harness</ignoredDependency>
+                <ignoredDependency>junit:junit</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <!-- Overriding the execution from the Apache parent POM -->
+                <id>source-release-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs combine.self="override" />
+                  <descriptors>
+                    <descriptor>${assemblySrcDescriptor}</descriptor>
+                  </descriptors>
+                  <tarLongFileMode>${assembly.tarLongFileMode}</tarLongFileMode>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>jacoco</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- Duplicates on classpath cause an exception in JaCoCo report -->
+                <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>dependency-check</id>
+      <activation>
+        <property>
+          <name>!disable-dependency-check</name>
+        </property>
+        <file>
+          <exists>marker-file-enabling-dependency-check</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>analyze-only</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies combine.children="append">
+                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
+                <ignoredDependency>org.xmlunit:xmlunit-assertj3</ignoredDependency>
+                <ignoredDependency>org.slf4j:slf4j-simple</ignoredDependency>
+                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
+                <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
+                <ignoredDependency>junit:junit</ignoredDependency>
+              </ignoredDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+      
+    <!-- ************** m2e  profile ************* -->
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!-- This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.gmaven</groupId>
+                         <artifactId>groovy-maven-plugin</artifactId>
+                         <versionRange>[1.4,)</versionRange>
+                         <goals>
+                           <goal>execute</goal>
+                         </goals>
+                       </pluginExecutionFilter>
+                       <action>
+                         <ignore />
+                       </action>
+                     </pluginExecution>
+                   </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+</project>

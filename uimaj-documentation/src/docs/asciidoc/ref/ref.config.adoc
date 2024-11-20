@@ -53,6 +53,7 @@ It causes the framework to throw a UIMARuntimeException if an update outside of 
 
 This table describes the various JVM defined properties; specify these on the Java command line using -Dxxxxxx, where the xxxxxx is one of the properties starting with `uima.` from the table below.
 
+.General properties
 [cols="1,1,1", frame="all"]
 |===
 
@@ -60,42 +61,28 @@ This table describes the various JVM defined properties; specify these on the Ja
 |**Property Name & Description**
 |**Since Version**
 
-|
-
-Use built-in Java Logger as default back-end
-|
-
-`uima.use_jul_as_default_uima_logger`
+| Use built-in Java Logger as default back-end
+| `uima.use_jul_as_default_uima_logger`
 
 See https://issues.apache.org/jira/browse/UIMA-5381[UIMA-5381].
 The standard UIMA logger uses an slf4j implementation, which, in turn hooks up to  a back end implementation based on what can be found in the class path (see slf4j documentation). If no backend implementation is found, the slf4j default is to use a NOP logger back end  which discards all logging.
 
 When this flag is specified, the behavior of the UIMA logger  is altered to use the built-in-to-Java logging implementation  as the back end for the UIMA logger. 
-|
+| 3.0.0
 
-3.0.0
-
-|
-
-XML: enable doctype declarations
-|
-
-`uima.xml.enable.doctype_decl` (default is false)
+| XML: enable doctype declarations
+| `uima.xml.enable.doctype_decl` (default is false)
 
 See https://issues.apache.org/jira/browse/UIMA-6064[UIMA-6064] Normally, this is turned off to avoid exposure to malicious XML; see https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Processing[
              XML External Entity processing vulnerability]. 
-|
+| 2.10.4, 3.1.0
+|===
 
-2.10.4, 3.1.0
-
-|**Index protection properties**
-
-|
-
-Report Illegal Index-key Feature Updates
-|
-
-`uima.report_fs_update_corrupts_index` (default is not to report)
+.Index protection properties
+[cols="1,1,1", frame="all"]
+|===
+| Report Illegal Index-key Feature Updates
+| `uima.report_fs_update_corrupts_index` (default is not to report)
 
 See https://issues.apache.org/jira/browse/UIMA-4135[UIMA-4135].
 Updating Features which are used in Set and Sorted indexes as "keys" may corrupt the indexes, if the Feature Structure (FS) has been added to the indexes.
@@ -107,49 +94,34 @@ To scan the logs for these reports, search for instances of lines having the str
 Specifying this property overrides ``uima.disable_auto_protect_indexes``.
 
 Users would run with this property defined, and then for high performance,  would use the report to manually change their code to avoid the problem or  to wrap the updates with a `protectIndexes` kind of protection (see the reference manual, in the CAS or JCas chapters, for examples of user code doing this,  and then run with the protection turned off (see below). 
-|
+| 2.7.0
 
-2.7.0
-
-|
-
-Throw exception on illegal Index-key Feature Updates
-|
-
-`uima.exception_when_fs_update_corrupts_index` (default is false)
+| Throw exception on illegal Index-key Feature Updates
+| `uima.exception_when_fs_update_corrupts_index` (default is false)
 
 See https://issues.apache.org/jira/browse/UIMA-4150[UIMA-4150].
 Throws a UIMARuntimeException if an Indexed FS feature used as a key in one or more  indexes is updated, outside of an explicit `protectIndexes` block..  \ This is intended for use in automated build and test environments, to provide a strong signal if this kind of mistake gets into the build.
 If it is not set, then the other properties specify if corruption should be checked for,  recovered automatically, and / or reported
 
 Specifying this property also forces `uima.report_fs_update_corrupts_index` to true even if it was set to false.
-|
+| 2.7.0
 
-2.7.0
-
-|
-
-Disable the index corruption checking
-|
-
-`uima.disable_auto_protect_indexes`
+| Disable the index corruption checking
+| `uima.disable_auto_protect_indexes`
 
 See https://issues.apache.org/jira/browse/UIMA-4135[UIMA-4135].
 After you have fixed all reported issues identified with the above report, you may set this property to omit this check, which may slightly improve performance.
 
 Note that this property is ignored if the `-Dexception_when_fs_update_corrupts_index` or `-Dreport_fs_update_corrupts_index`
-|
+| 2.7.0
+|===
 
-2.7.0
+.Measurement / Tracing properties
+[cols="1,1,1", frame="all"]
+|===
 
-|**Measurement / Tracing properties**
-
-|
-
-Trace Feature Structure Creation/Updating
-|
-
-`uima.trace_fs_creation_and_updating`
+| Trace Feature Structure Creation/Updating
+| `uima.trace_fs_creation_and_updating`
 
 This causes a trace file to be produced in the current working directory.
 The file has one line for each Feature Structure that is created, and include information on the cas/cas-view, and the features that are set for the Feature Structure.
@@ -157,23 +129,15 @@ There is, additionally, one line for each Feature Structure update.
 Updates that occur next-to trace information for the same Feature Structure are combined. 
 
 This can generate a lot of output, and definitely slows down execution.
-|
+| 2.10.1
 
-2.10.1
-
-|
-
-Measure index flattening optimization
-|
-
-`uima.measure.flatten_index`
+| Measure index flattening optimization
+| `uima.measure.flatten_index`
 
 See https://issues.apache.org/jira/browse/UIMA-4357[UIMA-4357].
 This creates a short report to System.out when Java is shutdown.
 The report has some statistics about the automatic management of  flattened index creation and use.
-|
-
-2.8.0
+| 2.8.0
 |===
 
 Some additional global flags intended for helping v3 migration are documented in the V3 user's guide.
