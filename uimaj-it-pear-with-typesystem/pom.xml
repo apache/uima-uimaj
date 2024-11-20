@@ -102,7 +102,6 @@
       <plugin>
         <groupId>org.apache.uima</groupId>
         <artifactId>PearPackagingMavenPlugin</artifactId>
-        <version>${project.version}</version>
         <executions>
           <execution>
             <id>package-pear</id>
@@ -111,8 +110,7 @@
               <goal>package</goal>
             </goals>
             <configuration>
-              <mainComponentDesc>
-                desc/org/apache/uima/it/pear_with_typesystem/TestAnnotator.xml</mainComponentDesc>
+              <mainComponentDesc>desc/org/apache/uima/it/pear_with_typesystem/TestAnnotator.xml</mainComponentDesc>
               <componentId>${project.artifactId}</componentId>
               <datapath>$main_root/resources</datapath>
             </configuration>

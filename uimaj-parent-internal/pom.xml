@@ -83,8 +83,6 @@
 
     <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
 
-    <api_check_oldVersion>3.5.0</api_check_oldVersion>
-
     <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
     
     <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
@@ -92,6 +90,9 @@
     <git-branch>main</git-branch>
     <previous-release-version>3.5.0</previous-release-version>
     <!-- END PROFILE SETTINGS: generate-release-notes-->
+    
+    <api_check_oldVersion>${previous-release-version}</api_check_oldVersion>
+    <uima-maven-plugins-version>${previous-release-version}</uima-maven-plugins-version>
   </properties>
 
   <dependencies>
@@ -497,13 +498,18 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
-            <javadocVersion>${maven.compiler.release}}</javadocVersion>
+            <javadocVersion>${maven.compiler.release}</javadocVersion>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.uima</groupId>
           <artifactId>jcasgen-maven-plugin</artifactId>
-          <version>${project.version}</version>
+          <version>${uima-maven-plugins-version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>PearPackagingMavenPlugin</artifactId>
+          <version>${uima-maven-plugins-version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
