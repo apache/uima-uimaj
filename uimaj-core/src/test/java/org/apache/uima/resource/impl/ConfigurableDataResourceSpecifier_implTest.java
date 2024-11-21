@@ -36,49 +36,43 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_imp
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class ConfigurableDataResourceSpecifier_implTest {
+class ConfigurableDataResourceSpecifier_implTest {
   @Test
-  public void testXmlization() throws Exception {
-    try {
-      // create a ConfigurableDataResourceSpecifier
-      ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
-      cspec.setUrl("jdbc:db2:MyDatabase");
-      ResourceMetaData md = new ResourceMetaData_impl();
-      cspec.setMetaData(md);
-      md.setName("foo");
-      ConfigurationParameterDeclarations decls = new ConfigurationParameterDeclarations_impl();
-      ConfigurationParameter param = new ConfigurationParameter_impl();
-      param.setName("param");
-      param.setType("String");
-      decls.addConfigurationParameter(param);
-      md.setConfigurationParameterDeclarations(decls);
-      ConfigurationParameterSettings settings = new ConfigurationParameterSettings_impl();
-      NameValuePair nvp = new NameValuePair_impl();
-      nvp.setName("param");
-      nvp.setValue("bar");
-      settings.setParameterSettings(nvp);
-      md.setConfigurationParameterSettings(settings);
+  void testXmlization() throws Exception {
+    // create a ConfigurableDataResourceSpecifier
+    ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
+    cspec.setUrl("jdbc:db2:MyDatabase");
+    ResourceMetaData md = new ResourceMetaData_impl();
+    cspec.setMetaData(md);
+    md.setName("foo");
+    ConfigurationParameterDeclarations decls = new ConfigurationParameterDeclarations_impl();
+    ConfigurationParameter param = new ConfigurationParameter_impl();
+    param.setName("param");
+    param.setType("String");
+    decls.addConfigurationParameter(param);
+    md.setConfigurationParameterDeclarations(decls);
+    ConfigurationParameterSettings settings = new ConfigurationParameterSettings_impl();
+    NameValuePair nvp = new NameValuePair_impl();
+    nvp.setName("param");
+    nvp.setValue("bar");
+    settings.setParameterSettings(nvp);
+    md.setConfigurationParameterSettings(settings);
 
-      // wrtie to XML
-      StringWriter sw = new StringWriter();
-      cspec.toXML(sw);
-      String xmlStr = sw.getBuffer().toString();
+    // wrtie to XML
+    StringWriter sw = new StringWriter();
+    cspec.toXML(sw);
+    String xmlStr = sw.getBuffer().toString();
 
-      // parse back
-      ByteArrayInputStream inStream = new ByteArrayInputStream(
-              xmlStr.getBytes(StandardCharsets.UTF_8));
-      XMLInputSource in = new XMLInputSource(inStream, null);
-      ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
-              .getXMLParser().parse(in);
+    // parse back
+    ByteArrayInputStream inStream = new ByteArrayInputStream(
+            xmlStr.getBytes(StandardCharsets.UTF_8));
+    XMLInputSource in = new XMLInputSource(inStream, null);
+    ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
+            .getXMLParser().parse(in);
 
-      assertEquals(cspec, parsedSpec);
-
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    assertEquals(cspec, parsedSpec);
   }
 }

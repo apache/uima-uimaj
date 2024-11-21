@@ -32,15 +32,15 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure>
         implements LowLevelIterator<T>, Comparator<FeatureStructure> {
 
   // final private FsIndex_flat<T> flatIndex; // a newly created one, just for this iterator
-  final private T[] snapshot; // local for ref speed
+  private final T[] snapshot; // local for ref speed
   private int pos = 0;
   /** support for alternative source iterating, where there is no order */
-  final private boolean is_unordered;
-  final private LowLevelIndex<T> indexForComparator;
+  private final boolean is_unordered;
+  private final LowLevelIndex<T> indexForComparator;
 
-  final private boolean isNotUimaIndexSource;
+  private final boolean isNotUimaIndexSource;
 
-  final private Comparator<TOP> comparatorMaybeNoTypeWithoutId;
+  private final Comparator<TOP> comparatorMaybeNoTypeWithoutId;
 
   // public FsIterator_subtypes_snapshot(FsIndex_flat<T> flatIndex) {
   // this(flatIndex, false);

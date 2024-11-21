@@ -1,0 +1,56 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[ugr.tools.bnd]]
+= UIMA Plugin for bnd
+
+link:https://bndtools.org[Bnd] is a tooling suite for building OSGi bundles. 
+Its primary function is generating OSGi meta data by analyzing Java classes.
+However, when using UIMA, it may be necessary to add package imports for packages that contain importable XML files such as UIMA type system descriptions to the OSGi metadata.
+The UIMA plugin for bnd contributes an analyzer that checks for by-name imports in UIMA XML files and adds the necessary package imports.
+
+To use the this plugin, specify it in the POM as follows:
+
+[source,xml,subs="+attributes"]
+----
+<plugin>
+  <groupId>biz.aQute.bnd</groupId>
+  <artifactId>bnd-maven-plugin</artifactId>
+  <executions>
+    <configuration>
+      <bnd>
+        -plugin.uima: org.apache.uima.tools.bnd.UimaBndPlugin
+      </bnd>
+    </configuration>
+  </executions>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uima-bnd-plugin</artifactId>
+      <version>{revnumber}</version>
+    </dependency>
+  </dependencies>
+</plugin>
+----
+
+If the plugin is active during a build, it will log a message like 
+
+----
+[INFO] UIMA bnd plugin processed 5 imports
+----
+
+If you need more detailed logging, run the Maven build with the `-X` option.

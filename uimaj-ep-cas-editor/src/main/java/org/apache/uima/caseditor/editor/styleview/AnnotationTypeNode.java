@@ -84,8 +84,7 @@ public class AnnotationTypeNode implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (AnnotationTypeNode.class.equals(adapter)) {
       return this;

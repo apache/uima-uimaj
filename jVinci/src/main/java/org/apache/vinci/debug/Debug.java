@@ -32,18 +32,18 @@ import java.util.Locale;
  * This is JDK1.3 legacy as this functionality is now provided natively by Java 1.4.
  */
 public class Debug {
-  static private volatile boolean log_messages = true;
+  private static volatile boolean log_messages = true;
 
-  static private volatile boolean log_exceptions = true;
+  private static volatile boolean log_exceptions = true;
 
-  static private boolean output_thread_name = false;
+  private static boolean output_thread_name = false;
 
-  static private PrintStream debugStream = System.err;
+  private static PrintStream debugStream = System.err;
 
-  static private DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,
+  private static DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,
           DateFormat.SHORT, Locale.ENGLISH);
 
-  static private Date now = new Date();
+  private static Date now = new Date();
 
   /**
    * This utility class not meant to be instantiated.
@@ -57,7 +57,7 @@ public class Debug {
    * @param w
    *          The stream where debug output will be directed.
    */
-  synchronized static public void setDebuggingStream(PrintStream w) {
+  public static synchronized void setDebuggingStream(PrintStream w) {
     debugStream = w;
   }
 
@@ -66,7 +66,7 @@ public class Debug {
    * 
    * @return The stream currently used for debug output.
    */
-  synchronized static public PrintStream getDebuggingStream() {
+  public static synchronized PrintStream getDebuggingStream() {
     return debugStream;
   }
 
@@ -76,7 +76,7 @@ public class Debug {
    * @param on
    *          Whether or not printed debug messages will go to the log.
    */
-  synchronized static public void setLogMessages(boolean on) {
+  public static synchronized void setLogMessages(boolean on) {
     log_messages = on;
     if (on) {
       Debug.p("vinci.debug.Debug", "Message logging turned ON.");
@@ -88,7 +88,7 @@ public class Debug {
    * 
    * @return true if message logging is enabled
    */
-  synchronized static public boolean getLogMessages() {
+  public static synchronized boolean getLogMessages() {
     return log_messages;
   }
 
@@ -98,7 +98,7 @@ public class Debug {
    * @param on
    *          Whtehr or not reported exceptions will be directed to the log.
    */
-  synchronized static public void setLogExceptions(boolean on) {
+  public static synchronized void setLogExceptions(boolean on) {
     log_exceptions = on;
     Debug.p("vinci.debug.Debug", "Exception logging turned " + ((on) ? "ON" : "OFF"));
   }
@@ -108,7 +108,7 @@ public class Debug {
    * 
    * @return true if message logging is enabled
    */
-  synchronized static public boolean getLogExceptions() {
+  public static synchronized boolean getLogExceptions() {
     return log_messages;
   }
 
@@ -118,7 +118,7 @@ public class Debug {
    * @param on
    *          Whether or not the thread name will appear in the output.
    */
-  synchronized static public void setThreadNameOutput(boolean on) {
+  public static synchronized void setThreadNameOutput(boolean on) {
     output_thread_name = on;
   }
 
@@ -133,7 +133,7 @@ public class Debug {
    * 
    * @pre e != null
    */
-  synchronized static public void reportException(Throwable e, String message) {
+  public static synchronized void reportException(Throwable e, String message) {
     if (log_exceptions) {
       printDebuggingMessage("====================================");
       debugStream.println("(WARNING) Unexpected exception: " + message);
@@ -151,7 +151,7 @@ public class Debug {
    * 
    * @pre e != null
    */
-  synchronized static public void reportException(Throwable e) {
+  public static synchronized void reportException(Throwable e) {
     if (log_exceptions) {
       printDebuggingMessage("====================================");
       debugStream.println("(WARNING) Unexpected exception: ");
@@ -169,7 +169,7 @@ public class Debug {
    *          The message to report.
    * @return The string provided as an argument (to support log chaining).
    */
-  synchronized static public String printDebuggingMessage(String message) {
+  public static synchronized String printDebuggingMessage(String message) {
     if (log_messages) {
       now.setTime(System.currentTimeMillis());
       if (output_thread_name) {
@@ -192,7 +192,7 @@ public class Debug {
    * @param message
    *          The message to log.
    */
-  synchronized static public void printDebuggingMessage(String location, String message) {
+  public static synchronized void printDebuggingMessage(String location, String message) {
     if (log_messages) {
       now.setTime(System.currentTimeMillis());
       if (output_thread_name) {
@@ -211,7 +211,7 @@ public class Debug {
    *          -
    * @return -
    */
-  static public String p(String message) {
+  public static String p(String message) {
     return printDebuggingMessage(message);
   }
 
@@ -223,7 +223,7 @@ public class Debug {
    * @param message
    *          -
    */
-  static public void p(String location, String message) {
+  public static void p(String location, String message) {
     printDebuggingMessage(location, message);
   }
 
@@ -236,7 +236,7 @@ public class Debug {
    * @exception AssertionFailedException
    *              thrown if the method parameter is false.
    */
-  static public void Assert(boolean check) throws AssertionFailedException {
+  public static void Assert(boolean check) throws AssertionFailedException {
     if (!check) {
       throw new AssertionFailedException("no message");
     }
@@ -253,7 +253,7 @@ public class Debug {
    * @exception AssertionFailedException
    *              thrown if the condition evaluates to false.
    */
-  static public void Assert(boolean check, String message) throws AssertionFailedException {
+  public static void Assert(boolean check, String message) throws AssertionFailedException {
     if (!check) {
       throw new AssertionFailedException(message);
     }
@@ -267,7 +267,7 @@ public class Debug {
    * @param e
    *          The exception which will be logged as a fatal error.
    */
-  synchronized static void reportFatalException(Throwable e) {
+  static synchronized void reportFatalException(Throwable e) {
     if (log_exceptions) {
       printDebuggingMessage("====================================");
       debugStream.println("(FATAL ERROR) Unexpected exception: ");
@@ -280,7 +280,7 @@ public class Debug {
    * Make sure any messages are flushed to the stream. Printing debug messages does not flush the
    * stream automatically, though reporting exceptions does.
    */
-  synchronized static public void flush() {
+  public static synchronized void flush() {
     debugStream.flush();
   }
 

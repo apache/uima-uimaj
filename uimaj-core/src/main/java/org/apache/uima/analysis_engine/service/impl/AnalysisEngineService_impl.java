@@ -140,13 +140,12 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
 
       // return results
       return new ServiceDataCargo(cas, trace);
+    } catch (ResourceServiceException e) {
+      resultMessage = e.getLocalizedMessage();
+      throw e;
     } catch (Exception e) {
       resultMessage = e.getLocalizedMessage();
-      if (e instanceof ResourceServiceException) {
-        throw (ResourceServiceException) e;
-      } else {
-        throw new ResourceServiceException(e);
-      }
+      throw new ResourceServiceException(e);
     } finally {
       // release CAS
       if (cas != null) {

@@ -1,0 +1,212 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.migration]]
+= Migration Guide
+
+This section provides helpful information on incompatible changes between versions.
+
+== Version 3.1.x to 3.6.x
+
+uimaFIT has now been integrated into the UIMA Java SDK. 
+
+If you are using the `uimafit-bom` to import managed dependencies, please switch to the `uima-bom` which now also
+manages the version of the `uimafit-*` artifacts.
+
+== Version 3.0.x to 3.1.x
+
+.Changes to ExternalResourceFactory
+The renaming of methods in the `ExternalResourceFactory` had unfortunately introduced another name
+clash between unrelated methods. To fix this clash, the following methods have been renamed from 
+`bindResource` to `bindResourceOnce`:
+
+* `void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)` 
+  was *removed* and replaced by
+  `void bindResourceOnce(ResourceCreationSpecifier aDesc, String aBindTo, ExternalResourceDescription aRes)`
+* `void bindResource(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)`
+  was deprecated and replaced by
+  `void bindResourceOnce(ExternalResourceDescription aRes, String aBindTo, ExternalResourceDescription aNestedRes)`
+* `void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)`
+  was deprecated and replaced by
+  `void bindResourceOnce(ResourceManagerConfiguration aResMgrCfg, String aBindTo, ExternalResourceDescription aRes)`
+* `void bindResource(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)`
+  was *removed* and replaced by
+  `void bindResourceOnceWithoutNested(ResourceCreationSpecifier aDesc, String aBindTo, String aRes)`
+* `void bindResource(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)`
+  was deprecated and replaced by
+  `void bindResourceOnceWithoutNested(ResourceManagerConfiguration aResMgrCfg, String aBindTo, String aRes)`
+* `void bindResource(ResourceSpecifier aDesc, String aKey, String aUrl)`
+  was deprecated and replaced by
+  `void bindResourceUsingUrl(ResourceSpecifier aDesc, String aKey, String aUrl)`
+
+== Version 2.x to 3.x
+
+.Legacy support module removed
+The legacy support in uimaFIT 2.x was present allow being compatible with the pre-Apache uimaFIT 
+versions which were based on UIMA 2.x. Since uimaFIT 3.x is not  compatible with UIMA 2.x anyway,
+the legacy module was removed now.
+
+.Using List instead of Collection
+The `CasUtil`, `JCasUtil` and `FSCollectionFactory` classes were adjusted to return results using `List`
+instead of the more general `Collection`. Often, lists are already used internally and then again
+wrapped into new lists in client code. This API change avoids this in the future.
+
+.Throwing specific exceptions instead of UIMAException
+Several uimaFIT methods were throwing the generic `UIMAException`. These have been adjusted to
+declare throwing several of the sub-types of `UIMAException` to be better able to handle specific
+causes of errors in client code.
+
+.CasUtil.selectSingle signature changed
+Signature of `CasUtil.selectSingle` has been changed to return `AnnotationFS`. The original signature
+is available as `selectSingleFS`
+
+.Removal of deprecated methods
+Various methods that were deprecated in uimaFIT 2.4.0 or earlier have been removed in this release.
+For details, please refer to the `api-change-report.html` file included in the release.
+
+.Changes to ExternalResourceFactory
+Most methods in the `ExternalResourceFactory` have seen changes to their names and signature to avoid
+problematic ambiguities as well as to be shorter. In general, the `External` component of the method
+names was either removed or replaced. So most methods called `createExternalResourceDescription`
+are now called `createResourceDescription`. However, some have also been given a more specific name
+and/or a slightly different order of parameters. For example, this method
+
+[source,java]
+----
+public static ExternalResourceDescription createExternalResourceDescription(
+  Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams)
+----
+
+was changed to
+
+
+[source,java]
+----
+public static ExternalResourceDescription createSharedResourceDescription(
+  String aUrl, Class< extends SharedResourceObject> aInterface, Object... aParams)
+----
+
+.Changes to logging
+UIMA v3 has is using SLF4J. As a consequence, the `ExtendedLogger` which uimaFIT had returned on
+calls to `getLogger()` has been removed and instead the regular UIMA v3 logger class is returned
+which offers methods quite compatible with what `ExtendedLogger` offered before. However, it is
+recommended that you go through all your logging calls and replace calls which use string
+concatenation to construct the logging message with corresponding calls using placeholders. For
+example, replace `getLogger().error("Cannot access " + filename, exception);` with 
+`getLogger().error("Cannot access {}", filename, exception);`.
+
+.Version requirements
+Depends on UIMA 3.0.2, Spring Framework 4.3.22 and Java 8.
+
+== Version 2.3.0 to 2.4.0
+
+.Version requirements
+Depends on UIMA 2.10.2, Spring Framework 3.2.16 and Java 7.
+
+Mind the updated version requirements.
+There should be no other potentially problematic changes in this upgrade.
+
+== Version 2.2.0 to 2.3.0
+
+.CasIOUtil deprecated
+The functionality of the uimaFIT CasIOUtil class has been superseded by the core UIMA class CasIOUtils added in UIMA 2.9.0.
+The method signatures in the new class are not the same, but provide more functionality.
+CasIOUtil has been deprecated and documentation has been added which of the CasIOUtils methods should be used instead.
+
+.Version requirements
+Depends on UIMA 2.9.1, Spring Framework 3.2.16 and Java 7.
+
+Mind the updated version requirements.
+There should be no other potentially problematic changes in this upgrade.
+
+== Version 2.1.0 to 2.2.0
+
+.Version requirements
+Depends on UIMA 2.8.1, Spring Framework 3.2.16 and Java 7.
+
+Mind the updated version requirements.
+There should be no other potentially problematic changes in this upgrade.
+
+== Version 2.0.0 to 2.1.0
+
+.Version requirements
+Depends on UIMA 2.6.0 and Java 6.
+
+.AnnotationFactory.createAnnotation()
+No longer throws ``UIMAExcption``.
+If this exception was cought, some IDEs may complain here after upgrading to uimaFIT 2.1.0. 
+
+== Version 1.4.0 to 2.0.0
+
+.Version requirements
+Depends on UIMA 2.4.2.
+
+.Backwards compatibility
+Compatibility with legacy annotation is provided by the Legacy support module.
+
+.Change of Maven groupId and artifactId
+The Maven group ID has changed from `org.uimafit` to ``org.apache.uima``.
+
+The artifact ID of the main uimaFIT artifact has been changed from `uimafit` to ``uimafit-core``.
+
+.Change of package names
+The base package has been renamed from `org.uimafit` to ``org.apache.uima.fit``.
+A global search/replace on Java files with for lines starting with `import org.uimafit` and replacing that with `import org.apache.uima.fit` should work.
+
+.@ConfigurationParameter
+The default value for the mandatory attribute now is ``true``.
+The default name of configuration parameters is now the name of the annotated field only.
+The classname is no longer prefixed.
+The method `ConfigurationParameterFactory.createConfigurationParameterName()` that was used to generate the prefixed name has been removed.
+
+.Type detection: META-INF/org.uimafit folder
+The `META-INF/org.uimafit` was renamed to ``META-INF/org.apache.uima.fit``.
+
+.JCasUtil
+The deprecated `JCasUtil.iterate()` methods have been removed. `JCasUtil.select()` should be used instead.
+
+.AnalysisEngineFactory
+All `createAggregateXXX` and `createPrimitiveXXX` methods have been renamed to ``createEngineXXX``.
+The old names are deprecated and will be removed in future versions.
+
+All `createAnalysisEngineXXX` methods have been renamed to ``createEngineXXX``.
+The old names are deprecated and will be removed in future versions.
+
+.CollectionReaderFactory
+All `createDescriptionXXX` methods have been renamed to ``createReaderDescriptionXXX``.
+The old names are deprecated and will be removed in future versions.
+
+All `createCollectionReaderXXX` methods have been renamed to ``createReaderXXX``.
+The old names are deprecated and will be removed in future versions.
+
+.JCasIterable
+`JCasIterable` now only accepts reader and engine descriptions (no instances) and no longer implements the `Iterator` interface.
+Instead, new `JCasIterator` has been added, which replaces `JCasIterable` in that respect.
+
+.CasDumpWriter
+`org.uimafit.component.xwriter.CASDumpWriter` has been renamed to ``org.apache.uima.fit.component.CasDumpWriter``.
+
+.CpePipeline
+`CpePipeline` has been moved to a separate module with the artifact ID `uimafit-cpe` to reduce the dependencies incurred by the main uimaFIT artifact.
+
+.XWriter removed
+The `XWriter` and associated file namers have been removed as they were much more complex then acutally needed.
+As an alternative, `CasIOUtil` has been introduced providing several convenience methods to read/write JCas/CAS data. 
+
+.JCasFactory
+Methods only loading JCas data have been removed from ``JCasFactory``.
+The new methods in `CasIOUtil` can be used instead.

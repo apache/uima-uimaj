@@ -75,7 +75,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Serializer and Deserializer testing
  */
-public class SerDesForm6Test extends SerDesTstCommon {
+class SerDesForm6Test extends SerDesTstCommon {
 
   /**
    * TwoType, EqTwoTypes, TwoTypesSubsetFeatures, TwoTypesNoFeatures have Akof1 and Akof2
@@ -350,7 +350,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDocText() throws Exception {
+  void testDocText() throws Exception {
     CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
     cas.setDocumentLanguage("latin");
     cas.setDocumentText("test");
@@ -368,7 +368,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDocumentText() {
+  void testDocumentText() {
     // serdesSimple(getTT(EqTwoTypes));
     remoteCas = setupCas(getTT(EqTwoTypes));
     casSrc.reset();
@@ -390,7 +390,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    */
 
   @Test
-  public void testAllKinds() {
+  void testAllKinds() {
     if (doPlain) {
       serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
     } else {
@@ -428,7 +428,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   // T1 ref -> T2 -> T1 (new) (indexed)
 
   @Test
-  public void testRefThroughFilteredType() {
+  void testRefThroughFilteredType() {
     reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
       reftft(TwoTypesSubsetFeatures, i);
@@ -475,7 +475,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
 
   // broken out special instances of random tests
   @Test
-  public void testDeltaWithStringArrayMod() {
+  void testDeltaWithStringArrayMod() {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -532,7 +532,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithByteArrayMod() {
+  void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -560,7 +560,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithStrArrayMod() {
+  void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
@@ -605,7 +605,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    */
   //@formatter:on
   @Test
-  public void testDelta() {
+  void testDelta() {
     if (doPlain) {
       serdesDelta(getTT(EqTwoTypes));
     } else {
@@ -642,12 +642,12 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithRefsBelow() {
+  void testDeltaWithRefsBelow() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
-    ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
     lfs = getIndexedFSs(remoteCas, m);
@@ -663,12 +663,12 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithMods() {
+  void testDeltaWithMods() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
-    ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
     lfs = getIndexedFSs(remoteCas, m); // get list of all "Akof1" FS
@@ -692,7 +692,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    */
   //@formatter:on
   @Test
-  public void testDeltaWithAllMods() {
+  void testDeltaWithAllMods() {
 
     for (int i = 0; i < 100; i++) {
       checkDeltaWithAllMods();
@@ -706,7 +706,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
-    ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
     lfs = getIndexedFSs(remoteCas, m);
@@ -726,11 +726,11 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithIndexMods() {
+  void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
-    ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
 
     lfs = new ArrayList<>();
@@ -750,7 +750,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testWithOtherSerializer() {
+  void testWithOtherSerializer() {
     doPlain = true;
     testDeltaWithMods();
     tearDown();
@@ -821,7 +821,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
    * scanning, and therefore, delta mods won't be correct.
    */
   @Test
-  public void testWithPrevGenerated() {
+  void testWithPrevGenerated() {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
     initReadSavedInts();
@@ -846,7 +846,7 @@ public class SerDesForm6Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testArrayAux() {
+  void testArrayAux() {
     ArrayList<FeatureStructure> fsList = new ArrayList<>();
     /**
      * Strings, non-array Long/Double: Make equal items, ser/deser, update one of the equal items,
@@ -869,8 +869,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     StringArrayFS sa1 = (StringArrayFS) maybeGetFeatureKind(fsAt1d, m, "Astring");
     StringArrayFS sa2 = (StringArrayFS) maybeGetFeatureKind(fsAt2d, m, "Astring");
     sa1.set(1, "def");
-    assertEquals(sa2.get(1), "abcat");
-    assertEquals(sa1.get(1), "def");
+    assertEquals("abcat", sa2.get(1));
+    assertEquals("def", sa1.get(1));
 
     casSrc.reset();
 
@@ -890,8 +890,8 @@ public class SerDesForm6Test extends SerDesTstCommon {
     LongArrayFS la1 = (LongArrayFS) maybeGetFeatureKind(fsAt1d, m, "Along");
     LongArrayFS la2 = (LongArrayFS) maybeGetFeatureKind(fsAt2d, m, "Along");
     la1.set(2, 123L);
-    assertEquals(la2.get(2), -45 + 9);
-    assertEquals(la1.get(2), 123);
+    assertEquals(-45 + 9, la2.get(2));
+    assertEquals(123, la1.get(2));
   }
 
   // /*******************************

@@ -76,7 +76,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class FeatureStructureTest {
+class FeatureStructureTest {
 
   private CASImpl cas;
 
@@ -110,7 +110,7 @@ public class FeatureStructureTest {
   private Feature hdFeature;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
     assertTrue(cas != null);
 
@@ -193,7 +193,7 @@ public class FeatureStructureTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
 
     ts = null;
@@ -219,7 +219,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testErrorDerefDifferentCAS() {
+  void testErrorDerefDifferentCAS() {
     CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
     Type tokenType1 = ts.getType(TOKEN_TYPE);
     Feature tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE + ":" + TOKEN_TYPE_FEAT);
@@ -231,7 +231,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testGetType() {
+  void testGetType() {
     Type tokenType1 = ts.getType(TOKEN_TYPE);
     Type wordType1 = ts.getType(WORD_TYPE);
 
@@ -244,15 +244,16 @@ public class FeatureStructureTest {
 
   /**
    * This test tests V2 backwards compatibility The goal is to match what V2 did for low level cas
-   * access The area this is testing is the use of the LL int operations to change the type of an
+   * access. The area this is testing is the use of the LL int operations to change the type of an
    * existing feature structure.
    */
   @Test
-  public void testLLsetType() {
-    LowLevelCAS llc = cas.getLowLevelCAS();
-    FSArray fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
+  void testLLsetType() {
+    var llc = cas.getLowLevelCAS();
+    var fsa = new FSArray(ts.getType(CAS.TYPE_NAME_FS_ARRAY), cas, 3);
     fsa.addToIndexes(); // otherwise won't be replaced later
-    NonEmptyFSList fsl = new NonEmptyFSList(ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST), cas);
+
+    var fsl = new NonEmptyFSList(ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST), cas);
     fsl.addToIndexes(); // otherwise won't be replaced later
 
     Annotation token = cas.createFS(tokenType);
@@ -264,16 +265,18 @@ public class FeatureStructureTest {
     int tokId = token._id();
 
     // set some feature values; some of these are copied (if there's room, etc.)
-    TOP ttfv = cas.createFS(tokenTypeType);
+    var ttfv = cas.createFS(tokenTypeType);
     token.setFeatureValue(tokenTypeFeat, ttfv);
     token.setFloatValue(tokenFloatFeat, 1.1f);
+
     Assertions.assertThat(token.getFloatValue(tokenFloatFeat)).isEqualTo(1.1f);
     token.setDoubleValue(tokenDoubleFeat, 1.7d);
+
     Assertions.assertThat(token.getDoubleValue(tokenDoubleFeat)).isEqualTo(1.7d);
     token.setBegin(3);
     token.setEnd(5);
 
-    Sofa sofa = (Sofa) token.getSofa();
+    var sofa = (Sofa) token.getSofa();
     assertTrue(sofa != null);
     assertTrue(fsa.get(0) == token);
     assertTrue(fsl.getHead() == token);
@@ -332,7 +335,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetArrayValuedFeature() {
+  void testSetArrayValuedFeature() {
     FeatureStructure testFS = cas.createFS(arrayFsWithSubtypeType);
 
     assertThat(testFS.getFeatureValue(arrayFsWithSubtypeTypeFeat)) //
@@ -350,7 +353,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetFeatureValue() {
+  void testSetFeatureValue() {
     // FeatureStructure token = this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(tokenType.getCode());
@@ -418,7 +421,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetFloatValue() {
+  void testSetFloatValue() {
     // AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(tokenType.getCode());
@@ -453,7 +456,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetLongValue() {
+  void testSetLongValue() {
     // AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(tokenType.getCode());
@@ -486,7 +489,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetDoubleValue() {
+  void testSetDoubleValue() {
     // AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
     int i = llcas.ll_createFS(tokenType.getCode());
@@ -519,7 +522,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testSetIntValue() {
+  void testSetIntValue() {
     // AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     // AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
     LowLevelCAS llcas = cas.getLowLevelCAS();
@@ -549,7 +552,7 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testStrings() {
+  void testStrings() {
     FeatureStructure lp = cas.createFS(langPairType);
     assertTrue(lp != null);
 
@@ -620,19 +623,19 @@ public class FeatureStructureTest {
   }
 
   @Test
-  public void testEquals() {
+  void testEquals() {
     // ???
   }
 
   @Test
-  public void testToString() {
-    FeatureStructure listFS = cas.createFS(neListType);
+  void testToString() {
+    var listFS = cas.createFS(neListType);
     listFS.setFeatureValue(tlFeature, listFS);
     System.out.println("toString for fslist, tail -> node, head is null");
     System.out.println(listFS.toString());
 
-    FeatureStructure value = cas.createFS(tokenType);
-    FeatureStructure newList = cas.createFS(neListType);
+    var value = cas.createFS(tokenType);
+    var newList = cas.createFS(neListType);
     newList.setFeatureValue(tlFeature, listFS);
     newList.setFeatureValue(hdFeature, value);
     listFS.setFeatureValue(hdFeature, value);

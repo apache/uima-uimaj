@@ -39,19 +39,16 @@ public class Level_1 extends Annotation {
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.cas.test.Level_1";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.cas.test.Level_1";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(Level_1.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(Level_1.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -65,8 +62,8 @@ public class Level_1 extends Annotation {
   /* Feature Adjusted Offsets */
 //  public final static int _FI_id = TypeSystemImpl.getAdjustedFeatureOffset("id");
 
-  private final static CallSite _FC_id = TypeSystemImpl.createCallSite(Level_1.class, "id");
-  private final static MethodHandle _FH_id = _FC_id.dynamicInvoker();
+  private static final CallSite _FC_id = TypeSystemImpl.createCallSite(Level_1.class, "id");
+  private static final MethodHandle _FH_id = _FC_id.dynamicInvoker();
   
   /** Never called.  Disable default constructor
    * @generated */

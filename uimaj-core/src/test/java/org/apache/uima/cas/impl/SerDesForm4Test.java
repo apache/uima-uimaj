@@ -67,7 +67,7 @@ import org.junit.jupiter.api.Test;
  * Has main method for creating resources to use in testing will update resources in SerDes4. If you
  * do this by mistake, just revert those resources.
  */
-public class SerDesForm4Test extends SerDesTstCommon {
+class SerDesForm4Test extends SerDesTstCommon {
 
   // FIXME need to understand why includeUid is false, seems to be disabling some testing Nov 2016
   private static final boolean includeUid = false;
@@ -235,7 +235,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    */
 
   @Test
-  public void testAllKinds() {
+  void testAllKinds() {
     loadCas(lfs);
     // uncomment this to test toString()
     // int i = 0;
@@ -246,7 +246,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testAllKindsV2() {
+  void testAllKindsV2() {
     try (AutoCloseableNoException a = cas.ll_enableV2IdRefs();
             AutoCloseableNoException b = deserCas.ll_enableV2IdRefs()) {
       loadCas(lfs);
@@ -270,7 +270,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    */
   // @formatter:on
   @Test
-  public void testDelta() {
+  void testDelta() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -281,7 +281,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithRefsBelow() {
+  void testDeltaWithRefsBelow() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -302,7 +302,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithMods() {
+  void testDeltaWithMods() {
     lfs.clear();
     loadCas(lfs);
 
@@ -326,7 +326,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    * Driver for random values pick among random and "interesting" edge case values
    */
   @Test
-  public void testDeltaWithAllMods() throws Exception {
+  void testDeltaWithAllMods() throws Exception {
     boolean prev = isKeep;
     isKeep = true;
     for (int i = 0; i < 100; i++) {
@@ -455,7 +455,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testDeltaWithIndexMods() {
+  void testDeltaWithIndexMods() {
     lfs.clear();
     loadCas(lfs);
     setupCas2ForDeltaSerialization();
@@ -476,7 +476,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
   }
 
   @Test
-  public void testArrayAux() {
+  void testArrayAux() {
     ArrayList<FeatureStructure> fsl = new ArrayList<>();
     // @formatter:off
     /**
@@ -500,8 +500,8 @@ public class SerDesForm4Test extends SerDesTstCommon {
     StringArrayFS sa1 = (StringArrayFS) fsAt1d.getFeatureValue(akofAstring);
     StringArrayFS sa2 = (StringArrayFS) fsAt2d.getFeatureValue(akofAstring);
     sa1.set(1, "def");
-    assertEquals(sa2.get(1), "abcat");
-    assertEquals(sa1.get(1), "def");
+    assertEquals("abcat", sa2.get(1));
+    assertEquals("def", sa1.get(1));
     cas.reset();
 
     fsAt1 = newAkof(fsl);
@@ -519,12 +519,12 @@ public class SerDesForm4Test extends SerDesTstCommon {
     LongArrayFS la1 = (LongArrayFS) fsAt1d.getFeatureValue(akofAlong);
     LongArrayFS la2 = (LongArrayFS) fsAt2d.getFeatureValue(akofAlong);
     la1.set(2, 123L);
-    assertEquals(la2.get(2), -45 + 9);
-    assertEquals(la1.get(2), 123);
+    assertEquals(-45 + 9, la2.get(2));
+    assertEquals(123, la1.get(2));
   }
 
   @Test
-  public void testWithOtherSerializer() throws Exception {
+  void testWithOtherSerializer() throws Exception {
     doPlain = true;
     testDeltaWithMods();
     tearDown();
@@ -555,7 +555,7 @@ public class SerDesForm4Test extends SerDesTstCommon {
    */
   // @formatter:on
   @Test
-  public void testWithPrevGenerated() throws Exception {
+  void testWithPrevGenerated() throws Exception {
     isKeep = true; // forces all akof fss to be indexed
     usePrevData = true;
     initReadSavedInts();

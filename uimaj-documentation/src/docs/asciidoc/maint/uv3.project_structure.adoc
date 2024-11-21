@@ -42,7 +42,7 @@
 `.asf.yaml` ::
   Configuration file for the ASF GitHub integration.
 
-`.gitignore` / `.gitattributes`` ::
+`.gitignore` / `.gitattributes` ::
   Git configuration files as required
 
 `.github` ::

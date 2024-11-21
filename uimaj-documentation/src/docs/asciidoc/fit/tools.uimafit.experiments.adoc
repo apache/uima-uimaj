@@ -1,0 +1,41 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.experiments]]
+= Running Experiments
+
+The _uimafit-examples_ module contains a package [package]#org.apache.uima.fit.examples.experiment.pos# which demonstrates a very simple experimental setup for testing a part-of-speech tagger.
+You may find this example more accessible if you check out the code from subversion and build it in your own environment.
+
+The documentation for this example can be found in the code itself.
+Please refer to [class]``RunExperiment`` as a starting point.
+The following is copied from the javadoc comments of that file:
+
+[quote]
+`RunExperiment` demonstrates a very common (though simplified) experimental setup in which gold 
+standard data is available for some task and you want to evaluate how well your analysis engine 
+works against that data. Here we are evaluating `BaselineTagger` which is a (ridiculously)
+simple part-of-speech tagger against the part-of-speech tags found in 
+`src/main/resources/org/apache/uima/fit/examples/pos/sample-gold.txt`
+
+The basic strategy is as follows:
+
+* post the data _as is_ into the default view,
+* parse the gold-standard tokens and part-of-speech tags and put the results into another view we will call __GOLD_VIEW__,
+* create another view called _SYSTEM_VIEW_ and copy the text and [class]``Token`` annotations from the _GOLD_VIEW_ into this view,
+* run the [class]``BaselineTagger`` on the _SYSTEM_VIEW_ over the copied [class]``Token`` annoations,
+* evaluate the part-of-speech tags found in the _SYSTEM_VIEW_ with those in the _GOLD_VIEW._

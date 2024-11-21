@@ -19,12 +19,9 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.uima.UIMAFramework;
@@ -35,10 +32,8 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.junit.jupiter.api.AfterEach;
@@ -92,40 +87,29 @@ public class GetAllIndexedTest {
   public void setUp() throws Exception {
     File descriptorFile = JUnitExtension
             .getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
-    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(),
-            descriptorFile.exists());
+    assertThat(descriptorFile).as("Descriptor must exist: " + descriptorFile.getAbsolutePath())
+            .exists();
 
-    try {
-      XMLParser parser = UIMAFramework.getXMLParser();
-      ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      cas = ae.newCAS();
-      assertTrue(cas != null);
-    } catch (IOException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (InvalidXMLException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    } catch (ResourceInitializationException e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
+    XMLParser parser = UIMAFramework.getXMLParser();
+    ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
+    cas = ae.newCAS();
+    assertThat(cas).isNotNull();
 
     TypeSystem ts = cas.getTypeSystem();
     // assert(wordType != null);
     // this.tokenType = ts.getType(TOKEN_TYPE);
     // this.sentenceType = ts.getType(SENT_TYPE);
     annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
-    assertTrue(annotationType != null);
+    assertThat(annotationType).isNotNull();
     otherAnnotationType = ts.getType(OTHER_ANNOT_TYPE);
-    assertTrue(otherAnnotationType != null);
+    assertThat(otherAnnotationType).isNotNull();
     annotationBaseType = ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    assertTrue(annotationBaseType != null);
+    assertThat(annotationBaseType).isNotNull();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     cas = null;
     // this.tokenType = null;
     // this.sentenceType = null;
@@ -153,7 +137,7 @@ public class GetAllIndexedTest {
   private final void addFS(FeatureStructure fs) {
     cas.getIndexRepository().addFS(fs);
     ++fsCount;
-    assertTrue(getIteratorSize(getAllIndexed()) == fsCount);
+    assertThat(fsCount).isEqualTo(getIteratorSize(getAllIndexed()));
   }
 
   private final FeatureStructure createAnnot(int from, int to) {
@@ -169,12 +153,12 @@ public class GetAllIndexedTest {
    * Test driver.
    */
   @Test
-  public void testGetAllIndexed() throws Exception {
+  void testGetAllIndexed() throws Exception {
     initTest();
     FeatureStructure docAnnotation = cas.getDocumentAnnotation();
-    assertNotNull(docAnnotation);
+    assertThat(docAnnotation).isNotNull();
     ++fsCount;
-    assertTrue(getIteratorSize(getAllIndexed()) == fsCount);
+    assertThat(fsCount).isEqualTo(getIteratorSize(getAllIndexed()));
     final FeatureStructure otherAnnotationFS = cas.createFS(otherAnnotationType);
     FeatureStructure annotationFS = cas.createFS(annotationType);
     final FeatureStructure annotationBaseFS = cas.createFS(annotationBaseType);
@@ -182,7 +166,7 @@ public class GetAllIndexedTest {
     addFS(otherAnnotationFS);
     addFS(annotationBaseFS);
     addFS(cas.createFS(cas.getTypeSystem().getTopType()));
-    assertTrue(getIteratorSize(cas.getAnnotationIndex().iterator()) == 2);
+    assertThat(getIteratorSize(cas.getAnnotationIndex().iterator())).isEqualTo(2);
     addFS(createAnnot(0, 1));
     addFS(createAnnot(1, 2));
     addFS(createAnnot(2, 3));
@@ -194,35 +178,34 @@ public class GetAllIndexedTest {
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       --down;
     }
-    assertTrue(down == 0);
+    assertThat(down).isZero();
 
     // Get all indexed, create copy and iterate in parallel.
     it = getAllIndexed();
     FSIterator<FeatureStructure> copy = it.copy();
     copy.moveToFirst();
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-      assertTrue(copy.isValid());
-      assertTrue(it.get().equals(copy.get()));
+      assertThat(copy.isValid()).isTrue();
+      assertThat(copy.get()).isEqualTo(it.get());
       copy.moveToNext();
     }
-    assertFalse(copy.isValid());
+    assertThat(copy.isValid()).isFalse();
 
     // Iterate over all indexed, create a copy at each stage, check that it gets same FS.
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       copy = it.copy();
-      assertTrue(it.get().equals(copy.get()));
+      assertThat(copy.get()).isEqualTo(it.get());
     }
     copy = it.copy();
-    assertFalse(it.isValid());
-    assertFalse(copy.isValid());
+    assertThat(it.isValid()).isFalse();
+    assertThat(copy.isValid()).isFalse();
 
     // test getAllIndexed(Type)
     Type tokenType = cas.getTypeSystem().getType(TOKEN_TYPE);
-    assertNotNull(tokenType);
-    FSIterator<FeatureStructure> tokenIter = cas.getIndexRepository()
-            .getAllIndexedFS(tokenType);
-    assertFalse(tokenIter.hasNext());
+    assertThat(tokenType).isNotNull();
+    FSIterator<FeatureStructure> tokenIter = cas.getIndexRepository().getAllIndexedFS(tokenType);
+    assertThat(tokenIter.hasNext()).isFalse();
     Iterator<TOP> tokenIter2 = cas.getIndexedFSs(tokenType).iterator();
-    assertFalse(tokenIter2.hasNext());
+    assertThat(tokenIter2.hasNext()).isFalse();
   }
 }

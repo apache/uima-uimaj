@@ -83,10 +83,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   // private final static boolean DEBUG = false;
 
-  public final static boolean ITEM_ADDED_TO_INDEX = true;
-  public final static boolean ITEM_REMOVED_FROM_INDEX = false;
+  public static final boolean ITEM_ADDED_TO_INDEX = true;
+  public static final boolean ITEM_REMOVED_FROM_INDEX = false;
   /** set next to true to debug issues with different treatment of no type priorities in v3 */
-  public final static boolean V2_ANNOTATION_COMPARE_TYPE_ORDER = false;
+  public static final boolean V2_ANNOTATION_COMPARE_TYPE_ORDER = false;
   /**
    * The default size of an index.
    */
@@ -205,9 +205,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * only used when processing updates in batch mode
    */
   private static class ProcessedIndexInfo {
-    final private Set<TOP> fsAddedToIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
-    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
-    final private Set<TOP> fsReindexed = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsAddedToIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsDeletedFromIndex = new ObjHashSet<>(TOP.class, TOP._singleton);
+    private final Set<TOP> fsReindexed = new ObjHashSet<>(TOP.class, TOP._singleton);
   }
 
   /**
@@ -351,23 +351,23 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * speedup for annotation index accessing by type, lazily initialized
    */
-  final private Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes = new IdentityHashMap<>();
+  private final Map<TypeImpl, FsIndex_annotation<Annotation>> annotationIndexes = new IdentityHashMap<>();
 
   // the next are for journaling updates to indexes
-  final private List<TOP> indexUpdates;
+  private final List<TOP> indexUpdates;
 
-  final private BitSet indexUpdateOperation;
+  private final BitSet indexUpdateOperation;
 
   private boolean logProcessed;
 
   // Monitor indexes used to optimize getIndexedFS and flush
   // set of typecodes corresponding to indexes that are used
-  final private IntVector usedIndexes;
+  private final IntVector usedIndexes;
 
   // one bit per typeCode, indexed by typeCode
   // This is only to speed up the test to skip adding an index to the set of "used" ones if it
   // already is used.
-  final private BitSet isUsed;
+  private final BitSet isUsed;
 
   // /**
   // * Used for maintaining collection of all used iicp's for indexes
@@ -779,31 +779,25 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     FsIndex_singletype<T> ind;
     switch (indexingStrategy) {
-
       case FSIndex.SET_INDEX:
-        ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs); // false
-                                                                                                   // =
-                                                                                                   // is
-                                                                                                   // set
+        // false = is set
+        ind = new FsIndex_set_sorted<>(cas, type, indexingStrategy, comparatorForIndexSpecs);
         break;
 
       // case FSIndex.FLAT_INDEX:
       // // this index is only created from another existing index
       // throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
 
-      case FSIndex.BAG_INDEX:
-      case FSIndex.DEFAULT_BAG_INDEX:
-        ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy,
-                comparatorForIndexSpecs);
+      case FSIndex.BAG_INDEX, FSIndex.DEFAULT_BAG_INDEX:
+        ind = new FsIndex_bag<>(cas, type, initialSize, indexingStrategy, comparatorForIndexSpecs);
         break;
 
       default:
         // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just
         // create a sorted index.
-        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX,
-                comparatorForIndexSpecs); // true = is sorted
+        // true = is sorted
+        ind = new FsIndex_set_sorted<>(cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs);
         break;
-
     }
     return ind;
   }
@@ -1473,7 +1467,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   //@formatter:on
     if (i4t.aSortedIndex < 0) {
       int bi = i4t.aBagIndex; // >= 0 if there is a bag index
-      if ((bi < 0 && !i4t.hasSetIndex) || (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs))) {
+      if ((bi < 0 && !i4t.hasSetIndex)
+              || (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs))) {
         return false; // not in defined bag index
       }
     }
@@ -1606,7 +1601,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>();
     for (int i = 0; i < usedIndexes.size(); i++) {
       FsIndex_singletype<TOP> idx = getNonSetSingleIndexForUsedType(i);
-      if (idx.size() > 0) {
+      if (!idx.isEmpty()) {
         indexes.add(idx.getNonNullCow());
       }
     }
@@ -1637,7 +1632,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private <T extends TOP> Collection<T> getCollectionFromCows(
           ArrayList<CopyOnWriteIndexPart<T>> indexes) {
 
-    if (indexes.size() == 0) {
+    if (indexes.isEmpty()) {
       return Collections.emptySet();
     }
 
@@ -1741,7 +1736,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     if (iicp.isDefaultBagIndex()) {
-      if (iicp.getFsIndex_singleType().size() > 0) {
+      if (!iicp.getFsIndex_singleType().isEmpty()) {
         indexes.add(iicp.getFsIndex_singleType().getNonNullCow());
       }
       ti.getDirectSubtypes().forEach(type -> collectCowIndexParts(type, indexes));
@@ -2017,8 +2012,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       processIndexUpdates();
     }
     final ProcessedIndexInfo pii = mPii;
-    return ((pii.fsAddedToIndex.size() > 0) || (pii.fsDeletedFromIndex.size() > 0)
-            || (pii.fsReindexed.size() > 0));
+    return ((!pii.fsAddedToIndex.isEmpty()) || (!pii.fsDeletedFromIndex.isEmpty())
+            || (!pii.fsReindexed.isEmpty()));
   }
 
   @Override

@@ -69,11 +69,17 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
                                     // This means that built-in types have multiple instances, so
                                     // this field can vary.
   final SlotKind slotKind;
-  /*
-   * the Java class for this type integer = int.class, etc. used for args in methodType set when
+
+  /**
+   * The Java class for this type integer = int.class, etc. used for args in methodType set when
    * type is committed and JCas cover classes are loaded
+   * 
+   * @deprecated This field will become private.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   protected Class<?> javaClass;
+
   // next 2 not kept in the type, because there could be different versions for different class
   // loaders
   // private JCasClassInfo jcasClassInfo;
@@ -976,7 +982,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /**
    * A special instance used in CasCopier to identify a missing type
    */
-  public final static TypeImpl singleton = new TypeImpl();
+  public static final TypeImpl singleton = new TypeImpl();
 
   private long hashCodeLong = 0;
   private final long hashCodeNameLong;
@@ -1029,10 +1035,12 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null || !(obj instanceof TypeImpl))
+    }
+    if (obj == null || !(obj instanceof TypeImpl)) {
       return false;
+    }
 
     TypeImpl other = (TypeImpl) obj;
     return hashCodeLong() == other.hashCodeLong();
@@ -1075,18 +1083,21 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Override
   public int compareTo(TypeImpl t) {
 
-    if (this == t)
+    if (this == t) {
       return 0;
+    }
     long hcl = hashCodeLong();
     long thcl = t.hashCodeLong();
-    if (hcl == thcl)
+    if (hcl == thcl) {
       return 0;
+    }
 
     // can't use hashcode for non equal compare -violates compare contract
 
     int c = Long.compare(hashCodeNameLong, t.hashCodeNameLong);
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
 
     if (superType == null || t.superType == null) {
       throw Misc.internalError();
@@ -1094,31 +1105,37 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     ;
 
     c = Long.compare(superType.hashCodeNameLong, t.superType.hashCodeNameLong);
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
 
     c = Integer.compare(getNumberOfFeatures(), t.getNumberOfFeatures());
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
 
     c = Boolean.compare(isFeatureFinal, t.isFeatureFinal);
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
     c = Boolean.compare(isInheritanceFinal, t.isInheritanceFinal);
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
 
     final FeatureImpl[] fis1 = getFeatureImpls();
     final FeatureImpl[] fis2 = t.getFeatureImpls();
 
     c = Integer.compare(fis1.length, fis2.length);
-    if (c != 0)
+    if (c != 0) {
       return c;
+    }
 
     for (int i = 0; i < fis1.length; i++) {
       c = fis1[i].compareTo(fis2[i]);
-      if (c != 0)
+      if (c != 0) {
         return c;
+      }
     }
 
     // never get here, because would imply equal, and hashcodelongs would have been equal above.

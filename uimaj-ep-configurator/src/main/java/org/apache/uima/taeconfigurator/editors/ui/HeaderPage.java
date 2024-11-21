@@ -46,7 +46,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public abstract class HeaderPage extends FormPage {
 
   /** The Constant EQUAL_WIDTH. */
-  final public static boolean EQUAL_WIDTH = true;
+  public static final boolean EQUAL_WIDTH = true;
 
   /** The sash form. */
   protected SashForm sashForm;

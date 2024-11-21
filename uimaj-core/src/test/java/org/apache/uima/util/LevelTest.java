@@ -25,22 +25,16 @@ import org.junit.jupiter.api.Test;
 
 /**
  * class Level provides the message level constants for logging and tracing
- * 
  */
-public class LevelTest {
+class LevelTest {
   @Test
-  public void testLevelOff() throws Exception {
+  void testLevelOff() throws Exception {
     Level level = Level.OFF;
 
-    // check if level is on
     assertThat(level.isOn()).isFalse();
-    // check if level is equal to "OFF"
-    assertThat(level).isEqualTo(Level.OFF);
-    // check if level is not equal to "FINE"
-    assertThat(level).isNotEqualTo(Level.FINE);
-    // check if level text is "OFF"
-    assertThat(level).hasToString("OFF");
-    // check if level value is Integer.MAX_VALUE
+    assertThat(level).isEqualTo(Level.OFF) //
+            .isNotEqualTo(Level.FINE) //
+            .hasToString("OFF");
     assertThat(level.toInteger()).isEqualTo(Integer.MAX_VALUE);
 
     // check if level is greater or equal to ALL
@@ -65,7 +59,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelALL() throws Exception {
+  void testLevelALL() throws Exception {
     Level level = Level.ALL;
 
     // check if level is on
@@ -75,9 +69,9 @@ public class LevelTest {
     // check if level is not equal to "CONFIG"
     assertThat(level.equals(Level.CONFIG)).isFalse();
     // check if level text is "ALL"
-    assertThat("ALL").isEqualTo(level.toString());
+    assertThat(level.toString()).isEqualTo("ALL");
     // check if level value is Integer.MIN_VALUE
-    assertThat(Integer.MIN_VALUE).isEqualTo(level.toInteger());
+    assertThat(level.toInteger()).isEqualTo(Integer.MIN_VALUE);
 
     // check if level is greater or equal to ALL
     assertThat(level.isGreaterOrEqual(Level.ALL)).isTrue();
@@ -100,7 +94,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelFINEST() throws Exception {
+  void testLevelFINEST() throws Exception {
     Level level = Level.FINEST;
 
     // check if level is on
@@ -136,7 +130,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelFINER() throws Exception {
+  void testLevelFINER() throws Exception {
     Level level = Level.FINER;
 
     // check if level is on
@@ -172,7 +166,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelFINE() throws Exception {
+  void testLevelFINE() throws Exception {
     Level level = Level.FINE;
 
     // check if level is on
@@ -208,7 +202,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelCONFIG() throws Exception {
+  void testLevelCONFIG() throws Exception {
     Level level = Level.CONFIG;
 
     // check if level is on
@@ -244,7 +238,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelINFO() throws Exception {
+  void testLevelINFO() throws Exception {
     Level level = Level.INFO;
 
     // check if level is on
@@ -279,7 +273,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelWARNING() throws Exception {
+  void testLevelWARNING() throws Exception {
     Level level = Level.WARNING;
 
     // check if level is on
@@ -315,7 +309,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testLevelSEVERE() throws Exception {
+  void testLevelSEVERE() throws Exception {
     Level level = Level.SEVERE;
 
     // check if level is on
@@ -351,7 +345,7 @@ public class LevelTest {
   }
 
   @Test
-  public void testEquals() throws Exception {
+  void testEquals() throws Exception {
     Level level = Level.SEVERE;
     Integer myInt = 70000;
 
@@ -376,5 +370,4 @@ public class LevelTest {
     // check with null value
     assertThat(level.isGreaterOrEqual(null)).isFalse();
   }
-
 }

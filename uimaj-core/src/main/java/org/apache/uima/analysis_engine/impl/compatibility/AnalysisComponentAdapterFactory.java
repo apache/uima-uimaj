@@ -59,12 +59,12 @@ public class AnalysisComponentAdapterFactory {
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
-    if (aAdaptee instanceof BaseAnnotator) {
-      return new AnnotatorAdapter((BaseAnnotator) aAdaptee, aMetaData, aAdditionalParams);
-    } else if (aAdaptee instanceof CasConsumer) {
-      return new CasConsumerAdapter((CasConsumer) aAdaptee, aMetaData);
-    } else if (aAdaptee instanceof CollectionReader) {
-      return new CollectionReaderAdapter((CollectionReader) aAdaptee, aMetaData);
+    if (aAdaptee instanceof BaseAnnotator baseAnnotator) {
+      return new AnnotatorAdapter(baseAnnotator, aMetaData, aAdditionalParams);
+    } else if (aAdaptee instanceof CasConsumer casConsumer) {
+      return new CasConsumerAdapter(casConsumer, aMetaData);
+    } else if (aAdaptee instanceof CollectionReader collectionReader) {
+      return new CollectionReaderAdapter(collectionReader, aMetaData);
     } else {
       throw new ResourceInitializationException(
               ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT,

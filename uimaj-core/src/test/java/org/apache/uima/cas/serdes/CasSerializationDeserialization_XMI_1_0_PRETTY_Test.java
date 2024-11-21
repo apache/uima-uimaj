@@ -42,7 +42,7 @@ import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class CasSerializationDeserialization_XMI_1_0_PRETTY_Test {
+class CasSerializationDeserialization_XMI_1_0_PRETTY_Test {
 
   private static final SerialFormat FORMAT = XMI_PRETTY;
   private static final String CAS_FILE_NAME = DATA_XMI;
@@ -91,31 +91,31 @@ public class CasSerializationDeserialization_XMI_1_0_PRETTY_Test {
 
   @ParameterizedTest
   @MethodSource("serRefScenarios")
-  public void serializeAndCompareToReferenceTest(Runnable aScenario) throws Exception {
+  void serializeAndCompareToReferenceTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("serDesScenarios")
-  public void serializeDeserializeTest(Runnable aScenario) throws Exception {
+  void serializeDeserializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("randomSerDesScenarios")
-  public void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
+  void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")
-  public void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
+  void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("oneWayDesSerScenarios")
-  public void oneWayDeserializeSerializeTest(Runnable aScenario) throws Exception {
+  void oneWayDeserializeSerializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 }

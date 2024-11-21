@@ -24,8 +24,9 @@ import org.apache.uima.cas.SofaFS;
  * v2 backwards compatibility
  * 
  * @deprecated use Sofa instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface SofaFSImpl extends SofaFS {
 
 }

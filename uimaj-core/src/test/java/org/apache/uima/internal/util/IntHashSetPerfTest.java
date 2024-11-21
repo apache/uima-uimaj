@@ -26,7 +26,7 @@ import java.util.Random;
 import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
 import org.junit.jupiter.api.Test;
 
-public class IntHashSetPerfTest {
+class IntHashSetPerfTest {
   /**
    * Set to false to run the performance test
    * 
@@ -47,7 +47,7 @@ public class IntHashSetPerfTest {
   int k10ki = 0;
 
   @Test
-  public void testPerf() {
+  void testPerf() {
     if (SKIP)
       return;
     m1 = new IntArrayRBT(16);
@@ -184,7 +184,5 @@ public class IntHashSetPerfTest {
         ((IntBitSet) set).clear();
       }
     }
-
   }
-
 }

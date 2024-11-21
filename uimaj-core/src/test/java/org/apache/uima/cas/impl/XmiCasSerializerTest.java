@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 
@@ -39,36 +38,31 @@ import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 
 /**
  * Test case for XMI serialization, in particular, invalid XML 1.0 characters. Other aspects of XMI
  * serialization are tested elsewhere.
  */
-public class XmiCasSerializerTest {
+class XmiCasSerializerTest {
 
   private static boolean XML1_1_SUPPORTED = false;
-
-  static {
-    try {
-      XML1_1_SUPPORTED = SAXParserFactory.newInstance()
-              .getFeature("http://xml.org/sax/features/xml-1.1");
-    } catch (SAXNotRecognizedException e) {
-    } catch (SAXNotSupportedException e) {
-    } catch (ParserConfigurationException e) {
-    }
-  }
 
   private TypeSystemDescription typeSystemDesc = null;
 
   private File outputFile = null;
 
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
+    XML1_1_SUPPORTED = SAXParserFactory.newInstance()
+            .getFeature("http://xml.org/sax/features/xml-1.1");
+  }
+
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     // Temp output file, deleted on exit.
     outputFile = new File(JUnitExtension.getFile("ExampleCas"),
@@ -77,8 +71,15 @@ public class XmiCasSerializerTest {
             .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
   }
 
+  @AfterEach
+  void tearDown() throws Exception {
+    if ((outputFile != null) && outputFile.exists()) {
+      outputFile.delete();
+    }
+  }
+
   @Test
-  public void testInvalidCharsInDocumentText() throws Exception {
+  void testInvalidCharsInDocumentText() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentText("Text with bad char: " + badChar);
@@ -114,7 +115,7 @@ public class XmiCasSerializerTest {
   }
 
   @Test
-  public void testInvalidCharsInFeatureValue() throws Exception {
+  void testInvalidCharsInFeatureValue() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystemDesc, null, null);
     char badChar = 0x1A;
     cas.setDocumentLanguage("a" + badChar);
@@ -144,17 +145,4 @@ public class XmiCasSerializerTest {
       }
     }
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#tearDown()
-   */
-  @AfterEach
-  public void tearDown() throws Exception {
-    if ((outputFile != null) && outputFile.exists()) {
-      outputFile.delete();
-    }
-  }
-
 }

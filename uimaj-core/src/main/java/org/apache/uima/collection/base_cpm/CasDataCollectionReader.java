@@ -77,8 +77,9 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    * @return the CAS Data Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   CasDataInitializer getCasDataInitializer();
 
   /**
@@ -90,8 +91,8 @@ public interface CasDataCollectionReader extends BaseCollectionReader {
    *          the CAS Data Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   void setCasInitializer(CasDataInitializer aCasDataInitializer);
-
 }

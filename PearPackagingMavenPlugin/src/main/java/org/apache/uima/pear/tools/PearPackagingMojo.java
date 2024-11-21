@@ -18,6 +18,8 @@
  */
 package org.apache.uima.pear.tools;
 
+import static org.apache.maven.plugins.annotations.LifecyclePhase.PACKAGE;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -30,7 +32,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -42,7 +43,7 @@ import org.apache.uima.util.Level;
  * UIMA nature is gathered and added to the PEAR package. Additionally the generated jar file from
  * the Maven build is added with the according classpath information.
  */
-@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name = "package", defaultPhase = PACKAGE, threadSafe = true)
 public class PearPackagingMojo extends AbstractMojo {
 
   /**

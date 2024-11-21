@@ -35,13 +35,10 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/*
- */
-
 /**
  * TestCase for the Sequencer with a fixedFlow
  */
-public class SequencerFixedTest {
+class SequencerFixedTest {
   private File testBaseDir;
 
   @BeforeEach
@@ -51,7 +48,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedEn() throws Exception {
+  void testSequencerFixedEn() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -96,7 +93,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedEN() throws Exception {
+  void testSequencerFixedEN() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -141,7 +138,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedEnUS() throws Exception {
+  void testSequencerFixedEnUS() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -186,7 +183,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedEnus() throws Exception {
+  void testSequencerFixedEnus() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -231,7 +228,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedUnkown() throws Exception {
+  void testSequencerFixedUnkown() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -276,7 +273,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedFooBar() throws Exception {
+  void testSequencerFixedFooBar() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test
@@ -321,7 +318,7 @@ public class SequencerFixedTest {
   }
 
   @Test
-  public void testSequencerFixedXunSpec() throws Exception {
+  void testSequencerFixedXunSpec() throws Exception {
     AnalysisEngine ae = null;
     try {
       // create TempFile for test

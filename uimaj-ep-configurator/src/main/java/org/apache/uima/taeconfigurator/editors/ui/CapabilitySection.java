@@ -55,76 +55,76 @@ import org.eclipse.ui.forms.IManagedForm;
 public class CapabilitySection extends AbstractSection {
 
   /** The Constant CAPABILITY_SET. */
-  private final static String CAPABILITY_SET = "Set";
+  private static final String CAPABILITY_SET = "Set";
 
   /** The Constant INPUT. */
-  private final static String INPUT = "Input";
+  private static final String INPUT = "Input";
 
   /** The Constant OUTPUT. */
-  private final static String OUTPUT = "Output";
+  private static final String OUTPUT = "Output";
 
   /** The Constant ALL_FEATURES. */
-  public final static String ALL_FEATURES = "<all features>";
+  public static final String ALL_FEATURES = "<all features>";
 
   /** The Constant TYPE_TITLE. */
-  private final static String TYPE_TITLE = "Type:";
+  private static final String TYPE_TITLE = "Type:";
 
   /** The Constant FEAT_TITLE. */
-  private final static String FEAT_TITLE = "F:"; // not shown, in data field
+  private static final String FEAT_TITLE = "F:"; // not shown, in data field
 
   /** The Constant NAME_TITLE. */
-  private final static String NAME_TITLE = "Name                ";
+  private static final String NAME_TITLE = "Name                ";
 
   /** The Constant NAMESPACE_TITLE. */
-  private final static String NAMESPACE_TITLE = "Name Space";
+  private static final String NAMESPACE_TITLE = "Name Space";
 
   /** The Constant LANGS_TITLE. */
-  private final static String LANGS_TITLE = "Languages";
+  private static final String LANGS_TITLE = "Languages";
 
   /** The Constant LANG_TITLE. */
-  private final static String LANG_TITLE = "L:"; // not shown, in datafield
+  private static final String LANG_TITLE = "L:"; // not shown, in datafield
 
   /** The Constant SOFAS_TITLE. */
-  private final static String SOFAS_TITLE = "Sofas";
+  private static final String SOFAS_TITLE = "Sofas";
 
   /** The Constant SOFA_TITLE. */
-  private final static String SOFA_TITLE = "S:"; // not shown, in data field
+  private static final String SOFA_TITLE = "S:"; // not shown, in data field
 
   /** The Constant CS. */
-  private final static int CS = 1;
+  private static final int CS = 1;
 
   /** The Constant TYPE. */
-  private final static int TYPE = 1 << 1;
+  private static final int TYPE = 1 << 1;
 
   /** The Constant FEAT. */
-  private final static int FEAT = 1 << 2;
+  private static final int FEAT = 1 << 2;
 
   /** The Constant LANG. */
-  private final static int LANG = 1 << 3;
+  private static final int LANG = 1 << 3;
 
   /** The Constant LANG_ITEM. */
-  private final static int LANG_ITEM = 1 << 4;
+  private static final int LANG_ITEM = 1 << 4;
 
   /** The Constant SOFA. */
-  private final static int SOFA = 1 << 5;
+  private static final int SOFA = 1 << 5;
 
   /** The Constant SOFA_ITEM. */
-  private final static int SOFA_ITEM = 1 << 6;
+  private static final int SOFA_ITEM = 1 << 6;
 
   /** The Constant TITLE_COL. */
-  public final static int TITLE_COL = 0;
+  public static final int TITLE_COL = 0;
 
   /** The Constant NAME_COL. */
-  public final static int NAME_COL = 1;
+  public static final int NAME_COL = 1;
 
   /** The Constant INPUT_COL. */
-  public final static int INPUT_COL = 2;
+  public static final int INPUT_COL = 2;
 
   /** The Constant OUTPUT_COL. */
-  public final static int OUTPUT_COL = 3;
+  public static final int OUTPUT_COL = 3;
 
   /** The Constant NAMESPACE_COL. */
-  public final static int NAMESPACE_COL = 4;
+  public static final int NAMESPACE_COL = 4;
 
   /** The tt. */
   Tree tt; // for inner class access

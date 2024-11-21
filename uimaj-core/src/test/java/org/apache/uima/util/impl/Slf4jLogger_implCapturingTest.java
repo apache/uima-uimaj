@@ -30,20 +30,20 @@ import org.apache.uima.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class Slf4jLogger_implCapturingTest {
+class Slf4jLogger_implCapturingTest {
 
   private final Exception ex = new IllegalArgumentException("boom");
 
   private Logger sut;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     sut = new Slf4jLogger_impl(null);
   }
 
   @Test
-  public void thatSimpleMessageIsLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void thatSimpleMessageIsLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       sut.trace("test", ex);
       sut.debug("test", ex);
       sut.info("test", ex);
@@ -64,8 +64,8 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatThrowableIsLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void thatThrowableIsLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       sut.debug("test", ex);
       assertThat(capture.getAndClearLatestEvents()) //
               .extracting( //
@@ -77,12 +77,12 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatMultipleParametersAreLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
-      for (int paramCount = 1; paramCount < 5; paramCount++) {
+  void thatMultipleParametersAreLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
+      for (var paramCount = 1; paramCount < 5; paramCount++) {
         List<String> placeholders = new ArrayList<>();
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < paramCount; i++) {
+        for (var i = 0; i < paramCount; i++) {
           placeholders.add("{}");
           values.add(Integer.toString(i));
         }
@@ -99,8 +99,8 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatOneParameterAndThrowableAreLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void thatOneParameterAndThrowableAreLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       sut.debug("{}", "1", ex);
 
       assertThat(capture.getAndClearLatestEvents()) //
@@ -113,8 +113,8 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatTwoParametersAndThrowableAreLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void thatTwoParametersAndThrowableAreLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       sut.trace("{} {}", "1", "2", ex);
       sut.debug("{} {}", "1", "2", ex);
       sut.info("{} {}", "1", "2", ex);
@@ -136,8 +136,8 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatThreeParametersAndThrowableAreLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
+  void thatThreeParametersAndThrowableAreLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
       sut.trace("{} {} {}", "1", "2", "3", ex);
       sut.debug("{} {} {}", "1", "2", "3", ex);
       sut.info("{} {} {}", "1", "2", "3", ex);
@@ -159,17 +159,17 @@ public class Slf4jLogger_implCapturingTest {
   }
 
   @Test
-  public void thatMultipleParametersAndThrowableAreLogged() throws Exception {
-    try (Log4JMessageCapture capture = new Log4JMessageCapture()) {
-      for (int paramCount = 1; paramCount < 5; paramCount++) {
+  void thatMultipleParametersAndThrowableAreLogged() throws Exception {
+    try (var capture = new Log4JMessageCapture()) {
+      for (var paramCount = 1; paramCount < 5; paramCount++) {
         List<String> placeholders = new ArrayList<>();
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < paramCount; i++) {
+        for (var i = 0; i < paramCount; i++) {
           placeholders.add("{}");
           values.add(Integer.toString(i));
         }
 
-        Object[] valuesPlusEx = new Object[paramCount + 1];
+        var valuesPlusEx = new Object[paramCount + 1];
         arraycopy(values.toArray(), 0, valuesPlusEx, 0, paramCount);
         valuesPlusEx[paramCount] = ex;
         sut.debug(String.join(" ", placeholders), valuesPlusEx);

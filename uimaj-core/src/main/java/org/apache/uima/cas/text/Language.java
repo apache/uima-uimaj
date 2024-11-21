@@ -80,8 +80,8 @@ public class Language {
 
   @Override
   public String toString() {
-    return "Full language string: " + getFullLanguage() + ", language part: "
-            + getLanguagePart() + ", territory part: " + getTerritoryPart();
+    return "Full language string: " + getFullLanguage() + ", language part: " + getLanguagePart()
+            + ", territory part: " + getTerritoryPart();
   }
 
   public static void main(String[] args) {

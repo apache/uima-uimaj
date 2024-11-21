@@ -571,8 +571,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // repeat until we reach a FinalStep
           while (!(nextStep instanceof FinalStep)) {
             // Simple Step
-            if (nextStep instanceof SimpleStep) {
-              String nextAeKey = ((SimpleStep) nextStep).getAnalysisEngineKey();
+            if (nextStep instanceof SimpleStep simpleStep) {
+              String nextAeKey = simpleStep.getAnalysisEngineKey();
               AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
                 // check if we have to set result spec, to support capability language flow
@@ -717,8 +717,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           flow.aborted();
         }
         release(); // release held CASes before throwing exception
-        if (e instanceof AnalysisEngineProcessException) {
-          throw (AnalysisEngineProcessException) e;
+        if (e instanceof AnalysisEngineProcessException analysisEngineProcessException) {
+          throw analysisEngineProcessException;
         } else {
           throw new AnalysisEngineProcessException(e);
         }

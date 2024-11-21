@@ -25,7 +25,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Testing that collectionProcessComplete is correctly propogated to annotators.
+ * Testing that collectionProcessComplete is correctly propagated to annotators.
  */
 public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_ImplBase {
 
@@ -33,36 +33,19 @@ public class AnnotatorForCollectionProcessCompleteTest extends CasAnnotator_Impl
 
   private String testValue;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#initialize(org.apache.uima.
-   * UimaContext)
-   */
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     testValue = (String) aContext.getConfigParameterValue("TestValue");
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_component.CasAnnotator_ImplBase#process(org.apache.uima.cas.CAS)
-   */
   @Override
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
     // does nothing
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.analysis_component.AnalysisComponent_ImplBase#collectionProcessComplete()
-   */
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     lastValue = testValue;
   }
-
 }

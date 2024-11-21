@@ -27,7 +27,6 @@ import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.UIMAFramework.newDefaultResourceManager;
 import static org.apache.uima.test.junit_extension.JUnitExtension.getFile;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,26 +69,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-public class ImportResolverTest {
+class ImportResolverTest {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private XMLParser xmlParser;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     xmlParser = UIMAFramework.getXMLParser();
     xmlParser.enableSchemaValidation(true);
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     // Note that the XML parser is a singleton in the framework, so we have to set this back to the
     // default.
     xmlParser.enableSchemaValidation(false);
   }
 
   @Test
-  public void testTransitiveResolveImports() throws Exception {
+  void testTransitiveResolveImports() throws Exception {
     File descriptor = getFile("ImportResolverTest/Transitive-with-3-nodes-1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
 
@@ -99,7 +98,7 @@ public class ImportResolverTest {
     ts.resolveImports(resMgr);
 
     assertThat(ts.getTypes()).as("Type count after resolving the descriptor").hasSize(3);
-    assertThat(ts.getImports()).hasSize(0);
+    assertThat(ts.getImports()).isEmpty();
 
     String typeSystem2 = new File(descriptor.getParent(), "Transitive-with-3-nodes-2.xml").toURL()
             .toString();
@@ -115,11 +114,11 @@ public class ImportResolverTest {
 
     TypeSystemDescription typeSystem3TSD = (TypeSystemDescription) cache.get(typeSystem3);
     assertThat(typeSystem3TSD.getTypes()).hasSize(1);
-    assertThat(typeSystem3TSD.getImports()).hasSize(0);
+    assertThat(typeSystem3TSD.getImports()).isEmpty();
   }
 
   @Test
-  public void thatComplexImportScenario1Works() throws Exception {
+  void thatComplexImportScenario1Works() throws Exception {
 
     List<String> entryPoints = asList("tsd0.xml", "tsd5.xml");
 
@@ -156,7 +155,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatMultiThreadedResolvingRandomComplexImportScenarioWithSingleResourceManagerWorks()
+  void thatMultiThreadedResolvingRandomComplexImportScenarioWithSingleResourceManagerWorks()
           throws Exception {
     final int maxThreadCount = 10;
     final int maxTsCount = 10;
@@ -262,7 +261,7 @@ public class ImportResolverTest {
             + "and each of them will count the waiting time towards their individual duration.");
   }
 
-  private class ResolveImportsRunner implements Callable<ResolveImportsRunner> {
+  private static class ResolveImportsRunner implements Callable<ResolveImportsRunner> {
     private final ResourceManager resMgr;
     private final File descriptorFile;
     private final Set<TypeDescription> expectedTypes;
@@ -388,15 +387,15 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatCircularImportsDoNotCrash() throws Exception {
+  void thatCircularImportsDoNotCrash() throws Exception {
     File descriptor = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
     ts.resolveImports();
-    assertEquals(2, ts.getTypes().length);
+    assertThat(ts.getTypes()).hasSize(2);
   }
 
   @Test
-  public void thatLoopWithTwoNodesDoNotConfuseResourceManagerCache() throws Exception {
+  void thatLoopWithTwoNodesDoNotConfuseResourceManagerCache() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
     File circular1 = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
     File circular2 = getFile("ImportResolverTest/Loop-with-2-nodes-2.xml");
@@ -414,7 +413,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatLoopWithThreeNodesDoNotConfuseResourceManagerCache() throws Exception {
+  void thatLoopWithThreeNodesDoNotConfuseResourceManagerCache() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
     File circular1 = getFile("ImportResolverTest/Loop-with-3-nodes-1.xml");
     File circular2 = getFile("ImportResolverTest/Loop-with-3-nodes-2.xml");
@@ -436,7 +435,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatResolveImportsDoesNothingWhenThereAreNoImports() throws Exception {
+  void thatResolveImportsDoesNothingWhenThereAreNoImports() throws Exception {
     File descriptor = getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
 
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
@@ -453,7 +452,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatTypeDescriptionsOriginallyContainedAreNotDefensivelyCloned() throws Exception {
+  void thatTypeDescriptionsOriginallyContainedAreNotDefensivelyCloned() throws Exception {
     File descriptor = getFile("ImportResolverTest/Loop-with-2-nodes-1.xml");
 
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
@@ -470,7 +469,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatSelfImportWorks() throws Exception {
+  void thatSelfImportWorks() throws Exception {
     File descriptor = getFile("ImportResolverTest/SelfImport.xml");
 
     TypeSystemDescription ts = xmlParser.parseTypeSystemDescription(new XMLInputSource(descriptor));
@@ -483,7 +482,7 @@ public class ImportResolverTest {
   }
 
   @Test
-  public void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
+  void thatImportFromProgrammaticallyCreatedTypeSystemDescriptionWorks() throws Exception {
     ResourceManager resMgr = newDefaultResourceManager();
     URL url = getFile("TypeSystemDescriptionImplTest").toURL();
 

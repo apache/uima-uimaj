@@ -1,0 +1,6 @@
+Licensed/VBN to/TO the/DT Apache/NNPS Software/NNP Foundation/NNP (/-LRB- ASF/NNP )/-RRB- under/IN one/CD or/CC more/JJR contributor/NN license/NN agreements/NNS ./.
+See/VB the/DT NOTICE/NNP file/NN distributed/VBN with/IN this/DT work/NN for/IN additional/JJ information/NN regarding/VBG copyright/NN ownership/NN ./.
+The/DT ASF/NNP licenses/NNS this/DT file/NN to/TO you/PRP under/IN the/DT Apache/NNPS License/NNP ,/, Version/NNP 2.0/CD (/-LRB- the/DT "/`` License/JJ "/'' )/-RRB- ;/: you/PRP may/MD not/RB use/VB this/DT file/NN except/IN in/IN compliance/NN with/IN the/DT License/NNP ./.
+You/PRP may/MD obtain/VB a/DT copy/NN of/IN the/DT License/NN at/IN http/NN ://www.apache/NN .org/licenses/LICENSE-2.0./. 
+Unless/IN required/VBN by/IN applicable/JJ law/NN or/CC agreed/VBN to/TO in/IN writing/NN ,/, software/NN distributed/VBN under/IN the/DT License/NN is/VBZ distributed/VBN on/IN an/DT "/`` AS/IN IS/VBZ "/`` BASIS/NNP ,/, WITHOUT/NNP WARRANTIES/NNPS OR/JJ CONDITIONS/NNS OF/IN ANY/NNP KIND/NNP ,/, either/DT express/JJ or/CC implied/VBN ./. 
+See/VB the/DT License/NN for/IN the/DT specific/JJ language/NN governing/VBG permissions/NNS and/CC limitations/NNS under/IN the/DT License/NNP ./.

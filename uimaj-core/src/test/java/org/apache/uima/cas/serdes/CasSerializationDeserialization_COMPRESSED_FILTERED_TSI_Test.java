@@ -41,7 +41,7 @@ import org.apache.uima.cas.serdes.transitions.CasSerDesCycleConfiguration;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
+class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
 
   private static final SerialFormat FORMAT = SerialFormat.COMPRESSED_FILTERED_TSI;
   private static final String CAS_FILE_NAME = "cas.bin";
@@ -84,25 +84,25 @@ public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
 
   @ParameterizedTest
   @MethodSource("serRefScenarios")
-  public void serializeAndCompareToReferenceTest(Runnable aScenario) throws Exception {
+  void serializeAndCompareToReferenceTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("serDesScenarios")
-  public void serializeDeserializeTest(Runnable aScenario) throws Exception {
+  void serializeDeserializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("randomSerDesScenarios")
-  public void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
+  void randomizedSerializeDeserializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 
   @ParameterizedTest
   @MethodSource("roundTripDesSerScenarios")
-  public void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
+  void roundTripDeserializeSerializeTest(Runnable aScenario) throws Exception {
     assumeNotKnownToFail(aScenario, //
             ".*casWithFsList",
             "Fails likely because the order of FSList items that were inline originally in XMI "
@@ -112,7 +112,7 @@ public class CasSerializationDeserialization_COMPRESSED_FILTERED_TSI_Test {
 
   @ParameterizedTest
   @MethodSource("oneWayDesSerScenarios")
-  public void oneWayDeserializeSerializeTest(Runnable aScenario) throws Exception {
+  void oneWayDeserializeSerializeTest(Runnable aScenario) throws Exception {
     aScenario.run();
   }
 }

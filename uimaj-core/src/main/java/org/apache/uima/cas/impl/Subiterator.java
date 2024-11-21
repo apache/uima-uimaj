@@ -1223,8 +1223,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
         return true;
       }
 
-      while ((item.getBegin() == boundEnd && item.getBegin() < item.getEnd())
-              || equalToBounds(item) || (isUnambiguous && overlapping(item, prevBegin, prevEnd))) {
+      while ((item.getBegin() == boundEnd && item.getBegin() < item.getEnd()) || equalToBounds(item)
+              || (isUnambiguous && overlapping(item, prevBegin, prevEnd))) {
         it.moveToNextNvc();
         if (!isValid()) {
           return false;
@@ -1309,9 +1309,9 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // skip until get an FS whose end >= boundEnd, it is a candidate.
     // stop if begin gets too large (going forwards)
     // while test: is true if need to move to skip over a too-small "end"
-    while (it.isValid() && (equalToBounds(a = it.getNvc()) || (a.getBegin()) <= boundBegin
-            && ((end = a.getEnd()) < boundEnd || (end == boundEnd && lto != null
-                    && lto.lessThan(a._getTypeImpl(), boundType))))) {
+    while (it.isValid() && (equalToBounds(a = it.getNvc())
+            || (a.getBegin()) <= boundBegin && ((end = a.getEnd()) < boundEnd || (end == boundEnd
+                    && lto != null && lto.lessThan(a._getTypeImpl(), boundType))))) {
       it.moveToNextNvc();
     }
   }
@@ -1333,9 +1333,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   @Override
   public FSIterator<T> copy() {
-    Subiterator<T> copy = new Subiterator<>(it.copy(), boundingAnnot,
-            originalBoundingAnnotation, !isUnambiguous, isStrict, boundsUse,
-            isUseTypePriority, isSkipSameBeginEndType,
+    Subiterator<T> copy = new Subiterator<>(it.copy(), boundingAnnot, originalBoundingAnnotation,
+            !isUnambiguous, isStrict, boundsUse, isUseTypePriority, isSkipSameBeginEndType,
 
             startId, isEmpty, coveringStartPos, isDoEqualsTest,
             isIncludesAnnotationsStartingAtEndPosition, isIncludeZeroWidthAtBegin,

@@ -285,8 +285,9 @@ public interface XMLParser {
    * 
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource)} should be used
    *             instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   TaeDescription parseTaeDescription(XMLInputSource aInput) throws InvalidXMLException;
 
   /**
@@ -304,8 +305,9 @@ public interface XMLParser {
    * 
    * @deprecated As of v2.0, {@link #parseAnalysisEngineDescription(XMLInputSource,ParsingOptions)}
    *             should be used instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
           throws InvalidXMLException;
 
@@ -349,7 +351,9 @@ public interface XMLParser {
    * 
    * @throws InvalidXMLException
    *           if the input XML is not valid or does not specify a valid CasInitializerDescription
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
           throws InvalidXMLException;
 

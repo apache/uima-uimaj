@@ -87,9 +87,9 @@ import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
  */
 public class CasCreationUtils {
 
-  private final static AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
+  private static final AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
 
-  private final static FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
+  private static final FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
 
   /**
    * Creates a new CAS instance.
@@ -1813,8 +1813,9 @@ public class CasCreationUtils {
 
     MetaDataCacheKey(ResourceSpecifier resourceSpecifier, ResourceManager resourceManager) {
       this.resourceSpecifier = resourceSpecifier;
-      rmClassLoader = (null == resourceManager) ? null
-              : resourceManager.getExtensionClassLoader(); // can be null
+      rmClassLoader = (null == resourceManager) ? null : resourceManager.getExtensionClassLoader(); // can
+                                                                                                    // be
+                                                                                                    // null
       rmDataPath = (null == resourceManager) ? null : resourceManager.getDataPath();
     }
 

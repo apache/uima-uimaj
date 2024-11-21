@@ -22,8 +22,8 @@ package org.apache.uima.internal.util;
  * Data structure representing an XML attribute.
  */
 public class XmlAttribute {
-  final public String name;
-  final public String value;
+  public final String name;
+  public final String value;
 
   public XmlAttribute(String name, String value) {
     this.name = name;

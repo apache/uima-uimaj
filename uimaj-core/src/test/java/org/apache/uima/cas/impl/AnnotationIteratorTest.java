@@ -27,12 +27,7 @@ import static org.apache.uima.cas.impl.Subiterator.BoundsUse.sameBeginEnd;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -76,7 +71,7 @@ import org.junit.jupiter.api.Test;
  *           phrases  0-5,  6-9,  10-16, 14-19, ...
  */
 //@formatter:on
-public class AnnotationIteratorTest {
+class AnnotationIteratorTest {
 
   private static final boolean showFSs = false;
 
@@ -111,40 +106,40 @@ public class AnnotationIteratorTest {
   public void setUp() throws Exception {
     // make a cas with various types, fairly complex -- see CASTestSetup class
     cas = CASInitializer.initCas(new CASTestSetup(), null);
-    assertTrue(cas != null);
+    assertThat(cas).isNotNull();
     ts = cas.getTypeSystem();
-    assertTrue(ts != null);
+    assertThat(ts).isNotNull();
 
     stringType = ts.getType(CAS.TYPE_NAME_STRING);
-    assertTrue(stringType != null);
+    assertThat(stringType).isNotNull();
     tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(stringType != null);
+    assertThat(stringType).isNotNull();
     intType = ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(intType != null);
+    assertThat(intType).isNotNull();
     tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    assertTrue(tokenTypeType != null);
+    assertThat(tokenTypeType).isNotNull();
     wordType = ts.getType(CASTestSetup.WORD_TYPE);
-    assertTrue(wordType != null);
+    assertThat(wordType).isNotNull();
     sepType = ts.getType(CASTestSetup.SEP_TYPE);
-    assertTrue(sepType != null);
+    assertThat(sepType).isNotNull();
     eosType = ts.getType(CASTestSetup.EOS_TYPE);
-    assertTrue(eosType != null);
+    assertThat(eosType).isNotNull();
     tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
-    assertTrue(tokenTypeFeat != null);
+    assertThat(tokenTypeFeat).isNotNull();
     lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
-    assertTrue(lemmaFeat != null);
+    assertThat(lemmaFeat).isNotNull();
     sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
-    assertTrue(sentLenFeat != null);
+    assertThat(sentLenFeat).isNotNull();
     tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
-    assertTrue(tokenFloatFeat != null);
+    assertThat(tokenFloatFeat).isNotNull();
     startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    assertTrue(startFeature != null);
+    assertThat(startFeature).isNotNull();
     endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
-    assertTrue(endFeature != null);
+    assertThat(endFeature).isNotNull();
     sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
-    assertTrue(sentenceType != null);
+    assertThat(sentenceType).isNotNull();
     phraseType = ts.getType(CASTestSetup.PHRASE_TYPE);
-    assertTrue(phraseType != null);
+    assertThat(phraseType).isNotNull();
     types[0] = sentenceType;
     types[1] = phraseType;
     types[2] = tokenType;
@@ -186,7 +181,7 @@ public class AnnotationIteratorTest {
   // }
 
   @Test
-  public void testIterator1() throws Exception {
+  void testIterator1() throws Exception {
     final int annotCount = setupTheCas();
 
     FSIndexRepository indexRepository = cas.getIndexRepository();
@@ -224,7 +219,7 @@ public class AnnotationIteratorTest {
     FSIterator<Annotation> it2 = tokenIndex.subiterator(a1);
     // make a new iterator that hasn't been converted to a list form internally
     it2.moveTo(cas.getDocumentAnnotation());
-    assertFalse(it2.isValid());
+    assertThat(it2.isValid()).isFalse();
   }
 
 //@formatter:off
@@ -264,9 +259,10 @@ public class AnnotationIteratorTest {
     assertCount("Normal ambiguous select annot iterator", annotCount, annotIndex.select());
     assertCount("Normal ambiguous select annot iterator (type priorities)", annotCount,
             annotIndex.select().typePriority());
-    assertEquals(annotCount, annotIndex.select().toArray().length); // stream op
-    assertEquals(annotCount, annotIndex.select().asArray(Annotation.class).length); // select op
-    assertEquals(annotCount - 5, annotIndex.select().startAt(2).asArray(Annotation.class).length);
+    assertThat(annotIndex.select().toArray()).hasSize(annotCount); // stream op
+    assertThat(annotIndex.select().asArray(Annotation.class)).hasSize(annotCount); // select
+                                                                                   // op
+    assertThat(annotIndex.select().startAt(2).asArray(Annotation.class)).hasSize(annotCount - 5);
 
     FSArray<Annotation> fsa = FSArray.create(jcas, annotIndex.select().asArray(Annotation.class));
     assertCount("fsa ambiguous select annot iterator", annotCount, fsa.select());
@@ -468,9 +464,9 @@ public class AnnotationIteratorTest {
             .isThrownBy(() -> annotIndex.select().nullOK(false).coveredBy(3, 3).get())
             .matches(e -> e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES));
 
-    assertNull(annotIndex.select().coveredBy(3, 3).nullOK().get());
-    assertNotNull(annotIndex.select().get(3));
-    assertNull(annotIndex.select().nullOK().coveredBy(3, 5).get(3));
+    assertThat(annotIndex.select().coveredBy(3, 3).nullOK().get()).isNull();
+    assertThat(annotIndex.select().get(3)).isNotNull();
+    assertThat(annotIndex.select().nullOK().coveredBy(3, 5).get(3)).isNull();
 
     assertThatExceptionOfType(CASRuntimeException.class)
             .isThrownBy(() -> annotIndex.select().coveredBy(3, 5).get(3))
@@ -488,7 +484,7 @@ public class AnnotationIteratorTest {
             annotIndex.select().nonOverlapping().backwards(true));
     assertCount("Unambiguous select backwards annot iterator (type priorities)", 1,
             annotIndex.select().typePriority().nonOverlapping().backwards(true));
-    assertNotNull(annotIndex.select().nonOverlapping().single());
+    assertThat(annotIndex.select().nonOverlapping().single()).isNotNull();
 
     assertThatExceptionOfType(CASRuntimeException.class)
             .isThrownBy(() -> annotIndex.select().coveredBy(3, 10).single())
@@ -519,7 +515,7 @@ public class AnnotationIteratorTest {
     assertCount("select source array (type priorities)", 21,
             fslhead.select(sentenceType).typePriority());
 
-    /** covering **/
+    // covering
     annotIndex.select(sentenceType).covering(20, 30).forEachOrdered(
             f -> System.out.format("found fs start at %d end %d%n", f.getBegin(), f.getEnd()));
 
@@ -615,13 +611,13 @@ public class AnnotationIteratorTest {
     } else {
       // count is 0
       it.moveToFirst();
-      assertFalse(it.isValid());
+      assertThat(it.isValid()).isFalse();
 
       it.moveToLast();
-      assertFalse(it.isValid());
+      assertThat(it.isValid()).isFalse();
 
       it.moveTo(cas.getDocumentAnnotation());
-      assertFalse(it.isValid());
+      assertThat(it.isValid()).isFalse();
     }
 
     // Check that forwards step-by-step iteration yields same results as backwards step-by-step.
@@ -644,7 +640,7 @@ public class AnnotationIteratorTest {
             .containsExactly(annotations1.stream()
                     .map(a -> tuple(a.getType(), a.getBegin(), a.getEnd())).toArray(Tuple[]::new));
 
-    assertEquals(msg, expected, count);
+    assertThat(count).as(msg).isEqualTo(expected);
   }
 
   // called by assertCount
@@ -672,16 +668,16 @@ public class AnnotationIteratorTest {
       if (isSave) {
         fss.add(fs);
       } else {
-        assertEquals(msg, fss.get(fssStart + count - 1).hashCode(), fs.hashCode());
+        assertThat(fs).as(msg).hasSameHashCodeAs(fss.get(fssStart + count - 1));
       }
     }
 
-    assertEquals(msg, expected, count);
+    assertThat(count).as(msg).isEqualTo(expected);
     return fssStart;
   }
 
   @Test
-  public void testIncorrectIndexTypeException() {
+  void testIncorrectIndexTypeException() {
     boolean caughtException = false;
     try {
       cas.getAnnotationIndex(stringType);
@@ -689,7 +685,7 @@ public class AnnotationIteratorTest {
       // e.printStackTrace();
       caughtException = true;
     }
-    assertTrue(caughtException);
+    assertThat(caughtException).isTrue();
 
     caughtException = false;
     try {
@@ -697,11 +693,11 @@ public class AnnotationIteratorTest {
     } catch (CASRuntimeException e) {
       caughtException = true;
     }
-    assertTrue(caughtException);
+    assertThat(caughtException).isTrue();
     try {
       cas.getAnnotationIndex(tokenType);
     } catch (CASRuntimeException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
@@ -711,7 +707,7 @@ public class AnnotationIteratorTest {
    * annotation.
    */
   @Test
-  public void testUnambiguousSubiteratorOnIndex() {
+  void testUnambiguousSubiteratorOnIndex() {
     try {
       // @formatter:off
       //                        0    0    1    1    2    2    3    3    4    4    5
@@ -722,7 +718,7 @@ public class AnnotationIteratorTest {
       // @formatter:on
       cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
-      assertTrue(false);
+      fail();
     }
     AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
 
@@ -737,8 +733,8 @@ public class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertTrue("Subiterator returned annotation outside boundaries",
-                t.getBegin() < sa.getEnd());
+        assertThat(t.getBegin()).as("Subiterator returned annotation outside boundaries")
+                .isLessThan(sa.getEnd());
       }
     }
 
@@ -750,8 +746,8 @@ public class AnnotationIteratorTest {
 
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
-        assertTrue("Subiterator returned annotation outside boundaries",
-                t.getBegin() < sa.getEnd());
+        assertThat(t.getBegin()).as("Subiterator returned annotation outside boundaries")
+                .isLessThan(sa.getEnd());
       }
     }
   }
@@ -811,7 +807,7 @@ public class AnnotationIteratorTest {
   }
 
   @Test
-  public void testEdges() {
+  void testEdges() {
     Annotation ba = indexNew(phraseType, 10, 20); // the bounding annotation
     edge(ba, "-", coveredBy, "--:--:--:--", 0);
     edge(ba, "-", covering, "--:--:--:--", 0);
@@ -847,21 +843,12 @@ public class AnnotationIteratorTest {
 
     setupEdges(setup);
 
-    switch (boundsUse) {
-      case notBounded:
-        sa = ai.select();
-        break;
-      case coveredBy:
-        sa = ai.select().coveredBy(ba);
-        break;
-      case sameBeginEnd:
-        sa = ai.select().at(ba);
-        break;
-      default:
-      case covering:
-        sa = ai.select().covering(ba);
-        break;
-    }
+    sa = switch (boundsUse) {
+      case notBounded -> ai.select();
+      case coveredBy -> ai.select().coveredBy(ba);
+      case sameBeginEnd -> ai.select().at(ba);
+      default -> ai.select().covering(ba);
+    };
 
     if (fa[0].equals("TP"))
       sa.typePriority();
@@ -872,7 +859,7 @@ public class AnnotationIteratorTest {
     if (fa[3].equals("ST"))
       sa.skipWhenSameBeginEndType();
 
-    assertEquals(count, sa.fsIterator().size());
+    assertThat(sa.fsIterator().size()).isEqualTo(count);
   }
 
   //
@@ -887,7 +874,7 @@ public class AnnotationIteratorTest {
   }
 
   private int setupTheCas() {
-    List<AnnotationFS> annotationList = new ArrayList<>();
+    var annotationList = new ArrayList<AnnotationFS>();
 
     //@formatter:off
 //  Tokens                +---+
@@ -912,9 +899,9 @@ public class AnnotationIteratorTest {
      fail();
    }
 
-    /***************************************************
-     * Create and index tokens and sentences
-     ***************************************************/
+    // ***************************************************
+    // Create and index tokens and sentences
+    // ***************************************************
     FSIndexRepository ir = cas.getIndexRepository();
     int annotCount = 1; // Init with document annotation.
     annotationList.add(cas.getDocumentAnnotation());
@@ -972,7 +959,7 @@ public class AnnotationIteratorTest {
               fs.getEnd(), fs.getType().getName());
     }
 
-    assertThat(annotationList.size()).isEqualTo(annotCount);
+    assertThat(annotationList).hasSize(annotCount);
     ann = annotationList.stream().toArray(Annotation[]::new);
 
     return annotCount;

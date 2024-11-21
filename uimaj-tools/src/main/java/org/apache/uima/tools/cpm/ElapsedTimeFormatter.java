@@ -22,7 +22,7 @@ package org.apache.uima.tools.cpm;
 /**
  * The Class ElapsedTimeFormatter.
  */
-final public class ElapsedTimeFormatter {
+public final class ElapsedTimeFormatter {
 
   /**
    * Format.

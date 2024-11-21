@@ -176,7 +176,7 @@ public class CopyOnWriteObjHashSet<T extends FeatureStructure> implements CopyOn
    * @return the size
    */
   @Override
-  final public int size() {
+  public final int size() {
     return original_size;
   }
 

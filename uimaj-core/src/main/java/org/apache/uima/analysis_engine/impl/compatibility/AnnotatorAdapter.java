@@ -141,19 +141,19 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
     // do proper typecasts and call process method
     try {
-      if (mAnnotator instanceof TextAnnotator) {
+      if (mAnnotator instanceof TextAnnotator textAnnotator) {
         CAS cas = (CAS) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(cas.getDocumentLanguage());
         rs.setTypeSystem(cas.getTypeSystem());
-        ((TextAnnotator) mAnnotator).process(cas, rs);
-      } else if (mAnnotator instanceof JTextAnnotator) {
+        textAnnotator.process(cas, rs);
+      } else if (mAnnotator instanceof JTextAnnotator jTextAnnotator) {
         JCas jcas = (JCas) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(jcas.getDocumentLanguage());
         rs.setTypeSystem(jcas.getTypeSystem());
-        ((JTextAnnotator) mAnnotator).process(jcas, rs);
-      } else if (mAnnotator instanceof GenericAnnotator) {
+        jTextAnnotator.process(jcas, rs);
+      } else if (mAnnotator instanceof GenericAnnotator genericAnnotator) {
         mDefaultResultSpecification.setTypeSystem(((CAS) aCAS).getTypeSystem());
-        ((GenericAnnotator) mAnnotator).process((CAS) aCAS, mDefaultResultSpecification);
+        genericAnnotator.process((CAS) aCAS, mDefaultResultSpecification);
       }
     } catch (AnnotatorProcessException e) {
       throw new AnalysisEngineProcessException(e);
@@ -201,8 +201,8 @@ public class AnnotatorAdapter implements AnalysisComponent {
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
     try {
       TypeSystem typeSystem;
-      if (aCAS instanceof JCas) {
-        typeSystem = ((JCas) aCAS).getTypeSystem();
+      if (aCAS instanceof JCas jCas) {
+        typeSystem = jCas.getTypeSystem();
       } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
@@ -211,9 +211,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
         mAnnotator.typeSystemInit(typeSystem);
         mLastTypeSystem = typeSystem;
       }
-    } catch (AnnotatorConfigurationException e) {
-      throw new AnalysisEngineProcessException(e);
-    } catch (AnnotatorInitializationException e) {
+    } catch (AnnotatorConfigurationException | AnnotatorInitializationException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }

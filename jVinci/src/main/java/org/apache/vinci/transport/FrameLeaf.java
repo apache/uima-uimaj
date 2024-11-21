@@ -42,7 +42,7 @@ public class FrameLeaf extends FrameComponent {
    * If you call toString() on a FrameLeaf which contains binary data, you get this string as the
    * result.
    */
-  static public final String NOT_UTF8_ERROR = "*** ERROR: Data not utf8 ***";
+  public static final String NOT_UTF8_ERROR = "*** ERROR: Data not utf8 ***";
 
   private final byte[] data;
 

@@ -58,7 +58,7 @@ public class GUI extends JFrame {
   private AboutDialog aboutDialog;
 
   /** The Constant NL. */
-  final static String NL = System.getProperties().getProperty("line.separator");
+  static final String NL = System.getProperties().getProperty("line.separator");
 
   /** The GUI. */
   static GUI theGUI;

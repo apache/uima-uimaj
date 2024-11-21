@@ -40,7 +40,10 @@ import org.junit.Assert;
  * AnnotatorPerfTester is a helper class to execute annotator performance tests. The performance
  * test results are returned as {@link PerformanceTestResultImpl} object.
  * 
+ * @deprecated To be removed without replacement.
+ * @forRemoval 4.0.0
  */
+@Deprecated
 public class AnnotatorPerformanceTester {
 
   /**

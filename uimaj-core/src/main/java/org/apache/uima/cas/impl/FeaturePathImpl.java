@@ -62,7 +62,7 @@ class FeaturePathImpl implements FeaturePath {
   private String originalBuiltInName = null;
 
   // featurePath element names
-  final private ArrayList<String> featurePathElementNames = new ArrayList<>();
+  private final ArrayList<String> featurePathElementNames = new ArrayList<>();
 
   private boolean pathStartsWithSlash = true;
   /**
@@ -71,7 +71,7 @@ class FeaturePathImpl implements FeaturePath {
    * using typeInit. It has values for the first names in the featurePathElementNames which are
    * always valid for a given starting type (set into boundBaseType).
    */
-  final private ArrayList<FeatureImpl> boundFeatures = new ArrayList<>();
+  private final ArrayList<FeatureImpl> boundFeatures = new ArrayList<>();
 
   private FeatureImpl targetFeature; // set to the last value of boundFeatures
   private TypeImpl targetType; // set to type of range of last found feature, works when there are
@@ -104,8 +104,8 @@ class FeaturePathImpl implements FeaturePath {
     // if current featurePath was already initialized we cannot guarantee that
     // the path is still ever valid so we have to evaluate the path on the
     // fly.
-    if (boundBaseType != null && PathValid.NEVER == TypeSystemUtils
-            .isPathValid(boundBaseType, featurePathElementNames)) {
+    if (boundBaseType != null && PathValid.NEVER == TypeSystemUtils.isPathValid(boundBaseType,
+            featurePathElementNames)) {
       boundBaseType = null; // can't be used for this path
     }
   }
@@ -377,14 +377,11 @@ class FeaturePathImpl implements FeaturePath {
     return (tgtFs == FEATURE_PATH_FAILED) ? null : targetType;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.FeaturePath#getTypClass(org.apache.uima.cas. FeatureStructure)
-   * 
+  /**
    * @deprecated use getTypeClass instead (spelling correction)
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   @Override
   public TypeClass getTypClass(FeatureStructure fs) {
     TypeImpl type = (TypeImpl) getType(fs);

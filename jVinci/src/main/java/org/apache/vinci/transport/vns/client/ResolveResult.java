@@ -43,7 +43,7 @@ public class ResolveResult extends Frame {
 
   public int priority = -1;
 
-  static public TransportableFactory factory = new TransportableFactory() {
+  public static TransportableFactory factory = new TransportableFactory() {
     @Override
     public Transportable makeTransportable() {
       return new ResolveResult();
@@ -58,7 +58,7 @@ public class ResolveResult extends Frame {
    *          -
    * @return -
    */
-  static public String unqualifiedName(String service_name) {
+  public static String unqualifiedName(String service_name) {
     if (isQualified(service_name)) {
       service_name = service_name.trim();
       int start = service_name.lastIndexOf('[');
@@ -77,7 +77,7 @@ public class ResolveResult extends Frame {
    *          -
    * @return -
    */
-  static public boolean isQualified(String service_name) {
+  public static boolean isQualified(String service_name) {
     if (service_name.indexOf('[') != -1) {
       return true;
     }
@@ -93,7 +93,7 @@ public class ResolveResult extends Frame {
    *          -
    * @return -
    */
-  static public Frame composeQuery(String service_name) {
+  public static Frame composeQuery(String service_name) {
     VinciFrame query = new VinciFrame();
     query.fadd(TransportConstants.COMMAND_KEY, VNSConstants.RESOLVE_COMMAND);
     int start = service_name.indexOf('[');
@@ -137,7 +137,7 @@ public class ResolveResult extends Frame {
    *          -
    * @return -
    */
-  static public Frame composeQuery(String service_name, int mypriority) {
+  public static Frame composeQuery(String service_name, int mypriority) {
     VinciFrame query = (VinciFrame) composeQuery(service_name);
     query.fadd("LEVEL", mypriority);
     return query;
@@ -183,7 +183,7 @@ public class ResolveResult extends Frame {
     return return_me;
   }
 
-  static public class ServiceLocator extends Frame {
+  public static class ServiceLocator extends Frame {
     public String host;
 
     public int port;

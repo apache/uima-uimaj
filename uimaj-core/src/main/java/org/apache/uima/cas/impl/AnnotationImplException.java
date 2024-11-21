@@ -77,7 +77,7 @@ public class AnnotationImplException extends Exception {
 
   private ResourceBundle resource = null;
 
-  private String[] arguments = new String[9];
+  private final String[] arguments = new String[9];
 
   /**
    * Create a new <code>AnnotationImplException</code>
@@ -114,8 +114,7 @@ public class AnnotationImplException extends Exception {
     }
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
-    return (new MessageFormat(resource.getString(identifiers[error])))
-            .format(arguments);
+    return (new MessageFormat(resource.getString(identifiers[error]))).format(arguments);
   }
 
   /**
@@ -179,5 +178,4 @@ public class AnnotationImplException extends Exception {
     }
     return resource_file;
   }
-
 }

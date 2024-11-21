@@ -59,21 +59,21 @@ public class VNS extends VinciServableAdapter {
 
   private HashMap cachedResults = new HashMap();
 
-  public final static String dirCmdAddService = "addservice";
+  public static final String dirCmdAddService = "addservice";
 
-  public final static String dirCmdAddAlias = "addalias";
+  public static final String dirCmdAddAlias = "addalias";
 
-  public final static String dirCmdDelService = "delservice";
+  public static final String dirCmdDelService = "delservice";
 
-  public final static String dirCmdDelAlias = "delalias";
+  public static final String dirCmdDelAlias = "delalias";
 
-  public final static String dirCmdUpdateService = "updateservice";
+  public static final String dirCmdUpdateService = "updateservice";
 
-  public final static String dirCmdGetList = "getlist";
+  public static final String dirCmdGetList = "getlist";
 
-  public final static String dirCmdGetNames = "getnames";
+  public static final String dirCmdGetNames = "getnames";
 
-  public final static String dirCmdGetHits = "gethits";
+  public static final String dirCmdGetHits = "gethits";
 
   public String ENV_PROXY = "vinci.environment.proxy";
 
@@ -119,7 +119,7 @@ public class VNS extends VinciServableAdapter {
 
   static File quitFile;
 
-  static private void setConfigDir(String path) {
+  private static void setConfigDir(String path) {
     if (path.charAt(path.length() - 1) == File.separatorChar) {
       path = path.substring(0, path.length() - 1);
     }
@@ -1303,7 +1303,7 @@ class BackupThread implements Runnable {
 
   int interval;
 
-  volatile protected boolean stop = false;
+  protected volatile boolean stop = false;
 
   public BackupThread(VNS parent, String backupFile, String configFile, int interval,
           String counterFile) {

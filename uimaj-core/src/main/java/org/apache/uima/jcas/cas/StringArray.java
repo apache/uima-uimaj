@@ -38,15 +38,15 @@ public final class StringArray extends TOP
         implements Iterable<String>, CommonPrimitiveArray<String>, StringArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
+  public static final String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasRegistry.register(StringArray.class);
+  public static final int typeIndexID = JCasRegistry.register(StringArray.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   /**
    * used to obtain reference to the TOP_Type instance

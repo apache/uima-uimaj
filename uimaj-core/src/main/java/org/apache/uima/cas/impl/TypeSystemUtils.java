@@ -38,7 +38,7 @@ public abstract class TypeSystemUtils {
     NEVER, POSSIBLE, ALWAYS
   }
 
-  static abstract class TypeSystemParse {
+  abstract static class TypeSystemParse {
 
     private ParsingError error = null;
 

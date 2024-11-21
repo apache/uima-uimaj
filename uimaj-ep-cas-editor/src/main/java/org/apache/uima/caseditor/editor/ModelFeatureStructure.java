@@ -133,8 +133,7 @@ public class ModelFeatureStructure implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (FeatureStructure.class.equals(adapter)) {
       return getStructre();
     } else if (AnnotationFS.class.equals(adapter) && getStructre() instanceof AnnotationFS) {

@@ -77,8 +77,7 @@ class AnnotationTypeTreeNode implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (Type.class.equals(adapter)) {
       return type;

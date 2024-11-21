@@ -33,12 +33,12 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * Base class for CAS Initializers, which developers should extend with their own CAS Initializer
  * implementation classes.
  * 
- * 
  * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
  *             org.apache.uima.examples.XmlDetagger for an example.
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplBase
         implements CasInitializer {
   /**
@@ -76,25 +76,16 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
     // no default behavior
   }
 
-  /**
-   * @see org.apache.uima.resource.Resource#destroy()
-   */
   @Override
   public void destroy() {
     // no default behavior
   }
 
-  /**
-   * @see org.apache.uima.collection.CasConsumer#typeSystemInit(org.apache.uima.cas.TypeSystem)
-   */
   @Override
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
     // no default behavior
   }
 
-  /**
-   * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
-   */
   @Override
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
     return (ProcessingResourceMetaData) getMetaData();

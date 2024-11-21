@@ -24,7 +24,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
     <version>4.0.0-SNAPSHOT</version>
-    <relativePath>../uimaj-parent/pom.xml</relativePath>
+    <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
   <artifactId>aggregate-uimaj</artifactId>
@@ -42,17 +42,31 @@
     <module>../uimaj-adapter-vinci</module>
     <module>../uimaj-test-util</module>
     <module>../uimaj-component-test-util</module>
+
     <module>../jVinci</module>
     <module>../aggregate-uimaj-eclipse-plugins</module>
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
     <module>../uimaj-v3migration-jcas</module>
+    <module>../uima-bnd-plugin</module>
+
+    <module>../uimafit-core</module>
+    <module>../uimafit-junit</module>
+    <module>../uimafit-assertj</module>
+    <module>../uimafit-examples</module>
+    <module>../uimafit-spring</module>
+    <module>../uimafit-maven-plugin</module>
+    <module>../uimafit-cpe</module>
+    <module>../uimafit-benchmark</module>
+
     <!-- the internal tools project is not part of any release 
          and can't be built automatically - to build it,
          cd to the project directory and do mvn install -->
     <!--module>../uimaj-internal-tools</module-->
     <module>../uimaj-bootstrap</module>
     <module>../uimaj-documentation</module>
+    
+    <module>../uimaj-it-pear-with-typesystem</module>
   </modules>
 </project>

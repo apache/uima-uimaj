@@ -31,7 +31,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SofaMapping_implTest {
+class SofaMapping_implTest {
   SofaMapping_impl sm1;
 
   SofaMapping_impl sm2;

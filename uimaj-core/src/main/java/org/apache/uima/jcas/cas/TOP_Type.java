@@ -43,7 +43,7 @@ public class TOP_Type {
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = -1;
+  public static final int typeIndexID = -1;
 
   // public final static int type = typeIndexID;
 
@@ -70,12 +70,12 @@ public class TOP_Type {
   public final LowLevelCAS ll_cas;
 
   // switch this to true if debugging wanted
-  final protected boolean lowLevelTypeChecks; // if true check int type
+  protected final boolean lowLevelTypeChecks; // if true check int type
 
-  final protected boolean lowLevelArrayBoundChecks;
+  protected final boolean lowLevelArrayBoundChecks;
 
   // next has to be public to be visible to inner class?
-  final public boolean useExistingInstance; // if true, implements reuse of existing instance
+  public final boolean useExistingInstance; // if true, implements reuse of existing instance
 
   // generator used by the CAS system when it needs to make a new instance
   /**

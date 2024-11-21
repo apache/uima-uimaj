@@ -18,8 +18,7 @@
  */
 package org.apache.uima.cas.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.test.CASInitializer;
@@ -29,31 +28,27 @@ import org.apache.uima.jcas.cas.TOP;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class Id2FSTest {
+class Id2FSTest {
 
   CASImpl cas;
   JCas jcas;
   TypeSystem ts;
 
   @BeforeEach
-  public void setUp() {
-    try {
-      cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
-      jcas = cas.getJCas();
-      ts = cas.getTypeSystem();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
+  void setUp() throws Exception {
+    cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
+    jcas = cas.getJCas();
+    ts = cas.getTypeSystem();
   }
 
   @Test
-  public void testId2fs() throws InterruptedException {
+  void testId2fs() throws InterruptedException {
 
     TOP fs1 = new TOP(jcas);
     cas.setId2FSsMaybeUnconditionally(fs1);
 
     int lastUsedId = fs1._id();
-    assertEquals(fs1, cas.<TOP> getFsFromId(lastUsedId));
+    assertThat(cas.<TOP> getFsFromId(lastUsedId)).isEqualTo(fs1);
     // make 20 more that could be gc'd
 
     for (int i = 0; i < 20; i++) {
@@ -67,7 +62,7 @@ public class Id2FSTest {
       if (i == 0) { // hold onto one so gc doesn't get it
         fsh = fs;
       }
-      assertEquals(fs._id, i + 2);
+      assertThat(fs._id).isEqualTo(i + 2);
     }
 
     // // remove 19 of them
@@ -92,7 +87,7 @@ public class Id2FSTest {
     cas.setId2FSsMaybeUnconditionally(fs1);
 
     lastUsedId = fs1._id();
-    assertEquals(fs1, cas.getFsFromId(lastUsedId));
+    assertThat((TOP) cas.getFsFromId(lastUsedId)).isEqualTo(fs1);
 
     for (int i = 0; i < 20; i++) {
       cas.setId2FSsMaybeUnconditionally(new TOP(jcas));
@@ -100,7 +95,7 @@ public class Id2FSTest {
     // verify they can be found by id #
     for (int i = 0; i < 20; i++) {
       TOP fs = cas.getFsFromId(i + 2);
-      assertEquals(fs._id, i + 2);
+      assertThat(fs._id).isEqualTo(i + 2);
     }
 
     // // remove 20 of them
@@ -113,5 +108,4 @@ public class Id2FSTest {
     // }
     // }
   }
-
 }

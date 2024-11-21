@@ -27,32 +27,30 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.test.JCasClassLoaderTest.IsolatingClassloader;
 import org.apache.uima.internal.util.UIMAClassLoader;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.test.IsolatingClassloader;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class FSCreatedInPearContextTest {
+class FSCreatedInPearContextTest {
 
   @Test
-  public void thatOneTrampolineIsUsedWhenClassLoaderIsSwitched() throws Exception, IOException {
+  void thatOneTrampolineIsUsedWhenClassLoaderIsSwitched() throws Exception, IOException {
 
-    ClassLoader rootCl = getClass().getClassLoader();
+    var rootCl = getClass().getClassLoader();
 
-    IsolatingClassloader clForToken = new IsolatingClassloader("Token", rootCl)
+    var clForToken = new IsolatingClassloader("Token", rootCl)
             .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
 
-    CASImpl casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
+    var casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
     casImpl.switchClassLoaderLockCasCL(new UIMAClassLoader(new URL[0], clForToken));
     casImpl.setDocumentText("Test");
 
-    Type tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
-    Annotation token = casImpl.createAnnotation(tokenType, 0, 1);
+    var tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
+    var token = casImpl.createAnnotation(tokenType, 0, 1);
     token.addToIndexes();
     assertThat(token.getClass().getClassLoader())
             .as("Trampoline returned by createAnnotation after classloader switch")
@@ -61,23 +59,25 @@ public class FSCreatedInPearContextTest {
     assertThat(casImpl.select(Token.type).asList()) //
             .as("Same trampoline returned by [select(Token.type)] after classloader switch")
             .usingElementComparator((a, b) -> a == b ? 0 : 1) //
-            .containsExactly(token).allMatch(t -> t.getClass().getClassLoader() == clForToken);
+            .containsExactly(token) //
+            .allMatch(t -> t.getClass().getClassLoader() == clForToken);
 
     casImpl.restoreClassLoaderUnlockCas();
     assertThat(casImpl.select(Token.type).asList()) //
             .as("After switching back out of the the classloader context, we get the base FS")
             .usingElementComparator((a, b) -> a._id() == b._id() ? 0 : 1) //
-            .containsExactly(token).allMatch(t -> t.getClass().getClassLoader() == rootCl);
+            .containsExactly(token) //
+            .allMatch(t -> t.getClass().getClassLoader() == rootCl);
   }
 
   @Test
-  public void thatResettingCasInPearContextWorks() throws Exception, IOException {
-    ClassLoader rootCl = getClass().getClassLoader();
+  void thatResettingCasInPearContextWorks() throws Exception, IOException {
+    var rootCl = getClass().getClassLoader();
 
-    IsolatingClassloader clForToken = new IsolatingClassloader("Token", rootCl)
+    var clForToken = new IsolatingClassloader("Token", rootCl)
             .redefining("org\\.apache\\.uima\\.cas\\.test\\.Token(_Type)?.*");
 
-    CASImpl casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
+    var casImpl = (CASImpl) createCas(loadTokensAndSentencesTS(), null, null, null);
     casImpl.switchClassLoaderLockCasCL(new UIMAClassLoader(new URL[0], clForToken));
     casImpl.setDocumentText("Test");
 
@@ -86,8 +86,8 @@ public class FSCreatedInPearContextTest {
     casImpl.resetNoQuestions();
 
     assertThatNoException().isThrownBy(() -> {
-      Type tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
-      Annotation token = casImpl.createAnnotation(tokenType, 0, 1);
+      var tokenType = casImpl.getTypeSystem().getType(Token.class.getName());
+      var token = casImpl.createAnnotation(tokenType, 0, 1);
       token.addToIndexes();
     });
   }

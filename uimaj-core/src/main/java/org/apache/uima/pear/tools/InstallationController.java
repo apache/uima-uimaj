@@ -190,9 +190,9 @@ public class InstallationController {
    */
   public static class TestStatus {
 
-    final public static int TEST_SUCCESSFUL = 0;
+    public static final int TEST_SUCCESSFUL = 0;
 
-    final public static int TEST_NOT_SUCCESSFUL = -1;
+    public static final int TEST_NOT_SUCCESSFUL = -1;
 
     private int retCode = TEST_NOT_SUCCESSFUL;
 

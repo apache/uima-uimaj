@@ -44,8 +44,8 @@ import org.apache.uima.util.AutoCloseableNoException;
 //@formatter:on
 abstract class FSsTobeAddedback implements AutoCloseableNoException {
 
-  final static boolean SHOW = false;
-  final static AtomicInteger removes = new AtomicInteger(0);
+  static final boolean SHOW = false;
+  static final AtomicInteger removes = new AtomicInteger(0);
 
   /**
    * does an add back if needed

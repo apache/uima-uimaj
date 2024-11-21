@@ -715,10 +715,10 @@ public class CasToComparableText {
         }
       } else {
         for (Feature feature : fs.getType().getFeatures()) {
-          
 
           // Check if the feature is excluded
-          if (feature.getRange().isPrimitive() || isExcluded(feature) || CAS.FEATURE_BASE_NAME_SOFA.equals(feature.getShortName())) {
+          if (feature.getRange().isPrimitive() || isExcluded(feature)
+                  || CAS.FEATURE_BASE_NAME_SOFA.equals(feature.getShortName())) {
             continue;
           }
 

@@ -52,14 +52,14 @@ import org.apache.uima.jcas.cas.TOP;
 //@formatter:on
 public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<T> {
   // public boolean specialDebug = false;
-  final private static boolean TRACE = false;
-  final private static boolean MEASURE = false;
+  private static final boolean TRACE = false;
+  private static final boolean MEASURE = false;
 
   private static final int DEFAULT_SIZE = 8;
 
   private static final int DEFAULT_MULTIPLICATION_LIMIT = 1024 * 1024 * 16;
 
-  final private int multiplication_limit = DEFAULT_MULTIPLICATION_LIMIT;
+  private final int multiplication_limit = DEFAULT_MULTIPLICATION_LIMIT;
 
   TOP[] a;
   /**
@@ -70,8 +70,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   // comparators are over TOP, not "T", because it's allowed to compare
   // items which are supertypes of the index's items
   // e.g. compare something of type Annotation with "Token"
-  final private Comparator<TOP> comparatorNoTypeWithID;
-  final private Comparator<TOP> comparatorNoTypeWithoutID;
+  private final Comparator<TOP> comparatorNoTypeWithID;
+  private final Comparator<TOP> comparatorNoTypeWithoutID;
   private int maxSize = 0; // managing shrinking
 
   // private TOP highest = null;
@@ -594,15 +594,15 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   }
 
   // these are approximate - don't take into account multi-thread access
-  static private int addToEndCount = 0;
+  private static int addToEndCount = 0;
   // static private int addNotToEndCount = 0;
-  static private int batchCountHistogram[];
-  static private int batchAddCount = 0;
-  static private int batchAddTotal = 0; // includes things not added because of dups
-  static private int moveSizeHistogram[];
-  static private int movePctHistogram[];
-  static private int fillHistogram[];
-  static private int iterPctEmptySkip[];
+  private static int batchCountHistogram[];
+  private static int batchAddCount = 0;
+  private static int batchAddTotal = 0; // includes things not added because of dups
+  private static int moveSizeHistogram[];
+  private static int movePctHistogram[];
+  private static int fillHistogram[];
+  private static int iterPctEmptySkip[];
 
   static {
     if (MEASURE) {

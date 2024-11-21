@@ -176,7 +176,7 @@ public class CASSerializer implements Serializable {
         // not serialized by custom serializers, only by Java object serialization
         int heapsz = bcsd.heap.getCellsUsed();
         heapMetaData = new int[] { Heap.getRoundedSize(heapsz), // a bit more than the size of
-                                                                     // the used heap
+                                                                // the used heap
             heapsz, // the position of the next (unused) slot in the heap
             heapsz, 0, 0, 1024, // initial size
             0 };
@@ -797,8 +797,8 @@ public class CASSerializer implements Serializable {
         } // end of switch
       } else { // end of if-array
         // 1 or more features modified
-        if (fs instanceof UimaSerializable) {
-          ((UimaSerializable) fs)._save_to_cas_data();
+        if (fs instanceof UimaSerializable uimaSerializable) {
+          uimaSerializable._save_to_cas_data();
         }
         BitSet fm = fsChange.featuresModified;
         int offset = fm.nextSetBit(0);

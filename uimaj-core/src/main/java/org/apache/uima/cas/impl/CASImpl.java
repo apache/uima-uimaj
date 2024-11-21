@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import static java.lang.String.format;
 import static java.lang.System.identityHashCode;
+import static org.apache.uima.cas.impl.FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -207,11 +208,15 @@ public class CASImpl extends AbstractCas_ImplBase
    * having the framework silently recover them. This is enabled by having the framework throw an
    * exception; this is controlled by this global JVM property, which, if defined, causes the
    * framework to throw an exception rather than recover.
-   * 
    */
   public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
 
+  /**
+   * @deprecated Will become package private.
+   * @forRemoval 4.0.0
+   */
   // public for test case use
+  @Deprecated(since = "3.6.0")
   public static boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc
           .getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
 
@@ -225,7 +230,7 @@ public class CASImpl extends AbstractCas_ImplBase
    */
   public static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
 
-  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX
+  static boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX
           || Misc.getNoValueSystemProperty(REPORT_FS_UPDATES_CORRUPTS);
 
   /**
@@ -239,7 +244,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * 
    * This is overridden if a report is requested or the exception detection is on.
    */
-  private static final boolean IS_DISABLED_PROTECT_INDEXES = Misc
+  static boolean IS_DISABLED_PROTECT_INDEXES = Misc
           .getNoValueSystemProperty(DISABLE_PROTECT_INDEXES) && !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX
           && !IS_THROW_EXCEPTION_CORRUPT_INDEX;
 
@@ -255,12 +260,13 @@ public class CASImpl extends AbstractCas_ImplBase
   // is to force the classes needed by Eclipse debugging to load
   // otherwise, you get a com.sun.jdi.ClassNotLoadedException when
   // the class is used as part of formatting debugging messages
+
   static {
     new DebugNameValuePair(null, null);
     new DebugFSLogicalStructure();
   }
 
-  private final static ThreadLocal<Boolean> defaultV2IdRefs = InheritableThreadLocal
+  private static final ThreadLocal<Boolean> defaultV2IdRefs = InheritableThreadLocal
           .withInitial(() -> null);
 
   public static ThreadLocal<Boolean> getDefaultV2IdRefs() {
@@ -313,7 +319,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     @Override
     public boolean equals(Object obj) {
-      if (obj == null || !(obj instanceof FsChange)) {
+      if (!(obj instanceof FsChange)) {
         return false;
       }
       return ((FsChange) obj).fs._id == fs._id;
@@ -340,12 +346,12 @@ public class CASImpl extends AbstractCas_ImplBase
     /**
      * map from FS ids to FSs.
      */
-    final private Id2FS id2fs;
+    private final Id2FS id2fs;
     /** set to > 0 to reuse an id, 0 otherwise */
     private int reuseId = 0;
 
     // Base CAS for all views
-    final private CASImpl baseCAS;
+    private final CASImpl baseCAS;
 
     /**
      * These fields are here, not in TypeSystemImpl, because different CASes may have different
@@ -585,7 +591,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private boolean traceFSisCreate;
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1; // only for tracing, to convert id's to v2 addresses
-    final private int initialHeapSize;
+    private final int initialHeapSize;
     // @formatter:off
     /** if true, 
      *    modify fs creation to save in id2fs map
@@ -821,12 +827,12 @@ public class CASImpl extends AbstractCas_ImplBase
       featureCodesInIndexKeys.clear();
       // featureJiInIndexKeys.clear();
 
-      /**
+      /*
        * Clear the existing views, except keep the info for the initial view so that the cas
        * complete deserialization after setting up the new index repository in the base cas can
        * "refresh" the existing initial view (if present; if not present, a new one is created).
        */
-      if (sofaNbr2ViewMap.size() >= 1) {
+      if (!sofaNbr2ViewMap.isEmpty()) {
         // have initial view - preserve it
         CASImpl localInitialView = sofaNbr2ViewMap.get(1);
         sofaNbr2ViewMap.clear();
@@ -836,7 +842,6 @@ public class CASImpl extends AbstractCas_ImplBase
         sofaNbr2ViewMap.clear();
         viewCount = 0;
       }
-
     }
 
     private void resetNoQuestions(boolean flushIndexRepos) {
@@ -869,7 +874,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private void flushIndexRepositoriesAllViews() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
-        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        CASImpl tcas = ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
         if (tcas != null) {
           tcas.indexRepository.flush();
         }
@@ -882,7 +887,7 @@ public class CASImpl extends AbstractCas_ImplBase
     private void clearNonSharedInstanceData() {
       int numViews = viewCount;
       for (int view = 1; view <= numViews; view++) {
-        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        CASImpl tcas = ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
         if (tcas != null) {
           tcas.mySofaRef = null; // was in v2: (1 == view) ? -1 : 0;
           tcas.docAnnotIter = null;
@@ -1424,7 +1429,7 @@ public class CASImpl extends AbstractCas_ImplBase
   void installTypeSystemInAllViews(TypeSystemImpl ts) {
     svd.tsi = ts;
     final List<CASImpl> sn2v = svd.sofaNbr2ViewMap;
-    if (sn2v.size() > 0) {
+    if (!sn2v.isEmpty()) {
       for (CASImpl view : sn2v.subList(1, sn2v.size())) {
         view.tsi_local = ts;
       }
@@ -1667,8 +1672,12 @@ public class CASImpl extends AbstractCas_ImplBase
     Misc.setWithExpand(svd.sofa2indexMap, aSofaRef, indxRepos);
   }
 
+  /**
+   * @deprecated As of v2.0, use {@link #createView(String)} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public SofaFS createSofa(SofaID sofaID, String mimeType) {
     // extract absolute SofaName string from the ID
     SofaFS aSofa = createSofa(sofaID.getSofaID(), mimeType);
@@ -1737,9 +1746,10 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * @deprecated
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public SofaFS getSofa(SofaID sofaID) {
     // extract absolute SofaName string from the ID
     return getSofa(sofaID.getSofaID());
@@ -1981,9 +1991,10 @@ public class CASImpl extends AbstractCas_ImplBase
 
   /**
    * @deprecated Use {@link #reset reset()}instead.
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void flush() {
     reset();
   }
@@ -2065,12 +2076,10 @@ public class CASImpl extends AbstractCas_ImplBase
   private void logFSUpdate(TOP fs, FeatureImpl fi, int arrayIndexStart, int nbrOfConsecutive) {
 
     // log the FS
-
     final Map<TOP, FsChange> changes = svd.modifiedPreexistingFSs;
 
     // create or use last FsChange element
-
-    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
+    FsChange change = changes.computeIfAbsent(fs, FsChange::new);
 
     if (fi == null) {
       Misc.assertUie(arrayIndexStart >= 0);
@@ -2083,8 +2092,6 @@ public class CASImpl extends AbstractCas_ImplBase
   /**
    * @param fs
    *          the Feature Structure being updated
-   * @param arrayIndexStart
-   * @param nbrOfConsecutive
    */
   private void logFSUpdate(TOP fs, PositiveIntSet indexesPlus1) {
 
@@ -2094,7 +2101,7 @@ public class CASImpl extends AbstractCas_ImplBase
 
     // create or use last FsChange element
 
-    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
+    FsChange change = changes.computeIfAbsent(fs, FsChange::new);
 
     change.addArrayData(indexesPlus1);
   }
@@ -2144,7 +2151,7 @@ public class CASImpl extends AbstractCas_ImplBase
     maybeLogUpdate(fs, fi);
   }
 
-  final public void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
+  public final void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
     if (fs._inSetSortedIndex()) {
       boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCode);
       setter.run();
@@ -2193,7 +2200,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @param i
    *          the index being updated
    */
-  final public void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
+  public final void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat, i, 1);
     }
@@ -2205,7 +2212,7 @@ public class CASImpl extends AbstractCas_ImplBase
    * @param indexesPlus1
    *          - a set of indexes (plus 1) that have been update
    */
-  final public void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
+  public final void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, indexesPlus1);
     }
@@ -2225,19 +2232,19 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  final public void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
+  public final void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat);
     }
   }
 
-  final public void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
+  public final void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, getFeatFromCode_checked(featCode));
     }
   }
 
-  final public boolean isLogging() {
+  public final boolean isLogging() {
     return svd.trackingMark != null;
   }
 
@@ -2349,9 +2356,8 @@ public class CASImpl extends AbstractCas_ImplBase
   public static void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat,
           String s) {
     final TypeImpl range = feat.getRangeImpl();
-    if (fs instanceof Sofa) {
+    if (fs instanceof Sofa sofa) {
       // sofa has special setters
-      Sofa sofa = (Sofa) fs;
       switch (feat.getCode()) {
         case sofaMimeFeatCode:
           sofa.setMimeType(s);
@@ -2603,8 +2609,12 @@ public class CASImpl extends AbstractCas_ImplBase
      */
   }
 
+  /**
+   * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
+   * @forRemoval 4.0.0
+   */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public JCas getJCas(SofaID aSofaID) throws CASException {
     SofaFS sofa = getSofa(aSofaID);
     // sofa guaranteed to be non-null by above method.
@@ -3309,7 +3319,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return
     // skip message if wasn't removed
     // skip message if protected in explicit block
-    IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.size() == 0;
+    IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && svd.fssTobeAddedback.isEmpty();
   }
 
   /**
@@ -3547,7 +3557,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return svd.lllongSet.getCodeForLong(s); // avoids adding duplicates
   }
 
-  private void switchFsType(TOP fs, int value) {
+  private void switchFsType(TOP fs, int aTypeCode) {
     // throw new UnsupportedOperationException();
     // case where the type is being changed
     // if the new type is a sub/super type of the existing type,
@@ -3560,27 +3570,26 @@ public class CASImpl extends AbstractCas_ImplBase
     // the indexing didn't change
     // all the slots were the same
 
-    //
-
-    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(),
-            FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
+    var wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), INCLUDE_BAG_INDEXES);
     if (!wasRemoved) {
       svd.fsTobeAddedbackSingleInUse = false;
     }
-    TypeImpl newType = getTypeFromCode_checked(value);
-    Class<?> newClass = newType.getJavaClass();
+
+    var newType = getTypeFromCode_checked(aTypeCode);
+    var newClass = newType.getJavaClass();
     if ((fs instanceof UimaSerializable) || UimaSerializable.class.isAssignableFrom(newClass)) {
+      // REC 2024-08-22: I wonder if it would be valid to switch from a UimaSerializable to another
+      // UimaSerializable - currently this seems to be forbidden.
       throw new UnsupportedOperationException("can't switch type to/from UimaSerializable");
     }
 
-    // Measurement - record which type gets switched to which other type
-    // count how many times
+    // Measurement - record which type gets switched to which other type count how many times
     // record which JCas cover class goes with each type
     // key = old type, new type, old jcas cover class, new jcas cover class
     // value = count
     MeasureSwitchType mst = null;
     if (MEASURE_SETINT) {
-      MeasureSwitchType key = new MeasureSwitchType(fs._getTypeImpl(), newType);
+      var key = new MeasureSwitchType(fs._getTypeImpl(), newType);
       synchronized (measureSwitches) { // map access / updating must be synchronized
         mst = measureSwitches.get(key);
         if (null == mst) {
@@ -4055,7 +4064,12 @@ public class CASImpl extends AbstractCas_ImplBase
 
   }
 
+  /**
+   * @deprecated Use {@link #createFeaturePath()} instead.
+   * @forRemoval 4.0.0
+   */
   @Override
+  @Deprecated(since = "3.6.0")
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
           throws CASRuntimeException {
     return FeatureValuePathImpl.getFeaturePath(featureValuePath);
@@ -5136,7 +5150,7 @@ public class CASImpl extends AbstractCas_ImplBase
     return svd.casId;
   }
 
-  final public int getNextFsId(TOP fs) {
+  public final int getNextFsId(TOP fs) {
     return svd.getNextFsId(fs);
   }
 
@@ -5177,25 +5191,25 @@ public class CASImpl extends AbstractCas_ImplBase
   // return ++ svd.fsIdGenerator;
   // }
 
-  final public int getLastUsedFsId() {
+  public final int getLastUsedFsId() {
     return svd.fsIdGenerator;
   }
 
-  final public int peekNextFsId() {
+  public final int peekNextFsId() {
     return svd.peekNextFsId();
   }
 
-  final public int lastV2IdIncr() {
+  public final int lastV2IdIncr() {
     return svd.lastFsV2IdIncr();
   }
 
   /**
    * Call this to capture the current value of fsIdGenerator and make it available to other threads.
-   * 
+   * <p>
    * Must be called on a thread that has been synchronized with the thread used for creating FSs for
    * this CAS.
    */
-  final public void captureLastFsIdForOtherThread() {
+  public final void captureLastFsIdForOtherThread() {
     svd.fsIdLastValue.set(svd.fsIdGenerator);
   }
 
@@ -5275,7 +5289,7 @@ public class CASImpl extends AbstractCas_ImplBase
   //
   // }
 
-  public final static boolean isSameCAS(CAS c1, CAS c2) {
+  public static final boolean isSameCAS(CAS c1, CAS c2) {
     CASImpl ci1 = (CASImpl) c1.getLowLevelCAS();
     CASImpl ci2 = (CASImpl) c2.getLowLevelCAS();
     return ci1.getBaseCAS() == ci2.getBaseCAS();
@@ -5456,26 +5470,13 @@ public class CASImpl extends AbstractCas_ImplBase
    * @return -
    */
   public EmptyList emptyListFromTypeCode(int typeCode) {
-    switch (typeCode) {
-      case fsListTypeCode:
-      case fsEListTypeCode:
-      case fsNeListTypeCode:
-        return emptyFSList();
-      case floatListTypeCode:
-      case floatEListTypeCode:
-      case floatNeListTypeCode:
-        return emptyFloatList();
-      case intListTypeCode:
-      case intEListTypeCode:
-      case intNeListTypeCode:
-        return emptyIntegerList();
-      case stringListTypeCode:
-      case stringEListTypeCode:
-      case stringNeListTypeCode:
-        return emptyStringList();
-      default:
-        throw new IllegalArgumentException();
-    }
+    return switch (typeCode) {
+      case fsListTypeCode, fsEListTypeCode, fsNeListTypeCode -> emptyFSList();
+      case floatListTypeCode, floatEListTypeCode, floatNeListTypeCode -> emptyFloatList();
+      case intListTypeCode, intEListTypeCode, intNeListTypeCode -> emptyIntegerList();
+      case stringListTypeCode, stringEListTypeCode, stringNeListTypeCode -> emptyStringList();
+      default -> throw new IllegalArgumentException();
+    };
   }
 
   // /**
@@ -5714,8 +5715,7 @@ public class CASImpl extends AbstractCas_ImplBase
             : (isAddbackOrSkipBag ? "rmv_auto_idx " : "rmv_norm_idx "));
     // b.append(fs.toString());
     b.append(fs._getTypeImpl().getShortName()).append(":").append(fs._id);
-    if (fs instanceof Annotation) {
-      Annotation ann = (Annotation) fs;
+    if (fs instanceof Annotation ann) {
       b.append(" begin: ").append(ann.getBegin());
       b.append(" end: ").append(ann.getEnd());
       b.append(" txt: \"").append(Misc.elide(ann.getCoveredText(), 10)).append("\"");
@@ -5754,10 +5754,8 @@ public class CASImpl extends AbstractCas_ImplBase
   private FeatureImpl prevFi;
 
   void traceFSfeat(FeatureStructureImplC fs, FeatureImpl fi, Object v) {
-    // debug
-    FeatureImpl originalFi = fi;
     StringBuilder b = svd.traceFScreationSb;
-    assert (b.length() > 0);
+    assert (!b.isEmpty());
     if (fs._id != svd.traceFSid) {
       traceFSfeatUpdate(fs);
     }
@@ -5770,7 +5768,7 @@ public class CASImpl extends AbstractCas_ImplBase
           v = fs._getLongValueNc(prevFi);
           break; // correct double and long
         default:
-          Misc.internalError();
+          throw Misc.internalError();
       }
       fi = prevFi;
       prevFi = null;
@@ -5837,8 +5835,7 @@ public class CASImpl extends AbstractCas_ImplBase
    *         Note: white space in strings converted to "_' characters
    */
   private String getTraceRepOfObj(FeatureImpl fi, Object v) {
-    if (v instanceof TOP) {
-      TOP fs = (TOP) v;
+    if (v instanceof TOP fs) {
       return Misc.elide(fs.getType().getShortName(), 5, false) + ':' + geti2addr(fs._id);
     }
     if (v == null) {
@@ -5853,9 +5850,7 @@ public class CASImpl extends AbstractCas_ImplBase
       switch (fi.getSlotKind()) {
         case Slot_Boolean:
           return (iv == 1) ? "true" : "false";
-        case Slot_Byte:
-        case Slot_Short:
-        case Slot_Int:
+        case Slot_Byte, Slot_Short, Slot_Int:
           return Integer.toString(iv);
         case Slot_Float:
           return Float.toString(int2float(iv));
@@ -6004,14 +5999,13 @@ public class CASImpl extends AbstractCas_ImplBase
     }
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * @forRemoval 4.0.0
    * 
-   * @see org.apache.uima.cas.admin.CASMgr#setCAS(org.apache.uima.cas.CAS) Internal use Never called
-   * Kept because it's in the interface.
+   * @deprecated Does nothing, kept only for backwards compatibility
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "3.0.0")
   public void setCAS(CAS cas) {
   }
 
@@ -6102,20 +6096,20 @@ public class CASImpl extends AbstractCas_ImplBase
 
     for (int i = 0; i < a.length; i++) {
       Object ao = a[i];
-      if (ao instanceof TOP) {
-        a[i] = pearConvert((TOP) ao);
+      if (ao instanceof TOP top) {
+        a[i] = pearConvert(top);
       }
     }
   }
 
   public Collection<?> collectNonPearVersions(Collection<?> c) {
-    if (c.size() == 0 || !inPearContext()) {
+    if (c.isEmpty() || !inPearContext()) {
       return c;
     }
     ArrayList<Object> items = new ArrayList<>(c.size());
     for (Object o : c) {
-      if (o instanceof TOP) {
-        items.add(pearConvert((TOP) o));
+      if (o instanceof TOP top) {
+        items.add(pearConvert(top));
       }
     }
     return items;

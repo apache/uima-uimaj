@@ -144,7 +144,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
           new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
               new PropertyXmlInfo("specifier", null) });
 }

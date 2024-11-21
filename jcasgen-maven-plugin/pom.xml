@@ -22,7 +22,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
     <version>4.0.0-SNAPSHOT</version>
-    <relativePath>../uimaj-parent/pom.xml</relativePath>
+    <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
   <!-- This artifact name follows the conventions described
@@ -32,7 +32,7 @@
   <artifactId>jcasgen-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
 
-  <name>Apache UIMA Maven: ${project.artifactId}</name>
+  <name>Apache UIMA Tools: ${project.artifactId}</name>
   <description>A Maven Plugin for using JCasGen to generate Java classes from
     XML type system descriptions</description>
 
@@ -41,21 +41,6 @@
   </prerequisites>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-tools</artifactId>

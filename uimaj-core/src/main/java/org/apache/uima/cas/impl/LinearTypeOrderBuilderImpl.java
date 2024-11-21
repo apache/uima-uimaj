@@ -55,10 +55,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // be awkward and inefficient to compute it from lt.
     // index = orderNumber, value = type-code
     // used by serialization routines
-    final private int[] order;
+    private final int[] order;
 
     // index= typeCode, value = order number
-    final private short[] typeCodeToOrder;
+    private final short[] typeCodeToOrder;
 
     private boolean hashCodeComputed = false;
 

@@ -19,80 +19,58 @@
 package org.apache.uima.tools.jcasgen.maven;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuilder;
-import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.plugin.testing.MojoRule;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.aether.RepositorySystemSession;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class JCasGenMojoTest extends AbstractMojoTestCase {
+public class JCasGenMojoTest {
+
+  public @Rule MojoRule rule = new MojoRule();
 
   @Test
   public void testInvalidFeature() throws Exception {
-    Exception ee = null;
-    try {
+    assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
       this.test("invalidFeature");
-    } catch (Exception e) {
-      ee = e;
-    }
-    assertTrue(ee != null);
-    assertEquals(
-            "JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.",
-            ee.getMessage());
+    }).withMessage(
+            "JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.");
   }
 
   @Test
   public void testSimple() throws Exception {
-    this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
+    test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
   @Test
   public void testClasspath() throws Exception {
-    this.test("classpath", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
+    test("classpath", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
 
   @Test
   public void testWildcard() throws Exception {
-    this.test("wildcard", "type.span.Sentence", "type.span.Token");
+    test("wildcard", "type.span.Sentence", "type.span.Token");
   }
 
   @Test
   public void testExclude() throws Exception {
-    this.test("exclude", "type.span.Sentence");
+    test("exclude", "type.span.Sentence");
   }
 
-  @Test
-  public void test(String projectName, String... types) throws Exception {
+  private void test(String projectName, String... types) throws Exception {
 
-    File projectSourceDirectory = getTestFile("src/test/resources/" + projectName);
-    File projectDirectory = getTestFile("target/project-" + projectName + "-test");
+    var projectSourceDirectory = new File("src/test/resources/" + projectName);
+    var projectDirectory = new File("target/project-" + projectName + "-test");
 
     // Stage project to target folder
     FileUtils.copyDirectoryStructure(projectSourceDirectory, projectDirectory);
 
-    File pomFile = new File(projectDirectory, "/pom.xml");
-    assertNotNull(pomFile);
-    assertTrue(pomFile.exists());
-
-    // create the MavenProject from the pom.xml file
-    RepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-    MavenExecutionRequest executionRequest = new DefaultMavenExecutionRequest();
-    ProjectBuildingRequest buildingRequest = executionRequest.getProjectBuildingRequest();
-    buildingRequest.setRepositorySession(session);
-    ProjectBuilder projectBuilder = this.lookup(ProjectBuilder.class);
-    MavenProject project = projectBuilder.build(pomFile, buildingRequest).getProject();
-    assertNotNull(project);
+    var project = rule.readMavenProject(projectDirectory);
 
     // copy resources
     File source = new File(projectDirectory, "src/main/resources");
@@ -101,11 +79,11 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     }
 
     // load the Mojo
-    JCasGenMojo generate = (JCasGenMojo) this.lookupConfiguredMojo(project, "generate");
-    assertNotNull(generate);
+    var generate = (JCasGenMojo) rule.lookupConfiguredMojo(project, "generate");
+    assertThat(generate).isNotNull();
 
     // set the MavenProject on the Mojo (AbstractMojoTestCase does not do this by default)
-    setVariableValueToObject(generate, "project", project);
+    rule.setVariableValueToObject(generate, "project", project);
 
     // execute the Mojo
     generate.execute();
@@ -114,17 +92,18 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     File jCasGenDirectory = new File(project.getBasedir(), "target/generated-sources/jcasgen");
 
     // Record all the files that were generated
-    DirectoryScanner ds = new DirectoryScanner();
+    var ds = new DirectoryScanner();
     ds.setBasedir(jCasGenDirectory);
     ds.setIncludes(new String[] { "**/*.java" });
     ds.scan();
-    List<File> files = new ArrayList<>();
-    for (String scannedFile : ds.getIncludedFiles()) {
+
+    var files = new ArrayList<File>();
+    for (var scannedFile : ds.getIncludedFiles()) {
       files.add(new File(ds.getBasedir(), scannedFile));
     }
 
-    for (String type : types) {
-      File wrapperFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + ".java");
+    for (var type : types) {
+      var wrapperFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + ".java");
       // no _type files in v3
       // File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
 

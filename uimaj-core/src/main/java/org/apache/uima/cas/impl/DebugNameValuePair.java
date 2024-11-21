@@ -87,15 +87,14 @@ public class DebugNameValuePair {
   public String toString() {
     Object v = getValue();
     String className = v.getClass().getSimpleName();
-    if (v instanceof StringArrayFS)
-      v = className + "[" + ((StringArrayFS) v).size() + "]";
-    else if (v instanceof FloatArrayFS)
-      v = className + "[" + ((FloatArrayFS) v).size() + "]";
-    else if (v instanceof IntArrayFS)
-      v = className + "[" + ((IntArrayFS) v).size() + "]";
-    else if (v instanceof ArrayFS)
-      v = className + "[" + ((ArrayFS) v).size() + "]";
+    if (v instanceof StringArrayFS stringArrayFS)
+      v = className + "[" + stringArrayFS.size() + "]";
+    else if (v instanceof FloatArrayFS floatArrayFS)
+      v = className + "[" + floatArrayFS.size() + "]";
+    else if (v instanceof IntArrayFS intArrayFS)
+      v = className + "[" + intArrayFS.size() + "]";
+    else if (v instanceof ArrayFS arrayFS)
+      v = className + "[" + arrayFS.size() + "]";
     return getName() + ": " + v;
   }
-
 }

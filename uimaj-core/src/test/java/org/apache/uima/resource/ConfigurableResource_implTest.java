@@ -42,10 +42,10 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class ConfigurableResource_implTest {
+class ConfigurableResource_implTest {
 
   @Test
-  public void testReconfigure() throws Exception {
+  void testReconfigure() throws Exception {
     // set up some resource metadata and create a resource
     ConfigurationParameter pString = new ConfigurationParameter_impl();
     pString.setName("StringParam");
@@ -239,7 +239,7 @@ public class ConfigurableResource_implTest {
    * Test for Object getConfigParameterValue(String)
    */
   @Test
-  public void testGetConfigParameterValueString() throws Exception {
+  void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));

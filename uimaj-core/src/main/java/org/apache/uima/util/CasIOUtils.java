@@ -461,13 +461,13 @@ public class CasIOUtils {
        ******************************/
       try {
         Object o = deserializeCASSerializerOrCASCompleteSerializer(casInputStream);
-        if (o instanceof CASSerializer) {
+        if (o instanceof CASSerializer casSerializer) {
           bcsd.setupCasFromCasMgrSerializer(readCasManager(tsiInputStream));
-          bcsd.reinit((CASSerializer) o); // deserialize from object
+          bcsd.reinit(casSerializer); // deserialize from object
           return SerialFormat.SERIALIZED;
-        } else if (o instanceof CASCompleteSerializer) {
+        } else if (o instanceof CASCompleteSerializer casCompleteSerializer) {
           // with a type system use that, ignore any supplied via tsiInputStream
-          bcsd.reinit((CASCompleteSerializer) o);
+          bcsd.reinit(casCompleteSerializer);
           return SerialFormat.SERIALIZED_TSI;
         } else {
           /** Unrecognized serialized CAS format */

@@ -40,7 +40,7 @@ public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "processingResourceMetaData", null); // properties assigned below
 
   static {

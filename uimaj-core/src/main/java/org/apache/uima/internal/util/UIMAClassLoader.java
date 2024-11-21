@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.impl.FSClassRegistry;
-import org.apache.uima.cas.impl.FsGenerator3;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
 /**
@@ -45,6 +45,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
  * 
  */
 public class UIMAClassLoader extends URLClassLoader {
+  private static final URL[] NO_URLS = new URL[0];
 
   static {
     if (!ClassLoader.registerAsParallelCapable()) {
@@ -79,11 +80,11 @@ public class UIMAClassLoader extends URLClassLoader {
    * locks for loading more than 1 class at a time (on different threads) no more than the total
    * number of cores, rounded up to pwr of 2
    */
-  final private static int nbrLocks = Misc
+  private static final int nbrLocks = Misc
           .nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
 
   // not static
-  final private Object[] syncLocks = new Object[nbrLocks];
+  private final Object[] syncLocks = new Object[nbrLocks];
 
   private boolean isClosed = false;
 
@@ -143,6 +144,17 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(URL[] classpath) {
     super(classpath);
+    commonInit();
+  }
+
+  /**
+   * Creates a new UIMAClassLoader with the given parent ClassLoader.
+   * 
+   * @param parent
+   *          specify the parent of the classloader
+   */
+  public UIMAClassLoader(ClassLoader parent) {
+    super(NO_URLS, parent);
     commonInit();
   }
 
@@ -236,11 +248,11 @@ public class UIMAClassLoader extends URLClassLoader {
             c = findClass(name);
           }
         } catch (ClassNotFoundException e) {
-          if (name.startsWith(FsGenerator3.class.getPackage().getName() + ".")) {
+          if (isUimaInternalPackage(name)) {
             // There may be cases where the target class uses a classloader that has no access
             // to the UIMA internal classes - in particular to the FSGenerator3 - so we force using
             // the UIMA classloader in this case.
-            c = FsGenerator3.class.getClassLoader().loadClass(name);
+            c = UIMAFramework.class.getClassLoader().loadClass(name);
           } else {
             // delegate class loading for this class-name
             c = super.loadClass(name, false);
@@ -254,6 +266,11 @@ public class UIMAClassLoader extends URLClassLoader {
 
       return c;
     }
+  }
+
+  private boolean isUimaInternalPackage(String name) {
+    return name.startsWith("org.apache.uima.cas.impl.")
+            || name.startsWith("org.apache.uima.jcas.cas.");
   }
 
   /*

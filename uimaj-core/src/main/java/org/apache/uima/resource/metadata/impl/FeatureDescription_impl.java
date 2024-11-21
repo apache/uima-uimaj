@@ -144,7 +144,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("featureDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("featureDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
               new PropertyXmlInfo("description", false), new PropertyXmlInfo("rangeTypeName", true),
               new PropertyXmlInfo("elementType", true),

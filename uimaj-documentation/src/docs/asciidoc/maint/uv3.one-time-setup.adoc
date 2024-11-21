@@ -28,12 +28,14 @@ It is recommended to install the latest long term support (LTS) Java version and
 
 == Version control: Git and Subversion
 
-Apache UIMA projects use Git although some projects still reside in Subversion and releases are
-staged to the ASF Subversion repository. Thus, you should install a Subversion client as well as a
-Git client - best the latest available version.
-If you are using an IDE, you may also care to install a suitable Subversion in addition to the Git plugin for the IDE. Most IDEs come with Git plugins already pre-installed. If you are lucky, it might be enough for you. If you need to work with one of the older Subversion repositories of the project, having the Subversion plugin is handy as well.
+Apache UIMA projects use Git although some projects still reside in Subversion and releases are staged to the ASF Subversion repository.
+Thus, you should install a Subversion client as well as a Git client - best the latest available version.
+If you are using an IDE, you may also care to install a suitable Subversion in addition to the Git plugin for the IDE. 
+Most IDEs come with Git plugins already pre-installed. 
+If you are lucky, it might be enough for you. 
+If you need to work with one of the older Subversion repositories of the project, having the Subversion plugin is handy as well.
 
-NOTE: Configure your SVN client to set the eol-style to native, for newly created files; see https://apache.org/dev/svn-eol-style.txt for instructions on how to do this.
+NOTE: Configure your SVN client to set the `eol-style` to `native`, for newly created files; see https://apache.org/dev/svn-eol-style.txt for instructions on how to do this.
 
 == IDE: Eclipse or another one
 
@@ -43,38 +45,14 @@ NOTE: You can also use another IDE like IntelliJ, Netbeans or even VSCode becaus
 
 == Build tool: Maven
 
-Most Apache UIMA sub-projects are built using Apache Maven version 3 or higher. Maven offers a largely declarative and convention-driven build process and in particular automatically downloads required third-party libraries from the internet, in particular from the link:https://search.maven.org[Maven Central] repository.
+Most Apache UIMA sub-projects are built using Apache Maven version 3 or higher. 
+Maven offers a largely declarative and convention-driven build process and in particular automatically downloads required third-party libraries from the internet, in particular from the link:https://search.maven.org[Maven Central] repository.
 
-You can download the latest Maven version from https://maven.apache.org/download.html or install it using your favourite package manager. Most Java IDEs already come with Maven support pre-installed. If your IDE does not offer Maven support out-of-the-box, you may want to install a suitable plugin.
+You can download the latest Maven version or install it using your favourite package manager. 
+Most Java IDEs already come with Maven support pre-installed. 
+If your IDE does not offer Maven support out-of-the-box, you may want to install a suitable plugin.
 
-* Download the latest Apache Maven from .
+* Download the latest Apache Maven from https://maven.apache.org.
 * Set up your `PATH` to use this version.
-* (Optional, but is needed for some JVM/platforms, to give the JVM enough room to build things). Set the environment variable `MAVEN_OPTS` to `-Xmx800m  -XX:MaxPermSize=256m`
-
-=== Maven toolchains
-
-To ensure that an Apache UIMA build is actually compatible with the minimum system 
-requirements, it is important to build it against a minimum requirements environment.
-However, it is possible that Maven or plugins we use no longer are able to run on the
-same minimum system requirements that Apache UIMA aims to meet and thus for building,
-you may need e.g. a never Java version. To ensure that we can still build against
-the desired target environment, we use the link:https://maven.apache.org/plugins/maven-toolchains-plugin/[Maven Toolchains Plugin].
-
-Using this plugin requires that you have a `toolchains.xml` file, typically in your
-`~/.m2` folder. This file should contains at least a toolchain declaration for the
-Apache UIMA minimum Java version, e.g.:
-
-.Example `toolchains.xml` file
-----
-<toolchains>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
-      <version>17</version>
-    </provides>
-    <configuration>
-      <jdkHome>/PATH/TO/A/JDK_17/INSTALLATION</jdkHome>
-    </configuration>
-  </toolchain>
-</toolchains>
-----
+* Set the environment variable `MAVEN_OPTS` to `-Xmx800m  -XX:MaxPermSize=256m`. 
+  (Optional, but is needed for some JVM/platforms, to give the JVM enough room to build things.)

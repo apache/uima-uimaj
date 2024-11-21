@@ -24,8 +24,9 @@ import org.apache.uima.cas.ByteArrayFS;
  * V2 compatibility only The non-JCas cover class for Byte Array
  * 
  * @deprecated use ByteArray instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface ByteArrayFSImpl extends ByteArrayFS {
 
 }

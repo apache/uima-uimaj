@@ -124,8 +124,7 @@ public class InstallationTester {
       TestStatus status = new TestStatus();
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_type_not_detected",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
 
       return status;
     }
@@ -138,8 +137,7 @@ public class InstallationTester {
     ResourceManager resource_manager = null;
 
     try {
-      xmlIn = new XMLInputSource(
-              pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
+      xmlIn = new XMLInputSource(pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
 
       resource_manager = getResourceManager(pkgBrowser);
@@ -268,8 +266,7 @@ public class InstallationTester {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_ae_not_created",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
     }
   }
 
@@ -303,8 +300,7 @@ public class InstallationTester {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_cc_not_created",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
     }
   }
 
@@ -338,8 +334,7 @@ public class InstallationTester {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_ci_not_created",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
     }
   }
 
@@ -372,8 +367,7 @@ public class InstallationTester {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_cr_not_created",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
     }
   }
 
@@ -408,8 +402,7 @@ public class InstallationTester {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
       status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "installation_verification_cpe_not_created",
-              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() },
-              null));
+              new Object[] { pkgBrowser.getInstallationDescriptor().getMainComponentId() }, null));
     }
 
   }
@@ -434,8 +427,7 @@ public class InstallationTester {
     XMLInputSource xmlIn = null;
 
     try {
-      xmlIn = new XMLInputSource(
-              pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
+      xmlIn = new XMLInputSource(pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
       TypeSystemDescription tsDescription = UIMAFramework.getXMLParser()
               .parseTypeSystemDescription(xmlIn);
 

@@ -148,6 +148,30 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>
     </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimafit-core</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uimafit-core.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimafit-cpe</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uimafit-cpe.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </dependencySet>
 
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
@@ -179,6 +203,14 @@ under the License.
         <include>org.slf4j:slf4j-api</include>
         <!-- hook to built-in Java backend for slf4j included -->
         <include>org.slf4j:slf4j-jdk14</include>
+        <include>commons-io:commons-io</include>
+        <include>org.apache.commons:commons-lang3</include>
+        <include>org.springframework:spring-aop</include>
+        <include>org.springframework:spring-beans</include>
+        <include>org.springframework:spring-context</include>
+        <include>org.springframework:spring-core</include>
+        <include>org.springframework:spring-expression</include>
+        <include>org.springframework:spring-jcl/5.3.39/spring-jcl-5.3.39.jar</include>
       </includes>
       <unpack>false</unpack>
       <scope>runtime</scope>
@@ -302,6 +334,18 @@ under the License.
     <fileSet>
       <directory>uimaj-json/api-change-report</directory>
       <outputDirectory>uimaj-json/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-core/api-change-report</directory>
+      <outputDirectory>uimafit-core/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimafit-cpe/api-change-report</directory>
+      <outputDirectory>uimafit-cpe/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>
     </fileSet>

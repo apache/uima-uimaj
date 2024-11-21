@@ -107,11 +107,7 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
       catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
                 new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      } catch (IllegalAccessException e) {
-        throw new ResourceInitializationException(
-                ResourceInitializationException.COULD_NOT_INSTANTIATE,
-                new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      } catch (InstantiationException e) {
+      } catch (IllegalAccessException | InstantiationException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.COULD_NOT_INSTANTIATE,
                 new Object[] { className, aSpecifier.getSourceUrlString() }, e);

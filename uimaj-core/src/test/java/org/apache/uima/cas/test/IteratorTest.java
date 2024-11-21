@@ -373,16 +373,11 @@ public class IteratorTest {
 
   private void createFSs(int i) {
     FeatureStructureImplC fsi;
-    cas.getIndexRepository()
-            .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
-    cas.getIndexRepository()
-            .addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
-    cas.getIndexRepository()
-            .addFS(fsi = cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-    cas.getIndexRepository()
-            .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
-    cas.getIndexRepository()
-            .addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository().addFS(fsi = cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
+    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     // //debug
     // System.out.format("Token at %,d %n", fsi.getAddress());
   }
@@ -391,8 +386,7 @@ public class IteratorTest {
     cas.getIndexRepository().removeAllIncludingSubtypes(TOP.class);
 
     for (int i = 0; i < 5; i++) {
-      cas.getIndexRepository()
-              .addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
+      cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
     }
   }
 
@@ -1237,10 +1231,8 @@ public class IteratorTest {
     addAnnotations(fsArray, ts.getType("Sentence"));
     addAnnotations(subFsArray, ts.getType("SubTypeOfSentence"));
 
-    FSIndex<FeatureStructure> setIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX,
-            sentenceType);
-    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX,
-            sentenceType);
+    FSIndex<FeatureStructure> setIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX, sentenceType);
+    FSIndex<FeatureStructure> bagIndex = ir.getIndex(CASTestSetup.ANNOT_BAG_INDEX, sentenceType);
     FSIndex<AnnotationFS> sortedIndex = cas.getAnnotationIndex(sentenceType);
 
     FSIndex<FeatureStructure> subsetIndex = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX,

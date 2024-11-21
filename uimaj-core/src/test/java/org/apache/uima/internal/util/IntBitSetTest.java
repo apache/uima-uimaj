@@ -30,19 +30,19 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class IntBitSetTest {
+class IntBitSetTest {
 
   IntBitSet ibs;
   IntBitSet ibs1k;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     ibs = new IntBitSet();
     ibs1k = new IntBitSet(63, 1000);
   }
 
   @Test
-  public void testBasic() {
+  void testBasic() {
 
     ibs.add(15);
     ibs.add(188);
@@ -93,7 +93,7 @@ public class IntBitSetTest {
   }
 
   @Test
-  public void testoffset() {
+  void testoffset() {
     ibs = new IntBitSet(64, 1000);
     ibs.add(1064);
     IntListIterator it = ibs.iterator();
@@ -124,7 +124,7 @@ public class IntBitSetTest {
   }
 
   @Test
-  public void testRemove() {
+  void testRemove() {
     ibs.add(15);
     ibs.add(188);
     ibs.add(101);
@@ -142,7 +142,7 @@ public class IntBitSetTest {
   }
 
   @Test
-  public void testContains() {
+  void testContains() {
     ibs = new IntBitSet(63, 1000);
 
     ibs.add(1015);
@@ -158,7 +158,7 @@ public class IntBitSetTest {
   }
 
   @Test
-  public void testIterator() {
+  void testIterator() {
     ibs = new IntBitSet(63, 1000);
     for (int i = 0; i < 10; i = i + 4) {
       ibs.add(1000 + i);

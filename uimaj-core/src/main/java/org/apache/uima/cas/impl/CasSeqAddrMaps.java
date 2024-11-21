@@ -44,10 +44,10 @@ public class CasSeqAddrMaps {
    * map from a target FS sequence nbr to a source id. value is 0 if the target instance doesn't
    * exist in the source (this doesn't occur for receiving remote CASes back (because src ts is
    * always a superset of tgt ts), but can occur while deserializing from Disk.)
-   * 
+   * <p>
    * index 0 is reserved for null
    */
-  final private List<TOP> tgtId2SrcFs; // the key is the index
+  private final List<TOP> tgtId2SrcFs; // the key is the index
 
   // /**
   // * (Not Used, currently)
@@ -65,7 +65,7 @@ public class CasSeqAddrMaps {
   /**
    * map from source id to target id. if source is not in target, value = -1;
    */
-  final private Int2IntRBT srcId2TgtId;
+  private final Int2IntRBT srcId2TgtId;
 
   private int nextTgt = 0;
 

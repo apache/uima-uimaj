@@ -708,8 +708,7 @@ public final class AnnotationEditor extends StatusTextEditor
    * @return an adapter or null
    */
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (IContentOutlinePage.class.equals(adapter) && getDocument() != null) {
       return mOutlinePage;

@@ -30,7 +30,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 class FsIterator_backwards<T extends FeatureStructure> implements LowLevelIterator<T> {
 
-  final private LowLevelIterator<T> it; // not just for single-type iterators
+  private final LowLevelIterator<T> it; // not just for single-type iterators
 
   FsIterator_backwards(FSIterator<T> iterator) {
     it = (LowLevelIterator<T>) iterator;

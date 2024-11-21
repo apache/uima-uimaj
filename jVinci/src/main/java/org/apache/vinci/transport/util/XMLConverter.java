@@ -40,7 +40,7 @@ public class XMLConverter {
    * @return the converted string
    * @pre convert_me != null
    */
-  static public String convertStringToXMLString(String convert_me) {
+  public static String convertStringToXMLString(String convert_me) {
     StringBuffer tmp = new StringBuffer();
     convertStringToXMLString(convert_me, tmp);
     return tmp.toString();
@@ -55,7 +55,7 @@ public class XMLConverter {
    * 
    * @pre convert_me != null
    */
-  static public String simpleConvertStringToXMLString(String convert_me) {
+  public static String simpleConvertStringToXMLString(String convert_me) {
     StringBuffer tmp = new StringBuffer();
     simpleConvertStringToXMLString(convert_me, tmp);
     return tmp.toString();
@@ -71,7 +71,7 @@ public class XMLConverter {
    * @pre convert_me != null
    * @pre append_to_me != null
    */
-  static public void simpleConvertStringToXMLString(String convert_me, StringBuffer append_to_me) {
+  public static void simpleConvertStringToXMLString(String convert_me, StringBuffer append_to_me) {
     for (int i = 0; i < convert_me.length(); i++) {
       switch (convert_me.charAt(i)) {
         case '<':
@@ -104,7 +104,7 @@ public class XMLConverter {
    * @pre convert_me != null
    * @pre append_to_me != null
    */
-  static public void convertStringToXMLString(String convert_me, StringBuffer append_to_me) {
+  public static void convertStringToXMLString(String convert_me, StringBuffer append_to_me) {
     int index = 0;
     int special_char_count = 0;
     while (special_char_count <= 4) {
@@ -142,7 +142,7 @@ public class XMLConverter {
    * @return -
    * @pre convert_me != null
    */
-  static public String convertStringToHTMLString(String convert_me) {
+  public static String convertStringToHTMLString(String convert_me) {
     StringBuffer buf = new StringBuffer();
     convertStringToHTMLString(convert_me, buf);
     return buf.toString();
@@ -158,7 +158,7 @@ public class XMLConverter {
    * @pre convert_me != null
    * @pre append_to_me != null
    */
-  static public void convertStringToHTMLString(String convert_me, StringBuffer append_to_me) {
+  public static void convertStringToHTMLString(String convert_me, StringBuffer append_to_me) {
     for (int i = 0; i < convert_me.length(); i++) {
       switch (convert_me.charAt(i)) {
         case '<':
@@ -184,7 +184,7 @@ public class XMLConverter {
     }
   }
 
-  static public void main(String[] args) {
+  public static void main(String[] args) {
     if (args.length == 1) {
       System.out.println(convertStringToXMLString(args[0]));
     }

@@ -41,7 +41,7 @@ public class Meeting extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.tutorial.Meeting";
+  public static final String _TypeName = "org.apache.uima.tutorial.Meeting";
 
   /**
    * The Constant typeIndexID.
@@ -74,22 +74,22 @@ public class Meeting extends Annotation {
    * ******************* Feature Offsets *
    *******************/
 
-  public final static String _FeatName_room = "room";
-  public final static String _FeatName_date = "date";
-  public final static String _FeatName_startTime = "startTime";
-  public final static String _FeatName_endTime = "endTime";
+  public static final String _FeatName_room = "room";
+  public static final String _FeatName_date = "date";
+  public static final String _FeatName_startTime = "startTime";
+  public static final String _FeatName_endTime = "endTime";
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_room = TypeSystemImpl.createCallSite(Meeting.class, "room");
-  private final static MethodHandle _FH_room = _FC_room.dynamicInvoker();
-  private final static CallSite _FC_date = TypeSystemImpl.createCallSite(Meeting.class, "date");
-  private final static MethodHandle _FH_date = _FC_date.dynamicInvoker();
-  private final static CallSite _FC_startTime = TypeSystemImpl.createCallSite(Meeting.class,
+  private static final CallSite _FC_room = TypeSystemImpl.createCallSite(Meeting.class, "room");
+  private static final MethodHandle _FH_room = _FC_room.dynamicInvoker();
+  private static final CallSite _FC_date = TypeSystemImpl.createCallSite(Meeting.class, "date");
+  private static final MethodHandle _FH_date = _FC_date.dynamicInvoker();
+  private static final CallSite _FC_startTime = TypeSystemImpl.createCallSite(Meeting.class,
           "startTime");
-  private final static MethodHandle _FH_startTime = _FC_startTime.dynamicInvoker();
-  private final static CallSite _FC_endTime = TypeSystemImpl.createCallSite(Meeting.class,
+  private static final MethodHandle _FH_startTime = _FC_startTime.dynamicInvoker();
+  private static final CallSite _FC_endTime = TypeSystemImpl.createCallSite(Meeting.class,
           "endTime");
-  private final static MethodHandle _FH_endTime = _FC_endTime.dynamicInvoker();
+  private static final MethodHandle _FH_endTime = _FC_endTime.dynamicInvoker();
 
   /**
    * Never called. Disable default constructor

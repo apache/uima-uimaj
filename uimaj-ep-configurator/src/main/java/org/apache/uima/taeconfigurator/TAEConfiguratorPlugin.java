@@ -71,49 +71,49 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   private static ImageRegistry imageRegistry = new ImageRegistry();
 
   /** The Constant IMAGE_ANNOTATOR. */
-  public final static String IMAGE_ANNOTATOR = "annotator.gif";
+  public static final String IMAGE_ANNOTATOR = "annotator.gif";
 
   /** The Constant IMAGE_BIG_AE. */
-  public final static String IMAGE_BIG_AE = "big_ae.gif";
+  public static final String IMAGE_BIG_AE = "big_ae.gif";
 
   /** The Constant IMAGE_BIG_T_S. */
-  public final static String IMAGE_BIG_T_S = "big_t_s.gif";
+  public static final String IMAGE_BIG_T_S = "big_t_s.gif";
 
   /** The Constant IMAGE_BLANK. */
-  public final static String IMAGE_BLANK = "blank.gif";
+  public static final String IMAGE_BLANK = "blank.gif";
 
   /** The Constant IMAGE_COMMON. */
-  public final static String IMAGE_COMMON = "common.gif";
+  public static final String IMAGE_COMMON = "common.gif";
 
   /** The Constant IMAGE_EDITOR. */
-  public final static String IMAGE_EDITOR = "editor.gif";
+  public static final String IMAGE_EDITOR = "editor.gif";
 
   /** The Constant IMAGE_FORM_BANNER. */
-  public final static String IMAGE_FORM_BANNER = "form_banner.gif";
+  public static final String IMAGE_FORM_BANNER = "form_banner.gif";
 
   /** The Constant IMAGE_GELB. */
-  public final static String IMAGE_GELB = "gelb.gif";
+  public static final String IMAGE_GELB = "gelb.gif";
 
   /** The Constant IMAGE_GROUP. */
-  public final static String IMAGE_GROUP = "group.gif";
+  public static final String IMAGE_GROUP = "group.gif";
 
   /** The Constant IMAGE_PARAMETER. */
-  public final static String IMAGE_PARAMETER = "parameter.gif";
+  public static final String IMAGE_PARAMETER = "parameter.gif";
 
   /** The Constant IMAGE_T_S. */
-  public final static String IMAGE_T_S = "t_s.gif";
+  public static final String IMAGE_T_S = "t_s.gif";
 
   /** The Constant IMAGE_TH_HORIZONTAL. */
-  public final static String IMAGE_TH_HORIZONTAL = "th_horizontal.gif";
+  public static final String IMAGE_TH_HORIZONTAL = "th_horizontal.gif";
 
   /** The Constant IMAGE_TH_VERTICAL. */
-  public final static String IMAGE_TH_VERTICAL = "th_vertical.gif";
+  public static final String IMAGE_TH_VERTICAL = "th_vertical.gif";
 
   /** The Constant IMAGE_MREFOK. */
-  public final static String IMAGE_MREFOK = "arrows.gif";
+  public static final String IMAGE_MREFOK = "arrows.gif";
 
   /** The Constant IMAGE_NOMREF. */
-  public final static String IMAGE_NOMREF = "one_arrow.gif";
+  public static final String IMAGE_NOMREF = "one_arrow.gif";
 
   /** The plugin id. */
   public static String pluginId;

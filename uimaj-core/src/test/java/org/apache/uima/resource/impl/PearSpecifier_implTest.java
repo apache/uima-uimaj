@@ -51,7 +51,7 @@ class PearSpecifier_implTest {
             .containsExactly(copy.getParameters());
 
     assertThat(original.getPearParameters()) //
-            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .usingRecursiveFieldByFieldElementComparatorOnFields("mName", "mValue")
             .containsExactly(copy.getPearParameters());
   }
 
@@ -65,7 +65,7 @@ class PearSpecifier_implTest {
             .containsExactly(spec1.getParameters());
 
     assertThat(spec2.getPearParameters())
-            .usingRecursiveFieldByFieldElementComparatorOnFields("name", "value")
+            .usingRecursiveFieldByFieldElementComparatorOnFields("mName", "mValue")
             .containsExactly(spec1.getPearParameters());
   }
 

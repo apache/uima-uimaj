@@ -23,19 +23,16 @@ public class LanguagePair extends TOP {
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.lang.LanguagePair";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.lang.LanguagePair";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(LanguagePair.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(LanguagePair.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -47,18 +44,18 @@ public class LanguagePair extends TOP {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_lang1 = "lang1";
-  public final static String _FeatName_lang2 = "lang2";
-  public final static String _FeatName_description = "description";
+  public static final String _FeatName_lang1 = "lang1";
+  public static final String _FeatName_lang2 = "lang2";
+  public static final String _FeatName_description = "description";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_lang1 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang1");
-  private final static MethodHandle _FH_lang1 = _FC_lang1.dynamicInvoker();
-  private final static CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
-  private final static MethodHandle _FH_lang2 = _FC_lang2.dynamicInvoker();
-  private final static CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
-  private final static MethodHandle _FH_description = _FC_description.dynamicInvoker();
+  private static final CallSite _FC_lang1 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang1");
+  private static final MethodHandle _FH_lang1 = _FC_lang1.dynamicInvoker();
+  private static final CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
+  private static final MethodHandle _FH_lang2 = _FC_lang2.dynamicInvoker();
+  private static final CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
+  private static final MethodHandle _FH_description = _FC_description.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

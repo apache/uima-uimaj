@@ -25,7 +25,6 @@ import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationTree;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Implementation of annotation indexes. Implements AnnotationIndex replaces AnnotationIndexImpl in
@@ -109,7 +108,7 @@ public class FsIndex_annotation<T extends AnnotationFS> extends FsIndex_iicp<T>
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator<>(iterator(), (Annotation) annot, null, // no secondary bounding fs
+    return new Subiterator<>(iterator(), annot, null, // no secondary bounding fs
             ambiguous, strict, BoundsUse.coveredBy, // isBounded
             true, // uses type priority
             true, // skip returning results equal to annot

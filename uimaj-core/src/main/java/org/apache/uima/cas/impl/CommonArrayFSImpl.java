@@ -24,8 +24,9 @@ import org.apache.uima.cas.CommonArrayFS;
  * For v2 backwards compatibility
  * 
  * @deprecated
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface CommonArrayFSImpl extends CommonArrayFS {
 
 }

@@ -144,7 +144,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
           new PropertyXmlInfo[] {
           // custom XMLization -- syntax is an attribute, expression is content
           });

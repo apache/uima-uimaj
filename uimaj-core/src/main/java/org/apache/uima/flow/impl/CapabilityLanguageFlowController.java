@@ -22,6 +22,7 @@ package org.apache.uima.flow.impl;
 import static org.apache.uima.UIMAFramework.getResourceSpecifierFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -113,9 +114,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     // get all languages from the capabilities
     Set<String> languages = new HashSet<>();
     for (Capability capability : aCapabilities) {
-      for (String capabilityLanguage : capability.getLanguagesSupported()) {
-        languages.add(capabilityLanguage);
-      }
+      languages.addAll(Arrays.asList(capability.getLanguagesSupported()));
     }
 
     // create flow table with sequences for all languages

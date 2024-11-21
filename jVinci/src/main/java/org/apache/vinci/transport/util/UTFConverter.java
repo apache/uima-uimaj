@@ -47,7 +47,7 @@ public class UTFConverter {
    * @throws NumberFormatException
    *           if conversion to a number can't be done
    */
-  static public float convertUTFToFloat(byte[] bytearr)
+  public static float convertUTFToFloat(byte[] bytearr)
           throws UTFDataFormatException, NumberFormatException {
     return Float.parseFloat(UTFConverter.convertUTFToString(bytearr));
   }
@@ -63,7 +63,7 @@ public class UTFConverter {
    * @throws NumberFormatException
    *           if conversion to a number can't be done
    */
-  static public double convertUTFToDouble(byte[] bytearr)
+  public static double convertUTFToDouble(byte[] bytearr)
           throws UTFDataFormatException, NumberFormatException {
     return Double.parseDouble(UTFConverter.convertUTFToString(bytearr));
   }
@@ -77,7 +77,7 @@ public class UTFConverter {
    * @throws UTFDataFormatException
    *           if the UTF-8 is encoded improperly
    */
-  static public boolean convertUTFToBool(byte[] bytearr) throws UTFDataFormatException {
+  public static boolean convertUTFToBool(byte[] bytearr) throws UTFDataFormatException {
     return TRUE_VALUE.equals(UTFConverter.convertUTFToString(bytearr));
   }
 
@@ -92,7 +92,7 @@ public class UTFConverter {
    * @throws NumberFormatException
    *           if conversion to a number can't be done
    */
-  static public int convertUTFToInt(byte[] bytearr)
+  public static int convertUTFToInt(byte[] bytearr)
           throws UTFDataFormatException, NumberFormatException {
     return Integer.parseInt(UTFConverter.convertUTFToString(bytearr));
   }
@@ -108,7 +108,7 @@ public class UTFConverter {
    * @throws NumberFormatException
    *           if conversion to a number can't be done
    */
-  static public long convertUTFToLong(byte[] bytearr)
+  public static long convertUTFToLong(byte[] bytearr)
           throws UTFDataFormatException, NumberFormatException {
     return Long.parseLong(UTFConverter.convertUTFToString(bytearr));
   }
@@ -122,7 +122,7 @@ public class UTFConverter {
    * @throws UTFDataFormatException
    *           if the UTF-8 is encoded improperly
    */
-  static public String convertUTFToString(byte[] bytearr) throws UTFDataFormatException {
+  public static String convertUTFToString(byte[] bytearr) throws UTFDataFormatException {
     char[] result = new char[bytearr.length];
     // ^^ We rely on the fact that the length of the string cannot exceed the length
     // of the underlying representation.
@@ -145,7 +145,7 @@ public class UTFConverter {
    * @throws UTFDataFormatException
    *           if the UTF-8 is encoded improperly
    */
-  static public int convertUTFToString(byte[] bytearr, final int beginOffset, final int inputLength,
+  public static int convertUTFToString(byte[] bytearr, final int beginOffset, final int inputLength,
           char[] result) throws UTFDataFormatException {
     int outputLength = 0;
     int count = beginOffset;
@@ -193,7 +193,7 @@ public class UTFConverter {
    *          String to convert.
    * @return array of UTF-8 bytes.
    */
-  static public byte[] convertStringToUTF(String inputString) {
+  public static byte[] convertStringToUTF(String inputString) {
     int resultLength = calculateUTFLength(inputString);
     byte[] resultArray = new byte[resultLength];
     convertStringToUTF(inputString, resultArray);
@@ -211,7 +211,7 @@ public class UTFConverter {
    *          One past the last character in the array.
    * @return A byte array with the converted result.
    */
-  static public byte[] convertStringToUTF(char[] inputArray, int startOffset, int endOffset) // pfh
+  public static byte[] convertStringToUTF(char[] inputArray, int startOffset, int endOffset) // pfh
   {
     int resultLength = calculateUTFLength(inputArray, startOffset, endOffset);
     byte[] resultArray = new byte[resultLength];
@@ -230,7 +230,7 @@ public class UTFConverter {
    *          One past the last character in the array.
    * @return The number of bytes in the UTF-8 representation.
    */
-  static public int calculateUTFLength(char[] inputArray, int startOffset, int endOffset) // pfh
+  public static int calculateUTFLength(char[] inputArray, int startOffset, int endOffset) // pfh
   {
     int resultLength = 0;
 
@@ -254,7 +254,7 @@ public class UTFConverter {
    *          The String to calculate the length of.
    * @return The number of bytes in the UTF-8 representation.
    */
-  static public int calculateUTFLength(String inputString) {
+  public static int calculateUTFLength(String inputString) {
     int resultLength = 0;
     final int inputLength = inputString.length();
     // First calculate the length of the result
@@ -284,7 +284,7 @@ public class UTFConverter {
    *          Byte array containing the converted characters.
    * @return The number of characters in the UTF-8 representation.
    */
-  static public int convertStringToUTF(char[] inputArray, int startOffset, int endOffset,
+  public static int convertStringToUTF(char[] inputArray, int startOffset, int endOffset,
           byte[] resultArray) {
     int resultLength = 0;
     resultLength = 0;
@@ -315,7 +315,7 @@ public class UTFConverter {
    *          Byte array containing the converted characters.
    * @return the number of characters in the UTF-8 representation.
    */
-  static public int convertStringToUTF(String inputString, byte[] resultArray) {
+  public static int convertStringToUTF(String inputString, byte[] resultArray) {
     int resultLength = 0;
     final int inputLength = inputString.length();
     // Now populate the result array

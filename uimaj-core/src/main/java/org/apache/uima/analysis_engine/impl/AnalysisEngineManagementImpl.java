@@ -49,7 +49,7 @@ public class AnalysisEngineManagementImpl
    * This static set is needed to keep track of what names we've already used for "root" MBeans
    * (those representing top-level AEs and CPEs).
    */
-  private final static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<>();
+  private static final ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<>();
 
   private String name;
 
@@ -298,7 +298,7 @@ public class AnalysisEngineManagementImpl
     }
   }
 
-  static private final Callable<AtomicInteger> produceAtomicInteger = new Callable<AtomicInteger>() {
+  private static final Callable<AtomicInteger> produceAtomicInteger = new Callable<AtomicInteger>() {
     @Override
     public AtomicInteger call() throws Exception {
       return new AtomicInteger(1);
@@ -347,7 +347,7 @@ public class AnalysisEngineManagementImpl
   private static String escapeValue(String value) {
     if (RESERVED_CHAR_PATTERN.matcher(value).find()) {
       // must quote the value
-      StringBuffer buf = new StringBuffer();
+      var buf = new StringBuilder();
       buf.append('\"');
       // must escape special characters inside the quoted value
       for (int i = 0; i < value.length(); i++) {

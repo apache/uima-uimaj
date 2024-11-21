@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 /**
  * Tests the MetaDataObject_impl class.
  */
-public class MetaDataObject_implTest {
+class MetaDataObject_implTest {
   private static DocumentBuilderFactory docBuilderFactory;
   private static DocumentBuilder docBuilder;
   private static XMLParser xmlp;
@@ -133,11 +133,12 @@ public class MetaDataObject_implTest {
   @Test
   void testEquals() throws Exception {
     assertThat(unknownFruit).isEqualTo(unknownFruit);
-    assertThat(apple1).isEqualTo(apple2);
     assertThat(apple2).isEqualTo(apple1);
     assertThat(unknownFruit).isNotEqualTo(apple1);
-    assertThat(apple1).isNotEqualTo(orange);
-    assertThat(apple1).isNotEqualTo(null);
+    assertThat(apple1) //
+            .isEqualTo(apple2) //
+            .isNotEqualTo(orange) //
+            .isNotEqualTo(null);
 
     assertThat(apple1).isEqualTo(apple1.clone());
     assertThat(fruitBag).isEqualTo(fruitBag.clone());

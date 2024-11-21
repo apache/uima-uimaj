@@ -71,14 +71,14 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
     }
     if (constraint instanceof FSMatchConstraint) {
       return new EmbeddedConstraint(path, constraint);
-    } else if (constraint instanceof FSIntConstraint) {
-      return new IntConstraint(path, (FSIntConstraint) constraint);
-    } else if (constraint instanceof FSFloatConstraint) {
-      return new FloatConstraint(path, (FSFloatConstraint) constraint);
-    } else if (constraint instanceof FSStringConstraint) {
-      return new StringConstraint(path, (FSStringConstraint) constraint);
-    } else if (constraint instanceof FSBooleanConstraint) {
-      return new BooleanConstraint(path, (FSBooleanConstraint) constraint);
+    } else if (constraint instanceof FSIntConstraint fsIntConstraint) {
+      return new IntConstraint(path, fsIntConstraint);
+    } else if (constraint instanceof FSFloatConstraint fsFloatConstraint) {
+      return new FloatConstraint(path, fsFloatConstraint);
+    } else if (constraint instanceof FSStringConstraint fsStringConstraint) {
+      return new StringConstraint(path, fsStringConstraint);
+    } else if (constraint instanceof FSBooleanConstraint fsBooleanConstraint) {
+      return new BooleanConstraint(path, fsBooleanConstraint);
     } else {
       return null;
     }
@@ -88,14 +88,14 @@ public class ConstraintFactoryImpl extends ConstraintFactory {
   public FSMatchConstraint embedConstraint(ArrayList<String> path, FSConstraint constraint) {
     if (constraint instanceof FSMatchConstraint) {
       return new EmbeddedConstraint(path, constraint);
-    } else if (constraint instanceof FSIntConstraint) {
-      return new IntConstraint(path, (FSIntConstraint) constraint);
-    } else if (constraint instanceof FSFloatConstraint) {
-      return new FloatConstraint(path, (FSFloatConstraint) constraint);
-    } else if (constraint instanceof FSStringConstraint) {
-      return new StringConstraint(path, (FSStringConstraint) constraint);
-    } else if (constraint instanceof FSBooleanConstraint) {
-      return new BooleanConstraint(path, (FSBooleanConstraint) constraint);
+    } else if (constraint instanceof FSIntConstraint fsIntConstraint) {
+      return new IntConstraint(path, fsIntConstraint);
+    } else if (constraint instanceof FSFloatConstraint fsFloatConstraint) {
+      return new FloatConstraint(path, fsFloatConstraint);
+    } else if (constraint instanceof FSStringConstraint fsStringConstraint) {
+      return new StringConstraint(path, fsStringConstraint);
+    } else if (constraint instanceof FSBooleanConstraint fsBooleanConstraint) {
+      return new BooleanConstraint(path, fsBooleanConstraint);
     } else {
       return null;
     }

@@ -24,8 +24,9 @@ import org.apache.uima.cas.AnnotationBaseFS;
  * For backwards compatibility only with V2 *
  * 
  * @deprecated use AnnotationBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "3.0.0")
 public interface AnnotationBaseImpl extends AnnotationBaseFS {
 
 }

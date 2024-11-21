@@ -159,10 +159,12 @@ public final class AnnotationPredicates {
     return xBegin < yEnd && aY.getBegin() <= xBegin && yEnd < aX.getEnd();
   }
 
+  @SuppressWarnings("unused")
   public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin >= aYEnd;
   }
 
+  @SuppressWarnings("unused")
   public static boolean following(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getBegin() >= aYEnd;
   }
@@ -180,10 +182,12 @@ public final class AnnotationPredicates {
     return aX.getBegin() >= aY.getEnd();
   }
 
+  @SuppressWarnings("unused")
   public static boolean preceding(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aYBegin >= aXEnd;
   }
 
+  @SuppressWarnings("unused")
   public static boolean preceding(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aYBegin >= aX.getEnd();
   }
@@ -201,10 +205,12 @@ public final class AnnotationPredicates {
     return aY.getBegin() >= aX.getEnd();
   }
 
+  @SuppressWarnings("unused")
   public static boolean beginningWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXBegin == aYBegin;
   }
 
+  @SuppressWarnings("unused")
   public static boolean beginningWith(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getBegin() == aYBegin;
   }
@@ -213,10 +219,12 @@ public final class AnnotationPredicates {
     return aX.getBegin() == aY.getBegin();
   }
 
+  @SuppressWarnings("unused")
   public static boolean endingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return aXEnd == aYEnd;
   }
 
+  @SuppressWarnings("unused")
   public static boolean endingWith(AnnotationFS aX, int aYBegin, int aYEnd) {
     return aX.getEnd() == aYEnd;
   }

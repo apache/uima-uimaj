@@ -57,18 +57,22 @@ public final class AxiomaticAnnotationPredicates {
             && !colocated(aXBegin, aXBegin, aYEnd, aYEnd);
   }
 
+  @SuppressWarnings("unused")
   public static boolean following(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return coveredBy(aXBegin, aXEnd, aYEnd, MAX_VALUE);
   }
 
+  @SuppressWarnings("unused")
   public static boolean preceding(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return coveredBy(aXBegin, aXEnd, MIN_VALUE, aYBegin);
   }
 
+  @SuppressWarnings("unused")
   public static boolean beginningWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return colocated(aXBegin, aXBegin, aYBegin, aYBegin);
   }
 
+  @SuppressWarnings("unused")
   public static boolean endingWith(int aXBegin, int aXEnd, int aYBegin, int aYEnd) {
     return colocated(aXEnd, aXEnd, aYEnd, aYEnd);
   }

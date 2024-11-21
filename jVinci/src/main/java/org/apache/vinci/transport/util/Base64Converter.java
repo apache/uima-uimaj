@@ -27,9 +27,9 @@ public class Base64Converter {
   /**
    * If you ask for line-breaks, this is the maximum line length used.
    */
-  static public final int LINE_LENGTH = 70;
+  public static final int LINE_LENGTH = 70;
 
-  static private final byte[] B64_CODE = { (byte) 'A', (byte) 'B', (byte) 'C', (byte) 'D',
+  private static final byte[] B64_CODE = { (byte) 'A', (byte) 'B', (byte) 'C', (byte) 'D',
       (byte) 'E', (byte) 'F', (byte) 'G', (byte) 'H', (byte) 'I', (byte) 'J', (byte) 'K',
       (byte) 'L', (byte) 'M', (byte) 'N', (byte) 'O', (byte) 'P', (byte) 'Q', (byte) 'R',
       (byte) 'S', (byte) 'T', (byte) 'U', (byte) 'V', (byte) 'W', (byte) 'X', (byte) 'Y',
@@ -52,7 +52,7 @@ public class Base64Converter {
    *          -
    * @return -
    */
-  static public byte[] convertBinaryToBase64(byte[] from) {
+  public static byte[] convertBinaryToBase64(byte[] from) {
     return convertBinaryToBase64(from, from.length, true);
   }
 
@@ -63,7 +63,7 @@ public class Base64Converter {
    * @return -
    */
 
-  static public String convertStringToBase64String(String convert_me) {
+  public static String convertStringToBase64String(String convert_me) {
     return new String(convertBinaryToBase64(convert_me.getBytes()));
   }
 
@@ -75,7 +75,7 @@ public class Base64Converter {
    * @throws Base64FormatException
    *           -
    */
-  static public String convertBase64StringToString(String base64) throws Base64FormatException {
+  public static String convertBase64StringToString(String base64) throws Base64FormatException {
     return new String(convertBase64ToBinary(base64.getBytes()));
   }
 
@@ -89,7 +89,7 @@ public class Base64Converter {
    *          -
    * @return -
    */
-  static public byte[] convertBinaryToBase64(byte[] from, final int count, boolean line_breaks) {
+  public static byte[] convertBinaryToBase64(byte[] from, final int count, boolean line_breaks) {
     int size = calculateBase64OutputSize(count, line_breaks);
     byte[] tmp = new byte[size];
     int used = 0;
@@ -129,7 +129,7 @@ public class Base64Converter {
    *          -
    * @return -
    */
-  static public int calculateBase64OutputSize(int input_size, boolean line_breaks) {
+  public static int calculateBase64OutputSize(int input_size, boolean line_breaks) {
     int q = input_size / 3;
     if (input_size % 3 != 0) {
       q += 1;
@@ -151,7 +151,7 @@ public class Base64Converter {
    * @throws Base64FormatException
    *           -
    */
-  static public byte[] convertBase64ToBinary(byte[] input) throws Base64FormatException {
+  public static byte[] convertBase64ToBinary(byte[] input) throws Base64FormatException {
     return convertBase64ToBinary(input, input.length);
   }
 
@@ -166,7 +166,7 @@ public class Base64Converter {
    * @throws Base64FormatException
    *           -
    */
-  static public byte[] convertBase64ToBinary(byte[] input, final int input_size)
+  public static byte[] convertBase64ToBinary(byte[] input, final int input_size)
           throws Base64FormatException {
     int output_size = calculateBinaryOutputSize(input, input_size);
     byte[] output = new byte[output_size];
@@ -192,7 +192,7 @@ public class Base64Converter {
    * @throws Base64FormatException
    *           -
    */
-  static public int calculateBinaryOutputSize(byte[] input, final int input_size)
+  public static int calculateBinaryOutputSize(byte[] input, final int input_size)
           throws Base64FormatException {
     int output_size = 0;
     for (int i = 0; i + 4 <= input_size;) {
@@ -217,7 +217,7 @@ public class Base64Converter {
     return output_size;
   }
 
-  static private int consumeInvalidDigits(byte[] in, int off, int max_offset)
+  private static int consumeInvalidDigits(byte[] in, int off, int max_offset)
           throws Base64FormatException {
     if (off >= max_offset) {
       throw new Base64FormatException("short read");
@@ -235,7 +235,7 @@ public class Base64Converter {
    * @pre in != null
    * @pre out != null
    */
-  static private int b64decodeOctet(byte[] in, int in_offset, byte[] out, int out_offset,
+  private static int b64decodeOctet(byte[] in, int in_offset, byte[] out, int out_offset,
           int max_offset) throws Base64FormatException {
     int A;
     int B;
@@ -279,7 +279,7 @@ public class Base64Converter {
     return in_offset;
   }
 
-  static private int b64decodeDigit(int c) {
+  private static int b64decodeDigit(int c) {
     if (c >= (byte) 'A' && c <= (byte) 'Z') {
       return c - (byte) 'A';
     } else if (c >= (byte) 'a' && c <= (byte) 'z') {
@@ -297,7 +297,7 @@ public class Base64Converter {
     return -1;
   }
 
-  static private boolean b64validDigit(byte a) {
+  private static boolean b64validDigit(byte a) {
     if (a >= (byte) 'A' && a <= (byte) 'Z') {
       return true;
     }
@@ -313,7 +313,7 @@ public class Base64Converter {
     return false;
   }
 
-  static private void b64encodeOctet(byte[] to, int to_offset, byte[] from, int from_offset,
+  private static void b64encodeOctet(byte[] to, int to_offset, byte[] from, int from_offset,
           int count) {
     int A = 0;
     int B = 0;
@@ -371,7 +371,7 @@ public class Base64Converter {
     }
   }
 
-  static private byte b64codes(int which) {
+  private static byte b64codes(int which) {
     if (which < 0) {
       which += 256;
     }

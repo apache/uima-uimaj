@@ -239,7 +239,6 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(String aFqcn, Level level, String message, Throwable thrown) {
-    // log(getMarkerForLevel(level), aFqcn, level, message, null, thrown);
     log(getMarkerForLevel(level), aFqcn, level, message, thrown);
   }
 
@@ -307,7 +306,7 @@ public abstract class Logger_common_impl implements Logger {
    * @deprecated use external configuration possibility
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setOutputStream(OutputStream out) {
     throw new UnsupportedOperationException();
   }
@@ -318,7 +317,7 @@ public abstract class Logger_common_impl implements Logger {
    * @deprecated use external configuration possibility
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void setOutputStream(PrintStream out) {
     throw new UnsupportedOperationException();
   }
@@ -347,7 +346,7 @@ public abstract class Logger_common_impl implements Logger {
    * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
     if (isLoggable(Level.INFO) && !isEmpty(aMessageKey) && isNotLimited(Level.INFO)) {
       log(fqcnCmn, Level.INFO, rb(aResourceBundleName, aMessageKey, aArguments), null);
@@ -363,7 +362,7 @@ public abstract class Logger_common_impl implements Logger {
    *          the exception to be logged
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public void logException(Exception aException) {
     if (isLoggable(Level.INFO) && isNotLimited(Level.INFO) && aException != null) {
       log(fqcnCmn, Level.INFO, EXCEPTION_MESSAGE, aException);
@@ -483,7 +482,7 @@ public abstract class Logger_common_impl implements Logger {
     }
   }
 
-  @Deprecated
+  @Deprecated(since = "3.3.0")
   @Override
   public void setResourceManager(ResourceManager resourceManager) {
     mResourceManager = resourceManager;

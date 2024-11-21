@@ -32,17 +32,17 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CollectionReaderFactory_implTest {
+class CollectionReaderFactory_implTest {
 
   private CollectionReaderFactory_impl ccFactory;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     ccFactory = new CollectionReaderFactory_impl();
   }
 
   @Test
-  public void testInvalidFrameworkImplementation() {
+  void testInvalidFrameworkImplementation() {
     CollectionReaderDescription desc = new CollectionReaderDescription_impl();
     desc.setFrameworkImplementation("foo");
     try {
@@ -51,9 +51,8 @@ public class CollectionReaderFactory_implTest {
     } catch (ResourceInitializationException e) {
       assertNotNull(e.getMessage());
       assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
-      assertEquals(e.getMessageKey(),
-              ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
+      assertEquals(ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION,
+              e.getMessageKey());
     }
   }
-
 }

@@ -501,7 +501,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   }
 
   /** The Constant XMLIZATION_INFO. */
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeDescription",
           new PropertyXmlInfo[] { new PropertyXmlInfo("allCollectionCollectionReaders", null),
               new PropertyXmlInfo("cpeCasProcessors", null), new PropertyXmlInfo("cpeConfig", null),
               new PropertyXmlInfo("cpeResourceManagerConfiguration", null),

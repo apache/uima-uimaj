@@ -34,8 +34,9 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
  *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
  *             org.apache.uima.examples.XmlDetagger for an example.
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.0.0")
 public interface CasInitializer extends ConfigurableResource {
   /**
    * Informs this CasInitializer that the CAS TypeSystem has changed. The CollectionReader must call

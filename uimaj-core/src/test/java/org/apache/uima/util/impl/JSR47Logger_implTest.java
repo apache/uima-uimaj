@@ -26,13 +26,10 @@ import java.util.logging.Logger;
 import org.apache.uima.util.Level;
 import org.junit.jupiter.api.Test;
 
-/**
- * UIMA Logging Test
- * 
- */
-public class JSR47Logger_implTest {
+class JSR47Logger_implTest {
 
-  private static HashMap<String, Level> logLevels = new HashMap<>(9);
+  private static final HashMap<String, Level> logLevels = new HashMap<>(9);
+
   static {
     logLevels.put("OFF", Level.OFF);
     logLevels.put("SEVERE", Level.SEVERE);
@@ -46,14 +43,14 @@ public class JSR47Logger_implTest {
   }
 
   @Test
-  public void testLogWrapperCreation() throws Exception {
+  void testLogWrapperCreation() throws Exception {
 
     // Set the root logger's level to INFO ... may not be the default
     java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
 
     try {
-      org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
-      org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
+      var uimaLogger = JSR47Logger_impl.getInstance();
+      var classLogger = JSR47Logger_impl.getInstance(this.getClass());
       uimaLogger.setLevel(null); // causes it to inherit from above
       classLogger.setLevel(null); // causes it to inherit from above
 
@@ -69,10 +66,10 @@ public class JSR47Logger_implTest {
   }
 
   @Test
-  public void testIsLoggable() throws Exception {
+  void testIsLoggable() throws Exception {
     // create logger
-    org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
-    org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
+    var uimaLogger = JSR47Logger_impl.getInstance();
+    var classLogger = JSR47Logger_impl.getInstance(this.getClass());
     // get uimaLogger log level, get parent logger of "org.apache.uima" until we have the
     // JSR47 root logger that defines the default log level
     Logger jsrLogger = java.util.logging.Logger.getLogger("org.apache.uima");
@@ -172,7 +169,7 @@ public class JSR47Logger_implTest {
   }
 
   @Test
-  public void testMessageLogMethods() throws Exception {
+  void testMessageLogMethods() throws Exception {
     // create Logger
     final org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
     // reset log level to INFO
@@ -239,7 +236,7 @@ public class JSR47Logger_implTest {
   }
 
   @Test
-  public void testMessageKeyLogMethods() throws Exception {
+  void testMessageKeyLogMethods() throws Exception {
     // create Logger
     org.apache.uima.util.Logger logger = JSR47Logger_impl.getInstance();
 

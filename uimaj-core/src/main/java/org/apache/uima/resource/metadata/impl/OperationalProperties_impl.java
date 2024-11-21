@@ -73,7 +73,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
           new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
               new PropertyXmlInfo("multipleDeploymentAllowed"),
               new PropertyXmlInfo("outputsNewCASes") });

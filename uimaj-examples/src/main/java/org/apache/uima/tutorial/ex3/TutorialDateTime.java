@@ -42,7 +42,7 @@ import org.apache.uima.util.Level;
  */
 public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
-  static abstract class Maker {
+  abstract static class Maker {
     abstract Annotation newAnnotation(JCas jcas, int start, int end);
   }
 

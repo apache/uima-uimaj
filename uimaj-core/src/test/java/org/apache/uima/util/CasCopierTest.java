@@ -18,9 +18,7 @@
  */
 package org.apache.uima.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,13 +47,13 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CasCopierTest {
+class CasCopierTest {
   private TypeSystemDescription typeSystem;
 
   private FsIndexDescription[] indexes;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
@@ -66,7 +64,7 @@ public class CasCopierTest {
   }
 
   @Test
-  public void testCopyCas() throws Exception {
+  void testCopyCas() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(
@@ -111,7 +109,7 @@ public class CasCopierTest {
     } catch (Exception e) {
       ee = e;
     }
-    assertTrue(ee instanceof UIMARuntimeException);
+    assertThat(ee instanceof UIMARuntimeException).isTrue();
 
     ee = null;
     CAS v2 = srcCas.createView("v2");
@@ -122,11 +120,11 @@ public class CasCopierTest {
       e.printStackTrace();
       ee = e;
     }
-    assertEquals(ee, null);
+    assertThat(ee).isNull();
   }
 
   @Test
-  public void testCopyCasWithDifferentTypeSystemObject() throws Exception {
+  void testCopyCasWithDifferentTypeSystemObject() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(
@@ -192,7 +190,7 @@ public class CasCopierTest {
   }
 
   @Test
-  public void testCopyCasView() throws Exception {
+  void testCopyCasView() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -262,7 +260,7 @@ public class CasCopierTest {
   }
 
   @Test
-  public void testCopyCasViewsWithWrapper() throws Exception {
+  void testCopyCasViewsWithWrapper() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -298,7 +296,7 @@ public class CasCopierTest {
   }
 
   @Test
-  public void testCopyFs() throws Exception {
+  void testCopyFs() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -362,7 +360,7 @@ public class CasCopierTest {
     } catch (CASRuntimeException e) {
       wascaught = true;
     }
-    assertFalse(wascaught);
+    assertThat(wascaught).isFalse();
     // verify copy
     CasComparer.assertEquals(annot, copy);
 
@@ -383,7 +381,7 @@ public class CasCopierTest {
   }
 
   @Test
-  public void testAnnotationWithNullSofaRef() throws Exception {
+  void testAnnotationWithNullSofaRef() throws Exception {
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CAS srcCasView = srcCas.createView("TestView");
     srcCasView.setDocumentText("This is a test");
@@ -401,13 +399,13 @@ public class CasCopierTest {
     Annotation fs = new Annotation(srcJCas, 0, 4);
     // fs.setIntValue(srcCas.getBeginFeature(), 0);
     // fs.setIntValue(srcCas.getEndFeature(), 4);
-    assertEquals("This", fs.getCoveredText());
+    assertThat(fs.getCoveredText()).isEqualTo("This");
     srcCasView.addFsToIndexes(fs);
     CasCopier.copyCas(srcCas, destCas, true);
     CAS destCasView = destCas.getView("TestView");
     Iterator<Annotation> annotIter = destCasView.<Annotation> getAnnotationIndex().iterator();
     annotIter.next(); // document annotation
     Annotation copiedFs = annotIter.next();
-    assertEquals("This", copiedFs.getCoveredText());
+    assertThat(copiedFs.getCoveredText()).isEqualTo("This");
   }
 }

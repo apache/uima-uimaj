@@ -229,9 +229,10 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
    * 
    * @see MetaDataObject#listAttributes()
    * @deprecated - use getAdditionalAttributes instead
+   * @forRemoval 4.0.0
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "2.6.0")
   public List<NameClassPair> listAttributes() {
     List<NameClassPair> result = super.listAttributes();
     result.add(new NameClassPair("settingsForGroups", Map.class.getName()));
@@ -252,8 +253,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     NodeList childNodes = aElement.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);
-      if (curNode instanceof Element) {
-        Element elem = (Element) curNode;
+      if (curNode instanceof Element elem) {
         // check element tag name
         if ("nameValuePair".equals(elem.getTagName())) {
           nvps.add(aParser.buildObject(elem, aOptions));
@@ -264,8 +264,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
           NodeList arrayNodes = elem.getChildNodes();
           for (int j = 0; j < arrayNodes.getLength(); j++) {
             Node curArrayNode = arrayNodes.item(j);
-            if (curArrayNode instanceof Element) {
-              Element valElem = (Element) curArrayNode;
+            if (curArrayNode instanceof Element valElem) {
               vals.add(aParser.buildObject(valElem));
             }
           }
@@ -302,7 +301,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl
     }
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "configurationParameterSettings",
           new PropertyXmlInfo[] { new PropertyXmlInfo("parameterSettings", null),
               new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization

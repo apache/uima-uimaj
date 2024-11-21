@@ -19,7 +19,7 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import org.apache.uima.util.impl.XMLParser_impl;
+import org.apache.uima.util.XMLParser;
 
 /**
  * A simple class used to describe how to render this object as XML.
@@ -66,6 +66,6 @@ public class XmlizationInfo {
    *          information about how to represent this object's properties
    */
   public XmlizationInfo(String aElementTagName, PropertyXmlInfo[] aPropInfo) {
-    this(aElementTagName, XMLParser_impl.RESOURCE_SPECIFIER_NAMESPACE, aPropInfo);
+    this(aElementTagName, XMLParser.RESOURCE_SPECIFIER_NAMESPACE, aPropInfo);
   }
 }

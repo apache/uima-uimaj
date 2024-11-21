@@ -33,9 +33,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @deprecated Not used anymore. Will be removed in UIMA 4.
+ * @forRemoval 4.0.0
  */
-@Deprecated
-public class IntArrayRBTTest {
+@Deprecated(since = "3.3.0")
+class IntArrayRBTTest {
   private final static int NIL = 0;
   static final Random rand = new Random();
   static {
@@ -90,7 +91,7 @@ public class IntArrayRBTTest {
   }
 
   @Test
-  public void testStructure() {
+  void testStructure() {
 
     for (int ol = 0; ol < 100; ol++) {
       IntArrayRBT ia = new IntArrayRBT(4);
@@ -109,7 +110,7 @@ public class IntArrayRBTTest {
   }
 
   @Test
-  public void testFindInsertionPoint() {
+  void testFindInsertionPoint() {
     IntArrayRBT ia = new IntArrayRBT();
     Integer[] vs = new Integer[] { 2, 2, 5, 1, 6, 7, 3, 4 };
     for (Integer i : vs) {
@@ -122,7 +123,7 @@ public class IntArrayRBTTest {
   }
 
   @Test
-  public void testIterator() {
+  void testIterator() {
     IntArrayRBT ia = new IntArrayRBT();
 
     ia.insertKey(4);
@@ -183,7 +184,7 @@ public class IntArrayRBTTest {
   // }
 
   @Test
-  public void testLargeInsertsDeletes() {
+  void testLargeInsertsDeletes() {
     IntArrayRBT ia = new IntArrayRBT();
     System.gc();
     long fm1 = Runtime.getRuntime().freeMemory();

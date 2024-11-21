@@ -1,0 +1,195 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_tools.uimafit.maven]]
+= uimaFIT Maven Plugin
+
+uimaFIT dynamically generates UIMA component descriptions from annotations in the Java source code.
+The uimaFIT Maven plugin provides the ability to automatically create such annotations in already compiled classes and to automatically generate XML descriptors from the annotated classes.
+
+== enhance goal
+
+The goal enhance allows automatically augmenting compiled classes with uimaFIT annotations.
+Information like vendor, copyright, or version can be obtained from the Maven POM.
+Additionally, descriptions for parameters and components can be generated from Javadoc comments.
+Existing annotations are not overwritten unless forced. 
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.apache.uima</groupId>
+  <artifactId>uimafit-maven-plugin</artifactId>
+  <version></version> <!-- change to latest version -->
+  <configuration>
+    <!-- OPTIONAL -->
+    <!-- Override component description in generated descriptors. -->
+    <overrideComponentDescription>false</overrideComponentDescription>
+
+    <!-- OPTIONAL -->
+    <!-- Override version in generated descriptors. -->
+    <overrideComponentVersion>false</overrideComponentVersion>
+
+    <!-- OPTIONAL -->
+    <!-- Override vendor in generated descriptors. -->
+    <overrideComponentVendor>false</overrideComponentVendor>
+
+    <!-- OPTIONAL -->
+    <!-- Override copyright in generated descriptors. -->
+    <overrideComponentCopyright>false</overrideComponentCopyright>
+
+    <!-- OPTIONAL -->
+    <!-- Version to use in generated descriptors. -->
+    <componentVersion>${project.version}</componentVersion>
+
+    <!-- OPTIONAL -->
+    <!-- Vendor to use in generated descriptors. -->
+    <componentVendor>Apache Foundation</componentVendor>
+
+    <!-- OPTIONAL -->
+    <!-- Copyright to use in generated descriptors. -->
+    <componentCopyright>Apache Foundation 2013</componentCopyright>
+
+    <!-- OPTIONAL -->
+    <!-- Source file encoding. -->
+    <encoding>${project.build.sourceEncoding}</encoding>
+
+    <!-- OPTIONAL -->
+    <!-- Generate a report of missing meta data in 
+         $project.build.directory/uimafit-missing-meta-data-report.txt -->
+    <generateMissingMetaDataReport>true</generateMissingMetaDataReport>
+
+    <!-- OPTIONAL -->
+    <!-- Fail on missing meta data. This setting has no effect unless
+         generateMissingMetaDataReport is enabled. -->
+    <failOnMissingMetaData>false</failOnMissingMetaData>
+
+    <!-- OPTIONAL -->
+    <!-- Constant name prefixes used for parameters and external resources,
+         e.g. "PARAM_". -->
+    <parameterNameConstantPrefixes>
+      <prefix>PARAM_<prefix/>
+    </parameterNameConstantPrefixes>
+    
+    <!-- OPTIONAL -->
+    <!-- Fail on missing meta data. This setting has no effect unless
+         generateMissingMetaDataReport is enabled. -->
+    <externalResourceNameConstantPrefixes>
+      <prefix>KEY_<prefix/>
+      <prefix>RES_<prefix/>
+    </externalResourceNameConstantPrefixes>
+    
+    <!-- OPTIONAL -->
+    <!-- Mode of adding type systems found on the classpath via the
+         uimaFIT detection mechanism at compile time to the generated
+         descriptor. By default, no type systems are added. -->
+    <addTypeSystemDescriptions>NONE</addTypeSystemDescriptions>
+    
+  </configuration>
+  <executions>
+    <execution>
+      <id>default</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>enhance</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+----
+
+When generating descriptions for configuration parameters or external resources, the plugin supports a common practice of placing the Javadoc on a constant field instead of the parameter or external resource field.
+Per default, parameter name constants must be prefixed with `PARAM_` and external resource key constants must be prefixed with `RES_ ` or `KEY_`.
+
+[source,java]
+----
+/**
+ * Enable or disable my feature.
+ */
+public static final String PARAM_ENABLE_FEATURE = "enableFeature";
+@ConfigurationParameter(name=PARAM_ENABLE_FEATURE)
+private boolean enableFeature;
+
+/**
+ * My external resource.
+ */
+public static final String RES_MY_RESOURCE = "resource";
+@ExternalResource(key=RES_MY_RESOURCE)
+private MyResource resource;
+----
+
+By enabling `generateMissingMetaDataReport`, the build can be made to fail if meta data such as parameter descriptions are missing.
+A report about the missing data is generated in [path]_uimafit-missing-meta-data-report.txt_ in the project build directory.
+
+== generate goal
+
+The generate goal generates XML component descriptors for UIMA components. 
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.apache.uima</groupId>
+  <artifactId>uimafit-maven-plugin</artifactId>
+  <version></version> <!-- change to latest version -->
+  <configuration>
+    <!-- OPTIONAL -->
+    <!-- Path where the generated resources are written. -->
+    <outputDirectory>
+      ${project.build.directory}/generated-sources/uimafit
+    </outputDirectory>
+
+    <!-- OPTIONAL -->
+    <!-- Skip generation of META-INF/org.apache.uima.fit/components.txt -->
+    <skipComponentsManifest>false</skipComponentsManifest>
+
+    <!-- OPTIONAL -->
+    <!-- Source file encoding. -->
+    <encoding>${project.build.sourceEncoding}</encoding>
+  </configuration>
+  <executions>
+    <execution>
+      <id>default</id>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+----
+
+In addition to the XML descriptors, a manifest file is written to `META-INF/org.apache.uima.fit/components.txt`.
+This file can be used to conveniently locate the XML descriptors, which are written in the packages next to the classes they describe.
+
+[source]
+----
+classpath*:org/apache/uima/fit/examples/ExampleComponent.xml
+----
+
+It is recommended to use both, the enhance and the generate goal.
+Both goals should be specified in the same execution, first enhance, then generate:
+
+[source,xml]
+----
+<execution>
+  <id>default</id>
+  <phase>process-classes</phase>
+  <goals>
+    <goal>enhance</goal>
+    <goal>generate</goal>
+  </goals>
+</execution>
+----

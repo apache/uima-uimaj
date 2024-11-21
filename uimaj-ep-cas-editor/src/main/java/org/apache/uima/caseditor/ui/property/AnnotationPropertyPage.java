@@ -87,7 +87,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   /**
    * The Class CustomStyleConfigWidget.
    */
-  private static abstract class CustomStyleConfigWidget extends Composite {
+  private abstract static class CustomStyleConfigWidget extends Composite {
 
     /** The listeners. */
     private Set<CustomStyleConfigChangeListener> listeners = new HashSet<>();

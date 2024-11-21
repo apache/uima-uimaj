@@ -46,8 +46,11 @@ import org.apache.uima.util.ProcessTrace;
 /**
  * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
  * output file is UTF-8
+ * 
+ * @deprecated To be removed without replacement.
+ * @forRemoval 4.0.0
  */
-
+@Deprecated
 public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer {
 
   /** The out file. */
@@ -67,7 +70,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   private boolean reconfig = false;
 
   /** The Constant featureOnlyKey. */
-  private final static String featureOnlyKey = "feature";
+  private static final String featureOnlyKey = "feature";
 
   /**
    * Initializes this CAS Consumer with the parameters specified in the descriptor.
@@ -89,10 +92,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
       // If specified output directory does not exist, try to create it
       this.outFile = new File(oPath);
       if (this.outFile.getParentFile() != null && !this.outFile.getParentFile().exists()) {
-        if (!this.outFile.getParentFile().mkdirs())
+        if (!this.outFile.getParentFile().mkdirs()) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
                   new Object[] { oPath, "outputFile" });
+        }
       }
       try {
         this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false),
@@ -105,8 +109,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     // extract annotation types
     this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
     // sort array
-    if (this.tofs != null)
+    if (this.tofs != null) {
       Arrays.sort(this.tofs);
+    }
 
   }
 
@@ -328,15 +333,17 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     if (!oFile.equals(this.outFile)) {
       this.outFile = oFile;
       try {
-        if (this.fileWriter != null)
+        if (this.fileWriter != null) {
           this.fileWriter.close();
+        }
 
         // If specified output directory does not exist, try to create it
         if (oFile.getParentFile() != null && !oFile.getParentFile().exists()) {
-          if (!oFile.getParentFile().mkdirs())
+          if (!oFile.getParentFile().mkdirs()) {
             throw new ResourceConfigurationException(
                     ResourceInitializationException.RESOURCE_DATA_NOT_VALID,
                     new Object[] { oPath, "outputFile" });
+          }
         }
         // write result specification to the output file
         this.fileWriter = new OutputStreamWriter(new FileOutputStream(oFile, false),
@@ -349,8 +356,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
     // extract annotation types
     this.tofs = (String[]) getUimaContext().getConfigParameterValue("AnnotationTypes");
     // sort array
-    if (this.tofs != null)
+    if (this.tofs != null) {
       Arrays.sort(this.tofs);
+    }
 
   }
 

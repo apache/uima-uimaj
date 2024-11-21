@@ -32,9 +32,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-public class ConfigurationParameterDeclarations_implTest {
+class ConfigurationParameterDeclarations_implTest {
   @Test
-  public void testBuildFromXmlElement() throws Exception {
+  void testBuildFromXmlElement() throws Exception {
     // parse XML
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

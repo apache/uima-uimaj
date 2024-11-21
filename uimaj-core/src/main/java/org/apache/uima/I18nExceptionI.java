@@ -85,8 +85,8 @@ public interface I18nExceptionI {
       return true;
     }
     Throwable cause = getCause();
-    if (cause != null && cause instanceof I18nExceptionI) {
-      return ((I18nExceptionI) cause).hasMessageKey(messageKey);
+    if (cause instanceof I18nExceptionI i18nExceptionI) {
+      return i18nExceptionI.hasMessageKey(messageKey);
     }
     return false;
   }

@@ -75,19 +75,16 @@ public class IntegerArrayList extends TOP implements
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.cas.IntegerArrayList";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.jcas.cas.IntegerArrayList";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(IntegerArrayList.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(IntegerArrayList.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -114,13 +111,13 @@ public class IntegerArrayList extends TOP implements
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_intArray = "intArray";
+  public static final String _FeatName_intArray = "intArray";
 
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
-  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(IntegerArrayList.class, "intArray");
-  private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
+  private static final CallSite _FC_intArray = TypeSystemImpl.createCallSiteForBuiltIn(IntegerArrayList.class, "intArray");
+  private static final MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

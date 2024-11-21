@@ -35,11 +35,11 @@ import org.apache.uima.jcas.JCasRegistry;
 public class NonEmptyStringList extends StringList implements Iterable<String>, NonEmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_NON_EMPTY_STRING_LIST;
+  public static final String _TypeName = CAS.TYPE_NAME_NON_EMPTY_STRING_LIST;
 
-  public final static int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
+  public static final int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   @Override
   public int getTypeIndexID() {
@@ -51,12 +51,12 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
 
   // public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
   // public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-  private final static CallSite _FC_head = TypeSystemImpl
+  private static final CallSite _FC_head = TypeSystemImpl
           .createCallSiteForBuiltIn(NonEmptyStringList.class, "head");
-  private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
-  private final static CallSite _FC_tail = TypeSystemImpl
+  private static final MethodHandle _FH_head = _FC_head.dynamicInvoker();
+  private static final CallSite _FC_tail = TypeSystemImpl
           .createCallSiteForBuiltIn(NonEmptyStringList.class, "tail");
-  private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
+  private static final MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
 
   // /* local data */
   // private String _F_head;

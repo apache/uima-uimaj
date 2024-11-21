@@ -19,8 +19,8 @@
 
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -73,7 +73,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class JcasSofaTest {
+class JcasSofaTest {
 
   private CASMgr casMgr;
 
@@ -82,34 +82,30 @@ public class JcasSofaTest {
   private JCas jcas;
 
   @BeforeEach
-  public void setUp() throws Exception {
-    try {
-      casMgr = CASFactory.createCAS();
-      CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
-      // Create a writable type system.
-      TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
-      // Add new types and features.
-      Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
-      Type crossType = tsa.addType("org.apache.uima.cas.test.CrossAnnotation", annotType);
-      tsa.addFeature("otherAnnotation", crossType, annotType);
-      // Commit the type system.
-      ((CASImpl) casMgr).commitTypeSystem();
+  void setUp() throws Exception {
+    casMgr = CASFactory.createCAS();
+    CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
+    // Create a writable type system.
+    TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
+    // Add new types and features.
+    Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+    Type crossType = tsa.addType("org.apache.uima.cas.test.CrossAnnotation", annotType);
+    tsa.addFeature("otherAnnotation", crossType, annotType);
+    // Commit the type system.
+    ((CASImpl) casMgr).commitTypeSystem();
 
-      // Create the Base indexes.
-      casMgr.initCASIndexes();
-      FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
-      // init.initIndexes(irm, casMgr.getTypeSystemMgr());
-      irm.commit();
+    // Create the Base indexes.
+    casMgr.initCASIndexes();
+    FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
+    // init.initIndexes(irm, casMgr.getTypeSystemMgr());
+    irm.commit();
 
-      cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
-      jcas = cas.getJCas();
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
+    jcas = cas.getJCas();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     casMgr = null;
     jcas = null;
     cas = null;
@@ -119,16 +115,15 @@ public class JcasSofaTest {
    * Test driver.
    */
   @Test
-  public void testMain() throws Exception {
+  void testMain() throws Exception {
     try {
-
       // Create a Sofa using OLD APIs for now
       CAS view = cas.createView("EnglishDocument");
       // SofaID_impl id = new SofaID_impl();
       // id.setSofaID("EnglishDocument");
       // Sofa es = new Sofa(jcas, id, "text");
       // Initial View is #1!!!
-      assertTrue(2 == view.getSofa().getSofaRef());
+      assertThat(view.getSofa().getSofaRef()).isEqualTo(2);
       // assertTrue(2 == es.getSofaRef());
 
       // Set the document text
@@ -163,7 +158,7 @@ public class JcasSofaTest {
       // Delete the generated file.
       File xcasFile = new File(xcasFilename);
       if (xcasFile.exists()) {
-        assertTrue(xcasFile.delete());
+        assertThat(xcasFile.delete()).isTrue();
       }
 
       // Add a new Sofa
@@ -171,7 +166,7 @@ public class JcasSofaTest {
       // Sofa gs = new Sofa(jcas, id, "text");
       JCas gerJcas = jcas.createView("GermanDocument");
       Sofa gs = gerJcas.getSofa();
-      assertTrue(3 == gs.getSofaRef());
+      assertThat(gs.getSofaRef()).isEqualTo(3);
 
       // Set the document text
       // gs.setLocalSofaData("das bier ist gut");
@@ -186,7 +181,7 @@ public class JcasSofaTest {
       // Sofa fs = new Sofa(jcas, id, "text");
       CAS frCas = jcas.getCas().createView("FrenchDocument");
       SofaFS fs = frCas.getSofa();
-      assertTrue(4 == fs.getSofaRef());
+      assertThat(fs.getSofaRef()).isEqualTo(4);
 
       // Open JCas views of some Sofas
       JCas engJcas = view.getJCas();
@@ -207,8 +202,8 @@ public class JcasSofaTest {
       StringTokenizer fst = new StringTokenizer(frText);
 
       while (est.hasMoreTokens()) {
-        assertTrue(gst.hasMoreTokens());
-        assertTrue(fst.hasMoreTokens());
+        assertThat(gst.hasMoreTokens()).isTrue();
+        assertThat(fst.hasMoreTokens()).isTrue();
 
         String eTok = est.nextToken();
         int engBegin = engText.indexOf(eTok, engEnd);
@@ -251,10 +246,10 @@ public class JcasSofaTest {
         sofaIter.moveToNext();
       }
       // assertTrue(sofaIndex.size() == 3); // 3 sofas
-      assertTrue(numSofas == 3);
-      assertTrue(engIndex.size() == 5); // 4 annots plus documentAnnotation
-      assertTrue(gerIndex.size() == 5); // 4 annots plus documentAnnotation
-      assertTrue(frIndex.size() == 5); // 4 annots plus documentAnnotation
+      assertThat(numSofas).isEqualTo(3);
+      assertThat(engIndex.size()).isEqualTo(5); // 4 annots plus documentAnnotation
+      assertThat(gerIndex.size()).isEqualTo(5); // 4 annots plus documentAnnotation
+      assertThat(frIndex.size()).isEqualTo(5); // 4 annots plus documentAnnotation
 
       // Test that the annotations are of the correct types
       FSIterator engIt = engIndex.iterator();
@@ -263,9 +258,9 @@ public class JcasSofaTest {
       Annotation engAnnot = (Annotation) engIt.get();
       Annotation gerAnnot = (Annotation) gerIt.get();
       Annotation frAnnot = (Annotation) frIt.get();
-      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(engAnnot.getType().getName()));
-      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(gerAnnot.getType().getName()));
-      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(frAnnot.getType().getName()));
+      assertThat(engAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_DOCUMENT_ANNOTATION));
+      assertThat(gerAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_DOCUMENT_ANNOTATION));
+      assertThat(frAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_DOCUMENT_ANNOTATION));
 
       engIt.moveToNext();
       gerIt.moveToNext();
@@ -273,18 +268,18 @@ public class JcasSofaTest {
       engAnnot = (Annotation) engIt.get();
       CrossAnnotation gerCrossAnnot = (CrossAnnotation) gerIt.get();
       frAnnot = (Annotation) frIt.get();
-      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(engAnnot.getType().getName()));
-      assertTrue(("this").equals(engAnnot.getCoveredText()));
-      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
-      assertTrue(("cette").equals(frAnnot.getCoveredText()));
-      assertTrue(("org.apache.uima.cas.test.CrossAnnotation")
-              .equals(gerCrossAnnot.getType().getName()));
-      assertTrue(("das").equals(gerCrossAnnot.getCoveredText()));
+      assertThat(engAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_ANNOTATION));
+      assertThat(engAnnot.getCoveredText()).isEqualTo(("this"));
+      assertThat(frAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_ANNOTATION));
+      assertThat(frAnnot.getCoveredText()).isEqualTo(("cette"));
+      assertThat(gerCrossAnnot.getType().getName())
+              .isEqualTo(("org.apache.uima.cas.test.CrossAnnotation"));
+      assertThat(gerCrossAnnot.getCoveredText()).isEqualTo(("das"));
 
       // Test that the other annotation feature of cross annotations works
       Annotation crossAnnot = gerCrossAnnot.getOtherAnnotation();
-      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(crossAnnot.getType().getName()));
-      assertTrue(("this").equals(crossAnnot.getCoveredText()));
+      assertThat(crossAnnot.getType().getName()).isEqualTo((CAS.TYPE_NAME_ANNOTATION));
+      assertThat(crossAnnot.getCoveredText()).isEqualTo(("this"));
 
       // Test that annotations accessed from a reference in the base CAS work correctly
       FSArray anArray = new FSArray(jcas, 3);
@@ -292,11 +287,11 @@ public class JcasSofaTest {
       anArray.set(1, frAnnot);
       anArray.set(2, gerCrossAnnot);
       Annotation tstAnnot = (Annotation) anArray.get(0);
-      assertTrue(("this").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("this"));
       tstAnnot = (Annotation) anArray.get(1);
-      assertTrue(("cette").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("cette"));
       tstAnnot = (Annotation) anArray.get(2);
-      assertTrue(("das").equals(tstAnnot.getCoveredText()));
+      assertThat(tstAnnot.getCoveredText()).isEqualTo(("das"));
 
       // // code to write out test cas used by other routines,
       // // normally commented out, unless need to regenerate
@@ -322,9 +317,8 @@ public class JcasSofaTest {
    * Test stream access to Sofa Data.
    */
   @Test
-  public void testSofaDataStream() throws Exception {
+  void testSofaDataStream() throws Exception {
     try {
-
       // Create Sofas
       // Create a local Sofa and set string feature
       // SofaID_impl id = new SofaID_impl();
@@ -417,88 +411,89 @@ public class JcasSofaTest {
 
       // read sofa data
       InputStream is = stringView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       byte[] dest = new byte[1];
       StringBuffer buf = new StringBuffer();
       while (is.read(dest) != -1) {
         buf.append((char) dest[0]);
       }
-      assertTrue(buf.toString().equals("this beer is good"));
+      assertThat(buf.toString()).isEqualTo("this beer is good");
 
       dest = new byte[4];
       is.close();
       is = intArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       BufferedInputStream bis = new BufferedInputStream(is);
       int i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
+        assertThat(intArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getInt());
       }
 
       bis.close();
 
       is = floatArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       bis = new BufferedInputStream(is);
       i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getFloat() == floatArrayFS.get(i++));
+        assertThat(floatArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getFloat(), offset(0.0f));
       }
 
       dest = new byte[2];
       bis.close();
       is = shortArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       bis = new BufferedInputStream(is);
       i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getShort() == shortArrayFS.get(i++));
+        assertThat(shortArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getShort());
       }
 
       dest = new byte[1];
       bis.close();
       is = byteArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       bis = new BufferedInputStream(is);
       i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).get() == byteArrayFS.get(i++));
+        assertThat(byteArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).get());
       }
 
       dest = new byte[8];
       bis.close();
       is = longArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       bis = new BufferedInputStream(is);
       i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getLong() == longArrayFS.get(i++));
+        assertThat(longArrayFS.get(i++)).isEqualTo(ByteBuffer.wrap(dest).getLong());
       }
 
       bis.close();
       is = doubleArrayView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       bis = new BufferedInputStream(is);
       i = 0;
       while (bis.read(dest) != -1) {
-        assertTrue(ByteBuffer.wrap(dest).getDouble() == doubleArrayFS.get(i++));
+        assertThat(doubleArrayFS.get(i++)).isCloseTo(ByteBuffer.wrap(dest).getDouble(),
+                offset(0.0));
       }
 
       dest = new byte[1];
       bis.close();
       is = remoteView.getSofaDataStream();
-      assertTrue(is != null);
+      assertThat(is).isNotNull();
       buf = new StringBuffer();
       while (is.read(dest) != -1) {
         buf.append((char) dest[0]);
       }
-      assertTrue(buf.toString().equals("this beer is good"));
+      assertThat(buf.toString()).isEqualTo("this beer is good");
       is.close();
 
       // Delete the generated file.
       File xcasFile = new File(sofaFileName);
       if (xcasFile.exists()) {
-        assertTrue(xcasFile.delete());
+        assertThat(xcasFile.delete()).isTrue();
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -506,7 +501,7 @@ public class JcasSofaTest {
   }
 
   @Test
-  public void testIndexTwice() throws Exception {
+  void testIndexTwice() throws Exception {
     try {
       CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       JCas newJCas = newCas.getJCas();
@@ -518,8 +513,8 @@ public class JcasSofaTest {
 
       Iterator<Annotation> annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
       Annotation annot2 = annotIter.next();
-      assertEquals(annot, annot2);
-      assertEquals(annot2.getSofa(), annot2.getCASImpl().getSofa());
+      assertThat(annot2).isEqualTo(annot);
+      assertThat(annot2.getCASImpl().getSofa()).isEqualTo(annot2.getSofa());
 
       annot2.addToIndexes();
     } catch (Exception e) {
@@ -527,21 +522,18 @@ public class JcasSofaTest {
     }
   }
 
+  @Deprecated(since = "2.0.0")
   @Test
-  public void testGetSofa() throws Exception {
-    try {
-      File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
-              .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
-      CAS newCas = CasCreationUtils.createCas(typeSystem, null, null);
-      File xcasFile = JUnitExtension.getFile("ExampleCas/multiSofaCas.xml");
-      XCASDeserializer.deserialize(new FileInputStream(xcasFile), newCas);
-      JCas newJCas = newCas.getJCas();
+  void testGetSofa() throws Exception {
+    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser()
+            .parseTypeSystemDescription(new XMLInputSource(typeSystemFile));
+    CAS newCas = CasCreationUtils.createCas(typeSystem, null, null);
+    File xcasFile = JUnitExtension.getFile("ExampleCas/multiSofaCas.xml");
+    XCASDeserializer.deserialize(new FileInputStream(xcasFile), newCas);
+    JCas newJCas = newCas.getJCas();
 
-      SofaID sofaId = new SofaID_impl("EnglishDocument");
-      JCas view = newJCas.getView(newJCas.getSofa(sofaId));
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
+    SofaID sofaId = new SofaID_impl("EnglishDocument");
+    JCas view = newJCas.getView(newJCas.getSofa(sofaId));
   }
 }

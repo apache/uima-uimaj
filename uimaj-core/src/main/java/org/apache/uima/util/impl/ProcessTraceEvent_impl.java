@@ -53,7 +53,7 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
   /**
    * Duration of this event in milliseconds.
    */
-  private int mDuration;
+  private long mDuration;
 
   /**
    * Result Message of this event.
@@ -147,7 +147,15 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent {
    */
   @Override
   public int getDuration() {
-    return mDuration;
+    if (mDuration > Integer.MAX_VALUE) {
+      return Integer.MAX_VALUE;
+    }
+
+    if (mDuration < Integer.MIN_VALUE) {
+      return Integer.MIN_VALUE;
+    }
+
+    return (int) mDuration;
   }
 
   /**

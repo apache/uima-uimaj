@@ -136,7 +136,7 @@ public class CPMUtils {
    *          - name of the event for which the time is needed
    * @return - total duration of an event
    */
-  public synchronized static long extractTime(ProcessTrace aPT, String eventName) {
+  public static synchronized long extractTime(ProcessTrace aPT, String eventName) {
     List aList = aPT.getEvents();
     int counter = 0;
     while (aList != null && aList.size() > 0 && counter < aList.size()) {

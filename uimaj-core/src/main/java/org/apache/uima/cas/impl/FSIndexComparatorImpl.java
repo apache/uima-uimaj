@@ -163,7 +163,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
       Object keySpec2 = comp.keySpecs.get(i);
       if (keySpec1 instanceof LinearTypeOrder) {
         // equals compares the type codes in the ordered arrays for ==
-        if (!(((LinearTypeOrder) keySpec1).equals((LinearTypeOrder) keySpec2))) {
+        if (!(((LinearTypeOrder) keySpec1).equals(keySpec2))) {
           return false;
         }
       } else {

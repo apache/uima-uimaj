@@ -50,31 +50,31 @@ import org.eclipse.swt.widgets.TreeItem;
 public abstract class AbstractSectionParm extends AbstractSection {
 
   /** The Constant NOT_IN_ANY_GROUP. */
-  public final static String NOT_IN_ANY_GROUP = Messages
+  public static final String NOT_IN_ANY_GROUP = Messages
           .getString("AbstractSectionParm.notInAnyGroup"); //$NON-NLS-1$
 
   /** The Constant COMMON_GROUP. */
-  public final static String COMMON_GROUP = Messages.getString("AbstractSectionParm.common"); //$NON-NLS-1$
+  public static final String COMMON_GROUP = Messages.getString("AbstractSectionParm.common"); //$NON-NLS-1$
 
   // maintainers note: names below have extra trailing blanks to get them to approximately line up
   /** The Constant DELEGATE_HEADER. */
   // where possible
-  protected final static String DELEGATE_HEADER = Messages
+  protected static final String DELEGATE_HEADER = Messages
           .getString("AbstractSectionParm.delegateKeyName"); //$NON-NLS-1$
 
   /** The Constant FLOWCTLR_HEADER. */
-  protected final static String FLOWCTLR_HEADER = "Flow Controller Key Name: ";
+  protected static final String FLOWCTLR_HEADER = "Flow Controller Key Name: ";
 
   /** The Constant GROUP_HEADER. */
-  protected final static String GROUP_HEADER = Messages
+  protected static final String GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerGroupNames"); //$NON-NLS-1$
 
   /** The Constant COMMON_GROUP_HEADER. */
-  protected final static String COMMON_GROUP_HEADER = Messages
+  protected static final String COMMON_GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerCommon"); //$NON-NLS-1$
 
   /** The Constant NOT_IN_ANY_GROUP_HEADER. */
-  protected final static String NOT_IN_ANY_GROUP_HEADER = Messages
+  protected static final String NOT_IN_ANY_GROUP_HEADER = Messages
           .getString("AbstractSectionParm.headerNotInAnyGroup"); //$NON-NLS-1$
 
   /** The override header. */
@@ -88,28 +88,28 @@ public abstract class AbstractSectionParm extends AbstractSection {
   // //$NON-NLS-1$
 
   /** The Constant MULTI_VALUE_INDICATOR. */
-  protected final static String MULTI_VALUE_INDICATOR = "Multi  "; //$NON-NLS-1$
+  protected static final String MULTI_VALUE_INDICATOR = "Multi  "; //$NON-NLS-1$
 
   /** The Constant SINGLE_VALUE_INDICATOR. */
-  protected final static String SINGLE_VALUE_INDICATOR = "Single "; //$NON-NLS-1$
+  protected static final String SINGLE_VALUE_INDICATOR = "Single "; //$NON-NLS-1$
 
   /** The Constant OPTIONAL_INDICATOR. */
-  protected final static String OPTIONAL_INDICATOR = "Opt "; //$NON-NLS-1$
+  protected static final String OPTIONAL_INDICATOR = "Opt "; //$NON-NLS-1$
 
   /** The Constant REQUIRED_INDICATOR. */
-  protected final static String REQUIRED_INDICATOR = "Req "; //$NON-NLS-1$
+  protected static final String REQUIRED_INDICATOR = "Req "; //$NON-NLS-1$
 
   /** The Constant EXTERNAL_OVERRIDE_INDICATOR. */
-  protected final static String EXTERNAL_OVERRIDE_INDICATOR = "XO "; //$NON-NLS-1$
+  protected static final String EXTERNAL_OVERRIDE_INDICATOR = "XO "; //$NON-NLS-1$
 
   /** The Constant NO_EXTERNAL_OVERRIDE_INDICATOR. */
-  protected final static String NO_EXTERNAL_OVERRIDE_INDICATOR = "      ";
+  protected static final String NO_EXTERNAL_OVERRIDE_INDICATOR = "      ";
 
   /** The name header. */
   protected final String nameHeader = "  Name: "; //$NON-NLS-1$
 
   /** The Constant typeNamesW. */
-  protected final static Map<String, String> typeNamesW = new HashMap<>(4);
+  protected static final Map<String, String> typeNamesW = new HashMap<>(4);
   static { // map extra spaces to get these to take the same
     typeNamesW.put("Boolean", "Boolean "); //$NON-NLS-1$ //$NON-NLS-2$
     typeNamesW.put("Float", "Float      "); //$NON-NLS-1$ //$NON-NLS-2$

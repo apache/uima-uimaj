@@ -19,9 +19,7 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,10 +30,10 @@ import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 import org.junit.jupiter.api.Test;
 
-public class Int2IntRBTTest {
+class Int2IntRBTTest {
 
   @Test
-  public void testexpand() {
+  void testexpand() {
     Int2IntRBT ia = new Int2IntRBT();
 
     int shiftpoint = 1 + (1 << 30);
@@ -53,7 +51,7 @@ public class Int2IntRBTTest {
   }
 
   @Test
-  public void testIterator() {
+  void testIterator() {
     Int2IntRBT ia = new Int2IntRBT();
     Integer[] vs = new Integer[] { 2, 2, 5, 1, 6, 7, 3, 4 };
     for (Integer i : vs) {
@@ -66,35 +64,32 @@ public class Int2IntRBTTest {
     while (itl.hasNext()) {
       r[i++] = itl.nextNvc();
     }
-    assertEquals(i, vs.length - 1);
-    assertTrue(Arrays.equals(r, new Integer[] { 1, 2, 3, 4, 5, 6, 7, null }));
+    assertThat(vs.length - 1).isEqualTo(i);
+    assertThat(Arrays.equals(r, new Integer[] { 1, 2, 3, 4, 5, 6, 7, null })).isTrue();
 
     i = 0;
     for (IntKeyValueIterator it = ia.keyValueIterator(); it.isValid(); it.inc()) {
       r[i++] = it.getValue();
       // System.out.format("key: %d value: %d%n", it.get(), it.getValue());
     }
-    assertTrue(Arrays.equals(r, new Integer[] { 2, 4, 6, 8, 10, 12, 14, null }));
-
-    i = 0;
+    assertThat(Arrays.equals(r, new Integer[] { 2, 4, 6, 8, 10, 12, 14, null })).isTrue();
 
     IntKeyValueIterator it = ia.keyValueIterator();
-    assertTrue(it.isValid());
+    assertThat(it.isValid()).isTrue();
     it.dec();
-    assertFalse(it.isValid());
+    assertThat(it.isValid()).isFalse();
     it.inc();
-    assertFalse(it.isValid());
+    assertThat(it.isValid()).isFalse();
     it.moveToLast();
-    assertTrue(it.isValid());
+    assertThat(it.isValid()).isTrue();
     it.inc();
-    assertFalse(it.isValid());
+    assertThat(it.isValid()).isFalse();
     // it.dec(); // causes infinite loop
     // assertFalse(it.isValid());
-
   }
 
   @Test
-  public void testFastLookup() {
+  void testFastLookup() {
     Int2IntRBT ia = new Int2IntRBT();
     Random r = new Random();
     Set<Integer> keys = new HashSet<>(1000);
@@ -106,7 +101,7 @@ public class Int2IntRBTTest {
     }
 
     for (int k : keys) {
-      assertEquals(10000 + k, ia.getMostlyClose(k));
+      assertThat(ia.getMostlyClose(k)).isEqualTo(10000 + k);
     }
   }
 }

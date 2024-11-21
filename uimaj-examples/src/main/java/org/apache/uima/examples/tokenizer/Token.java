@@ -34,7 +34,7 @@ public class Token extends Annotation {
    * @ordered
    */
   @SuppressWarnings("hiding")
-  public final static String _TypeName = "org.apache.uima.examples.tokenizer.Token";
+  public static final String _TypeName = "org.apache.uima.examples.tokenizer.Token";
 
   /** The Constant typeIndexID. */
   public static final int typeIndexID = JCasRegistry.register(Token.class);

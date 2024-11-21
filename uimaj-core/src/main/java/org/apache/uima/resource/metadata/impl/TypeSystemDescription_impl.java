@@ -169,8 +169,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
   @Override
   public synchronized void resolveImports(Collection<String> aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
-    ImportResolver<TypeSystemDescription, TypeDescription> resolver = new ImportResolver<>(
-            TypeSystemDescriptionImportResolverAdapter::new);
+    var resolver = new ImportResolver<>(TypeSystemDescriptionImportResolverAdapter::new);
     resolver.resolveImports(this, aAlreadyImportedTypeSystemURLs, aResourceManager);
   }
 
@@ -179,7 +178,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
           new PropertyXmlInfo[] { //
               new PropertyXmlInfo("name", true), //
               new PropertyXmlInfo("description", true), //

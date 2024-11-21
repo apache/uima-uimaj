@@ -521,8 +521,9 @@ public abstract class UIMAFramework {
    * 
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier)} should be used
    *             instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier, null);
@@ -553,8 +554,9 @@ public abstract class UIMAFramework {
    * 
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier,Map)} should be used
    *             instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           Map<String, Object> aAdditionalParams) throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
@@ -589,8 +591,9 @@ public abstract class UIMAFramework {
    * 
    * @deprecated As of v2.0, {@link #produceAnalysisEngine(ResourceSpecifier,ResourceManager,Map)}
    *             should be used instead.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
           ResourceManager aResourceManager, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
@@ -823,8 +826,9 @@ public abstract class UIMAFramework {
    * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
    *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
    *             org.apache.uima.examples.XmlDetagger for an example.
+   * @forRemoval 4.0.0
    */
-  @Deprecated
+  @Deprecated(since = "2.0.0")
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
           throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, null);
@@ -1084,7 +1088,10 @@ public abstract class UIMAFramework {
    *          Parameter settings.
    * 
    * @return a new UIMA Context to be used by the application.
+   * @deprecated Use {@link #newUimaContext()} or {@link #uimaContextBuilder()} instead.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   public static UimaContextAdmin newUimaContext(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigManager) {
     // We use an ugly trick to make the 3 values available to the new UIMA context during its
@@ -1099,8 +1106,16 @@ public abstract class UIMAFramework {
       newContextResourceManager.set(null);
       newContextConfigManager.set(null);
     }
-    context.initializeRoot(aLogger, aResourceManager, aConfigManager);
+    context.initializeRoot(aLogger);
     return context;
+  }
+
+  public static UimaContextAdmin newUimaContext() {
+    return uimaContextBuilder().build();
+  }
+
+  public static UimaContextAdminBuilder uimaContextBuilder() {
+    return new UimaContextAdminBuilder();
   }
 
   /**

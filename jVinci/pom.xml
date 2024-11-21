@@ -17,47 +17,50 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.apache.uima</groupId>
-		<artifactId>uimaj-parent</artifactId>
-		<version>4.0.0-SNAPSHOT</version>
-		<relativePath>../uimaj-parent/pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent-internal</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
+  </parent>
 
-	<artifactId>jVinci</artifactId>
-	<packaging>bundle</packaging>
+  <artifactId>jVinci</artifactId>
+  <packaging>bundle</packaging>
 
-	<name>Apache UIMA Base: ${project.artifactId}: Vinci Transport Library</name>
-	<description>This is a protocol used by the base UIMA Collection processing manager for supporting
-    networked deployment.  See UIMA-AS as a more modern alternative supporting
+  <name>Apache UIMA Base: ${project.artifactId}: Vinci Transport Library</name>
+  <description>This is a protocol used by the base UIMA Collection processing
+    manager for supporting
+    networked deployment. See UIMA-AS as a more modern alternative supporting
     more standard protocols.</description>
-	<url>${uimaWebsiteUrl}</url>
+  <url>${uimaWebsiteUrl}</url>
 
-	<properties>
-		<postNoticeText>${ibmNoticeText}</postNoticeText>
-	</properties>
+  <properties>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
+  </properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
-						<_dsannotations>*</_dsannotations>
-						<_metatypeannotations>*</_metatypeannotations>
-						<Export-Package>
-							org.apache.vinci.debug,
-							org.apache.vinci.transport,
-							org.apache.vinci.transport.*
-						</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-RequiredExecutionEnvironment>${execution.environment}</Bundle-RequiredExecutionEnvironment>
+            <_dsannotations>*</_dsannotations>
+            <_metatypeannotations>*</_metatypeannotations>
+            <Export-Package>
+              org.apache.vinci.debug,
+              org.apache.vinci.transport,
+              org.apache.vinci.transport.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -64,6 +64,6 @@ public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexRule",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexRule",
           new PropertyXmlInfo[] { new PropertyXmlInfo("styles", null), });
 }

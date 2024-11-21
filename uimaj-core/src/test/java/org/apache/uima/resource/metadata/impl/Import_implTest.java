@@ -23,9 +23,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,9 +37,9 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class Import_implTest {
+class Import_implTest {
   @Test
-  public void testBuildFromXmlElement() throws Exception {
+  void testBuildFromXmlElement() throws Exception {
     var docBuilderFactory = DocumentBuilderFactory.newInstance();
     var docBuilder = docBuilderFactory.newDocumentBuilder();
 
@@ -51,16 +48,16 @@ public class Import_implTest {
     var importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(UTF_8)));
     var importObj = new Import_impl();
     importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
-    assertEquals("this.is.a.test", importObj.getName());
-    assertNull(importObj.getLocation());
+    assertThat(importObj.getName()).isEqualTo("this.is.a.test");
+    assertThat(importObj.getLocation()).isNull();
 
     // location import
     importXml = "<import location=\"foo/bar/MyFile.xml\"/>";
     importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes(UTF_8)));
     importObj = new Import_impl();
     importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
-    assertEquals("foo/bar/MyFile.xml", importObj.getLocation());
-    assertNull(importObj.getName());
+    assertThat(importObj.getLocation()).isEqualTo("foo/bar/MyFile.xml");
+    assertThat(importObj.getName()).isNull();
 
     // invalid - both location and name
     importXml = "<import name=\"this.is.a.test\" location=\"foo/bar/MyFile.xml\"/>";
@@ -72,7 +69,7 @@ public class Import_implTest {
     } catch (InvalidXMLException e) {
       ex = e;
     }
-    assertNotNull(ex);
+    assertThat(ex).isNotNull();
 
     // invalid - empty import
     importXml = "<import/>";
@@ -84,8 +81,8 @@ public class Import_implTest {
     } catch (InvalidXMLException e) {
       ex = e;
     }
-    assertNotNull(ex);
-    assertNotNull(ex.getMessage());
+    assertThat(ex).isNotNull();
+    assertThat(ex.getMessage()).isNotNull();
   }
 
   @Test
@@ -97,7 +94,7 @@ public class Import_implTest {
     var expectedUrl = new File(System.getProperty("user.dir"), "foo/bar/MyFile.xml")
             .getAbsoluteFile().toURL();
 
-    assertEquals(expectedUrl, absUrl);
+    assertThat(absUrl).isEqualTo(expectedUrl);
   }
 
   @Test
@@ -115,7 +112,7 @@ public class Import_implTest {
     var expectedUrl = new File(workingDir, "TypeSystemDescriptionImplTest/TestTypeSystem.xml")
             .toURL();
 
-    assertEquals(expectedUrl, absUrl);
+    assertThat(absUrl).isEqualTo(expectedUrl);
   }
 
   @Test

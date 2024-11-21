@@ -52,12 +52,11 @@ public class AnnotatorMissingSuper extends CasAnnotator_ImplBase {
 
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
-
+    // Prevent the context from being set
   }
 
   @Override
   public void setResultSpecification(ResultSpecification aResultSpec) {
-
+    // Prevent the result specification from being set
   }
-
 }

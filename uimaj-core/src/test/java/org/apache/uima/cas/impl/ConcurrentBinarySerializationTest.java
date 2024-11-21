@@ -46,7 +46,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.junit.jupiter.api.Test;
 
-public class ConcurrentBinarySerializationTest {
+class ConcurrentBinarySerializationTest {
   /**
    * Serialization of the CAS is not inherently thread-safe. This test tries to run multiple
    * serializations of the CAS in parallel to trigger a situation where an invalid serialization is
@@ -56,7 +56,7 @@ public class ConcurrentBinarySerializationTest {
    * @see <a href="https://issues.apache.org/jira/browse/UIMA-6162">UIMA 6162</a>
    */
   @Test
-  public void thatConcurrentSerializationWorks() throws Exception {
+  void thatConcurrentSerializationWorks() throws Exception {
     final SerialFormat[] formats = { BINARY_TSI, SERIALIZED_TSI, COMPRESSED_FILTERED_TSI,
         COMPRESSED_TSI };
     final int typeCount = 10;

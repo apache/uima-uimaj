@@ -42,24 +42,24 @@ import org.apache.uima.jcas.cas.AnnotationBase;
 public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = CAS.TYPE_NAME_ANNOTATION;
-  public final static String _FeatName_begin = "begin";
-  public final static String _FeatName_end = "end";
+  public static final String _TypeName = CAS.TYPE_NAME_ANNOTATION;
+  public static final String _FeatName_begin = "begin";
+  public static final String _FeatName_end = "end";
 
-  public final static int typeIndexID = JCasRegistry.register(Annotation.class);
+  public static final int typeIndexID = JCasRegistry.register(Annotation.class);
 
-  public final static int type = typeIndexID;
+  public static final int type = typeIndexID;
 
   @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
 
-  private final static CallSite _FC_begin = TypeSystemImpl.createCallSite(Annotation.class,
+  private static final CallSite _FC_begin = TypeSystemImpl.createCallSite(Annotation.class,
           "begin");
-  private final static MethodHandle _FH_begin = _FC_begin.dynamicInvoker();
-  private final static CallSite _FC_end = TypeSystemImpl.createCallSite(Annotation.class, "end");
-  private final static MethodHandle _FH_end = _FC_end.dynamicInvoker();
+  private static final MethodHandle _FH_begin = _FC_begin.dynamicInvoker();
+  private static final CallSite _FC_end = TypeSystemImpl.createCallSite(Annotation.class, "end");
+  private static final MethodHandle _FH_end = _FC_end.dynamicInvoker();
 
   // hard code for performance, and because is likely to be right
   // private final static int BEGIN_OFFSET = 0;
@@ -79,7 +79,6 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   // Never called. Disable default constructor
   @Deprecated
-  @SuppressWarnings("deprecation")
   protected Annotation() {
   }
 
@@ -204,7 +203,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @deprecated Use {@link #getBegin} instead.
    * @return the Annotation "begin" feature value
    */
-  @Deprecated
+  @Deprecated(since = "2.3.1")
   public int getStart() {
     return getBegin();
   }

@@ -39,15 +39,15 @@ import org.apache.vinci.debug.Debug;
  */
 public class BaseServer {
 
-  static private final int DEFAULT_SOCKET_TIMEOUT = 60000; // one minute.
+  private static final int DEFAULT_SOCKET_TIMEOUT = 60000; // one minute.
 
-  static private final int DEFAULT_MAX_POOL_SIZE = 20;
+  private static final int DEFAULT_MAX_POOL_SIZE = 20;
 
-  static private final int SERVER_SOCKET_TIMEOUT = 1000;
+  private static final int SERVER_SOCKET_TIMEOUT = 1000;
 
-  volatile private boolean shutdown;
+  private volatile boolean shutdown;
 
-  volatile private boolean isServing;
+  private volatile boolean isServing;
 
   private ServerSocket serverSocket;
 

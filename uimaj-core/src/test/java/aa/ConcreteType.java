@@ -42,19 +42,16 @@ public class ConcreteType extends AbstractType {
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "aa.ConcreteType";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "aa.ConcreteType";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(ConcreteType.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(ConcreteType.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */
@@ -66,12 +63,12 @@ public class ConcreteType extends AbstractType {
    *   Feature Offsets *
    * *******************/ 
    
-  public final static String _FeatName_concreteString = "concreteString";
+  public static final String _FeatName_concreteString = "concreteString";
 
 
   /* Feature Adjusted Offsets */
-  private final static CallSite _FC_concreteString = TypeSystemImpl.createCallSite(ConcreteType.class, "concreteString");
-  private final static MethodHandle _FH_concreteString = _FC_concreteString.dynamicInvoker();
+  private static final CallSite _FC_concreteString = TypeSystemImpl.createCallSite(ConcreteType.class, "concreteString");
+  private static final MethodHandle _FH_concreteString = _FC_concreteString.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor

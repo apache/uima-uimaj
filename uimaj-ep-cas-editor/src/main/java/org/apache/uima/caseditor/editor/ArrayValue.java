@@ -163,8 +163,7 @@ public class ArrayValue implements IAdaptable {
   }
 
   @Override
-  public Object getAdapter(@SuppressWarnings("rawtypes")
-  Class adapter) {
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 
     if (FeatureStructure.class.equals(adapter)) {
       if (arrayFS instanceof ArrayFS) {

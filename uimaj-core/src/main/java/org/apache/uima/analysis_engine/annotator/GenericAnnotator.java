@@ -27,8 +27,9 @@ import org.apache.uima.cas.CAS;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  * 
  * @deprecated As of release 2.3.0, use CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead
+ * @forRemoval 4.0.0
  */
-@Deprecated
+@Deprecated(since = "2.3.0")
 public interface GenericAnnotator extends BaseAnnotator {
   /**
    * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure

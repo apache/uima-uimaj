@@ -30,7 +30,10 @@ import org.apache.uima.internal.util.TimeSpan;
  * PerformanceTestResultImpl implements the PerformanceTestResult interface and provides the results
  * of a performance test run.
  * 
+ * @deprecated To be removed without replacement.
+ * @forRemoval 4.0.0
  */
+@Deprecated
 public class PerformanceTestResultImpl implements PerformanceTestResult {
 
   /** The newline. */

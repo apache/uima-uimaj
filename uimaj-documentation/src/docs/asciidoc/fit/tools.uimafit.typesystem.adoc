@@ -1,0 +1,193 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License. You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+[[_ugr.tools.uimafit.typesystem]]
+= Type System Detection
+
+UIMA requires that types that are used in the CAS are defined in XML files - so-called _type system descriptions_ (TSD). Whenever a UIMA component is created, it must be associated with such a type system.
+While it is possible to manually load the type system descriptors and pass them to each UIMA component and to each created CAS, it is quite inconvenient to do so.
+For this reason, uimaFIT supports the automatic detection of such files in the classpath.
+Thus is becomes possible for a UIMA component provider to have component's type automatically detected and thus the components becomes immediately usable by adding it to the classpath.
+
+== Making types auto-detectable
+
+=== Using the Java Service Provide Interface
+
+The Java Service Provide Interface (SPI) mechanism is a standard approach in Java for building
+extensible software. In our case, we want to make uimaFIT aware of type system descriptions, index
+definitions or type priority lists so that when we create a new CAS or analysis component, they are
+automatically pre-configured with these.
+
+To enable this auto-detection, the UIMA Core Java SDK provides defines the interface `org.apache.uima.spi.TypeSystemProvider`.
+
+Java code that wants to announce types, indexes or type priorities must implement this interface in a provider class.
+Typically, this is done by sub-classing `org.apache.uima.spi.TypeSystemProvider_ImplBase` and setting the exported resources in the constructor implementation.
+
+Once the provider class has been implemented, it needs to be registered with the SPI mechanism.
+To do that, create a text file with the name of the implemented interface in `META-INF/services`, e.g.
+`META-INF/services/org.apache.uima.spi.TypeSystemProvider`. Into that file, add the name of
+the provider class implementation, e.g. `foo.bar.MyTypeSystemProvider`. If you have multiple provider
+classes for the given interface, add them all, one class per line.
+
+=== Legacy approach
+
+The provider of a type system should create a file `META-INF/org.apache.uima.fit/types.txt` in the classpath.
+This file should define the locations of the type system descriptions.
+Assume that a type `org.apache.uima.fit.type.Token` is specified in the TSD `org/apache/uima/fit/type/Token.xml`, then the file should have the following contents:
+
+[source]
+----
+classpath*:org/apache/uima/fit/type/Token.xml
+----
+
+[NOTE]
+====
+Mind that the file `types.txt` is must be located in `META-INF/org.apache.uima.fit` where `org.apache.uima.fit` is the name of a sub-directory inside `META-INF`. 
+_We are not using the Java package notation here!_
+====
+
+To specify multiple TSDs, add additional lines to the file.
+If you have a large number of TSDs, you may prefer to add a pattern.
+Assume that we have a large number of TSDs under `org/apache/uima/fit/type`, we can use the following pattern which recursively scans the package `org.apache.uima.fit.type` and all sub-packages for XML files and tries to load them as TSDs.
+
+[source]
+----
+classpath*:org/apache/uima/fit/type/**/*.xml
+----
+
+Try to design your packages structure in a way that TSDs and JCas wrapper classes generated from them are separate from the rest of your code.
+
+If it is not possible or inconvenient to add the `types.txt` file, patterns can also be specified using the system property [parameter]``org.apache.uima.fit.type.import_pattern``.
+Multiple patterns may be specified separated by semicolon:
+
+[source]
+----
+-Dorg.apache.uima.fit.type.import_pattern=\
+  classpath*:org/apache/uima/fit/type/**/*.xml
+----
+
+[NOTE]
+====
+The `\` in the example is used as a line-continuation indicator.
+It and all spaces following it should be ommitted.
+====
+
+== Making index definitions and type priorities auto-detectable
+
+Auto-detection also works for index definitions and type priority definitions.
+For index definitions, the respective file where to register the index definition XML files is [path]_META-INF/org.apache.uima.fit/fsindexes.txt_ and for type priorities, it is [path]_META-INF/org.apache.uima.fit/typepriorities.txt_.
+
+== Using type auto-detection 
+
+The auto-detected type system can be obtained from the `TypeSystemDescriptionFactory`:
+
+[source,java]
+----
+var tsd = TypeSystemDescriptionFactory.createTypeSystemDescription()
+----
+
+Popular factory methods also support auto-detection:
+
+[source,java]
+----
+var ae = AnalysisEngineFactory.createEngine(MyEngine.class);
+----
+
+== Multiple META-INF/org.apache.uima.fit/types.txt files
+
+uimaFIT supports multiple [path]_types.txt_ files in the classpath (e.g.
+in differnt JARs). The [path]_types.txt_ files are located via Spring using the classpath search pattern: 
+
+[source,java]
+----
+TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.apache.uima.fit/types.txt"
+----
+
+This resolves to a list URLs pointing to ALL [path]_types.txt_ files.
+The resolved URLs are unique and will point either to a specific point in the file system or into a specific JAR.
+These URLs can be handled by the standard Java URL loading mechanism.
+Example:
+
+[source,java]
+----
+jar:/path/to/syntax-types.jar!/META-INF/org.apache.uima.fit/types.txt 
+jar:/path/to/token-types.jar!/META-INF/org.apache.uima.fit/types.txt
+----
+
+uimaFIT then reads all patters from all of these URLs and uses these to search the classpath again.
+The patterns now resolve to a list of URLs pointing to the individual type system XML descriptors.
+All of these URLs are collected in a set to avoid duplicate loading (for performance optimization - not strictly necessary because the UIMA type system merger can handle compatible duplicates). Then the descriptors are loaded into memory and merged using the standard UIMA type system merger (`CasCreationUtils.mergeTypeSystems()`). Example:
+
+[source]
+----
+jar:/path/to/syntax-types.jar!/desc/types/Syntax.xml 
+jar:/path/to/token-types.jar!/org/foobar/typesystems/Tokens.xml
+----
+
+Voilá, the result is a type system covering all types could be found in the classpath.
+
+It is recommended 
+
+. to put type system descriptors into packages resembling a namespace you "own" and to use a package-scoped wildcard search
++
+[source]
+----
+classpath*:org/apache/uima/fit/type/**/*.xml`
+----
+. or when putting descriptors into a "well-known" package like [package]#desc.type#, that [path]_types.txt_ file should explicitly list all type system descriptors instead of using a wildcard search
++
+[source]
+----
+classpath*:desc/type/Token.xml 
+classpath*:desc/type/Syntax.xml
+----
+
+Method 1 should be preferred.
+Both methods can be mixed. 
+
+== Performance note and caching
+
+Currently uimaFIT evaluates the patterns for TSDs once and caches the locations, but not the actual merged type system description.
+A rescan can be forced using `TypeSystemDescriptionFactory.forceTypeDescriptorsScan()`.
+This may change in future.
+
+== Potential problems
+
+The mechanism works fine.
+However, there are specific issues with Java in general that one should be aware of.
+
+=== m2eclipse fails to copy descriptors to target/classes
+
+There seems to be a bug in some older versions of m2eclipse that causes resources not always to be copied to [path]_target/classes_.
+If UIMA complains about type definitions missing at runtime, try to _clean/rebuild_ your project and carefully check the m2eclipse console in the console view for error messages that might cause m2eclipse to abort.
+
+=== Class version conflicts
+
+A problem can occur if you end up having multiple incompatible versions of the same type system in the classpath.
+This is a general problem and not related to the auto-detection feature.
+It is the same as when you have incompatible version of a particular class (e.g. `JCas` wrapper or some third-party-library) in the classpath.
+The behavior of the Java Classloader is undefined in that case.
+The detection will do its best to try and load everything it can find, but the UIMA type system merger may barf or you may end up with undefined behavior at runtime because one of the class versions is used at random. 
+
+=== Classes and resources in the default package
+
+It is bad practice to place classes into the default (unnamed) package.
+In fact it is not possible to import classes from the default package in another class.
+Similarly it is a bad idea to put resources at the root of the classpath.
+The Spring documentation on resources http://static.springsource.org/spring/docs/3.0.x/reference/resources.html#resources-app-ctx-wildcards-in-resource-paths[explains this in detail].
+
+For this reason the [path]_types.txt_ resides in [path]_/META-INF/org.apache.uima.fit_ and it is suggest that type system descriptors reside either in a proper package like [path]_/org/foobar/typesystems/XXX.xml_ or in [path]_/desc/types/XXX.xml_. 

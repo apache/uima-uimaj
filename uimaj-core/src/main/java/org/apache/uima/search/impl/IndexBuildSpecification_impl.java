@@ -66,7 +66,7 @@ public class IndexBuildSpecification_impl extends MetaDataObject_impl
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
           "indexBuildSpecification",
           new PropertyXmlInfo[] { new PropertyXmlInfo("indexBuildItems", null), });
 }

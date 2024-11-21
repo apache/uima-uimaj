@@ -12,3 +12,4 @@ issuesFixed
 .idea
 *.iml
 .tycho-consumer-pom.xml
+dependency-reduced-pom.xml

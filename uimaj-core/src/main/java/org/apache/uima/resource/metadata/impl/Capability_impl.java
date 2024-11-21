@@ -38,9 +38,9 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
 
   private static final long serialVersionUID = -2821073595288674925L;
 
-  private final static TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
+  private static final TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
 
-  private final static Precondition[] EMPTY_PRECONDITION_ARRAY = new Precondition[0];
+  private static final Precondition[] EMPTY_PRECONDITION_ARRAY = new Precondition[0];
 
   /** a description of this capability */
   private String mDescription;
@@ -90,8 +90,8 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     // search for LanguagePreconditions
     Precondition[] preconditions = getPreconditions();
     for (int i = 0; i < preconditions.length; i++) {
-      if (preconditions[i] instanceof LanguagePrecondition) {
-        return ((LanguagePrecondition) preconditions[i]).getLanguages();
+      if (preconditions[i] instanceof LanguagePrecondition languagePrecondition) {
+        return languagePrecondition.getLanguages();
       }
     }
 
@@ -103,9 +103,9 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   public String[] getMimeTypesSupported() {
     // search for MimeTypePreconditions
     Precondition[] preconditions = getPreconditions();
-    for (int i = 0; i < preconditions.length; i++) {
-      if (preconditions[i] instanceof MimeTypePrecondition) {
-        return ((MimeTypePrecondition) preconditions[i]).getMimeTypes();
+    for (Precondition precondition : preconditions) {
+      if (precondition instanceof MimeTypePrecondition mimeTypePrecondition) {
+        return mimeTypePrecondition.getMimeTypes();
       }
     }
 
@@ -138,7 +138,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // remove any existing LanguagePrecondtiions
-    preconditions.removeIf(p -> p instanceof LanguagePrecondition);
+    preconditions.removeIf(LanguagePrecondition.class::isInstance);
 
     // add new precondition
     if (aLanguageIDs != null && aLanguageIDs.length > 0) {
@@ -163,7 +163,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // remove any existing MimeTypePrecondtiions
-    preconditions.removeIf(p -> p instanceof MimeTypePrecondition);
+    preconditions.removeIf(MimeTypePrecondition.class::isInstance);
 
     // add new precondition
     if (aMimeTypes != null && aMimeTypes.length > 0) {
@@ -298,7 +298,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capability",
+  private static final XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capability",
           new PropertyXmlInfo[] { new PropertyXmlInfo("description"),
               new PropertyXmlInfo("inputs", false), new PropertyXmlInfo("outputs", false),
               new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),

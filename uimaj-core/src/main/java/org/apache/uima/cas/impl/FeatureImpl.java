@@ -343,6 +343,6 @@ public class FeatureImpl implements Feature {
   /**
    * Used by CAS Copier to denote missing feature
    */
-  public final static FeatureImpl singleton = new FeatureImpl();
+  public static final FeatureImpl singleton = new FeatureImpl();
 
 }

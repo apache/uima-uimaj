@@ -44,13 +44,26 @@ public interface UimaContextAdmin extends UimaContext {
    * 
    * @param aLogger
    *          the logger that will be returned by this UimaContext's {@link #getLogger()} method.
+   */
+  default void initializeRoot(Logger aLogger) {
+    initializeRoot(aLogger, null, null);
+  }
+
+  /**
+   * Initializes a root UimaContext.
+   * 
+   * @param aLogger
+   *          the logger that will be returned by this UimaContext's {@link #getLogger()} method.
    * @param aResourceManager
    *          <b>Deprecated: this parameter is ignored!</b> The ResourceManager that will be used by
    *          this UimaContext to locate and access external resource.
    * @param aConfigurationManager
    *          <b>Deprecated: this parameter is ignored!</b> The ConfigurationManager that will be
    *          used by this UimaContext to access its configuration parameter settings.
+   * @deprecated Use {@link #initializeRoot(Logger)} instead.
+   * @forRemoval 4.0.0
    */
+  @Deprecated(since = "3.6.0")
   void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
           ConfigurationManager aConfigurationManager);
 

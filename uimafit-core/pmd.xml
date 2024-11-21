@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements. See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership. The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License. You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied. See the License for the
+	specific language governing permissions and limitations
+	under the License.
+-->
+<ruleset name="Custom ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+	<description>
+		PMD rule set for Java in uimaFIT
+	</description>
+
+	<exclude-pattern>.*/src/test/.*</exclude-pattern>
+	<exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+	<rule ref="rulesets/braces.xml"></rule>
+	<rule ref="rulesets/clone.xml"></rule>
+	<rule ref="rulesets/codesize.xml">
+		<exclude name="CyclomaticComplexity" />
+		<exclude name="TooManyMethods" />
+	</rule>
+	<rule ref="rulesets/coupling.xml">
+		<exclude name="ExcessiveImports" />
+	</rule>
+	<rule ref="rulesets/design.xml">
+		<exclude name="ConfusingTernary" />
+		<exclude name="ConstructorCallsOverridableMethod" />
+		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract" />
+		<exclude name="TooFewBranchesForASwitchStatement" />
+	</rule>
+	<rule ref="rulesets/finalizers.xml"></rule>
+	<rule ref="rulesets/imports.xml">
+		<exclude name="TooManyStaticImports" />
+	</rule>
+	<rule ref="rulesets/naming.xml">
+		<exclude name="AbstractNaming"/>
+		<exclude name="LongVariable" />
+		<exclude name="ShortVariable" />
+	</rule>
+	<rule ref="rulesets/optimizations.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops" />
+		<exclude name="LocalVariableCouldBeFinal" />
+		<exclude name="MethodArgumentCouldBeFinal" />
+	</rule>
+	<rule ref="rulesets/strictexception.xml"></rule>
+	<rule ref="rulesets/strings.xml">
+		<exclude name="AvoidDuplicateLiterals" />
+	</rule>
+	<rule ref="rulesets/sunsecure.xml"></rule>
+	<rule ref="rulesets/typeresolution.xml"></rule>
+	<rule ref="rulesets/unusedcode.xml"></rule>
+</ruleset>

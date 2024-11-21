@@ -39,19 +39,16 @@ public class FSLinkedHashSet <T extends TOP> extends FSHashSet<T> {
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
+  @SuppressWarnings ("hiding") public static final String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
   
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int typeIndexID = JCasRegistry.register(FSLinkedHashSet.class);
+  @SuppressWarnings ("hiding") public static final int typeIndexID = JCasRegistry.register(FSLinkedHashSet.class);
   /** @generated
    * @ordered 
    */
-  @SuppressWarnings ("hiding")
-  public final static int type = typeIndexID;
+  @SuppressWarnings ("hiding") public static final int type = typeIndexID;
   /** @generated
    * @return index of the type  
    */

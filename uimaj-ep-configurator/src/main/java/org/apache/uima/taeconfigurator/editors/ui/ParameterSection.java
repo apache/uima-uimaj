@@ -147,13 +147,13 @@ import org.eclipse.ui.forms.IManagedForm;
 public class ParameterSection extends AbstractSectionParm {
 
   /** The Constant NEW_OVERRIDE. */
-  public final static int NEW_OVERRIDE = -1;
+  public static final int NEW_OVERRIDE = -1;
 
   /** The Constant REMOVE_FROM_GUI. */
-  public final static boolean REMOVE_FROM_GUI = true;
+  public static final boolean REMOVE_FROM_GUI = true;
 
   /** The Constant GIVE_WARNING_MESSAGE. */
-  public final static boolean GIVE_WARNING_MESSAGE = true;
+  public static final boolean GIVE_WARNING_MESSAGE = true;
 
   /** The default group. */
   private Text defaultGroup;

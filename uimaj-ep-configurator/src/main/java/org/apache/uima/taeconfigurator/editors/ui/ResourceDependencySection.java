@@ -52,13 +52,13 @@ import org.eclipse.ui.forms.IManagedForm;
 public class ResourceDependencySection extends AbstractSection {
 
   /** The Constant KEY_COL. */
-  public final static int KEY_COL = 2;
+  public static final int KEY_COL = 2;
 
   /** The Constant OPT_COL. */
-  public final static int OPT_COL = 1;
+  public static final int OPT_COL = 1;
 
   /** The Constant BOUND. */
-  private final static String BOUND = "Bound";
+  private static final String BOUND = "Bound";
 
   /** The table. */
   public Table table; // accessed by inner class

@@ -27,10 +27,10 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.util.XMLInputSource;
 import org.junit.jupiter.api.Test;
 
-public class CapabilityLanguageFlowControllerTest {
+class CapabilityLanguageFlowControllerTest {
 
   @Test
-  public void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception {
+  void thatGeneratedDefaultFlowDescriptionIsEqualToXmlDescription() throws Exception {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();
 
     FlowControllerDescription desc2 = getXMLParser()
@@ -43,11 +43,11 @@ public class CapabilityLanguageFlowControllerTest {
     StringWriter desc2Writer = new StringWriter();
     desc2.toXML(desc2Writer);
 
-    assertThat(desc2.toString()).isEqualTo(desc1.toString());
+    assertThat(desc2).hasToString(desc1.toString());
   }
 
   @Test
-  public void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception {
+  void thatChangesToDefaultFlowControllerDoNotCarryOver() throws Exception {
     FlowControllerDescription desc1 = CapabilityLanguageFlowController.getDescription();
 
     desc1.setImplementationName("otherImplementation");

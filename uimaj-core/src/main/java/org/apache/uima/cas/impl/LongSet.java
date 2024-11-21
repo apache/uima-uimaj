@@ -29,11 +29,11 @@ import java.util.HashMap;
 final class LongSet {
 
   private int lastLongCode = 0;
-  final private ArrayList<Long> longs = new ArrayList<>();
+  private final ArrayList<Long> longs = new ArrayList<>();
   {
     longs.add(null);
   }
-  final private HashMap<Long, Integer> long2int = new HashMap<>();
+  private final HashMap<Long, Integer> long2int = new HashMap<>();
 
   // Reset the long heap (called on CAS reset).
   void reset() {
