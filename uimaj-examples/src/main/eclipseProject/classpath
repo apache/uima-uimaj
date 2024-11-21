@@ -50,7 +50,7 @@
 
   <classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
-  <classpathentry kind="var" path="UIMA_HOME/lib/jackson-core-2.15.2.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/jackson-core-2.18.1.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/uimaj-v3migration-jcas.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/procyon-compilertools-0.5.32.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/procyon-core-0.5.32.jar"/>

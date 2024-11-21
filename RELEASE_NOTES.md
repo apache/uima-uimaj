@@ -19,7 +19,7 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.5.0 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.6.0 Release Notes
 
 ## Contents
 
@@ -63,23 +63,27 @@ This is a feature and bug fix release.
 
 
 ## What's Changed
-* ⭐️ Issue #327: Provide a BOM
-* ⭐️ Issue #341: Deploy Eclipse feature definitions to Maven repo
-* 🦟 Issue #315: ThreadContextClassLoader ignored by ResourceManager when extension classloader is set
-* 🦟 Issue #320: Copy of FsIterator_set_sorted_pear does not retain position
-* 🦟 Issue #337: Component description editor may not open in Eclipse
-* 🦟 Issue #346: Helper annotation created by subiterator may remain in CAS
-* 🦟 Issue #345: Certain select operations deplete FS ID pool
-* ⚙️ Issue #319: SelectFSs_impl.close() creates stream just to close it
-* ⚙️ Issue #331: Convert remaining documentation to asciidoc
-* ⚙️ Issue #335: Remove dependency on JUnit 4 and JUnit Assert
-* ⚙️ Issue #350: Clean up and modernize code
-* 🩹 Issue #317: Update dependencies
-* 🩹 Issue #325: Update dependencies
-* 💀 Issue #339: Drop CasAnnotationViewerApplet and CasTreeViewerApplet
+* ⭐️ Issue #372: Allow adding URLs to the datapath
+* ⭐️ Issue #348: Varargs for description class setters
+* ⭐️ Issue #369: Move isTypeName and isFeatureName to public API
+* ⭐️ Issue #402: Provide bnd plugin to generate package imports based on imports in UIMA descriptors
+* ⭐️ Issue #382: Warning when PEAR contains a JCAS class that is used as a feature range outside the PEAR
+* ⭐️ Issue #385: Allow import of type systems published through SPI
+* ⭐️ Issue #387: Simplify creation of new UIMAContext
+* ⭐️ Issue #390: Merge uimaFIT modules into UIMA-J repository
+* ⭐️ Issue #393: Include uimaFIT artifacts in binary distribution
+* 🦟 Issue #368: select(AnnotationBaseFs-type).count() seems to return MAX_LONG
+* 🦟 Issue #371: Repeated creation of type systems can exhaust JVM metaspace
+* 🦟 Issue #395: Potential failure to look up UIMA-internal classes in OSGI-like contexts
+* ⚙️ Issue #379: Clean up code
+* ⚙️ Issue #398: Mark Maven plugins as thread-safe
+* ⚙️ Issue #404: Remove toolchains
+* ⚙️ Issue #407: Clean up PearPackagingMavenPlugin
+* ⚙️ Issue #409: Update dependencies
+* ⚙️ Issue #417: BOM should not inherit build setup from parent POM
 
 
-**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.4.1...uimaj-3.5.0
+**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.5.1...uimaj-3.6.0
 
 
 ## <a id="get.involved">How to Get Involved</a>
