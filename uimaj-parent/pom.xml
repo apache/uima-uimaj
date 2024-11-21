@@ -36,7 +36,7 @@
   </parent>
 
   <artifactId>uimaj-parent</artifactId>
-  <version>3.6.1-SNAPSHOT</version>
+  <version>3.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
