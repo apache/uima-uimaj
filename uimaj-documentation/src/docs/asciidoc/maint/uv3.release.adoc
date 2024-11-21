@@ -483,6 +483,16 @@ If a Nexus staging repo was already created, drop it.
 ** `mvn versions:display-plugin-updates`
 ** `mvn versions:display-property-updates`
 
+== Manually setting the version
+
+After a release, you might want to manually update the version of the project.
+You can use the following commands:
+
+```
+% mvn versions:set -DnewVersion=<new-version> -DprocessAllModules
+% mvn org.eclipse.tycho:tycho-versions-plugin:4.0.10:update-eclipse-metadata
+```
+
 == Shared build resources
 
 There are several projects in the build tooling. The following special procedure is used to release updates to these.

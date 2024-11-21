@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent-internal</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
@@ -38,42 +38,42 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>org.apache.uima.runtime</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-cas-editor</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-cas-editor-ide</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-configurator</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-debug</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-pear-packager</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-ep-launcher</artifactId>
-      <version>3.6.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
