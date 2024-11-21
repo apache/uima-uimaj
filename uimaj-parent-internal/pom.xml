@@ -92,7 +92,6 @@
     <!-- END PROFILE SETTINGS: generate-release-notes-->
     
     <api_check_oldVersion>${previous-release-version}</api_check_oldVersion>
-    <uima-maven-plugins-version>${previous-release-version}</uima-maven-plugins-version>
   </properties>
 
   <dependencies>
@@ -504,12 +503,12 @@
         <plugin>
           <groupId>org.apache.uima</groupId>
           <artifactId>jcasgen-maven-plugin</artifactId>
-          <version>${uima-maven-plugins-version}</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.uima</groupId>
           <artifactId>PearPackagingMavenPlugin</artifactId>
-          <version>${uima-maven-plugins-version}</version>
+          <version>3.5.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
