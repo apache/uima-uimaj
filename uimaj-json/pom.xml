@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent-internal</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1-SNAPSHOT</version>
     <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
   
