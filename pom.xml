@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent-internal</artifactId>
-    <version>3.6.1-SNAPSHOT</version>
+    <version>3.6.0</version>
     <relativePath>uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
@@ -43,7 +43,7 @@
     <connection>scm:git:https://github.com/apache/uima-uimaj/</connection>
     <developerConnection>scm:git:https://github.com/apache/uima-uimaj/</developerConnection>
     <url>https://github.com/apache/uima-uimaj/</url>
-    <tag>uimaj-3.4.0</tag>
+    <tag>uimaj-3.6.0</tag>
   </scm>
 
   <properties>
