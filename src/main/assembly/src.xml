@@ -79,6 +79,13 @@ under the License.
         <exclude>**/checkpoint_synchPoint.xml.prev</exclude>
 
         <!-- 
+          - Marker files enabling release-supporting profiles that expect a git repository and/or svn to be available
+          - and are therefore not suitable for use when building from the source archive.
+          -->
+        <exclude>**/marker-file-enabling-auto-staging</exclude>
+        <exclude>**/marker-file-enabling-release-notes</exclude>
+
+        <!-- 
           File that seems to be temporarily placed into the CWD during the build but no idea where 
           it comes from. 
         -->
