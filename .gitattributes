@@ -18,3 +18,6 @@
 #   The internal repo form for these is always lf, 
 #   The eol=lf means on check-out do nothing, and on check-in, if the file has crlf, convert to lf
 *.sh text eol=lf
+
+marker-file-enabling-auto-staging export-ignore
+marker-file-enabling-release-notes export-ignore
