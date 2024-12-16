@@ -110,7 +110,7 @@ public class UimaBndPlugin
             }
             
             LOG.warn(
-                    "Found UIMA type system import without name and location - ignoring, please fix your type system description");
+                    "Found UIMA import without name and location - ignoring, please fix your type system description");
         }
         
         return importsProcessed;
@@ -119,11 +119,11 @@ public class UimaBndPlugin
     private void handleImportByLocation(Import imp)
     {
         LOG.warn(
-                "Found UIMA type system import by location: {} - ignoring, please only use import-by-name",
+                "Ignoring UIMA import by location (please only use import-by-name): {}",
                 imp.getLocation());
     }
 
-    private void handleImportByName(Analyzer analyzer, String path, Import imp)
+    private void handleImportByName(Analyzer analyzer, String path, Import imp) throws Exception
     {
         var tsdPackage = imp.getName();
         int lastSeparatorPosition = tsdPackage.lastIndexOf('.');
@@ -132,11 +132,11 @@ public class UimaBndPlugin
             tsdPackage = tsdPackage.substring(0, lastSeparatorPosition);
         }
 
-        LOG.debug("Found UIMA type system import by name: {}", tsdPackage);
+        LOG.debug("Found UIMA import by name: {}", tsdPackage);
 
         var pack = analyzer.getPackageRef(tsdPackage);
         if (!QN.matcher(pack.getFQN()).matches()) {
-            analyzer.warning("Type system import does not seem to refer to a package (%s): %s",
+            analyzer.warning("Import does not seem to refer to a package (%s): %s",
                     path, pack);
         }
 
@@ -144,6 +144,15 @@ public class UimaBndPlugin
             var attrs = new Attrs();
             analyzer.getReferred().put(pack, attrs);
         }
+        
+        var importedResourcePath = imp.getName().replace('.', '/')+".xml";
+        var importedResource = analyzer.findResource(importedResourcePath);
+        if (importedResource == null) {
+          analyzer.warning("Imported resource not found on classpath: {}", importedResourcePath);
+          return;
+        }
+        
+        analyzeXmlFile(analyzer, importedResourcePath, importedResource);
     }
 
     private List<Import> getImportsFromDescriptor(XMLizable desc)
