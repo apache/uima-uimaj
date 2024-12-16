@@ -226,6 +226,7 @@ public class ResourceManager_impl implements ResourceManager {
    * Cache of imported descriptor URLs from which the parsed objects in importCache were created, so
    * that these URLs are not re-parsed if the same URL is imported again.
    */
+  @Deprecated(since = "3.3.0")
   private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<>());
 
   /**

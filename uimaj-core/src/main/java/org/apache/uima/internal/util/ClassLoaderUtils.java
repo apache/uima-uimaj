@@ -38,8 +38,8 @@ public final class ClassLoaderUtils {
    * <ol>
    * <li>The {@link UimaContext} in the {@link UimaContextHolder} of the current thread(if any)</li>
    * <li>The current thread-context class loader (if any)</li>
-   * <li>The class loader through which uimaFIT (i.e. this class) was loaded.</li>
-   * <li>For backwards compatibility then delegates to {@link #getDefaultClassLoader()}</li>
+   * <li>The class loader through which UIMA was loaded.</li>
+   * <li>Finally checks the system classloader</li>
    * </ol>
    *
    * @return a class loader or {@code null} if no suitable class loader could be found.
@@ -60,7 +60,27 @@ public final class ClassLoaderUtils {
       return uimaFITClassLoader;
     }
 
-    return getDefaultClassLoader();
+    ClassLoader cl;
+
+    try {
+      cl = UIMAFramework.class.getClassLoader();
+      if (cl != null) {
+        return cl;
+      }
+    } catch (Throwable ex) {
+      // Fall-through
+    }
+
+    try {
+      cl = ClassLoader.getSystemClassLoader();
+      if (cl != null) {
+        return cl;
+      }
+    } catch (Throwable ex) {
+      // Fall-through
+    }
+
+    return null;
   }
 
   /**
@@ -118,38 +138,6 @@ public final class ClassLoaderUtils {
     var cl = aResMgr.getExtensionClassLoader();
     if (cl != null) {
       return cl;
-    }
-
-    return null;
-  }
-
-  private static ClassLoader getDefaultClassLoader() {
-    ClassLoader cl;
-    try {
-      cl = Thread.currentThread().getContextClassLoader();
-      if (cl != null) {
-        return cl;
-      }
-    } catch (Throwable ex) {
-      // Fall-through
-    }
-
-    try {
-      cl = UIMAFramework.class.getClassLoader();
-      if (cl != null) {
-        return cl;
-      }
-    } catch (Throwable ex) {
-      // Fall-through
-    }
-
-    try {
-      cl = ClassLoader.getSystemClassLoader();
-      if (cl != null) {
-        return cl;
-      }
-    } catch (Throwable ex) {
-      // Fall-through
     }
 
     return null;

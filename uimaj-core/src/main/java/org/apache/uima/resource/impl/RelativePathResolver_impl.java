@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.RelativePathResolver;
 
 /**
@@ -58,6 +59,8 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   }
 
   public RelativePathResolver_impl(ClassLoader aClassLoader) {
+    mClassLoader = aClassLoader;
+
     // initialize data path based on uima.datapath System property; if not
     // present fall back on user.dir
     String dataPath = null;
@@ -87,8 +90,6 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       mDataPath = null;
       mBaseUrls = null;
     }
-
-    mClassLoader = aClassLoader;
   }
 
   @Override
@@ -237,53 +238,20 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       // ignore and move on
     }
 
-    // try each base URL
-    for (var baseUrl : mBaseUrls) {
-      try {
-        var absUrl = new URL(baseUrl, aPathOrUrl);
-        // if file exists here, return this URL
-        if (fileExistsAtUrl(absUrl)) {
-          return absUrl;
-        }
-      } catch (MalformedURLException e) {
-        // ignore and move on to next base URL
-      }
+    var absUrl = resolveRelativePathUsingBaseUrls(aPathOrUrl);
+    if (absUrl != null) {
+      return absUrl;
     }
 
-    // fallback on classloader
-    URL absURL = null;
-    if (mClassLoader != null) {
-      absURL = mClassLoader.getResource(aPathOrUrl);
-    }
-
-    // fallback on TCCL
-    if (absURL == null) {
-      var tccl = Thread.currentThread().getContextClassLoader();
-      absURL = tccl.getResource(aPathOrUrl);
-    }
-
-    // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
-    if (absURL == null && mClassLoader == null) {
-      absURL = ClassLoader.getSystemClassLoader().getResource(aPathOrUrl);
-    }
-
-    return absURL;
+    return resolveRelativePathUsingClassloaders(aPathOrUrl);
   }
 
   @Deprecated
   @Override
   public URL resolveRelativePath(URL aUrl) {
-    // try each base URL
-    for (var baseUrl : mBaseUrls) {
-      try {
-        var absUrl = new URL(baseUrl, aUrl.toString());
-        // if file exists here, return this URL
-        if (fileExistsAtUrl(absUrl)) {
-          return absUrl;
-        }
-      } catch (MalformedURLException e) {
-        // ignore and move on to next base URL
-      }
+    var absUrl = resolveRelativePathUsingBaseUrls(aUrl.toString());
+    if (absUrl != null) {
+      return absUrl;
     }
 
     // check if an absolute URL was passed in
@@ -291,30 +259,56 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       return aUrl;
     }
 
+    var path = aUrl.getFile();
+
+    return resolveRelativePathUsingClassloaders(path);
+  }
+
+  private URL resolveRelativePathUsingBaseUrls(String aPath) {
+    // try each base URL
+    for (var baseUrl : mBaseUrls) {
+      try {
+        var absUrl = new URL(baseUrl, aPath);
+        // if file exists here, return this URL
+        if (fileExistsAtUrl(absUrl)) {
+          return absUrl;
+        }
+      } catch (MalformedURLException e) {
+        // ignore and move on to next base URL
+      }
+    }
+
+    return null;
+  }
+
+  private URL resolveRelativePathUsingClassloaders(String aPath) {
     // fallback on classloader
-    var f = aUrl.getFile();
     URL absURL = null;
     if (mClassLoader != null) {
-      absURL = mClassLoader.getResource(f);
+      absURL = mClassLoader.getResource(aPath);
     }
 
     // fallback on TCCL
     if (absURL == null) {
       var tccl = Thread.currentThread().getContextClassLoader();
-      absURL = tccl.getResource(f);
+      if (tccl != null) {
+        absURL = tccl.getResource(aPath);
+      }
+    }
+
+    // Try the framework classloader
+    if (absURL == null) {
+      absURL = UIMAFramework.class.getClassLoader().getResource(aPath);
     }
 
     // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
     if (absURL == null && mClassLoader == null) {
-      absURL = ClassLoader.getSystemClassLoader().getResource(f);
+      absURL = ClassLoader.getSystemClassLoader().getResource(aPath);
     }
 
     return absURL;
   }
 
-  /**
-   * @see org.apache.uima.resource.RelativePathResolver#setPathResolverClassLoader(java.lang.ClassLoader)
-   */
   @Override
   public void setPathResolverClassLoader(ClassLoader aClassLoader) {
     mClassLoader = aClassLoader;
