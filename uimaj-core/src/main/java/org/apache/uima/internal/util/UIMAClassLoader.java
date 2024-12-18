@@ -272,19 +272,18 @@ public class UIMAClassLoader extends URLClassLoader {
 
       if (resolve) {
         resolveClass(c);
+      }
 
-        // Accessing the interfaces would implicitly trigger resolution - so we can only do it when
-        // resolution is
-        // allowed... hopefully nobody tries to load SPIs without also allowing to resolve the class
-        if (TypeSystemProvider.class.isAssignableFrom(c)
-                || TypeSystemDescriptionProvider.class.isAssignableFrom(c)
-                || JCasClassProvider.class.isAssignableFrom(c)
-                || FsIndexCollectionProvider.class.isAssignableFrom(c)
-                || TypePrioritiesProvider.class.isAssignableFrom(c)) {
-          // We never want to return local SPI implementations -
-          // https://github.com/apache/uima-uimaj/issues/431
-          c = super.loadClass(name, false);
-        }
+      // Accessing the interfaces will implicitly trigger resolution - but we can't really help
+      // ourselves at the moment
+      if (TypeSystemProvider.class.isAssignableFrom(c)
+              || TypeSystemDescriptionProvider.class.isAssignableFrom(c)
+              || JCasClassProvider.class.isAssignableFrom(c)
+              || FsIndexCollectionProvider.class.isAssignableFrom(c)
+              || TypePrioritiesProvider.class.isAssignableFrom(c)) {
+        // We never want to return local SPI implementations -
+        // https://github.com/apache/uima-uimaj/issues/431
+        c = super.loadClass(name, false);
       }
 
       return c;
