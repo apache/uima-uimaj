@@ -281,9 +281,15 @@ public class UIMAClassLoader extends URLClassLoader {
               || JCasClassProvider.class.isAssignableFrom(c)
               || FsIndexCollectionProvider.class.isAssignableFrom(c)
               || TypePrioritiesProvider.class.isAssignableFrom(c)) {
-        // We never want to return local SPI implementations -
+
+        // We never want to return local SPI implementations loaded by the UIMAClassLoader
         // https://github.com/apache/uima-uimaj/issues/431
-        c = super.loadClass(name, false);
+        var parent = getParent();
+        if (parent != null) {
+          c = parent.loadClass(name);
+        } else {
+          c = ClassLoader.getSystemClassLoader().loadClass(name);
+        }
       }
 
       return c;
