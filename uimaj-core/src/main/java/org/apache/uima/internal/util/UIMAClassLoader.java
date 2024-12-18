@@ -31,6 +31,11 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.impl.FSClassRegistry;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.spi.FsIndexCollectionProvider;
+import org.apache.uima.spi.JCasClassProvider;
+import org.apache.uima.spi.TypePrioritiesProvider;
+import org.apache.uima.spi.TypeSystemDescriptionProvider;
+import org.apache.uima.spi.TypeSystemProvider;
 
 /**
  * UIMAClassLoader is used as extension ClassLoader for UIMA to load additional components like
@@ -234,11 +239,16 @@ public class UIMAClassLoader extends URLClassLoader {
     // class loader and class name pair.
     // pick a random syncLock to synchronize
     // Although the sync locks are not one/per/class, there should be enough of them to make the
-    // likelyhood
-    // of needing to wait very low (unless it's the same class-name being loaded, of course).
+    // likelihood of needing to wait very low (unless it's the same class-name being loaded, of
+    // course).
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) {
-      // First, check if the class has already been loaded
-      Class<?> c = findLoadedClass(name);
+      Class<?> c = null;
+
+      if (c == null) {
+        // Check if the class has already been loaded
+        c = findLoadedClass(name);
+      }
+
       if (c == null) {
         try {
           // try to load class
@@ -262,6 +272,19 @@ public class UIMAClassLoader extends URLClassLoader {
 
       if (resolve) {
         resolveClass(c);
+
+        // Accessing the interfaces would implicitly trigger resolution - so we can only do it when
+        // resolution is
+        // allowed... hopefully nobody tries to load SPIs without also allowing to resolve the class
+        if (TypeSystemProvider.class.isAssignableFrom(c)
+                || TypeSystemDescriptionProvider.class.isAssignableFrom(c)
+                || JCasClassProvider.class.isAssignableFrom(c)
+                || FsIndexCollectionProvider.class.isAssignableFrom(c)
+                || TypePrioritiesProvider.class.isAssignableFrom(c)) {
+          // We never want to return local SPI implementations -
+          // https://github.com/apache/uima-uimaj/issues/431
+          c = super.loadClass(name, false);
+        }
       }
 
       return c;
@@ -273,15 +296,16 @@ public class UIMAClassLoader extends URLClassLoader {
             || name.startsWith("org.apache.uima.jcas.cas.");
   }
 
-  /*
-   * loads resource from this class loader first, if possible (non-Javadoc)
-   * 
-   * @see java.lang.ClassLoader#getResource(java.lang.String)
-   */
   @Override
   public URL getResource(String name) {
 
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
+      if (name != null && name.contains("META-INF/services/org.apache.uima.spi.")) {
+        // We never want to return local SPI implementations
+        // https://github.com/apache/uima-uimaj/issues/431
+        return super.getResource(name);
+      }
+
       URL url = findResource(name);
 
       if (null == url) {
@@ -303,11 +327,6 @@ public class UIMAClassLoader extends URLClassLoader {
     return isClosed;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.net.URLClassLoader#close()
-   */
   @Override
   public void close() throws IOException {
     isClosed = true;
