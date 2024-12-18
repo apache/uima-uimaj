@@ -19,13 +19,17 @@
 
 package org.apache.uima.internal.util;
 
+import static java.util.Collections.emptyEnumeration;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.apache.uima.UIMAFramework;
@@ -302,13 +306,38 @@ public class UIMAClassLoader extends URLClassLoader {
   }
 
   @Override
+  public Enumeration<URL> getResources(String name) throws IOException {
+    synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
+      Enumeration<URL> delegateResources;
+      var parent = getParent();
+      if (parent != null) {
+        delegateResources = parent.getResources(name);
+      } else {
+        delegateResources = ClassLoader.getSystemClassLoader().getResources(name);
+      }
+
+      Enumeration<URL> localResources = emptyEnumeration();
+      if (!name.contains("META-INF/services/org.apache.uima.spi.")) {
+        localResources = findResources(name);
+      }
+
+      return new CombinedEnumeration<>(localResources, delegateResources);
+    }
+  }
+
+  @Override
   public URL getResource(String name) {
 
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
-      if (name != null && name.contains("META-INF/services/org.apache.uima.spi.")) {
+      if (name.contains("META-INF/services/org.apache.uima.spi.")) {
         // We never want to return local SPI implementations
         // https://github.com/apache/uima-uimaj/issues/431
-        return super.getResource(name);
+        var parent = getParent();
+        if (parent != null) {
+          return parent.getResource(name);
+        } else {
+          return ClassLoader.getSystemClassLoader().getResource(name);
+        }
       }
 
       URL url = findResource(name);
@@ -351,5 +380,31 @@ public class UIMAClassLoader extends URLClassLoader {
   // Package-scope visibility for testing
   Object getClassLoadingLockForTesting(String aClassName) {
     return super.getClassLoadingLock(aClassName);
+  }
+
+  static class CombinedEnumeration<T> implements Enumeration<T> {
+    private final Enumeration<T> first;
+    private final Enumeration<T> second;
+
+    public CombinedEnumeration(Enumeration<T> first, Enumeration<T> second) {
+      this.first = first;
+      this.second = second;
+    }
+
+    @Override
+    public boolean hasMoreElements() {
+      return first.hasMoreElements() || second.hasMoreElements();
+    }
+
+    @Override
+    public T nextElement() {
+      if (first.hasMoreElements()) {
+        return first.nextElement();
+      } else if (second.hasMoreElements()) {
+        return second.nextElement();
+      } else {
+        throw new NoSuchElementException("No more elements");
+      }
+    }
   }
 }
