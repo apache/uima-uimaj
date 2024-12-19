@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+        
+  
+  <name>typeSystemDescriptor</name>
+        
+  
+  <description/>
+        
+  
+  <version>1.0</version>
+        
+  
+  <vendor/>
+      
+  
+  <types>
+            
+    
+    <typeDescription>
+                  
+      
+      <name>org.apache.uima.test.jcasfeatureoffsettest.Base</name>
+                  
+      
+      <description/>
+                  
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                
+    
+    </typeDescription>
+      
+    <typeDescription>
+            
+      <name>org.apache.uima.test.jcasfeatureoffsettest.Subtype</name>
+            
+      <description/>
+            
+      <supertypeName>org.apache.uima.test.jcasfeatureoffsettest.Base</supertypeName>
+            
+      <features>
+                
+        <featureDescription>
+                    
+          <name>featureX</name>
+                    
+          <description/>
+                    
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                  
+        </featureDescription>
+              
+      </features>
+          
+    </typeDescription>
+  </types>
+    
+
+</typeSystemDescription>
