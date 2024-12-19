@@ -21,6 +21,7 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.fit.internal.MetaDataUtil.scanDescriptors;
 import static org.apache.uima.fit.util.CasUtil.UIMA_BUILTIN_JCAS_PREFIX;
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.internal.ClassLoaderUtils;
@@ -170,7 +170,7 @@ public final class TypePrioritiesFactory {
   static void loadTypePrioritiesFromSPIs(List<TypePriorities> typePrioritiesList) {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    ServiceLoader.load(TypePrioritiesProvider.class).forEach(provider -> {
+    loadServicesSafely(TypePrioritiesProvider.class).forEach(provider -> {
       for (var desc : provider.listTypePriorities()) {
         loaded.add(desc);
         typePrioritiesList.add(desc);
@@ -178,7 +178,7 @@ public final class TypePrioritiesFactory {
       }
     });
 
-    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+    loadServicesSafely(TypeSystemProvider.class).forEach(provider -> {
       for (var desc : provider.listTypePriorities()) {
         if (loaded.contains(desc)) {
           continue;

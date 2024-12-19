@@ -19,8 +19,7 @@
 package org.apache.uima.fit.validation;
 
 import static java.util.Arrays.stream;
-import static java.util.ServiceLoader.load;
-import static java.util.stream.StreamSupport.stream;
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -219,7 +218,7 @@ public class Validator {
     }
 
     private Validator.Builder autoDetectChecks() {
-      stream(load(ValidationCheck.class).spliterator(), false).forEachOrdered(checks::add);
+      loadServicesSafely(ValidationCheck.class).forEachOrdered(checks::add);
       return this;
     }
 
