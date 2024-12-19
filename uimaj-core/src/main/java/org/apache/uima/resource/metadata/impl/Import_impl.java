@@ -134,7 +134,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     // If that fails, try loading through the SPIs
     if (url == null) {
       var cl = ClassLoaderUtils.findClassLoader(aResourceManager);
-      loadServicesSafely(TypeSystemProvider.class, cl) //
+      url = loadServicesSafely(TypeSystemProvider.class, cl) //
               .map(provider -> provider.findResourceUrl(name)) //
               .filter(Optional::isPresent) //
               .map(Optional::get) //
