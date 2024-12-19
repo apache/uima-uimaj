@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 import static java.util.Collections.emptyMap;
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
 
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -40,7 +41,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -1009,14 +1009,14 @@ public abstract class FSClassRegistry {
 
       var spiJCasClasses = new LinkedHashMap<String, Class<? extends TOP>>();
 
-      ServiceLoader.load(JCasClassProvider.class, cl).forEach(provider -> {
+      loadServicesSafely(JCasClassProvider.class, cl).forEach(provider -> {
         var list = provider.listJCasClasses();
         if (list != null) {
           list.forEach(item -> spiJCasClasses.put(item.getName(), item));
         }
       });
 
-      ServiceLoader.load(TypeSystemProvider.class, cl).forEach(provider -> {
+      loadServicesSafely(TypeSystemProvider.class, cl).forEach(provider -> {
         var list = provider.listJCasClasses();
         if (list != null) {
           list.forEach(item -> spiJCasClasses.put(item.getName(), item));
