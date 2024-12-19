@@ -19,13 +19,15 @@
 
 package org.apache.uima.internal.util;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.list;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URL;
+import java.util.zip.ZipFile;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,7 @@ class UIMAClassLoaderTest {
 
   @Test
   void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
-    ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+    var rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     assertThat(rsrcMgr.getExtensionClassLoader()) //
             .as("Freshly created resource manager has no extension classloader") //
@@ -55,31 +57,29 @@ class UIMAClassLoaderTest {
             .as("After setting an extension classpath, there is an extension classloader") //
             .isInstanceOf(UIMAClassLoader.class);
 
-    UIMAClassLoader cl = (UIMAClassLoader) rsrcMgr.getExtensionClassLoader();
-    Object o = cl.getClassLoadingLockForTesting("someString");
-    Object o2 = cl.getClassLoadingLockForTesting("s2");
+    var cl = (UIMAClassLoader) rsrcMgr.getExtensionClassLoader();
+    var o = cl.getClassLoadingLockForTesting("someString");
+    var o2 = cl.getClassLoadingLockForTesting("s2");
     assertThat(o != o2).isTrue();
     assertThat(cl != o).isTrue();
   }
 
   @Test
   void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
-    ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+    var rsrcMgr = UIMAFramework.newDefaultResourceManager();
 
     assertThat(rsrcMgr.getExtensionClassLoader()).isNull();
 
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", true);
 
     assertThat(rsrcMgr.getExtensionClassLoader()).isNotNull();
-
   }
 
   @Test
   void testSimpleClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
-    Class testClass = null;
+    var cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
 
-    testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
+    var testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
     assertThat(testClass).isNotNull();
     assertThat(testClass.getClassLoader()).isEqualTo(cl);
@@ -105,7 +105,7 @@ class UIMAClassLoaderTest {
 
     MultiThreadUtils.tstMultiThread("MultiThreadLoading", Misc.numberOfCores, 1, callable,
             MultiThreadUtils.emptyReset);
-    Class<?> c = loadedClasses[0];
+    var c = loadedClasses[0];
     for (int i = 1; i < Misc.numberOfCores; i++) {
       assertThat(loadedClasses[i]).isEqualTo(c);
     }
@@ -113,11 +113,10 @@ class UIMAClassLoaderTest {
 
   @Test
   void testSimpleClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
+    var urlClasspath = new URL[] { new File(testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
-    Class testClass = null;
 
-    testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
+    var testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
     assertThat(testClass).isNotNull();
     assertThat(testClass.getClassLoader()).isEqualTo(cl);
@@ -130,10 +129,9 @@ class UIMAClassLoaderTest {
 
   @Test
   void testAdvancedClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
-    Class testClass = null;
+    var cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
 
-    testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
+    var testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
     assertThat(testClass).isNotNull();
     assertThat(testClass.getClassLoader()).isEqualTo(cl);
@@ -146,11 +144,10 @@ class UIMAClassLoaderTest {
 
   @Test
   void testAdvancedClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
-    UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
-    Class testClass = null;
+    var urlClasspath = new URL[] { new File(testClassPath).toURL() };
+    var cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
 
-    testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
+    var testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
 
     assertThat(testClass).isNotNull();
     assertThat(testClass.getClassLoader()).isEqualTo(cl);
@@ -159,5 +156,30 @@ class UIMAClassLoaderTest {
 
     assertThat(testClass).isNotNull();
     assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
+  }
+
+  @Test
+  void testLoadingSpiImplementationThroughUIMAClassLoaderIsBlocked() throws Exception {
+    var urlClasspath = new URL[] { new File(testClassPath).toURL() };
+    var cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
+
+    var spiConfigurationFile = "META-INF/services/org.apache.uima.spi.TypeSystemProvider";
+    var spiImplementationClass = "org.apache.uima.internal.util.UIMAClassLoaderTest_TypeSystemProvider";
+    var filesToCheck = asList(spiConfigurationFile,
+            spiImplementationClass.replace('.', '/') + ".class");
+
+    try (var zipFile = new ZipFile(testClassPath)) {
+      for (var filePath : filesToCheck) {
+        var entry = zipFile.getEntry(filePath);
+        assertThat(entry).as("File %s should exist in the JAR", filePath).isNotNull();
+      }
+    }
+
+    var testClass = cl.loadClass(spiImplementationClass);
+    assertThat(testClass).isNotNull();
+    assertThat(testClass.getClassLoader()).isEqualTo(this.getClass().getClassLoader());
+
+    var spiConfigurationFiles = list(cl.getResources(spiConfigurationFile));
+    assertThat(spiConfigurationFiles).isEmpty();
   }
 }
