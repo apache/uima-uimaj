@@ -19,9 +19,11 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ServiceLoader;
+import java.util.Optional;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.ClassLoaderUtils;
@@ -132,14 +134,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     // If that fails, try loading through the SPIs
     if (url == null) {
       var cl = ClassLoaderUtils.findClassLoader(aResourceManager);
-      var providers = ServiceLoader.load(TypeSystemProvider.class, cl);
-      for (var provider : providers) {
-        var maybeTypeSystemUrl = provider.findResourceUrl(name);
-        if (maybeTypeSystemUrl.isPresent()) {
-          url = maybeTypeSystemUrl.get();
-          break;
-        }
-      }
+      loadServicesSafely(TypeSystemProvider.class, cl) //
+              .map(provider -> provider.findResourceUrl(name)) //
+              .filter(Optional::isPresent) //
+              .map(Optional::get) //
+              .findFirst() //
+              .orElse(null);
     }
 
     if (url == null) {

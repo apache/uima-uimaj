@@ -280,12 +280,7 @@ public class UIMAClassLoader extends URLClassLoader {
 
       // Accessing the interfaces will implicitly trigger resolution - but we can't really help
       // ourselves at the moment
-      if (TypeSystemProvider.class.isAssignableFrom(c)
-              || TypeSystemDescriptionProvider.class.isAssignableFrom(c)
-              || JCasClassProvider.class.isAssignableFrom(c)
-              || FsIndexCollectionProvider.class.isAssignableFrom(c)
-              || TypePrioritiesProvider.class.isAssignableFrom(c)) {
-
+      if (isUimaSpiImplementation(c)) {
         // We never want to return local SPI implementations loaded by the UIMAClassLoader
         // https://github.com/apache/uima-uimaj/issues/431
         var parent = getParent();
@@ -300,11 +295,6 @@ public class UIMAClassLoader extends URLClassLoader {
     }
   }
 
-  private boolean isUimaInternalPackage(String name) {
-    return name.startsWith("org.apache.uima.cas.impl.")
-            || name.startsWith("org.apache.uima.jcas.cas.");
-  }
-
   @Override
   public Enumeration<URL> getResources(String name) throws IOException {
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
@@ -317,7 +307,7 @@ public class UIMAClassLoader extends URLClassLoader {
       }
 
       Enumeration<URL> localResources = emptyEnumeration();
-      if (!name.contains("META-INF/services/org.apache.uima.spi.")) {
+      if (!isUimaSpiConfigurationFile(name)) {
         localResources = findResources(name);
       }
 
@@ -329,24 +319,42 @@ public class UIMAClassLoader extends URLClassLoader {
   public URL getResource(String name) {
 
     synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
-      if (name.contains("META-INF/services/org.apache.uima.spi.")) {
+      if (isUimaSpiConfigurationFile(name)) {
         // We never want to return local SPI implementations
         // https://github.com/apache/uima-uimaj/issues/431
         var parent = getParent();
         if (parent != null) {
           return parent.getResource(name);
-        } else {
-          return ClassLoader.getSystemClassLoader().getResource(name);
         }
+
+        return ClassLoader.getSystemClassLoader().getResource(name);
       }
 
-      URL url = findResource(name);
+      var url = findResource(name);
 
       if (null == url) {
         url = super.getResource(name);
       }
+
       return url;
     }
+  }
+
+  private boolean isUimaSpiImplementation(Class<?> c) {
+    return TypeSystemProvider.class.isAssignableFrom(c)
+            || TypeSystemDescriptionProvider.class.isAssignableFrom(c)
+            || JCasClassProvider.class.isAssignableFrom(c)
+            || FsIndexCollectionProvider.class.isAssignableFrom(c)
+            || TypePrioritiesProvider.class.isAssignableFrom(c);
+  }
+
+  private boolean isUimaInternalPackage(String name) {
+    return name.startsWith("org.apache.uima.cas.impl.")
+            || name.startsWith("org.apache.uima.jcas.cas.");
+  }
+
+  private boolean isUimaSpiConfigurationFile(String name) {
+    return name.contains("META-INF/services/org.apache.uima.spi.");
   }
 
   /**
@@ -382,7 +390,7 @@ public class UIMAClassLoader extends URLClassLoader {
     return super.getClassLoadingLock(aClassName);
   }
 
-  static class CombinedEnumeration<T> implements Enumeration<T> {
+  private static class CombinedEnumeration<T> implements Enumeration<T> {
     private final Enumeration<T> first;
     private final Enumeration<T> second;
 

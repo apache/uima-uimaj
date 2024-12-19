@@ -22,6 +22,7 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.fit.internal.MetaDataUtil.scanDescriptors;
 import static org.apache.uima.fit.internal.ReflectionUtil.getInheritableAnnotation;
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.descriptor.FsIndex;
@@ -335,7 +335,7 @@ public final class FsIndexFactory {
   static void loadFsIndexCollectionsfromSPIs(List<FsIndexDescription> fsIndexList) {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    ServiceLoader.load(FsIndexCollectionProvider.class).forEach(provider -> {
+    loadServicesSafely(FsIndexCollectionProvider.class).forEach(provider -> {
       for (var fsIdxCol : provider.listFsIndexCollections()) {
         loaded.add(fsIdxCol);
         fsIndexList.addAll(asList(fsIdxCol.getFsIndexes()));
@@ -344,7 +344,7 @@ public final class FsIndexFactory {
       }
     });
 
-    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+    loadServicesSafely(TypeSystemProvider.class).forEach(provider -> {
       for (var fsIdxCol : provider.listFsIndexCollections()) {
         if (loaded.contains(fsIdxCol)) {
           continue;
