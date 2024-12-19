@@ -20,6 +20,7 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.UIMAFramework.getXMLParser;
 import static org.apache.uima.fit.internal.MetaDataUtil.scanDescriptors;
+import static org.apache.uima.internal.util.ServiceLoaderUtil.loadServicesSafely;
 import static org.apache.uima.util.CasCreationUtils.mergeTypeSystems;
 
 import java.io.IOException;
@@ -28,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
 import org.apache.uima.fit.internal.ClassLoaderUtils;
@@ -173,7 +173,7 @@ public final class TypeSystemDescriptionFactory {
   static void loadTypeSystemDescriptionsFromSPIs(List<TypeSystemDescription> tsdList) {
     var loaded = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    ServiceLoader.load(TypeSystemDescriptionProvider.class).forEach(provider -> {
+    loadServicesSafely(TypeSystemDescriptionProvider.class).forEach(provider -> {
       for (var desc : provider.listTypeSystemDescriptions()) {
         loaded.add(desc);
         tsdList.add(desc);
@@ -181,7 +181,7 @@ public final class TypeSystemDescriptionFactory {
       }
     });
 
-    ServiceLoader.load(TypeSystemProvider.class).forEach(provider -> {
+    loadServicesSafely(TypeSystemProvider.class).forEach(provider -> {
       for (var desc : provider.listTypeSystemDescriptions()) {
         if (loaded.contains(desc)) {
           continue;
