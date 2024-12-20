@@ -53,7 +53,7 @@ jobs:
       run: mvn --show-version --batch-mode --no-transfer-progress clean verify
       
     - name: Upload to Nexus
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request'
       env:
         # `NEXUS_USERNAME` and `NEXUS_PASSWORD` are used in `~/.m2/settings.xml` created by `setup-java` action
         NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
