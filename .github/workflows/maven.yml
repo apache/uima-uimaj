@@ -50,13 +50,12 @@ jobs:
       run: echo "CACHE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
     - name: Build with Maven
-      if: matrix.os != 'ubuntu-latest'
       run: mvn --show-version --batch-mode --no-transfer-progress clean verify
       
-    - name: Build with Maven and upload to Nexus
+    - name: Upload to Nexus
       if: matrix.os == 'ubuntu-latest'
       env:
         # `NEXUS_USERNAME` and `NEXUS_PASSWORD` are used in `~/.m2/settings.xml` created by `setup-java` action
         NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
         NEXUS_PASSWORD: ${{ secrets.NEXUS_PW }}
-      run: mvn --show-version --batch-mode --errors --no-transfer-progress -DdeployAtEnd=true clean deploy
+      run: mvn --show-version --batch-mode --errors --no-transfer-progress -DskipTests deploy
