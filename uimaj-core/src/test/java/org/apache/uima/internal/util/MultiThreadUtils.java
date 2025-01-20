@@ -101,6 +101,9 @@ public class MultiThreadUtils {
                                          // MultiThreadUtils.emptyReset if not wanted.
   ) throws Exception {
 
+    numberRunning.set(0);
+    numberOfExceptions.set(0);
+
     final Runnable beforeRepeat = (null == beforeRepeatArg) ? emptyReset : beforeRepeatArg;
     final Thread[] threads = new Thread[numberOfThreads];
 
