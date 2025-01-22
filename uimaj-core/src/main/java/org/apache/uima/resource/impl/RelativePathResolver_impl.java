@@ -231,15 +231,6 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       return null;
     }
 
-    // check if an URL was passed in - if so, we fall back to the old logic which is a bit odd
-    // because for relative URLs, it basically discards the protocol. This is behavior we may
-    // want to change on the next major release... e.g. to require that relative paths are
-    // always specified without a protocol.
-    /*
-     * try { var url = new URL(aPathOrUrl); return resolveRelativePath(url); } catch
-     * (MalformedURLException e) { // ignore and move on }
-     */
-
     URI uri = null;
     try {
       // Try parsing as URI as this is less overhead than parsing as URL
