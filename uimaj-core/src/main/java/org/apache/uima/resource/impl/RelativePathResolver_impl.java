@@ -324,6 +324,14 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
+    if (aUrl == null) {
+      return false;
+    }
+
+    if ("file".equals(aUrl.getProtocol())) {
+      return new File(aUrl.getPath()).exists();
+    }
+
     try {
       // Ensure that we actually always check the resource for existence. In case of a JAR URL,
       // this is also important to ensure that the ZIP/JAR file is closed again.
