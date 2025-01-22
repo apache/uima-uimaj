@@ -41,6 +41,12 @@ public class ServiceLoaderUtil {
   private static final WeakIdentityMap<ClassLoader, Map<Class<?>, List<?>>> cl_to_services = //
           WeakIdentityMap.newHashMap();
 
+  public static void clearServiceCache() {
+    synchronized (cl_to_services) {
+      cl_to_services.clear();
+    }
+  }
+
   public static <T> Stream<T> loadServicesSafely(Class<T> aService) {
     var cl = ClassLoaderUtils.findClassLoader();
     return loadServicesSafely(aService, cl, null);
