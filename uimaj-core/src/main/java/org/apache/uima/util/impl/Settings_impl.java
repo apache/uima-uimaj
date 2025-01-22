@@ -144,12 +144,12 @@ public class Settings_impl implements Settings {
 
   /**
    * Load properties from the comma-separated list of resources specified in the system property
-   * UimaExternalOverrides Resource names may be specified with a prefix of "file:" or "path:". If
-   * the prefix is "path:" the name must use the Java-style dotted format, similar to an import by
-   * name. The name is converted to a URL with a suffix of ".settings" and is looked up in the
-   * datapath and classpath. If the prefix is "file:" or is omitted the filesystem is searched.
-   * Resources are loaded in list order. Duplicate properties are ignored so entries in a file
-   * override any in following files.
+   * UimaExternalOverrides Resource names may be specified with a prefix of {@code file:} or
+   * {@code path:}. If the prefix is {@code path:} the name must use the Java-style dotted format,
+   * similar to an import by name. The name is converted to a URL with a suffix of ".settings" and
+   * is looked up in the datapath and classpath. If the prefix is "file:" or is omitted the
+   * filesystem is searched. Resources are loaded in list order. Duplicate properties are ignored so
+   * entries in a file override any in following files.
    * 
    * @throws ResourceConfigurationException
    *           wraps IOException
@@ -165,10 +165,9 @@ public class Settings_impl implements Settings {
                 new Object[] { fname });
         try {
           InputStream is = null;
-          if (fname.startsWith("path:")) { // Convert to a url and search the datapath & classpath
-            URL relativeUrl = new URL("file", "",
-                    fname.substring(5).replace('.', '/') + ".settings");
-            URL relPath = relativePathResolver.resolveRelativePath(relativeUrl.toString());
+          if (fname.startsWith("path:")) { // Convert to a URL and search the datapath & classpath
+            URL relPath = relativePathResolver
+                    .resolveRelativePath(fname.replace('.', '/') + ".settings");
             if (relPath != null) {
               is = relPath.openStream();
             } else {
