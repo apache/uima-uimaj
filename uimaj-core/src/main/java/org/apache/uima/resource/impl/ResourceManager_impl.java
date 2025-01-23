@@ -502,7 +502,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   @Override
-  public InputStream getResourceAsStream(String aKey, String[] aParams)
+  public InputStream getResourceAsStream(String aKey, String... aParams)
           throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey, aParams));
   }
@@ -534,7 +534,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   @Override
-  public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
+  public URL getResourceURL(String aKey, String... aParams) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey, aParams));
   }
 

@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -227,31 +228,127 @@ public class RelativePathResolver_impl implements RelativePathResolver {
 
   @Override
   public URL resolveRelativePath(String aPathOrUrl) {
-    // check if an URL was passed in - if so, we fall back to the old logic which is a bit odd
-    // because for relative URLs, it basically discards the protocol. This is behavior we may
-    // want to change on the next major release... e.g. to require that relative paths are
-    // always specified without a protocol.
+    if (aPathOrUrl == null) {
+      return null;
+    }
+
+    URI uri = null;
     try {
-      var url = new URL(aPathOrUrl);
-      return resolveRelativePath(url);
-    } catch (MalformedURLException e) {
-      // ignore and move on
+      // Try parsing as URI as this is less overhead than parsing as URL
+      uri = URI.create(aPathOrUrl);
+    } catch (Exception e) {
+      // Location is not a URI (and consequently not a URL)
     }
 
-    var absUrl = resolveRelativePathUsingBaseUrls(aPathOrUrl);
-    if (absUrl != null) {
-      return absUrl;
+    if (uri != null && uri.isAbsolute() && uri.getPath() != null
+            && !"path".equals(uri.getScheme())) {
+      try {
+        if ("file".equals(uri.getScheme())) {
+          // Try faster short-cut when using a file location avoiding creation of URL object if
+          // not necessary
+          if (new File(uri.getPath()).exists()) {
+            return new URL(aPathOrUrl);
+          }
+        } else {
+          var absUrl = new URL(aPathOrUrl);
+          // if file exists here, return this URL
+          if (fileExistsAtUrl(absUrl)) {
+            return absUrl;
+          }
+        }
+      } catch (MalformedURLException e) {
+        // Not found
+        return null;
+      }
     }
 
-    return resolveRelativePathUsingClassloaders(aPathOrUrl);
+    String scheme;
+    String relativePath;
+    if (uri != null && uri.isAbsolute()) {
+      // If we have a URI like `file:some/path/res.xml` this counts as absolute but we won't get a
+      // path, only a scheme-specific part. We want to treat these cases as relative.
+      scheme = uri.getScheme();
+      relativePath = uri.getSchemeSpecificPart();
+    } else {
+      scheme = null;
+      relativePath = aPathOrUrl;
+    }
+
+    if (relativePath.startsWith("/")) {
+      relativePath = relativePath.substring(1);
+    }
+
+    // Try resolving relative locations against the base URLs
+    for (var baseUrl : mBaseUrls) {
+      if (scheme != null && !"path".equals(scheme) && !scheme.equals(baseUrl.getProtocol())) {
+        continue;
+      }
+
+      try {
+        if ("file".equals(baseUrl.getProtocol())) {
+          // Try faster short-cut when using a file location avoiding creation of URL object if
+          // not necessary
+          if (new File(baseUrl.getPath(), relativePath).exists()) {
+            return new URL(baseUrl, relativePath);
+          }
+        } else {
+          var absUrl = new URL(baseUrl, relativePath);
+          // if file exists here, return this URL
+          if (fileExistsAtUrl(absUrl)) {
+            return absUrl;
+          }
+        }
+      } catch (MalformedURLException e) {
+        // ignore and move on to next base URL
+      }
+    }
+
+    // fallback on classloader
+    URL absURL = null;
+
+    if (scheme == null || "path".equals(scheme)) {
+      if (mClassLoader != null) {
+        absURL = mClassLoader.getResource(relativePath);
+      }
+
+      // fallback on TCCL
+      if (absURL == null) {
+        var tccl = Thread.currentThread().getContextClassLoader();
+        absURL = tccl.getResource(relativePath);
+      }
+
+      // if no ClassLoader specified (could be the bootstrap classloader), try the system
+      // classloader
+      if (absURL == null && mClassLoader == null) {
+        absURL = ClassLoader.getSystemClassLoader().getResource(relativePath);
+      }
+    }
+
+    return absURL;
   }
 
   @Deprecated
   @Override
   public URL resolveRelativePath(URL aUrl) {
-    var absUrl = resolveRelativePathUsingBaseUrls(aUrl.toString());
-    if (absUrl != null) {
-      return absUrl;
+    // try each base URL
+    for (var baseUrl : mBaseUrls) {
+      try {
+        if ("file".equals(baseUrl.getProtocol())) {
+          // Try faster short-cut when using a file location avoiding creation of URL object if not
+          // necessary
+          if (new File(baseUrl.getPath(), aUrl.getPath()).exists()) {
+            return new URL(baseUrl, aUrl.getPath());
+          }
+        } else {
+          var absUrl = new URL(baseUrl, aUrl.getPath());
+          // if file exists here, return this URL
+          if (fileExistsAtUrl(absUrl)) {
+            return absUrl;
+          }
+        }
+      } catch (MalformedURLException e) {
+        // ignore and move on to next base URL
+      }
     }
 
     // check if an absolute URL was passed in
@@ -259,51 +356,22 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       return aUrl;
     }
 
-    var path = aUrl.getFile();
-
-    return resolveRelativePathUsingClassloaders(path);
-  }
-
-  private URL resolveRelativePathUsingBaseUrls(String aPath) {
-    // try each base URL
-    for (var baseUrl : mBaseUrls) {
-      try {
-        var absUrl = new URL(baseUrl, aPath);
-        // if file exists here, return this URL
-        if (fileExistsAtUrl(absUrl)) {
-          return absUrl;
-        }
-      } catch (MalformedURLException e) {
-        // ignore and move on to next base URL
-      }
-    }
-
-    return null;
-  }
-
-  private URL resolveRelativePathUsingClassloaders(String aPath) {
     // fallback on classloader
+    var f = aUrl.getFile();
     URL absURL = null;
     if (mClassLoader != null) {
-      absURL = mClassLoader.getResource(aPath);
+      absURL = mClassLoader.getResource(f);
     }
 
     // fallback on TCCL
     if (absURL == null) {
       var tccl = Thread.currentThread().getContextClassLoader();
-      if (tccl != null) {
-        absURL = tccl.getResource(aPath);
-      }
-    }
-
-    // Try the framework classloader
-    if (absURL == null) {
-      absURL = UIMAFramework.class.getClassLoader().getResource(aPath);
+      absURL = tccl.getResource(f);
     }
 
     // if no ClassLoader specified (could be the bootstrap classloader), try the system classloader
     if (absURL == null && mClassLoader == null) {
-      absURL = ClassLoader.getSystemClassLoader().getResource(aPath);
+      absURL = ClassLoader.getSystemClassLoader().getResource(f);
     }
 
     return absURL;
@@ -318,6 +386,14 @@ public class RelativePathResolver_impl implements RelativePathResolver {
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
+    if (aUrl == null) {
+      return false;
+    }
+
+    if ("file".equals(aUrl.getProtocol())) {
+      return new File(aUrl.getPath()).exists();
+    }
+
     try {
       // Ensure that we actually always check the resource for existence. In case of a JAR URL,
       // this is also important to ensure that the ZIP/JAR file is closed again.
