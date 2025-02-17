@@ -398,7 +398,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       // Ensure that we actually always check the resource for existence. In case of a JAR URL,
       // this is also important to ensure that the ZIP/JAR file is closed again.
       var connection = aUrl.openConnection();
-      connection.setDefaultUseCaches(false);
+      connection.setUseCaches(false);
       try (var testStream = connection.getInputStream()) {
         return true;
       }

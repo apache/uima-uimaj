@@ -536,7 +536,7 @@ public class PearIT
                     try {
                         // Disable JAR cache so JUnit can delete the temporary folder after the test
                         var urlConnection = url.openConnection();
-                        urlConnection.setDefaultUseCaches(false);
+                        urlConnection.setUseCaches(false);
 
                         try (InputStream is = urlConnection.getInputStream()) {
                             var buffer = new ByteArrayOutputStream();
