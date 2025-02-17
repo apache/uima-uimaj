@@ -118,11 +118,12 @@ class TypeSystemImplTest {
     LOG.info("Metaspace exhaustion test starting - this may take a while...");
     var startTime = currentTimeMillis();
     var target = threshold * 2;
+    var loadedClasses = classLoadingMXBean.getLoadedClassCount();
     for (var i = 0; i < threshold * 2; i++) {
       if ((i + 1) % 250 == 0) {
         var duration = currentTimeMillis() - startTime;
-        LOG.info("Metaspace exhaustion test - progress: {} / {} -- {}ms per CAS", i + 1, target,
-                duration / i + 1);
+        LOG.info("Metaspace exhaustion test - progress: {} / {} -- {}ms per CAS - {} classes",
+                i + 1, target, duration / i + 1, (loadedClasses - classesLoadedAtStart));
       }
 
       var resMgr = new ResourceManager_impl();
@@ -132,7 +133,8 @@ class TypeSystemImplTest {
       // Make sure the consolidated type system is evicted from the weak hashmap cache
       System.gc();
 
-      assertThat(classLoadingMXBean.getLoadedClassCount()) //
+      loadedClasses = classLoadingMXBean.getLoadedClassCount();
+      assertThat(loadedClasses) //
               .as("High number of new loaded classes during test indicates leak")
               .isLessThan(classesLoadedAtStart + threshold);
     }

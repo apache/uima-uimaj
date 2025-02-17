@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -46,6 +47,8 @@ import org.apache.uima.util.XMLizable;
 class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends MetaDataObject> {
 
   private Function<DESCRIPTOR, DescriptorAdapter<DESCRIPTOR, COLLECTIBLE>> adapterFactory;
+  private ThreadLocal<Map<String, URL>> absUrlCacheHolder = ThreadLocal
+          .withInitial(() -> new HashMap<>());
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   ImportResolver(Function<DESCRIPTOR, DescriptorAdapter> aAdapterFactory) {
@@ -90,34 +93,38 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
       return;
     }
 
-    Set<COLLECTIBLE> originalTypes = newSetFromMap(new IdentityHashMap<>());
-    originalTypes.addAll(asList(wrapper.getCollectibles()));
+    try {
+      Set<COLLECTIBLE> originalTypes = newSetFromMap(new IdentityHashMap<>());
+      originalTypes.addAll(asList(wrapper.getCollectibles()));
 
-    var resourceManager = aResourceManager;
-    if (aResourceManager == null) {
-      resourceManager = UIMAFramework.newDefaultResourceManager();
+      var resourceManager = aResourceManager;
+      if (aResourceManager == null) {
+        resourceManager = UIMAFramework.newDefaultResourceManager();
+      }
+
+      var alreadyImportedURLs = new HashSet<String>();
+      var stack = new LinkedList<String>();
+
+      if (aAlreadyImportedURLs != null) {
+        alreadyImportedURLs.addAll(aAlreadyImportedURLs);
+        aAlreadyImportedURLs.forEach(stack::push);
+      }
+
+      var collectedObjects = new LinkedHashMap<Key, COLLECTIBLE>();
+
+      stack.push(wrapper.unwrap().getSourceUrlString());
+      resolveImports(wrapper, new HashSet<>(), collectedObjects, stack, resourceManager);
+      stack.pop();
+
+      // Defensive copy to prevent cache pollution in case the caller makes changes to the by
+      // casting collectibles to their mutable implementation and making changes to them.
+      wrapper.setCollectibles(collectedObjects.values().stream() //
+              .map(c -> originalTypes.contains(c) ? c : (COLLECTIBLE) c.clone()) //
+              .collect(toList()));
+      wrapper.clearImports();
+    } finally {
+      absUrlCacheHolder.remove();
     }
-
-    var alreadyImportedURLs = new HashSet<String>();
-    var stack = new LinkedList<String>();
-
-    if (aAlreadyImportedURLs != null) {
-      alreadyImportedURLs.addAll(aAlreadyImportedURLs);
-      aAlreadyImportedURLs.forEach(stack::push);
-    }
-
-    var collectedObjects = new LinkedHashMap<Key, COLLECTIBLE>();
-
-    stack.push(wrapper.unwrap().getSourceUrlString());
-    resolveImports(wrapper, new HashSet<>(), collectedObjects, stack, resourceManager);
-    stack.pop();
-
-    // Defensive copy to prevent cache pollution in case the caller makes changes to the by
-    // casting collectibles to their mutable implementation and making changes to them.
-    wrapper.setCollectibles(collectedObjects.values().stream() //
-            .map(c -> originalTypes.contains(c) ? c : (COLLECTIBLE) c.clone()) //
-            .collect(toList()));
-    wrapper.clearImports();
   }
 
   /**
@@ -162,8 +169,8 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
         continue;
       }
 
-      var absUrl = imp.findAbsoluteUrl(aResourceManager);
-      String absUrlString = absUrl.toString();
+      var absUrl = findAbsoluteUrl(aResourceManager, imp);
+      var absUrlString = absUrl.toString();
 
       // Loop cancellation - skip imports of descriptors that lie on the path from the
       // entry point to the current descriptor
@@ -185,6 +192,25 @@ class ImportResolver<DESCRIPTOR extends MetaDataObject, COLLECTIBLE extends Meta
     }
 
     aAlreadyVisited.add(aWrapper.unwrap().getSourceUrlString());
+  }
+
+  private URL findAbsoluteUrl(ResourceManager aResourceManager, Import imp)
+          throws InvalidXMLException {
+    String absUrlCacheKey;
+    if (imp.getLocation() != null) {
+      absUrlCacheKey = "location:" + imp.getLocation();
+    } else {
+      absUrlCacheKey = "name:" + imp.getName();
+    }
+
+    var absUrlCache = absUrlCacheHolder.get();
+    var absUrl = absUrlCache.get(absUrlCacheKey);
+    if (absUrl == null) {
+      absUrl = imp.findAbsoluteUrl(aResourceManager);
+      absUrlCache.put(absUrlCacheKey, absUrl);
+    }
+
+    return absUrl;
   }
 
   private void collectAll(DescriptorAdapter<DESCRIPTOR, COLLECTIBLE> aWrapper,

@@ -21,6 +21,9 @@ package org.apache.uima.internal.util;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Spliterator;
@@ -35,6 +38,15 @@ public class ServiceLoaderUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final int MAX_BROKEN_SERVICES = 16;
 
+  private static final WeakIdentityMap<ClassLoader, Map<Class<?>, List<?>>> cl_to_services = //
+          WeakIdentityMap.newHashMap();
+
+  public static void clearServiceCache() {
+    synchronized (cl_to_services) {
+      cl_to_services.clear();
+    }
+  }
+
   public static <T> Stream<T> loadServicesSafely(Class<T> aService) {
     var cl = ClassLoaderUtils.findClassLoader();
     return loadServicesSafely(aService, cl, null);
@@ -46,9 +58,29 @@ public class ServiceLoaderUtil {
 
   static <T> Stream<T> loadServicesSafely(Class<T> aService, ClassLoader aClassLoader,
           Collection<Throwable> aErrorCollector) {
-    var loader = ServiceLoader.load(aService, aClassLoader);
-    return StreamSupport.stream(
-            new ServiceLoaderSpliterator<T>(aService, loader.iterator(), aErrorCollector), false);
+
+    Map<Class<?>, List<?>> servicesMap;
+
+    synchronized (cl_to_services) {
+      servicesMap = cl_to_services.get(aClassLoader);
+      if (servicesMap == null) {
+        servicesMap = new LinkedHashMap<>();
+        cl_to_services.put(aClassLoader, servicesMap);
+      }
+    }
+
+    synchronized (servicesMap) {
+      @SuppressWarnings("unchecked")
+      var services = (List<T>) servicesMap.get(aService);
+      if (services == null) {
+        var loader = ServiceLoader.load(aService, aClassLoader);
+        services = StreamSupport.stream(
+                new ServiceLoaderSpliterator<T>(aService, loader.iterator(), aErrorCollector),
+                false).toList();
+        servicesMap.put(aService, services);
+      }
+      return services.stream();
+    }
   }
 
   private static class ServiceLoaderSpliterator<T> implements Spliterator<T> {
