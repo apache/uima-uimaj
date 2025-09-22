@@ -169,8 +169,7 @@ public class UimaBndPlugin
             return;
         }
 
-        if (configuration.transitive(false)) {
-            LOG.debug("");
+        if (configuration == null || configuration.transitive(false)) {
             analyzeXmlFile(analyzer, importedResourcePath, importedResource, level + 1);
         }
     }
