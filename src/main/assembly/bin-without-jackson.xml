@@ -210,7 +210,7 @@ under the License.
         <include>org.springframework:spring-context</include>
         <include>org.springframework:spring-core</include>
         <include>org.springframework:spring-expression</include>
-        <include>org.springframework:spring-jcl/5.3.39/spring-jcl-5.3.39.jar</include>
+        <include>org.springframework:spring-jcl</include>
       </includes>
       <unpack>false</unpack>
       <scope>runtime</scope>
