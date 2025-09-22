@@ -15,17 +15,17 @@
 # limitations under the License.
 #
 
+notifications:
+  commits:      commits@uima.apache.org
+  issues:       dev@uima.apache.org
+  pullrequests: dev@uima.apache.org
+  jobs:         dev@uima.apache.org
+  jira_options: link label
 github:
   description: "Apache UIMA Java SDK"
   homepage: https://uima.apache.org
   dependabot_alerts:  true
   dependabot_updates: false
-  notifications:
-    commits:      commits@uima.apache.org
-    issues:       dev@uima.apache.org
-    pullrequests: dev@uima.apache.org
-    jobs:         dev@uima.apache.org
-    jira_options: link label
   labels:
   - apache
   - uima

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.RelativePathResolver;
 
 /**
@@ -59,6 +60,8 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   }
 
   public RelativePathResolver_impl(ClassLoader aClassLoader) {
+    mClassLoader = aClassLoader;
+
     // initialize data path based on uima.datapath System property; if not
     // present fall back on user.dir
     String dataPath = null;
@@ -88,8 +91,6 @@ public class RelativePathResolver_impl implements RelativePathResolver {
       mDataPath = null;
       mBaseUrls = null;
     }
-
-    mClassLoader = aClassLoader;
   }
 
   @Override
@@ -376,9 +377,6 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     return absURL;
   }
 
-  /**
-   * @see org.apache.uima.resource.RelativePathResolver#setPathResolverClassLoader(java.lang.ClassLoader)
-   */
   @Override
   public void setPathResolverClassLoader(ClassLoader aClassLoader) {
     mClassLoader = aClassLoader;
