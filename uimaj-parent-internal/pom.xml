@@ -56,30 +56,30 @@
     
     <maven.version>3.8.1</maven.version>
 
-    <asciidoctor.plugin.version>3.1.1</asciidoctor.plugin.version>
+    <asciidoctor.plugin.version>3.2.0</asciidoctor.plugin.version>
     <asciidoctor.version>3.0.0</asciidoctor.version>
     <asciidoctor.pdf.version>2.3.19</asciidoctor.pdf.version>
-    <assertj-version>3.26.3</assertj-version>
-    <bnd-version>7.0.0</bnd-version>
-    <bytebuddy-version>1.15.10</bytebuddy-version>
-    <commons-csv-version>1.12.0</commons-csv-version>
-    <commons-collections4-version>4.4</commons-collections4-version>
-    <commons-io-version>2.18.0</commons-io-version>
-    <commons-lang3-version>3.17.0</commons-lang3-version>
+    <assertj-version>3.27.5</assertj-version>
+    <bnd-version>7.1.0</bnd-version>
+    <bytebuddy-version>1.17.7</bytebuddy-version>
+    <commons-csv-version>1.14.1</commons-csv-version>
+    <commons-collections4-version>4.5.0</commons-collections4-version>
+    <commons-io-version>2.20.0</commons-io-version>
+    <commons-lang3-version>3.18.0</commons-lang3-version>
     <commons-math3-version>3.6.1</commons-math3-version>
-    <jackson-version>2.18.1</jackson-version>
+    <jackson-version>2.20.0</jackson-version>
     <javassist-version>3.30.2-GA</javassist-version>
-    <junit-version>5.11.3</junit-version>
-    <junit-platform-version>1.11.3</junit-platform-version>
+    <junit-version>5.11.4</junit-version>
+    <junit-platform-version>1.11.4</junit-platform-version>
     <junit-vintage-version>4.13.2</junit-vintage-version>
-    <log4j-version>2.24.1</log4j-version>
-    <mockito-version>5.14.2</mockito-version>
+    <log4j-version>2.25.2</log4j-version>
+    <mockito-version>5.18.0</mockito-version>
     <opentest4j-version>1.3.0</opentest4j-version>
     <qdox-version>2.1.0</qdox-version>
     <slf4j-version>1.7.36</slf4j-version>
-    <spring-version>6.1.15</spring-version>
-    <tycho-version>4.0.10</tycho-version>
-    <xmlunit-version>2.10.0</xmlunit-version>
+    <spring-version>6.2.11</spring-version>
+    <tycho-version>4.0.13</tycho-version>
+    <xmlunit-version>2.10.4</xmlunit-version>
 
     <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
 

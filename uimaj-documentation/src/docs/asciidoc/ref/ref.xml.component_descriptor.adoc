@@ -1337,7 +1337,7 @@ Starting with release 2.4.1, support for this usage has been dropped.
 ==== External Configuration Parameter Overrides
 
 External parameter overrides are usually declared in primitive descriptors as a way to easily modify the parameters in some or all of an application's annotators.
-By using external settings files and shared parameter names the configuration information can be specified without regard for a particular descriptor hierachy. 
+By using external settings files and shared parameter names the configuration information can be specified without regard for a particular descriptor hierarchy. 
 
 Configuration parameter declarations in primitive and aggregate descriptors may include an `<externalOverrideName>` element,  which specifies the name of a property that may be defined in an external settings file.
 If this element is present, and if a entry can be found for its name in a settings files, then this value overrides the value otherwise specified for this parameter. 
@@ -1347,17 +1347,17 @@ In primitive descriptors the value set by an external override is always applied
 In aggregate descriptors the value set by an external override applies to the aggregate parameter, and is passed down to the overridden delegate parameters in the usual way, i.e.
 only if the delegate's parameter has not been set by an external override. 
 
-Im the absence of external overrides,             parameter evaluation can be viewed as proceeding from the primitive descriptor up through any aggregates containing overrides, taking the last setting found.
+In the absence of external overrides,  parameter evaluation can be viewed as proceeding from the primitive descriptor up through any aggregates containing overrides, taking the last setting found.
 With external overrides the search ends with the first external override found that has a value assigned by a settings file. 
 
-The same external name may be used for multiple parameters;  the effect of this is that one setting will override multiple parameters. 
+The same external name may be used for multiple parameters; the effect of this is that one setting will override multiple parameters. 
 
 The settings for all descriptors in a pipeline are usually loaded from one or more files whose names are obtained from the Java system property __UimaExternalOverrides__.
 The value of the property must be a comma-separated list of resource names.
-If the name has a prefix of "file:" or no prefix, the filesystem is searched.
-If the name has a prefix of "path:" the rest must be a Java-style dotted name, similar to the name attribute for descriptor imports.
-The dots are replaced by file separators and a suffix of ".settings" is appended before searching the datapath and classpath.
-e.g. ``-DUimaExternalOverrides=/data/file1.settings,file:relative/file2.settings,path:org.apache.uima.resources.file3``. 
+If the name has a prefix of `file:` or no prefix, the filesystem is searched.
+If the name has a prefix of `path:` the rest must be a Java-style dotted name, similar to the name attribute for descriptor imports.
+The dots are replaced by file separators and a suffix of `.settings` is appended before searching the datapath and classpath.
+e.g. `-DUimaExternalOverrides=/data/file1.settings,file:relative/file2.settings,path:org.apache.uima.resources.file3`. 
 
 Override settings may also be specified when creating an analysis engine by putting a `Settings` object in the additional parameters map for the `produceAnalysisEngine` method.
 In this case the Java system property _UimaExternalOverrides_ is ignored. 
@@ -1377,18 +1377,20 @@ In this case the Java system property _UimaExternalOverrides_ is ignored.
   AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, aeParms);
 ----
 
-These external settings consist of key - value pairs stored in a  file using the UTF-8 character encoding, and written in a style similar to that  of Java properties files. 
+These external settings consist of key - value pairs stored in a file using the UTF-8 character encoding, and written in a style similar to that of Java properties files. 
 
 * Leading whitespace is ignored. 
-* Comment lines start with '#' or '!'. 
-* The key and value are separated by whitespace, '=' or ':'. 
-* Keys must contain at least one character and only letters, digits, or the characters '. / - ~ _'. 
-* If a line ends with '\' it is extended with the following line (after removing any leading whitespace.) 
+* Comment lines start with `#` or `!`. 
+* The key and value are separated by whitespace, `=` or `:`. 
+* Keys must contain at least one character and only letters, digits, or the characters `. / - ~ _`. 
+* If a line ends with `\` it is extended with the following line (after removing any leading whitespace.) 
 * Whitespace is trimmed from both keys and values. 
 * Duplicate key values are ignored –once a value is assigned to a key it cannot be changed. 
-* Values may reference other settings using the syntax '${key}'. 
-* Array values are represented as a list of strings separated by commas or line breaks, and bracketed by the '[ ]' characters. The value must start with an '[' and is terminated by the first unescaped ']' which must be at the end of a line. The elements of an array (and hence the array size) may be indirectly specified using the '${key}' syntax but the brackets '[ ]' must be explicitly specified. 
-* In values the special characters '$ { } [ , ] \' are treated as regular characters if preceeded by the escape character '\'. 
+* Values may reference other settings using the syntax `${key}`. 
+* Array values are represented as a list of strings separated by commas or line breaks, and bracketed by the `[ ]` characters. 
+  The value must start with an '[' and is terminated by the first unescaped `]` which must be at the end of a line. 
+  The elements of an array (and hence the array size) may be indirectly specified using the `${key}` syntax but the brackets `[ ]` must be explicitly specified. 
+* In values the special characters `$ { } [ , ] \` are treated as regular characters if preceded by the escape character `\`. 
 
 [source]
 ----

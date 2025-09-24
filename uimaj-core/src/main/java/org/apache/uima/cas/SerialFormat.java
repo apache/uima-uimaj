@@ -29,12 +29,12 @@ public enum SerialFormat {
   UNKNOWN(""),
 
   /**
-   * XML-serialized CAS
+   * XML-serialized CAS, using XML version 1.0
    */
   XCAS("xcas"),
 
   /**
-   * XML-serialized CAS
+   * XML-serialized CAS, using XML version 1.0
    */
   XMI("xmi"),
 
@@ -64,7 +64,7 @@ public enum SerialFormat {
   SERIALIZED("scas"),
 
   /**
-   * Java-serialized CAS with type system and index definitions The Typs System and Index Definition
+   * Java-serialized CAS with type system and index definitions The Type System and Index Definition
    * replaces the CAS's when deserializing.
    */
   SERIALIZED_TSI("scas"),
@@ -95,22 +95,22 @@ public enum SerialFormat {
   COMPRESSED_TSI("bcas"),
 
   /**
-   * XML-serialized CAS, using xml version 1.1
+   * XML-serialized CAS, using XML version 1.1
    */
   XCAS_1_1("xcas"),
 
   /**
-   * XML-serialized CAS, using xml version 1.1
+   * XML-serialized CAS, using XML version 1.1
    */
   XMI_1_1("xmi"),
 
   /**
-   * XML-serialized CAS, using xml version 1.1 - pretty-printed
+   * XML-serialized CAS, using XML version 1.0 - pretty-printed
    */
   XMI_PRETTY("xmi"),
 
   /**
-   * XML-serialized CAS, using xml version 1.1 - pretty-printed
+   * XML-serialized CAS, using XML version 1.1 - pretty-printed
    */
   XMI_1_1_PRETTY("xmi"),;
 

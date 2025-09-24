@@ -203,14 +203,10 @@ public class JCasHashMapTest {
           // System.out.println(sb.toString());
         }
       };
-      MultiThreadUtils.tstMultiThread("JCasHashMapTest", numberOfThreads, 10, run2isb,
-              new Runnable() {
-                @Override
-                public void run() {
-                  check.clear();
-                  m.clear();
-                }
-              });
+      MultiThreadUtils.tstMultiThread("JCasHashMapTest", numberOfThreads, 10, run2isb, () -> {
+        check.clear();
+        m.clear();
+      });
     }
   }
 
@@ -511,8 +507,9 @@ public class JCasHashMapTest {
       } catch (DataFormatException e) { // hijacked this exception to avoid making a custom one
         skewOk = false;
       }
-      if (skewOk)
+      if (skewOk) {
         break;
+      }
       System.out.println(
               "\n*******************\nJCasHashMapTest growth excessive skew retry\n*******************\n");
       createAddrs(); // do a new set, hope it has less skew
