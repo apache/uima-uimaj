@@ -17,14 +17,14 @@ ResolverUtil.java Copyright 2005-2006 Tim Fennell
 # Apache Commons IO
 
 Apache Commons IO
-Copyright 2002-2024 The Apache Software Foundation
+Copyright 2002-2025 The Apache Software Foundation
 
 # Apache Commons Lang
 
 Apache Commons Lang
-Copyright 2001-2024 The Apache Software Foundation
+Copyright 2001-2025 The Apache Software Foundation
 
-# Jackson JSON processor NOTICE from the Jackson Jar 2.15.2
+# Jackson JSON processor NOTICE from the Jackson Jar 2.20.0
 
 Jackson is a high-performance, Free/Open Source JSON processing library.
 It was originally written by Tatu Saloranta (tatu.saloranta@iki.fi), and has
@@ -59,7 +59,7 @@ and the licenses and copyrights that apply to that code.
 
 # Spring Framework
 
-Copyright (c) 2002-2024 Pivotal, Inc.
+Copyright (c) 2002-2025 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
 (the "License"). You may not use this product except in compliance with

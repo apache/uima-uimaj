@@ -149,7 +149,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
     componentLoader = Util.getClassloader(project, includeScope);
 
     // List of components that is later written to META-INF/org.apache.uima.fit/components.txt
-    StringBuilder componentsManifest = new StringBuilder();
+    var componentsManifest = new StringBuilder();
 
     int countGenerated = 0;
     for (String file : files) {

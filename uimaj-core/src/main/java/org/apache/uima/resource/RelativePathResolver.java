@@ -129,7 +129,7 @@ public interface RelativePathResolver {
    * @return the absolute URL at which the file exists, <code>null</code> it none could be found.
    * @deprecated Use {@link #resolveRelativePath(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.6.0")
   URL resolveRelativePath(URL aUrl);
 
   /**

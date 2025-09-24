@@ -226,6 +226,7 @@ public class ResourceManager_impl implements ResourceManager {
    * Cache of imported descriptor URLs from which the parsed objects in importCache were created, so
    * that these URLs are not re-parsed if the same URL is imported again.
    */
+  @Deprecated(since = "3.3.0")
   private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<>());
 
   /**
@@ -501,7 +502,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   @Override
-  public InputStream getResourceAsStream(String aKey, String[] aParams)
+  public InputStream getResourceAsStream(String aKey, String... aParams)
           throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey, aParams));
   }
@@ -533,7 +534,7 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   @Override
-  public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
+  public URL getResourceURL(String aKey, String... aParams) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey, aParams));
   }
 
