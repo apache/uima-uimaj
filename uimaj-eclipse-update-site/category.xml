@@ -20,10 +20,10 @@
    ***************************************************************
    -->
 <site>
-   <feature url="features/org.apache.uima.runtime_3.6.1.jar" id="org.apache.uima.runtime" version="3.6.1">
+   <feature url="features/org.apache.uima.runtime_3.6.2.qualifier.jar" id="org.apache.uima.runtime" version="3.6.2.qualifier">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
-   <feature url="features/org.apache.uima.tools_3.6.1.jar" id="org.apache.uima.tools" version="3.6.1">
+   <feature url="features/org.apache.uima.tools_3.6.2.qualifier.jar" id="org.apache.uima.tools" version="3.6.2.qualifier">
       <category name="uima-tooling-and-runtimes"/>
    </feature>
    <category-def name="uima-tooling-and-runtimes" label="Apache UIMA Eclipse tooling and runtime support">
