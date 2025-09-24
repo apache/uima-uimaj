@@ -20,7 +20,7 @@ build on Apache UIMA and that provide collections of analysis components or read
 
 #### System requirements
 
-Apache UIMA v3.6.0 and later requires Java version 17 or later.
+Apache UIMA v3.6.1 and later requires Java version 17 or later.
 
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse 4.25 (2022-09) or later using a Java 17 or later.
 
@@ -44,7 +44,7 @@ to your project:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-core</artifactId>
-  <version>3.6.0</version>
+  <version>3.6.1</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Apache uimaFIT is a separate dependency that you can add:
 <dependency>
   <groupId>org.apache.uima</groupId>
   <artifactId>uimafit-core</artifactId>
-  <version>3.6.0</version>
+  <version>3.6.1</version>
 </dependency>
 ```
 
@@ -232,7 +232,7 @@ following:
       <dependency>
         <groupId>org.apache.uima</groupId>
         <artifactId>uimafit-core</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version>
       </dependency>
     </dependencies>
     
