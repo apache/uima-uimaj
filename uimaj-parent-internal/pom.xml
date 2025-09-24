@@ -87,7 +87,7 @@
     
     <!-- BEGIN PROFILE SETTINGS: generate-release-notes-->
     <github-repository>uima-uimaj</github-repository>
-    <git-branch>main</git-branch>
+    <git-branch>release/4.0.x</git-branch>
     <previous-release-version>3.6.0</previous-release-version>
     <!-- END PROFILE SETTINGS: generate-release-notes-->
     
