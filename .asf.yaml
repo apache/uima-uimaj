@@ -21,16 +21,17 @@ notifications:
   pullrequests: dev@uima.apache.org
   jobs:         dev@uima.apache.org
   jira_options: link label
+
 github:
   description: "Apache UIMA Java SDK"
   homepage: https://uima.apache.org
   dependabot_alerts:  true
   dependabot_updates: false
   labels:
-  - apache
-  - uima
-  - text-analysis
-  - java
+    - apache
+    - uima
+    - text-analysis
+    - java
   features:
     wiki: false
     issues: true
@@ -40,6 +41,17 @@ github:
     merge:   true
     rebase:  false
   del_branch_on_merge: true
+  rulesets:
+    - name: "Branch Protection"
+      type: branch
+      branches:
+        includes:
+          - "main"
+          - "main-v2"
+          - "release/*"
+        excludes: []
+      restrict_deletion: true
+      restrict_force_push: true
   protected_branches:
     main:
      required_status_checks:
