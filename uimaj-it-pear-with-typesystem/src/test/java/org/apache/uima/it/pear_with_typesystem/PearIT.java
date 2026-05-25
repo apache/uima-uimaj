@@ -25,7 +25,6 @@ import static org.apache.uima.UIMAFramework.produceAnalysisEngine;
 import static org.apache.uima.pear.tools.PackageInstaller.installPackage;
 import static org.apache.uima.util.CasCreationUtils.createCas;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +49,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.internal.util.Class_TCCL;
@@ -172,8 +170,11 @@ public class PearIT
      * PEAR can use {@link ComplexAnnotation} directly - we assume it is in the PEAR's local
      * classpath and available at compile time.
      * <p>
-     * However, PEAR does not know about {@link ComplexAnnotationSubtype}. Yet, it will find that
-     * the CAS contains an annotation of that type.
+     * However, PEAR does not know about {@link ComplexAnnotationSubtype}. The CAS still contains an
+     * annotation of that sub-type. Inside the PEAR, that FS must be exposed via the PEAR's copy of
+     * the nearest known ancestor wrapper ({@link ComplexAnnotation}) so that iterating with
+     * {@code select(ComplexAnnotation.class)} does not throw {@link ClassCastException}. See
+     * <a href="https://github.com/apache/uima-uimaj/issues/384">issue #384</a>.
      */
     @Test
     void testScenario3(@TempDir File aTemp) throws Exception
@@ -192,9 +193,11 @@ public class PearIT
                         // Types provided from the global/pipeline level
                         .delegating(ComplexAnnotationSubtype.class, globalCL));
 
-        assertThatExceptionOfType(AnalysisEngineProcessException.class) //
-                .isThrownBy(() -> pearAnnotator.process(cas)) //
-                .withRootCauseInstanceOf(ClassCastException.class);
+        pearAnnotator.process(cas);
+
+        // After leaving the PEAR context the FS is still in the CAS with its original sub-type.
+        assertThat(cas.select(ComplexAnnotationSubtype.class).asList()) //
+                .hasSize(1);
 
         pearAnnotator.getUimaContextAdmin().getResourceManager().destroy();
     }

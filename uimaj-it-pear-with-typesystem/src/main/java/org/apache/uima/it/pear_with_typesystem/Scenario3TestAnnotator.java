@@ -33,7 +33,6 @@ public class Scenario3TestAnnotator
 {
     private static final String TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE = "org.apache.uima.it.pear_with_typesystem.type.ComplexAnnotationSubtype";
 
-    @SuppressWarnings("unused")
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
@@ -43,8 +42,14 @@ public class Scenario3TestAnnotator
         // The unit test should have prepared the CAS with one of these
         assertFalse(aJCas.select(TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE).isEmpty());
 
-        // Iterating over the ComplexAnnotation instances should also return a ComplexAnnotationSubtype
-        // and that will trigger a ClassCastException - we have the assertion for this in the unit test
+        // Iterating over ComplexAnnotation instances also returns the ComplexAnnotationSubtype.
+        // The PEAR does not have a JCas wrapper for ComplexAnnotationSubtype, so the framework
+        // wraps it with the nearest PEAR-loaded ancestor wrapper (ComplexAnnotation). This means
+        // the iteration must succeed without a ClassCastException and the returned FS must be an
+        // instance of the PEAR-local ComplexAnnotation class even though its UIMA type is the
+        // sub-type. See https://github.com/apache/uima-uimaj/issues/384.
         var complexAnnotation = aJCas.select(ComplexAnnotation.class).get();
+        assertTrue(ComplexAnnotation.class.isInstance(complexAnnotation));
+        assertTrue(TYPE_NAME_COMPLEX_ANNOTATION_SUBTYPE.equals(complexAnnotation.getType().getName()));
     }
 }
