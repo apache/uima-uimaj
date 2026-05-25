@@ -2867,11 +2867,40 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
-  static {
-    TypeSystemImpl tsi = staticTsi.commit(); // needed to assign adjusted offsets to the builtins
-    if (tsi != staticTsi) {
-      Misc.internalError();
+
+  // staticTsi was previously committed inside this class's <clinit>. That triggered a recursive
+  // load-cover-classes storm: a built-in JCas cover class's <clinit> could be the very thing that
+  // caused TypeSystemImpl to load (e.g. via createCallSiteForBuiltIn). The commit then asked the
+  // JVM to fully initialize that same cover class while it was still mid-init on the current
+  // thread, producing a zero/default typeIndexID and broken callsites (issue #234). Commit is now
+  // deferred until first real demand via committedStaticTsi().
+  //
+  // Note: under deferred commit, another TypeSystemImpl with the same builtin-only structure may
+  // be committed before staticTsi is. In that case staticTsi.commit() consolidates to that other
+  // instance via committedTypeSystems (and staticTsi itself stays unfinalized). We therefore cache
+  // and return whatever commit() returns -- that is the instance with the correctly computed
+  // offsets.
+  private static volatile TypeSystemImpl committedStaticTsi;
+
+  /**
+   * Returns a committed builtin-only {@link TypeSystemImpl} -- either {@link #staticTsi} itself if
+   * it was the first one to commit, or whatever structurally-equivalent committed instance it was
+   * consolidated to. Commit is performed lazily and exactly once across all threads. Code that
+   * needs commit-dependent state (e.g. {@link TypeImpl#getAdjOffset(String)}) must go through this
+   * accessor rather than reading {@link #staticTsi} directly.
+   */
+  public static TypeSystemImpl committedStaticTsi() {
+    TypeSystemImpl result = committedStaticTsi;
+    if (result == null) {
+      synchronized (TypeSystemImpl.class) {
+        result = committedStaticTsi;
+        if (result == null) {
+          result = staticTsi.commit();
+          committedStaticTsi = result;
+        }
+      }
     }
+    return result;
   }
 
 //@formatter:off

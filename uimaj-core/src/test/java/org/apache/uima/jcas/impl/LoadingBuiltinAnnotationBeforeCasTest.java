@@ -20,9 +20,12 @@ package org.apache.uima.jcas.impl;
 
 import static java.lang.System.getProperty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
@@ -80,9 +83,17 @@ public class LoadingBuiltinAnnotationBeforeCasTest {
 
     var buf = new ByteArrayOutputStream();
     p.getInputStream().transferTo(buf);
-    int exit = p.waitFor();
 
-    assertThat(exit).as("forked JVM exited non-zero; subprocess output was:%n%s", buf.toString())
+    // Bound the wait so a hypothetical class-init deadlock in the subprocess can't hang CI.
+    if (!p.waitFor(60, TimeUnit.SECONDS)) {
+      p.destroyForcibly();
+      fail("forked JVM did not exit within 60s; partial output was:%n%s",
+              buf.toString(StandardCharsets.UTF_8));
+    }
+
+    assertThat(p.exitValue())
+            .as("forked JVM exited non-zero; subprocess output was:%n%s",
+                    buf.toString(StandardCharsets.UTF_8))
             .isZero();
   }
 }
