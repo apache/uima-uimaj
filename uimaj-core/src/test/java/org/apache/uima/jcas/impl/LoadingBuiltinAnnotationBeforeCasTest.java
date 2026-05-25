@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -52,44 +51,50 @@ public class LoadingBuiltinAnnotationBeforeCasTest {
    * the JVM exits non-zero.
    */
   public static void main(String[] args) throws Exception {
-    // Force Annotation's <clinit> to start now, before any TypeSystemImpl / CAS exists.
-    // Annotation's super (AnnotationBase) references TypeSystemImpl in its own <clinit>, which
-    // kicks off a recursive init storm that reads Annotation.typeIndexID while it's still 0 --
-    // caching a broken JCasClassInfo and skipping Annotation's _FC_begin / _FC_end callsite update.
+    // Trigger Annotation's <clinit> before any TypeSystemImpl/CAS exists -- the bug repro hinge.
     Class.forName(Annotation.class.getName());
 
     var tsd = new TypeSystemDescription_impl();
     var jcas = CasCreationUtils.createCas(tsd, null, null).getJCas();
 
-    // (1) Type system lookup by JCas type id. With the bug, slot Annotation.type of
-    // jcasRegisteredTypes is empty (the JCCI got registered at slot 0 instead).
+    // (1) wrong jcasRegisteredTypes slot
     jcas.getCasType(Annotation.type);
 
-    // (2) setDocumentText eventually calls Annotation.setBegin, which dispatches through the
-    // _FC_begin callsite. With the bug, that callsite still returns -1 and the offset lookup
-    // throws ArrayIndexOutOfBoundsException.
+    // (2) Annotation._FC_begin callsite stuck at -1
     jcas.setDocumentText("hello");
   }
 
   @Test
   void thatLoadingAnnotationBeforeCasDoesNotBreakTypeSystemManagement() throws Exception {
-    var windows = getProperty("os.name").toLowerCase().contains("win");
-    var java = getProperty("java.home") + File.separator + "bin" + File.separator
-            + (windows ? "java.exe" : "java");
+    // Fork the same JVM that is running this test. ProcessHandle is best-effort, hence the
+    // fallback; the fallback path works on Windows too because CreateProcess auto-resolves .exe.
+    var java = ProcessHandle.current().info().command()
+            .orElse(getProperty("java.home") + "/bin/java");
 
     var pb = new ProcessBuilder(java, "-cp", getProperty("java.class.path"), getClass().getName());
     pb.redirectErrorStream(true);
     var p = pb.start();
 
+    // Drain the subprocess output on a daemon thread so that a deadlocked subprocess that never
+    // emits EOF can't block this thread from reaching the timed waitFor below.
     var buf = new ByteArrayOutputStream();
-    p.getInputStream().transferTo(buf);
+    var drain = new Thread(() -> {
+      try {
+        p.getInputStream().transferTo(buf);
+      } catch (Exception ignored) {
+        // Subprocess died mid-transfer; whatever we captured is what we report.
+      }
+    }, "forked-jvm-output-drain");
+    drain.setDaemon(true);
+    drain.start();
 
-    // Bound the wait so a hypothetical class-init deadlock in the subprocess can't hang CI.
     if (!p.waitFor(60, TimeUnit.SECONDS)) {
       p.destroyForcibly();
+      drain.join(5_000);
       fail("forked JVM did not exit within 60s; partial output was:%n%s",
               buf.toString(StandardCharsets.UTF_8));
     }
+    drain.join(5_000);
 
     assertThat(p.exitValue())
             .as("forked JVM exited non-zero; subprocess output was:%n%s",
