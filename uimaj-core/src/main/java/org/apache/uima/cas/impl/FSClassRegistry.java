@@ -1589,6 +1589,23 @@ public abstract class FSClassRegistry {
       jcci = t2jcci.get(typeInfo.getJCasClassName());
     }
 
+    // PEAR-only: if the JCas class found for this type is not actually overridden by the PEAR
+    // (the PEAR classloader delegated to a parent), keep walking up the type hierarchy for an
+    // ancestor whose JCas class *is* PEAR-overridden. Without this, subtype FSes would be wrapped
+    // with the parent-loaded JCas class and would not be assignable to the PEAR's copy of the
+    // super-type, causing ClassCastException in idiomatic PEAR code such as
+    // `for (T t : cas.select(T.class))`. See https://github.com/apache/uima-uimaj/issues/384.
+    if (isPear && !jcci.isPearOverride(tsi)) {
+      var ancestor = typeInfo;
+      while ((ancestor = ancestor.getSuperType()) != null) {
+        var ancestorJcci = t2jcci.get(ancestor.getJCasClassName());
+        if (ancestorJcci != null && ancestorJcci.isPearOverride(tsi)) {
+          jcci = ancestorJcci;
+          break;
+        }
+      }
+    }
+
     // skip entering a generator in the result if
     // in a PEAR setup, and this cl is not the cl that loaded the JCas class.
     // See method comment getGeneratorsForClassLoader(...) in for why.

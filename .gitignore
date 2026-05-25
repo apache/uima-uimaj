@@ -1,7 +1,7 @@
 .classpath
 .project
 .settings
-.vscode
+.vscode/
 target
 checkpoint_synchPoint.xml
 checkpoint_synchPoint.xml.prev
