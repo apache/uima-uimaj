@@ -70,7 +70,6 @@
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>
       <artifactId>org.eclipse.emf.codegen</artifactId>
-      <version>2.22.0.v20210420-0623</version>
     </dependency>
     <dependency>
       <groupId>${eclipseP2RepoId}</groupId>

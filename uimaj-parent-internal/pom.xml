@@ -60,28 +60,28 @@
     <asciidoctor.version>3.0.1</asciidoctor.version>
     <asciidoctor.pdf.version>2.3.19</asciidoctor.pdf.version>
     <assertj-version>3.27.7</assertj-version>
-    <bnd-version>7.2.1</bnd-version>
-    <bytebuddy-version>1.17.7</bytebuddy-version>
+    <bnd-version>7.3.0</bnd-version>
+    <bytebuddy-version>1.18.10</bytebuddy-version>
     <commons-csv-version>1.14.1</commons-csv-version>
     <commons-collections4-version>4.5.0</commons-collections4-version>
-    <commons-io-version>2.21.0</commons-io-version>
+    <commons-io-version>2.22.0</commons-io-version>
     <commons-lang3-version>3.20.0</commons-lang3-version>
     <commons-math3-version>3.6.1</commons-math3-version>
     <jackson-version>2.21.1</jackson-version>
-    <javassist-version>3.30.2-GA</javassist-version>
+    <javassist-version>3.31.0-GA</javassist-version>
     <junit-version>5.14.3</junit-version>
     <junit-platform-version>1.14.3</junit-platform-version>
     <junit-vintage-version>4.13.2</junit-vintage-version>
     <log4j-version>2.25.3</log4j-version>
-    <mockito-version>5.18.0</mockito-version>
+    <mockito-version>5.23.0</mockito-version>
     <opentest4j-version>1.3.0</opentest4j-version>
     <qdox-version>2.2.0</qdox-version>
     <slf4j-version>2.0.17</slf4j-version>
-    <spring-version>6.2.17</spring-version>
-    <tycho-version>5.0.2</tycho-version>
-    <xmlunit-version>2.11.0</xmlunit-version>
+    <spring-version>6.2.19</spring-version>
+    <tycho-version>5.0.3</tycho-version>
+    <xmlunit-version>2.12.0</xmlunit-version>
 
-    <eclipseP2RepoId>org.eclipse.p2.202209</eclipseP2RepoId>
+    <eclipseP2RepoId>org.eclipse.p2.202306</eclipseP2RepoId>
 
     <assemblySrcDescriptor>src/main/assembly/src.xml</assemblySrcDescriptor>
     
@@ -332,47 +332,47 @@
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jface</artifactId>
-        <version>3.27.0.v20220817-1444</version>
+        <version>3.30.0.v20230509-0720</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jface.text</artifactId>
-        <version>3.21.0.v20220817-1340</version>
+        <version>3.24.0.v20230525-0719</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-        <version>3.121.0.v20220829-1402</version>
+        <version>3.124.0.v20230523-1044</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.core.runtime</artifactId>
-        <version>3.26.0.v20220813-0916</version>
+        <version>3.27.0.v20230515-1719</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.core.resources</artifactId>
-        <version>3.18.0.v20220828-0546</version>
+        <version>3.19.0.v20230510-1240</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.core.filesystem</artifactId>
-        <version>1.9.500.v20220817-1539</version>
+        <version>1.10.0.v20230425-0513</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.debug.core</artifactId>
-        <version>3.20.0.v20220811-0741</version>
+        <version>3.21.0.v20230508-1538</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.debug.ui</artifactId>
-        <version>3.17.0.v20220817-1312</version>
+        <version>3.18.0.v20230516-0719</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.emf.codegen</artifactId>
-        <version>2.22.0.v20210420-0623</version>
+        <version>2.23.0.v20230211-1150</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
@@ -382,7 +382,7 @@
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.equinox.common</artifactId>
-        <version>3.16.200.v20220817-1601</version>
+        <version>3.18.0.v20230523-2142</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
@@ -392,62 +392,62 @@
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.equinox.preferences</artifactId>
-        <version>3.10.100.v20220710-1223</version>
+        <version>3.10.200.v20230120-0604</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.osgi</artifactId>
-        <version>3.18.100.v20220817-1601</version>
+        <version>3.18.400.v20230509-2241</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.text</artifactId>
-        <version>3.12.200.v20220817-1340</version>
+        <version>3.13.0.v20230316-1200</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.editors</artifactId>
-        <version>3.14.400.v20220730-1844</version>
+        <version>3.16.0.v20230329-1609</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.forms</artifactId>
-        <version>3.11.400.v20220817-1444</version>
+        <version>3.12.0.v20230317-0802</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.ide</artifactId>
-        <version>3.19.100.v20220820-0412</version>
+        <version>3.21.0.v20230526-1500</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.views</artifactId>
-        <version>3.11.200.v20220817-1444</version>
+        <version>3.12.0.v20230317-0802</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.workbench</artifactId>
-        <version>3.126.0.v20220823-0718</version>
+        <version>3.129.0.v20230525-0648</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
-        <version>3.16.600.v20220809-1658</version>
+        <version>3.17.0.v20230316-1200</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.core</artifactId>
-        <version>3.31.0.v20220831-1439</version>
+        <version>3.34.0.v20230512-1803</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.launching</artifactId>
-        <version>3.19.700.v20220730-1850</version>
+        <version>3.20.0.v20230425-1118</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.debug</artifactId>
-        <version>3.19.300.v20220812-1529</version>
+        <version>3.21.0.v20230329-1610</version>
         <exclusions>
           <exclusion>
             <!-- 
@@ -469,12 +469,12 @@
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.ui</artifactId>
-        <version>3.27.0.v20220824-0714</version>
+        <version>3.29.0.v20230525-0728</version>
       </dependency>
       <dependency>
         <groupId>${eclipseP2RepoId}</groupId>
         <artifactId>org.eclipse.jdt.debug.ui</artifactId>
-        <version>3.12.800.v20220813-1738</version>
+        <version>3.13.0.v20230421-0438</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -613,6 +613,8 @@
                 <exclude>**/.asciidoctorconfig.adoc</exclude>
                 <!-- Eclipse launch files - no need for a license -->
                 <exclude>**/run_configuration/*.launch</exclude>
+                <!-- Binary test data fixtures - cannot carry a license header -->
+                <exclude>**/*.dat</exclude>
               </excludes>
             </configuration>
           </execution>
