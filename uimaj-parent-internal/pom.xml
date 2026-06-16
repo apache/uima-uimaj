@@ -608,7 +608,8 @@
               <!-- default configuration -->
             <configuration>
               <excludes combine.children="append">
-                <exclude>**/marker-file-maven-plugin-module</exclude>
+                <!-- Empty build-system marker files (profile activation) - no license header -->
+                <exclude>**/marker-file-*</exclude>
                 <exclude>**/dependency-reduced-pom.xml</exclude>
                 <exclude>**/.asciidoctorconfig.adoc</exclude>
                 <!-- Eclipse launch files - no need for a license -->

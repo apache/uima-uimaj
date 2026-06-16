@@ -21,7 +21,7 @@ jobs:
       matrix:
         language: [ 'java' ]
         os: [ubuntu-latest, windows-latest]
-        jdk: [17]
+        jdk: [21]
 
     runs-on: ${{ matrix.os }}
 
@@ -50,7 +50,8 @@ jobs:
       run: echo "CACHE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
     - name: Build with Maven
-      run: mvn --show-version --batch-mode --no-transfer-progress clean verify
+      # --settings: see .github/maven-settings.xml (temporary, for the 19-SNAPSHOT parent)
+      run: mvn --show-version --batch-mode --no-transfer-progress --settings .github/maven-settings.xml clean verify
 
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v5
@@ -64,4 +65,4 @@ jobs:
         # `NEXUS_USERNAME` and `NEXUS_PASSWORD` are used in `~/.m2/settings.xml` created by `setup-java` action
         NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
         NEXUS_PASSWORD: ${{ secrets.NEXUS_PW }}
-      run: mvn --show-version --batch-mode --errors --no-transfer-progress -DskipTests deploy
+      run: mvn --show-version --batch-mode --errors --no-transfer-progress --settings .github/maven-settings.xml -DskipTests deploy
