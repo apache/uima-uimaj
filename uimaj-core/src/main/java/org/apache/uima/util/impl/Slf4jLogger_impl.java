@@ -44,39 +44,37 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   static final boolean isLog4j;
 
   static {
-    Class<?> staticLoggerBinderClass = null;
-    try {
-      staticLoggerBinderClass = Class.forName("org.slf4j.impl.StaticLoggerBinder");
-    } catch (Exception e) {
-      // empty on purpose, if class not present, no back end logger, and staticLoggerBinderClass is
-      // left as null
-    }
+    // SLF4J 1.x exposed the bound backend via org.slf4j.impl.StaticLoggerBinder, which was removed
+    // in SLF4J 2.x. Instead, probe the actual logger instance returned by the factory: when no
+    // backend is bound, SLF4J (1.x and 2.x) returns a NOPLogger.
+    org.slf4j.Logger tempLogger = org.slf4j.LoggerFactory.getLogger("org.apache.uima");
 
-    if (null == staticLoggerBinderClass) {
-      if (IS_DEFAULT_JUL) {
-        isJul = true;
-        isLog4j = false;
-      } else {
-        isJul = false;
-        isLog4j = false;
-      }
+    if (tempLogger instanceof org.slf4j.helpers.NOPLogger) {
+      // No backend binding - optionally fall back to JUL
+      isJul = IS_DEFAULT_JUL;
+      isLog4j = false;
     } else {
-      // have some backend binding
-      boolean tb;
-      org.slf4j.Logger tempLogger = org.slf4j.LoggerFactory.getLogger("org.apache.uima");
-      try { // for jdk14 impl
-        Class<?> clazz = Class.forName("org.slf4j.impl.JDK14LoggerAdapter");
-        tb = clazz != null && clazz.isAssignableFrom(tempLogger.getClass());
-      } catch (ClassNotFoundException e1) {
-        tb = false;
+      boolean tb = false;
+      // JUL adapter moved from org.slf4j.impl (SLF4J 1.x) to org.slf4j.jul (SLF4J 2.x)
+      for (String julAdapter : new String[] { "org.slf4j.impl.JDK14LoggerAdapter",
+          "org.slf4j.jul.JDK14LoggerAdapter" }) {
+        try {
+          if (Class.forName(julAdapter).isAssignableFrom(tempLogger.getClass())) {
+            tb = true;
+            break;
+          }
+        } catch (ClassNotFoundException e1) {
+          // adapter not on the classpath - try the next candidate
+        }
       }
       isJul = tb;
 
       tb = false;
       if (!isJul) {
-        try { // for log4j 2 impl
-          Class<?> clazz = Class.forName("org.apache.logging.slf4j.Log4jLogger");
-          tb = null != clazz && clazz.isAssignableFrom(tempLogger.getClass());
+        // Log4j 2 binding logger class is the same for log4j-slf4j-impl and log4j-slf4j2-impl
+        try {
+          tb = Class.forName("org.apache.logging.slf4j.Log4jLogger")
+              .isAssignableFrom(tempLogger.getClass());
         } catch (ClassNotFoundException e1) {
           tb = false;
         }

@@ -125,9 +125,9 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes combine.children="append">
-                  <exclude>src/test/resources/ManualTests/*</exclude> <!-- test data -->
-                </excludes>
+                <inputExcludes combine.children="append">
+                  <inputExclude>src/test/resources/ManualTests/*</inputExclude> <!-- test data -->
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>

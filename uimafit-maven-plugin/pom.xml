@@ -153,10 +153,10 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes combine.children="append">
+                <inputExcludes combine.children="append">
                   <!-- These configuration files cannot bear a license header -->
-                  <exclude>src/it/**/META-INF/org.apache.uima.fit/types.txt</exclude>
-                </excludes>
+                  <inputExclude>src/it/**/META-INF/org.apache.uima.fit/types.txt</inputExclude>
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>

@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>18</version>
+    <version>19-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -101,7 +101,7 @@
 
     <repository>
       <id>${eclipseP2RepoId}</id>
-      <url>https://download.eclipse.org/releases/2022-09/</url>
+      <url>https://download.eclipse.org/releases/2023-06/</url>
       <layout>p2</layout>
     </repository>
   </repositories>

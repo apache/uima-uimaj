@@ -93,12 +93,12 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes combine.children="append">
+                <inputExcludes combine.children="append">
                   <!-- remove this once test case cleans up after itself -->
-                  <exclude>checkpoint_synchPoint.xml*</exclude> <!-- test data -->
-                  <exclude>checkpoint.dat*</exclude> <!-- test data -->
-                  <exclude>src/test/resources/pearTests/pearForCPMtest.pear</exclude> <!-- binary -->
-                </excludes>
+                  <inputExclude>checkpoint_synchPoint.xml*</inputExclude> <!-- test data -->
+                  <inputExclude>checkpoint.dat*</inputExclude> <!-- test data -->
+                  <inputExclude>src/test/resources/pearTests/pearForCPMtest.pear</inputExclude> <!-- binary -->
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>

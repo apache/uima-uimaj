@@ -79,12 +79,12 @@
 						<execution>
 							<id>default-cli</id>
 							<configuration>
-								<excludes combine.children="append">
-									<exclude>release.properties</exclude> <!-- release generated artifact -->
-									<exclude>src/main/resources/org/apache/uima/tools/migration/*</exclude> <!-- data for migration code -->
-									<exclude>src/main/resources/org/apache/uima/tools/util/gui/about.txt</exclude>
-									<exclude>src/test/resources/pearTests/pearMergerTests/*.pear</exclude> <!-- test data -->
-								</excludes>
+								<inputExcludes combine.children="append">
+									<inputExclude>release.properties</inputExclude> <!-- release generated artifact -->
+									<inputExclude>src/main/resources/org/apache/uima/tools/migration/*</inputExclude> <!-- data for migration code -->
+									<inputExclude>src/main/resources/org/apache/uima/tools/util/gui/about.txt</inputExclude>
+									<inputExclude>src/test/resources/pearTests/pearMergerTests/*.pear</inputExclude> <!-- test data -->
+								</inputExcludes>
 							</configuration>
 						</execution>
 					</executions>

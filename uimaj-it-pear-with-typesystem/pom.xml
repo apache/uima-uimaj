@@ -141,10 +141,10 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes combine.children="append">
-                  <exclude>src/test/resources/simplelogger.properties</exclude>
-                  <exclude>src/main/resources/META-INF/services/*</exclude>
-                </excludes>
+                <inputExcludes combine.children="append">
+                  <inputExclude>src/test/resources/simplelogger.properties</inputExclude>
+                  <inputExclude>src/main/resources/META-INF/services/*</inputExclude>
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>
