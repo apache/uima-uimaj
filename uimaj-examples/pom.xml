@@ -95,15 +95,15 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes combine.children="append">
+                <inputExcludes combine.children="append">
                   <!-- Eclipse launch configurations -->
-                  <exclude>src/main/run_configuration/*.launch</exclude>
+                  <inputExclude>src/main/run_configuration/*.launch</inputExclude>
                   <!-- sample data -->
-                  <exclude>src/main/data/*.txt</exclude>
-                  <exclude>src/main/resources/org/apache/uima/tutorial/ex6/*.txt</exclude>
+                  <inputExclude>src/main/data/*.txt</inputExclude>
+                  <inputExclude>src/main/resources/org/apache/uima/tutorial/ex6/*.txt</inputExclude>
                   <!-- readme -->
-                  <exclude>src/main/eclipseProject/*readme.txt</exclude>
-                </excludes>
+                  <inputExclude>src/main/eclipseProject/*readme.txt</inputExclude>
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>
