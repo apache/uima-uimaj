@@ -25,7 +25,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.spi.SpiSentence;
 import org.apache.uima.spi.SpiToken;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.Level;
+import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +45,6 @@ class FSClassRegistryTest {
 
   @Test
   void thatCreatingResourceManagersWithExtensionClassloaderDoesNotFillUpCache() throws Exception {
-    int numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
     for (int i = 0; i < 5; i++) {
       var resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setExtensionClassLoader(getClass().getClassLoader(), true);
@@ -56,19 +55,20 @@ class FSClassRegistryTest {
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".class")) //
               .isNotNull();
 
-      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart + 1,
-              "Only initial classloaders + the one owned by our ResourceManager");
+      assertClassLoaderRegistered(cl,
+              "Class loader owned by our ResourceManager should be registered after CAS creation")
+              .isTrue();
 
       resMgr.destroy();
 
-      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart, "Only initial classloaders");
+      assertClassLoaderRegistered(cl,
+              "Class loader owned by our ResourceManager should be unregistered after destroy")
+              .isFalse();
     }
   }
 
   @Test
   void thatCreatingResourceManagersWithExtensionPathDoesNotFillUpCache() throws Exception {
-    var numberOfCachedClassloadersAtStart = FSClassRegistry.clToType2JCasSize();
-
     for (int i = 0; i < 5; i++) {
       var resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setExtensionClassPath("src/test/java", true);
@@ -78,12 +78,15 @@ class FSClassRegistryTest {
       assertThat(cl.getResource(FSClassRegistryTest.class.getName().replace(".", "/") + ".java")) //
               .isNotNull();
 
-      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart + 1,
-              "Only initial classloaders + the one owned by our ResourceManager");
+      assertClassLoaderRegistered(cl,
+              "Class loader owned by our ResourceManager should be registered after CAS creation")
+              .isTrue();
 
       resMgr.destroy();
 
-      assertRegisteredClassLoaders(numberOfCachedClassloadersAtStart, "Only initial classloaders");
+      assertClassLoaderRegistered(cl,
+              "Class loader owned by our ResourceManager should be unregistered after destroy")
+              .isFalse();
     }
   }
 
@@ -96,13 +99,17 @@ class FSClassRegistryTest {
             entry(SpiSentence.class.getName(), SpiSentence.class));
   }
 
-  private void assertRegisteredClassLoaders(int aExpectedCount, String aDescription) {
-    if (FSClassRegistry.clToType2JCasSize() > aExpectedCount) {
-      FSClassRegistry.log_registered_classloaders(Level.INFO);
-    }
+  // Note: we deliberately do not assert on the absolute number of registered class loaders
+  // (FSClassRegistry.clToType2JCasSize()). That cache is a process-wide static weak map shared with
+  // all other tests running in the same JVM. Other test classes leave class loaders registered
+  // there, and because the keys are weakly referenced they are reaped asynchronously by the GC -
+  // which makes the absolute size non-deterministic and was the cause of flaky failures. Instead we
+  // assert on the registration state of *our own* class loader, which we keep strongly reachable, so
+  // it is immune to other class loaders being reaped.
 
-    assertThat(FSClassRegistry.clToType2JCasSize()) //
-            .as(aDescription) //
-            .isEqualTo(aExpectedCount);
+  private AbstractBooleanAssert<?> assertClassLoaderRegistered(ClassLoader aClassLoader,
+          String aDescription) {
+    return assertThat(FSClassRegistry.isClToType2JCasRegistered(aClassLoader)) //
+            .as(aDescription);
   }
 }

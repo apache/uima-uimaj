@@ -101,23 +101,24 @@ public interface TypeSystemConstants {
   /**
    * adjOffsets for builtin Features
    */
-  int sofaNumFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaNumFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFANUM);
-  int sofaIdFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaIdFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAID);
-  int sofaStringFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaStringFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFASTRING);
-  int sofaMimeFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaMimeFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAMIME);
-  int sofaUriFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaUriFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAURI);
-  int sofaArrayFeatAdjOffset = TypeSystemImpl.staticTsi.sofaType
+  int sofaArrayFeatAdjOffset = TypeSystemImpl.committedStaticTsi().sofaType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFAARRAY);
-  int annotBaseSofaFeatAdjOffset = TypeSystemImpl.staticTsi.annotBaseType
+  int annotBaseSofaFeatAdjOffset = TypeSystemImpl.committedStaticTsi().annotBaseType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_SOFA);
-  int beginFeatAdjOffset = TypeSystemImpl.staticTsi.annotType
+  int beginFeatAdjOffset = TypeSystemImpl.committedStaticTsi().annotType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_BEGIN);
-  int endFeatAdjOffset = TypeSystemImpl.staticTsi.annotType.getAdjOffset(CAS.FEATURE_BASE_NAME_END);
-  int langFeatAdjOffset = TypeSystemImpl.staticTsi.docType
+  int endFeatAdjOffset = TypeSystemImpl.committedStaticTsi().annotType
+          .getAdjOffset(CAS.FEATURE_BASE_NAME_END);
+  int langFeatAdjOffset = TypeSystemImpl.committedStaticTsi().docType
           .getAdjOffset(CAS.FEATURE_BASE_NAME_LANGUAGE);
 }

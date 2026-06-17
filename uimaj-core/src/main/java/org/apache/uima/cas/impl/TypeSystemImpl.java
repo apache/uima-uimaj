@@ -2867,11 +2867,31 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
-  static {
-    TypeSystemImpl tsi = staticTsi.commit(); // needed to assign adjusted offsets to the builtins
-    if (tsi != staticTsi) {
-      Misc.internalError();
+
+  // staticTsi.commit() can consolidate to a structurally-equivalent TypeSystemImpl that committed
+  // first, in which case staticTsi itself stays unfinalized. We cache and return whatever commit()
+  // returns -- that is the instance with the correctly computed offsets.
+  private static volatile TypeSystemImpl committedStaticTsi;
+
+  /**
+   * Returns a committed builtin-only {@link TypeSystemImpl} -- either {@link #staticTsi} itself if
+   * it was the first one to commit, or whatever structurally-equivalent committed instance it was
+   * consolidated to. Commit is performed lazily and exactly once across all threads. Code that
+   * needs commit-dependent state (e.g. {@link TypeImpl#getAdjOffset(String)}) must go through this
+   * accessor rather than reading {@link #staticTsi} directly.
+   */
+  public static TypeSystemImpl committedStaticTsi() {
+    TypeSystemImpl result = committedStaticTsi;
+    if (result == null) {
+      synchronized (TypeSystemImpl.class) {
+        result = committedStaticTsi;
+        if (result == null) {
+          result = staticTsi.commit();
+          committedStaticTsi = result;
+        }
+      }
     }
+    return result;
   }
 
 //@formatter:off
@@ -3106,20 +3126,22 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   public static final MutableCallSite createCallSiteForBuiltIn(Class<? extends TOP> clazz,
           String featName) {
-    // If the static TSI has not yet been initialized, we assume that the initialization of the
-    // static TSI was not triggered by the given JCas cover class. So we return a default callsite
-    // and trust that it will be properly updated when the static TSI is committed.
-    if (staticTsi == null) {
+    // Use whichever staticTsi-equivalent instance has already been committed, if any. Reading the
+    // cached field directly (not via committedStaticTsi()) deliberately avoids forcing a commit
+    // from inside a built-in cover class's <clinit> -- that would reintroduce the issue-#234
+    // init-storm.
+    TypeSystemImpl committed = committedStaticTsi;
+    if (committed == null) {
+      // No commit has happened yet; return a default callsite that will be patched up by
+      // updateOrValidateAllCallSitesForJCasClass during the eventual commit.
       return createCallSite(clazz, featName);
     }
 
-    // If the given JCas cover class not registered yet, we also assume that the initialization of
-    // the static TSI was not triggered by the given JCas cover class.
     TypeImpl type;
     try {
       int typeId = clazz.getField("typeIndexID").getInt(null);
-      type = (typeId >= staticTsi.jcasRegisteredTypes.size()) ? null
-              : staticTsi.jcasRegisteredTypes.get(typeId);
+      type = (typeId >= committed.jcasRegisteredTypes.size()) ? null
+              : committed.jcasRegisteredTypes.get(typeId);
       if (type == null) {
         return createCallSite(clazz, featName);
       }
