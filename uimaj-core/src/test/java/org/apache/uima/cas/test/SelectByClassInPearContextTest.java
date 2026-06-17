@@ -41,14 +41,15 @@ import org.junit.jupiter.api.Test;
  * In a PEAR scenario, the PEAR's classloader may redefine the JCas wrapper for a super-type while
  * the wrappers for sub-types remain visible only via the parent classloader. Those sub-type
  * wrappers therefore do not extend the PEAR's copy of the super-type. When PEAR code calls
- * {@code select(superType.class)}, the iterator must not return sub-type instances that cannot be
- * cast to the PEAR's super-type class -- otherwise idiomatic UIMA code such as
- * {@code for (T t : cas.select(T.class))} fails with a {@link ClassCastException}.
+ * {@code select(superType.class)}, the sub-type FSes must be wrapped with the nearest PEAR-overridden
+ * ancestor wrapper (here: the PEAR's copy of the super-type) so that they remain assignable to the
+ * requested class -- otherwise idiomatic UIMA code such as {@code for (T t : cas.select(T.class))}
+ * fails with a {@link ClassCastException}.
  */
 class SelectByClassInPearContextTest {
 
   @Test
-  void thatSelectByClassFiltersIncompatibleSubtypeInstancesInPearContext() throws Exception {
+  void thatSelectByClassWrapsIncompatibleSubtypeWithNearestPearAncestor() throws Exception {
     var rootCl = getClass().getClassLoader();
 
     // The PEAR redefines only the super-type (Level_1). The sub-type (Level_2) is NOT redefined,
@@ -80,13 +81,21 @@ class SelectByClassInPearContextTest {
             .as("The Level_2 FS must be present in the CAS")
             .hasSize(1);
 
-    // The actual contract under test: select(SuperType.class) must only return FSes that are
-    // assignable to the requested class. The Level_2 instance's JCas wrapper is loaded by the
-    // parent classloader and is not assignable to the PEAR's Level_1, so it must be filtered out.
-    assertThat(casImpl.select(pearLevel1Class).asList())
-            .as("select(PEAR_Level_1.class) must only return instances assignable to "
-                    + "the PEAR's copy of Level_1")
+    // The actual contract under test: select(SuperType.class) must return the Level_2 FS (it is a
+    // sub-type of Level_1), but wrapped with the PEAR's copy of Level_1 -- the nearest ancestor
+    // whose JCas class the PEAR actually overrides -- so that the returned wrapper is assignable to
+    // the requested class. The Level_2 wrapper itself is loaded by the parent classloader and would
+    // not be assignable to the PEAR's Level_1.
+    var selected = casImpl.select(pearLevel1Class).asList();
+    assertThat(selected)
+            .as("select(PEAR_Level_1.class) must return the Level_2 FS wrapped so that it is "
+                    + "assignable to the PEAR's copy of Level_1")
+            .hasSize(1)
             .allMatch(pearLevel1Class::isInstance);
+    assertThat(selected.get(0).getType().getName())
+            .as("The returned FS must still represent UIMA type Level_2, i.e. the sub-type FS is "
+                    + "wrapped with the ancestor wrapper rather than being filtered out or replaced")
+            .isEqualTo(Level_2.class.getName());
   }
 
   /**

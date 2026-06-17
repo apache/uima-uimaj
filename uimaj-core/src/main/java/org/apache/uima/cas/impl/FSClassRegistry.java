@@ -1523,11 +1523,16 @@ public abstract class FSClassRegistry {
    * called infrequently to set up cache
    * Only called when a type system has not had generators for a particular class loader.
    * 
-   * For PEAR generators: 
-   *   Populates only for those classes the PEAR has overriding implementations
-   *     - other entries are null; this serves as a boolean indicator that no pear override exists for that type
-   *       and therefore no trampoline is needed
-   * 
+   * For PEAR generators:
+   *   Populates entries for those classes the PEAR has overriding implementations.
+   *     - a type whose own JCas class is not PEAR-overridden inherits the generator of its
+   *       nearest ancestor that *is* PEAR-overridden, if any. This ensures sub-type FSes are
+   *       wrapped with the PEAR's copy of the super-type wrapper so they remain assignable to
+   *       it (see {@link #getGeneratorsForTypeAndSubtypes} and issue #384).
+   *     - a type with no PEAR-overridden ancestor gets a null entry; this serves as a boolean
+   *       indicator that no pear override exists for that type and therefore no trampoline is
+   *       needed.
+   *
    * @param aClassLoader
    *          identifies which set of JCas cover classes
    * @param aIsPear
