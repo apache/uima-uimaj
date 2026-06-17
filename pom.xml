@@ -47,7 +47,7 @@
   </scm>
 
   <properties>
-    <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
+    <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
   </properties>
 
@@ -350,7 +350,6 @@
                   <inputExclude>NOTICE.md</inputExclude>
                   <inputExclude>CONTRIBUTING.md</inputExclude>
                   <inputExclude>src/main/bin_distr_license_notices/NOTICE.md</inputExclude>
-                  <inputExclude>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</inputExclude>
                   <!-- These configuration files cannot bear a license header -->
                   <inputExclude>.github/**/*</inputExclude>
                   <inputExclude>src/main/eclipse/org.eclipse.jdt.core.prefs</inputExclude>
