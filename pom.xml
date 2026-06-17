@@ -344,54 +344,54 @@
               <id>default-cli</id>
                 <!-- default configuration -->
               <configuration>
-                <excludes combine.children="append">
-                  <exclude>marker-file-rc-auto-staging-module</exclude>
+                <inputExcludes combine.children="append">
+                  <inputExclude>marker-file-rc-auto-staging-module</inputExclude>
                   <!-- These markdown files cannot bear a license header -->
-                  <exclude>NOTICE.md</exclude>
-                  <exclude>CONTRIBUTING.md</exclude>
-                  <exclude>src/main/bin_distr_license_notices/NOTICE.md</exclude>
-                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</exclude>
+                  <inputExclude>NOTICE.md</inputExclude>
+                  <inputExclude>CONTRIBUTING.md</inputExclude>
+                  <inputExclude>src/main/bin_distr_license_notices/NOTICE.md</inputExclude>
+                  <inputExclude>src/main/bin_distr_license_notices/NOTICE-without-jackson.md</inputExclude>
                   <!-- These configuration files cannot bear a license header -->
-                  <exclude>.github/**/*</exclude>
-                  <exclude>src/main/eclipse/org.eclipse.jdt.core.prefs</exclude>
-                  <exclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</exclude>
+                  <inputExclude>.github/**/*</inputExclude>
+                  <inputExclude>src/main/eclipse/org.eclipse.jdt.core.prefs</inputExclude>
+                  <inputExclude>src/main/eclipse/org.eclipse.jdt.ui.prefs</inputExclude>
                   <!--  workaround https://issues.apache.org/jira/browse/RAT-97 -->
-                  <exclude>aggregate-uimaj*/**</exclude>
-                  <exclude>jVinci/**</exclude>
-                  <exclude>PearPackagingMavenPlugin/**</exclude>
-                  <exclude>jcasgen-maven-plugin/**</exclude>
-                  <exclude>uimaj-adapter-*/**</exclude>
-                  <exclude>uimaj-bom/**</exclude>
-                  <exclude>uima-bnd-plugin/**</exclude>
-                  <exclude>uimaj-component-test-util/**</exclude>
-                  <exclude>uimaj-core/**</exclude>
-                  <exclude>uimaj-cpe/**</exclude>
-                  <exclude>uimaj-documentation/**</exclude>
-                  <exclude>uimaj-document-annotation/**</exclude>
-                  <exclude>uimaj-eclipse-*/**</exclude>
-                  <exclude>uimaj-maven-p2-site/**</exclude>
-                  <exclude>uimaj-ep-*/**</exclude>
-                  <exclude>uimaj-examples/**</exclude>
-                  <exclude>uimaj-test-util/**</exclude>
-                  <exclude>uimaj-tools/**</exclude>
-                  <exclude>uimaj-jet-expander/**</exclude>
-                  <exclude>uimaj-bootstrap/**</exclude>
-                  <exclude>uimaj-internal-tools/**</exclude>
-                  <exclude>uimaj-json/**</exclude>
-                  <exclude>uimaj-v3migration-jcas/**</exclude>
-                  <exclude>uimaj-it-pear-with-typesystem/**</exclude>
-                  <exclude>uimafit-assertj/**</exclude>
-                  <exclude>uimafit-benchmark/**</exclude>
-                  <exclude>uimafit-core/**</exclude>
-                  <exclude>uimafit-cpe/**</exclude>
-                  <exclude>uimafit-documentation/**</exclude>
-                  <exclude>uimafit-examples/**</exclude>
-                  <exclude>uimafit-junit/**</exclude>
-                  <exclude>uimafit-maven-plugin/**</exclude>
-                  <exclude>uimafit-parent/**</exclude>
-                  <exclude>uimafit-root/**</exclude>
-                  <exclude>uimafit-spring/**</exclude>
-                </excludes>
+                  <inputExclude>aggregate-uimaj*/**</inputExclude>
+                  <inputExclude>jVinci/**</inputExclude>
+                  <inputExclude>PearPackagingMavenPlugin/**</inputExclude>
+                  <inputExclude>jcasgen-maven-plugin/**</inputExclude>
+                  <inputExclude>uimaj-adapter-*/**</inputExclude>
+                  <inputExclude>uimaj-bom/**</inputExclude>
+                  <inputExclude>uima-bnd-plugin/**</inputExclude>
+                  <inputExclude>uimaj-component-test-util/**</inputExclude>
+                  <inputExclude>uimaj-core/**</inputExclude>
+                  <inputExclude>uimaj-cpe/**</inputExclude>
+                  <inputExclude>uimaj-documentation/**</inputExclude>
+                  <inputExclude>uimaj-document-annotation/**</inputExclude>
+                  <inputExclude>uimaj-eclipse-*/**</inputExclude>
+                  <inputExclude>uimaj-maven-p2-site/**</inputExclude>
+                  <inputExclude>uimaj-ep-*/**</inputExclude>
+                  <inputExclude>uimaj-examples/**</inputExclude>
+                  <inputExclude>uimaj-test-util/**</inputExclude>
+                  <inputExclude>uimaj-tools/**</inputExclude>
+                  <inputExclude>uimaj-jet-expander/**</inputExclude>
+                  <inputExclude>uimaj-bootstrap/**</inputExclude>
+                  <inputExclude>uimaj-internal-tools/**</inputExclude>
+                  <inputExclude>uimaj-json/**</inputExclude>
+                  <inputExclude>uimaj-v3migration-jcas/**</inputExclude>
+                  <inputExclude>uimaj-it-pear-with-typesystem/**</inputExclude>
+                  <inputExclude>uimafit-assertj/**</inputExclude>
+                  <inputExclude>uimafit-benchmark/**</inputExclude>
+                  <inputExclude>uimafit-core/**</inputExclude>
+                  <inputExclude>uimafit-cpe/**</inputExclude>
+                  <inputExclude>uimafit-documentation/**</inputExclude>
+                  <inputExclude>uimafit-examples/**</inputExclude>
+                  <inputExclude>uimafit-junit/**</inputExclude>
+                  <inputExclude>uimafit-maven-plugin/**</inputExclude>
+                  <inputExclude>uimafit-parent/**</inputExclude>
+                  <inputExclude>uimafit-root/**</inputExclude>
+                  <inputExclude>uimafit-spring/**</inputExclude>
+                </inputExcludes>
               </configuration>
             </execution>
           </executions>
