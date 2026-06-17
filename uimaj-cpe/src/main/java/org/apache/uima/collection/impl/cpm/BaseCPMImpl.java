@@ -686,6 +686,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     }
     cpmExecutorService.setProcessTrace(procTr);
     cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.setContextClassLoader(Thread.currentThread().getContextClassLoader());
     cpmExecutorService.submit(this);
   }
 
@@ -713,6 +714,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     }
     cpmExecutorService.setProcessTrace(procTr);
     cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.setContextClassLoader(Thread.currentThread().getContextClassLoader());
 
     cpmExecutorService.submit(this);
   }
@@ -741,6 +743,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     }
     cpmExecutorService.setProcessTrace(procTr);
     cpmExecutorService.setListeners(cpEngine.getCallbackListeners());
+    cpmExecutorService.setContextClassLoader(Thread.currentThread().getContextClassLoader());
     cpmExecutorService.submit(this);
   }
 
