@@ -676,9 +676,15 @@ public class ResourceManager_impl implements ResourceManager {
         try {
           String name = aDependencies[i].getInterfaceName();
           if (name != null && name.length() > 0) {
-            Class<?> theInterface = loadUserClass(name);
-
             Class<?> resourceClass = getResourceClass(qname);
+
+            // Locate the interface using the class loader of the resource implementation. The
+            // resource manager's (extension) class loader may not have access to the interface
+            // (e.g. in an OSGi context where the interface lives in a different bundle), but the
+            // implementation's class loader necessarily knows the interface since it implements
+            // it. See issue #367.
+            Class<?> theInterface = Class.forName(name, false, resourceClass.getClassLoader());
+
             if (!theInterface.isAssignableFrom(resourceClass)) {
               throw new ResourceInitializationException(
                       ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
