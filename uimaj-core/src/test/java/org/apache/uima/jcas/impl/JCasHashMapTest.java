@@ -38,6 +38,9 @@ public class JCasHashMapTest {
 
   static final int SIZE = 20000; // set > 2 million for cache avoidance timing tests
 
+  // Max wait for a side-map entry to become visible (see testMultiThreadCompare).
+  static final long VISIBILITY_WAIT_NANOS = 2_000_000_000L; // 2 seconds
+
   static final Random r = new Random();
   static final long SEED = r.nextLong();
   // -6419339010654937562L; // causes skew
@@ -181,7 +184,14 @@ public class JCasHashMapTest {
               if (createdFS[0] != null) {
                 // check.put(key, createdFS[0]);
               } else {
+                // The creator populates "check" before storing the value so check.get can transiently return null.
+                // So we wait for a short time for the value to become visible in "check", and then check it.
                 TOP fscheck = check.get(key);
+                long deadline = System.nanoTime() + VISIBILITY_WAIT_NANOS;
+                while (fscheck == null && System.nanoTime() < deadline) {
+                  Thread.onSpinWait();
+                  fscheck = check.get(key);
+                }
                 if (fscheck == null || fscheck != fs) {
                   String msg = String.format(
                           "JCasHashMapTest miscompare, repeat=%,d, count=%,d key=%,d"
