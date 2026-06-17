@@ -388,6 +388,17 @@ public abstract class FSClassRegistry {
     return cl_to_type2JCas.size();
   }
 
+  /**
+   * Test support: checks whether the given class loader is currently registered in the global JCas
+   * class cache. Unlike {@link #clToType2JCasSize()}, this is not affected by other (unrelated) class
+   * loaders being asynchronously reaped from the underlying weak map.
+   */
+  static boolean isClToType2JCasRegistered(ClassLoader cl) {
+    synchronized (cl_to_type2JCas) {
+      return cl_to_type2JCas.get(cl) != null;
+    }
+  }
+
   private static void loadBuiltins(TypeImpl ti, ClassLoader cl,
           Map<String, JCasClassInfo> type2jcci, ArrayList<MutableCallSite> callSites_toSync) {
     String typeName = ti.getName();
