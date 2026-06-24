@@ -319,7 +319,7 @@
         </executions>
       </plugin>
     
-      <plugin> 
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
@@ -328,6 +328,38 @@
               <descriptors>
                 <descriptor>${assemblyBinDescriptor}</descriptor>
               </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Extract the verbatim LICENSE/NOTICE files of the bundled lib/ jars into
+           target/bin-distr-licenses just before the assembly runs, so the binary
+           distribution ships them under licenses/. The set is derived from the
+           assembly descriptor itself (single source of truth - no over- or
+           under-disclosure), so these files are generated, never checked in.
+           Runs only on this aggregator (inherited=false). -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>emit-third-party-licenses</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${java.home}/bin/java</executable>
+              <arguments>
+                <argument>-Dbasedir=${project.basedir}</argument>
+                <argument>-Dmaven.repo.local=${settings.localRepository}</argument>
+                <argument>${project.basedir}/src/main/bin_distr_license_notices/CheckLicenseNotices.java</argument>
+                <argument>--emit</argument>
+                <argument>${project.build.directory}/bin-distr-licenses</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
@@ -349,7 +381,10 @@
                   <!-- These markdown files cannot bear a license header -->
                   <inputExclude>NOTICE.md</inputExclude>
                   <inputExclude>CONTRIBUTING.md</inputExclude>
-                  <inputExclude>src/main/bin_distr_license_notices/NOTICE.md</inputExclude>
+                  <!-- The bundled distribution NOTICE cannot bear a license header -->
+                  <inputExclude>src/main/bin_distr_license_notices/NOTICE.txt</inputExclude>
+                  <!-- Generated state file for the license tool - no ASF header -->
+                  <inputExclude>src/main/bin_distr_license_notices/verified-notice-deps.txt</inputExclude>
                   <!-- These configuration files cannot bear a license header -->
                   <inputExclude>.github/**/*</inputExclude>
                   <inputExclude>src/main/eclipse/org.eclipse.jdt.core.prefs</inputExclude>
