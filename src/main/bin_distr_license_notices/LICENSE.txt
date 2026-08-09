@@ -251,8 +251,8 @@ dependencies are provided under the licenses/ directory of this distribution.
   Procyon CompilerTools 0.5.32                 Apache License 2.0  (no separate license/notice file bundled; see the license text above)
   Procyon Core 0.5.32                          Apache License 2.0  (no separate license/notice file bundled; see the license text above)
   JavaParser Core 3.2.2                        Apache License 2.0  (no separate license/notice file bundled; see the license text above)
-  SLF4J API 2.0.17                             MIT License         -> licenses/slf4j-api-2.0.17/
-  SLF4J JDK14 binding 2.0.17                   MIT License         -> licenses/slf4j-jdk14-2.0.17/
+  SLF4J API 2.0.18                             MIT License         -> licenses/slf4j-api-2.0.18/
+  SLF4J JDK14 binding 2.0.18                   MIT License         -> licenses/slf4j-jdk14-2.0.18/
   Apache Commons IO 2.22.0                     Apache License 2.0  -> licenses/commons-io-2.22.0/
   Apache Commons Lang 3.20.0                   Apache License 2.0  -> licenses/commons-lang3-3.20.0/
   Spring Framework (spring-aop) 6.2.19         Apache License 2.0  -> licenses/spring-aop-6.2.19/

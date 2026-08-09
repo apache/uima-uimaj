@@ -51,8 +51,25 @@ public class CPMExecutorService extends ThreadPoolExecutor {
 
   private ProcessTrace procTr = null;
 
+  private volatile ClassLoader contextClassLoader = null;
+
   public CPMExecutorService() {
     super(0, Integer.MAX_VALUE, 60L, SECONDS, new SynchronousQueue<Runnable>());
+  }
+
+  /**
+   * Sets the thread context class loader (TCCL) that the worker threads should run under. This is
+   * applied to each task individually (and restored afterwards), so that pooled worker threads -
+   * which may carry a stale TCCL from an earlier, unrelated task - run the CPM work under the
+   * loader captured from the control thread that started the processing (see issue #254). A
+   * {@code null} value (the default) leaves the worker threads' TCCL untouched.
+   *
+   * @param aClassLoader
+   *          the class loader to use as the worker threads' TCCL, or {@code null} to leave it
+   *          unchanged
+   */
+  public void setContextClassLoader(ClassLoader aClassLoader) {
+    contextClassLoader = aClassLoader;
   }
 
   /**
@@ -123,7 +140,7 @@ public class CPMExecutorService extends ThreadPoolExecutor {
    *          the e
    */
   private void notifyListener(BaseStatusCallbackListener aStatCL, Throwable e) {
-    EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr);
+    var enProcSt = new EntityProcessStatusImpl(procTr);
     enProcSt.addEventStatus("Process", "Failed", e);
     ((StatusCallbackListener) aStatCL).entityProcessComplete(null, enProcSt);
   }
@@ -134,16 +151,69 @@ public class CPMExecutorService extends ThreadPoolExecutor {
   public void cleanup() {
     callbackListeners = null;
     procTr = null;
+    contextClassLoader = null;
+  }
+
+  @Override
+  protected void terminated() {
+    // Drop the reference to the control thread's class loader once the executor has fully
+    // terminated, so a shut-down CPM does not pin that loader. terminated() is reached via
+    // shutdown() on both the single- and multi-threaded processing paths (see issue #254).
+    contextClassLoader = null;
+    super.terminated();
   }
 
   @Override
   protected <T> RunnableFuture<T> newTaskFor(Callable<T> aCallable) {
-    return new CpmFutureTask<T>(aCallable);
+    return new CpmFutureTask<T>(withContextClassLoader(aCallable));
   }
 
   @Override
   protected <T> RunnableFuture<T> newTaskFor(Runnable aRunnable, T aValue) {
-    return new CpmFutureTask<T>(aRunnable, aValue);
+    return new CpmFutureTask<T>(withContextClassLoader(aRunnable), aValue);
+  }
+
+  /**
+   * Wraps the given task so that it runs under the {@link #setContextClassLoader configured} thread
+   * context class loader, restoring the worker thread's previous TCCL when the task completes. The
+   * set/restore is done in a {@code try/finally} within the task body itself, so the restore is
+   * guaranteed regardless of the executor's {@code beforeExecute}/{@code afterExecute} hooks - and a
+   * worker thread that dies (rather than being returned to the pool) cannot leak a stale loader.
+   */
+  private Runnable withContextClassLoader(Runnable aRunnable) {
+    return () -> {
+      var cl = contextClassLoader;
+      if (cl == null) {
+        aRunnable.run();
+        return;
+      }
+
+      var currentThread = Thread.currentThread();
+      var previous = currentThread.getContextClassLoader();
+      currentThread.setContextClassLoader(cl);
+      try {
+        aRunnable.run();
+      } finally {
+        currentThread.setContextClassLoader(previous);
+      }
+    };
+  }
+
+  private <T> Callable<T> withContextClassLoader(Callable<T> aCallable) {
+    return () -> {
+      var cl = contextClassLoader;
+      if (cl == null) {
+        return aCallable.call();
+      }
+      var currentThread = Thread.currentThread();
+      var previous = currentThread.getContextClassLoader();
+      currentThread.setContextClassLoader(cl);
+      try {
+        return aCallable.call();
+      } finally {
+        currentThread.setContextClassLoader(previous);
+      }
+    };
   }
 
   private class CpmFutureTask<T> extends FutureTask<T> {

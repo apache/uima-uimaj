@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Ruleset for versions-maven-plugin, used to filter out pre-release and
+  variant artifacts when looking for dependency/plugin upgrades.
+
+  NOTE: This file is deliberately NOT referenced via <rulesUri> from any POM.
+
+  uimaj-parent is a pure parent POM published to Maven Central for downstream
+  projects to inherit from. Anything placed in its <pluginManagement> becomes
+  part of the contract inherited by every consumer. A <rulesUri> using
+  ${maven.multiModuleProjectDirectory} would resolve against the *consuming*
+  project's directory, pointing at a file that does not exist there and
+  breaking their versions:* goals. An absolute path or file: URL would just
+  move the breakage to machines that lack the file.
+
+  So pass it on the command line instead:
+
+    mvn -Dmaven.version.rules=file://$(pwd)/.mvn/versions-rules.xml \
+        versions:display-dependency-updates -DallowMajorUpdates=true
+
+  (The user property is `maven.version.rules`, not `rulesUri`.)
+-->
+<ruleset comparisonMethod="maven"
+         xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0">
+  <ignoreVersions>
+    <!-- Pre-release suffixes - these are not "updates" -->
+    <ignoreVersion type="regex">(?i).*[-_\.]CR[0-9\.]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]M[0-9\.]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]rc[0-9\.-]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]Dev[0-9\.-]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]alpha[0-9\.-]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]beta[0-9\.-]*</ignoreVersion>
+    <ignoreVersion type="regex">(?i).*[-_\.]preview[0-9\.-]*</ignoreVersion>
+    <!-- Date-stamped variants (e.g. ...20040117.000000) -->
+    <ignoreVersion type="regex">\d{4,}.*</ignoreVersion>
+    <!-- Backwards-compat variants for legacy JDKs (e.g. byte-buddy 1.18.8-jdk5) -->
+    <ignoreVersion type="regex">(?i).*[-_\.]jdk[0-9]+</ignoreVersion>
+  </ignoreVersions>
+  <rules>
+    <!-- Per-artifact pins go here as needed -->
+  </rules>
+</ruleset>
