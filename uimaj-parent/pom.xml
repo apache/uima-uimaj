@@ -99,11 +99,6 @@
     </repository>
     -->
 
-    <repository>
-      <id>${eclipseP2RepoId}</id>
-      <url>https://download.eclipse.org/releases/2023-06/</url>
-      <layout>p2</layout>
-    </repository>
   </repositories>
 
   <pluginRepositories>
