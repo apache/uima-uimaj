@@ -261,7 +261,7 @@ under the License.
     </fileSet>
 
     <fileSet>
-      <directory>target/site/apidocs</directory>
+      <directory>${aggregatedJavadocBaseDirectory}/apidocs</directory>
       <outputDirectory>docs/d/api</outputDirectory>
       <excludes>
         <exclude>options</exclude>
