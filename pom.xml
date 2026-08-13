@@ -48,7 +48,8 @@
 
   <properties>
     <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
-    <postNoticeText>${ibmNoticeText}</postNoticeText>    
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
+    <aggregatedJavadocBaseDirectory>${project.build.directory}/site</aggregatedJavadocBaseDirectory>
   </properties>
 
   <modules>
@@ -312,6 +313,7 @@
                   </packages>
                 </group>
               </groups>
+              <outputDirectory>${aggregatedJavadocBaseDirectory}</outputDirectory>
               <doctitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</doctitle>
               <windowtitle>Apache UIMA Java SDK ${project.version} User-Level API Documentation</windowtitle>
             </configuration>
