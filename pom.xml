@@ -47,7 +47,6 @@
   </scm>
 
   <properties>
-    <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <aggregatedJavadocBaseDirectory>${project.build.directory}/site</aggregatedJavadocBaseDirectory>
   </properties>
@@ -57,178 +56,14 @@
     <module>uimaj-bom</module>
     <module>uimaj-parent-internal</module>
     <module>aggregate-uimaj</module>
+    <!-- NB: the order of entries in <modules> does NOT determine build order - Maven
+         topologically sorts the reactor by dependencies and ignores this order. What puts
+         uimaj-dist last is its own <dependencies>: on the bundled artifacts, and on this
+         root POM (for the aggregated Javadoc and the release notes). See the comments in
+         uimaj-dist/pom.xml. Listed last here only to match the resulting build order. -->
+    <module>uimaj-dist</module>
   </modules>
-  
-  <!-- The dependencies here are required for the binary distribution assembly! -->
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.uima</groupId> 
-      <artifactId>uimaj-adapter-vinci</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId> 
-      <artifactId>uimaj-bootstrap</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-cpe</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-document-annotation</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-examples</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-json</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-tools</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimafit-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimafit-cpe</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-cas-editor</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-configurator</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-debug</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-jcasgen</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-pear-packager</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-runtime</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-cas-editor-ide</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-ep-launcher</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <!-- BEGIN: uimaj-v3migration-jcas -->
-    <!-- These can be removed when we remove the migration module -->
-    <dependency>
-      <groupId>org.apache.uima</groupId>
-      <artifactId>uimaj-v3migration-jcas</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-core</artifactId>
-      <version>0.5.32</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.mstrobel</groupId>
-      <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.32</version>
-    </dependency>
-    <dependency>    <!-- apache v2 license  2016 checked -->
-      <groupId>com.github.javaparser</groupId>
-      <artifactId>javaparser-core</artifactId>
-      <version>3.2.2</version>
-    </dependency>
-    <!-- END: uimaj-v3migration-jcas -->
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency> 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-    </dependency>
-       
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j2-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-expression</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jcl</artifactId>
-    </dependency>
-  </dependencies>
   
   <build>
     <plugins>
@@ -321,18 +156,20 @@
         </executions>
       </plugin>
     
-      <plugin> 
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>uima-distr</id>
-            <configuration>
-              <descriptors>
-                <descriptor>${assemblyBinDescriptor}</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
+      <!-- https://issues.apache.org/jira/browse/UIMA-2008 -->
+      <!-- No Maven deployment of this project's artifacts; the binary build artifact is
+           deployed from the Apache mirror system after release.
+
+           This used to be inherited from the parent-pom profile "build distribution",
+           which is activated by <file><exists>src/main/assembly/bin.xml</exists></file>.
+           Since bin.xml moved to uimaj-dist, that profile no longer activates here, so
+           the skip has to be stated explicitly - otherwise this POM would start
+           deploying. -->
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
     </plugins>
   
@@ -348,10 +185,15 @@
               <configuration>
                 <inputExcludes combine.children="append">
                   <inputExclude>marker-file-rc-auto-staging-module</inputExclude>
+                  <!-- Working notes, design docs and other throw-away files that are not
+                       part of the product and cannot sensibly bear a license header. -->
+                  <inputExclude>scratch/**</inputExclude>
                   <!-- These markdown files cannot bear a license header -->
                   <inputExclude>NOTICE.md</inputExclude>
                   <inputExclude>CONTRIBUTING.md</inputExclude>
-                  <inputExclude>src/main/bin_distr_license_notices/NOTICE.md</inputExclude>
+                  <!-- NOTICE.md under bin_distr_license_notices moved to uimaj-dist,
+                       where it is excluded by that module's own RAT config. -->
+                  <inputExclude>uimaj-dist/**</inputExclude>
                   <!-- These configuration files cannot bear a license header -->
                   <inputExclude>.github/**/*</inputExclude>
                   <inputExclude>src/main/eclipse/org.eclipse.jdt.core.prefs</inputExclude>
@@ -420,56 +262,5 @@
       </build>
     </profile>
         
-    <profile>
-      <id>apache-release-rc-auto-staging-config</id>
-      <activation>
-        <property>
-          <name>!disable-rc-auto-staging</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>release-rc-auto-staging</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target>
-                    <sequential xmlns:if="ant:if" if:set="isApacheRelease">
-                      <mkdir dir="${staging-local-root}/${staging-folder}" />
-                      <copy todir="${staging-local-root}/${staging-folder}">
-                        <fileset dir="${project.build.directory}">
-                          <include name="uimaj-${project.version}-*.zip" />
-                          <include name="uimaj-${project.version}-*.zip.asc" />
-                          <include name="uimaj-${project.version}-*.zip.sha512" />
-                          <include name="uimaj-${project.version}-*.tar.gz" />
-                          <include name="uimaj-${project.version}-*.tar.gz.asc" />
-                          <include name="uimaj-${project.version}-*.tar.gz.sha512" />
-                        </fileset>
-                      </copy>
-                      <copy todir="${staging-local-root}/${staging-folder}/eclipse-update-site">
-                        <fileset dir="uimaj-eclipse-update-site/target/repository">
-                          <include name="**/*" />
-                        </fileset>
-                      </copy>
-                    </sequential>
-                    <sequential xmlns:unless="ant:unless" unless:set="iisApacheRelease">
-                      <echo level="info">Not preparing RC staging - this is not a release build</echo>
-                    </sequential>
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 </project>

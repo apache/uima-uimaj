@@ -65,7 +65,9 @@ Also mention any important changes regarding backwards compatibility.
 .Check the `LICENSE` and `NOTICE` files for the binary release
 [%collapsible]
 ====
-There may be a `[project-root]/src/main/bin_distr_license_notices` folder containing `LICENSE` and `NOTICE` files which are used for preparing the binary release packages. If the release includes new or updated dependencies bundled in the binary release packages, then these files need to be updated with the respective content from the `LICENSE` and `NOTICE` files that may be present in these bundled dependencies (inside the JARs going to the `lib`) folder.
+There may be a `[project-root]/uimaj-dist/src/main/bin_distr_license_notices` folder containing `LICENSE` and `NOTICE` files which are used for preparing the binary release packages. If the release includes new or updated dependencies bundled in the binary release packages, then these files need to be updated with the respective content from the `LICENSE` and `NOTICE` files that may be present in these bundled dependencies (inside the JARs going to the `lib`) folder.
+
+The dependencies that end up in the binary release packages are declared in `[project-root]/uimaj-dist/pom.xml` - that module builds the binary distribution, and its `<dependencies>` section _is_ the content of the `lib` folder.
 ====
 * {empty}
 +

@@ -146,7 +146,7 @@ To add the source code to the jars, you need to:
 * Download and unpack the UIMA source distribution. 
 * Download and install the UIMA binary distribution (the UIMA_HOME environment variable needs to be set to point to where you installed the UIMA binary distribution). 
 * `cd` to the root directory of the source distribution
-* Execute the `src\main\readme_src\addSourceToJars` script in the root directory of the  source distribution. 
+* Execute the `uimaj-dist\src\main\readme_src\addSourceToJars` script, staying in the root directory of the source distribution (the script resolves the module source folders relative to the current directory).
 
 This adds the source code to the jar files, and it will then be automatically available from Eclipse.
 There is no further Eclipse setup required. 

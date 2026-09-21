@@ -28,7 +28,13 @@ under the License.
    -->
     
   <fileSets>
-    <!-- main project directory structure -->
+    <!-- main project directory structure
+
+         This fileSet is inclusive-by-default with the exclude list below. Note that
+         issuesFixed/ is deliberately NOT excluded: the generated release notes are part
+         of the source release. That works because the release-notes generator and this
+         assembly both run on the root module (prepare-package before package). If you
+         add excludes below, do not accidentally cover issuesFixed/. -->
     <fileSet>
       <directory>.</directory>
       <outputDirectory></outputDirectory>
@@ -84,6 +90,12 @@ under the License.
           -->
         <exclude>**/marker-file-enabling-auto-staging</exclude>
         <exclude>**/marker-file-enabling-release-notes</exclude>
+
+        <!-- Working notes / design docs - not part of the source release.
+             scratch/ is also in .gitignore, but that is NOT sufficient: this assembly
+             packages the working directory, not the git index, so an untracked scratch/
+             would otherwise be shipped. Verified by removing this exclude. -->
+        <exclude>scratch/**</exclude>
 
         <!-- 
           File that seems to be temporarily placed into the CWD during the build but no idea where 

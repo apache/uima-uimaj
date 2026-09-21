@@ -21,14 +21,14 @@ under the License.
 <launchConfiguration type="org.eclipse.ant.AntLaunchConfigurationType">
 <booleanAttribute key="org.eclipse.ant.ui.DEFAULT_VM_INSTALL" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/uimaj-distr/src/main/readme_src/packageAllJavaSourcesIntoJar.xml"/>
+<listEntry value="/uimaj-dist/src/main/readme_src/packageAllJavaSourcesIntoJar.xml"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-distr"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-dist"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/uimaj-distr/src/main/readme_src/packageAllJavaSourcesIntoJar.xml}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/uimaj-dist/src/main/readme_src/packageAllJavaSourcesIntoJar.xml}"/>
 <stringAttribute key="process_factory_id" value="org.eclipse.ant.ui.remoteAntProcessFactory"/>
 </launchConfiguration>
