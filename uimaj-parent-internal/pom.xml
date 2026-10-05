@@ -79,7 +79,7 @@
     <qdox-version>2.2.0</qdox-version>
     <slf4j-version>2.0.18</slf4j-version>
     <spring-version>6.2.19</spring-version>
-    <tycho-version>5.0.3</tycho-version>
+    <tycho-version>5.0.4</tycho-version>
     <xmlunit-version>2.13.0</xmlunit-version>
 
     <eclipseP2RepoId>org.eclipse.p2.202306</eclipseP2RepoId>
