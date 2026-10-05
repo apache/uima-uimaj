@@ -259,7 +259,7 @@ following:
 
 #### Building
 
-To build Apache UIMA, you need at least a Java 17 JDK and a recent Maven 3 version.
+To build Apache UIMA, you need at least a Java 21 JDK and Maven 3.9.3 or later.
 
 After extracting the source distribution ZIP or cloning the repository, change into the created
 directory and run the following command:

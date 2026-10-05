@@ -54,7 +54,7 @@
     <maven.compiler.proc>none</maven.compiler.proc>
     <execution.environment>JavaSE-21</execution.environment>
     
-    <maven.version>3.8.1</maven.version>
+    <maven.version>3.9.3</maven.version>
     <maven-plugin-tools.version>3.15.2</maven-plugin-tools.version>
 
     <asciidoctor.plugin.version>3.2.0</asciidoctor.plugin.version>
