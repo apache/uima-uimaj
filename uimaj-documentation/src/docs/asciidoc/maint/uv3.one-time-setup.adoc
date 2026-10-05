@@ -45,7 +45,7 @@ NOTE: You can also use another IDE like IntelliJ, Netbeans or even VSCode becaus
 
 == Build tool: Maven
 
-Most Apache UIMA sub-projects are built using Apache Maven version 3 or higher. 
+Most Apache UIMA sub-projects are built using Apache Maven. The UIMA Java SDK requires Maven 3.9.3 or higher.
 Maven offers a largely declarative and convention-driven build process and in particular automatically downloads required third-party libraries from the internet, in particular from the link:https://search.maven.org[Maven Central] repository.
 
 You can download the latest Maven version or install it using your favourite package manager. 
@@ -54,5 +54,3 @@ If your IDE does not offer Maven support out-of-the-box, you may want to install
 
 * Download the latest Apache Maven from https://maven.apache.org.
 * Set up your `PATH` to use this version.
-* Set the environment variable `MAVEN_OPTS` to `-Xmx800m  -XX:MaxPermSize=256m`. 
-  (Optional, but is needed for some JVM/platforms, to give the JVM enough room to build things.)

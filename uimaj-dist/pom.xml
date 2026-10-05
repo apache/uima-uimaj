@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+<!-- This module builds the binary distribution of the UIMA Java SDK.
+
+     The <dependencies> below are not dependencies of any code in this module - they
+     ARE the contents of the binary distribution. The assembly descriptor
+     (src/main/assembly/bin.xml) copies them into lib/ and eclipsePlugins/.
+
+     The aggregated Javadoc (target/site/apidocs) is produced by the ROOT aggregator and
+     consumed here across the module boundary, because aggregate-no-fork cannot run in a
+     leaf module. The root does NOT build first by virtue of being the aggregator - it
+     sorts last unless something depends on it - so the ordering is forced by an explicit
+     <dependency> on org.apache.uima:uimaj below. See the comment there.
+
+     The release notes (issuesFixed/) are likewise produced on the root, by the inherited
+     generator (parent-pom profile generate-release-notes, marker file at the repo root).
+     They are consumed BOTH by the root's own source-release assembly and by this module's
+     bin assembly, which is why the generator has to stay on the root: it runs there at
+     prepare-package, before the root's package-phase source assembly, and the dependency
+     below puts this module after the root entirely.
+
+     The documentation (docs/) is produced by uimaj-documentation, which is likewise
+     ordered before this module by an explicit <dependency> below.
+
+     All three are additionally guarded by check-distribution-inputs, which fails the
+     build fast during a release rather than letting the assembly silently omit them.
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.uima</groupId>
+    <artifactId>uimaj-parent-internal</artifactId>
+    <version>3.7.0-SNAPSHOT</version>
+    <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>uimaj-dist</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache UIMA Java SDK: ${project.artifactId}</name>
+  <description>The binary distribution of the UIMA Java SDK</description>
+  <url>${uimaWebsiteUrl}</url>
+
+  <properties>
+    <assemblyBinDescriptor>src/main/assembly/bin.xml</assemblyBinDescriptor>
+    <postNoticeText>${ibmNoticeText}</postNoticeText>
+
+    <!-- Keep the produced archive named uimaj-<version>-bin.zip even though this
+         module's artifactId is uimaj-dist. The inherited uima-distr execution (from
+         parent-pom, profile "build distribution") configures
+         <finalName>${assemblyFinalName}</finalName>, but never defines that property -
+         so it would otherwise fall through to ${project.build.finalName} and yield
+         uimaj-dist-<version>-bin.zip. The RC auto-staging profile below copies by the
+         filename pattern uimaj-${project.version}-*, so this name must not drift. -->
+    <assemblyFinalName>uimaj-${project.version}</assemblyFinalName>
+
+    <!-- Name the RC staging folder after the PRODUCT, not after this module.
+         parent-pom derives it as ${project.artifactId}-${project.version}-RC-... which
+         would publish a folder called "uimaj-dist-3.7.0-RC-..." to
+         dist.apache.org/repos/dist/dev/uima. The artifactId is an internal build detail;
+         what the release vote refers to is the UIMA Java SDK. Keep the historic name. -->
+    <staging-folder>uimaj-${project.version}-RC-${staging-timestamp}-${candidate-id}</staging-folder>
+
+    <!-- The aggregated Javadoc is built by the root aggregator - point back at it.
+         See the comment in src/main/assembly/bin.xml. -->
+    <aggregatedJavadocBaseDirectory>${maven.multiModuleProjectDirectory}/target/site</aggregatedJavadocBaseDirectory>
+
+  </properties>
+
+  <!-- The dependencies here are required for the binary distribution assembly! -->
+  <dependencies>
+    <!-- ==========================================================================
+         REACTOR ORDERING - not a real dependency, do not remove
+         ==========================================================================
+         This module consumes two things produced by the ROOT aggregator (org.apache.uima:uimaj):
+           - ${aggregatedJavadocBaseDirectory}/apidocs, from the javadocs-distr execution
+             (maven-javadoc-plugin aggregate-no-fork, which CANNOT run in this leaf module
+             because it aggregates over the modules of the project it runs on)
+           - issuesFixed/github-report.md, from the inherited release-notes generator
+             (which must stay on the root because the root's own source-release assembly
+             consumes it too - see the header comment)
+
+         Maven flattens the whole aggregator tree into ONE topologically sorted reactor.
+         Being listed in the root's <modules> does NOT make the root build first - quite
+         the opposite: an aggregator with no reactor dependencies sorts LAST. Without this
+         dependency the order is
+             ... aggregate-uimaj, uimaj-dist, uimaj
+         so the apidocs this module needs would not exist yet, and the assembly would
+         SILENTLY produce a zip with an empty docs/d/api (a fileSet whose directory does
+         not exist is not an error). Declaring the root as a dependency inverts that to
+             ... aggregate-uimaj, uimaj, uimaj-dist
+         which is what we need. There is no cycle: this module's parent is
+         uimaj-parent-internal, not the root.
+
+         <type>pom</type> because the root has packaging pom and produces no jar. The
+         root in turn depends on every module with Java sources (for its own Javadoc
+         ordering); those are provided-scoped and hence not transitive, and the wildcard
+         exclusion makes doubly sure none of them leak into lib/.
+         ========================================================================== -->
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- REACTOR ORDERING for the documentation - not a real dependency, do not remove.
+         bin.xml packages uimaj-documentation/target/site into docs/. Nothing else in this
+         module's dependency graph reaches uimaj-documentation, so without this edge its
+         position before this module is incidental, and under -T the two may run
+         concurrently - yielding a zip with an empty or half-written docs/. The module
+         has packaging pom, hence <type>pom</type>; the exclusion keeps its (asciidoctor)
+         dependencies out of this module's dependency set. -->
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-documentation</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> 
+      <artifactId>uimaj-adapter-vinci</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId> 
+      <artifactId>uimaj-bootstrap</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-cpe</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-document-annotation</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-examples</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-tools</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimafit-cpe</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-configurator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-debug</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-jcasgen</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-pear-packager</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-cas-editor-ide</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-ep-launcher</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- BEGIN: uimaj-v3migration-jcas -->
+    <!-- These can be removed when we remove the migration module -->
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-v3migration-jcas</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.32</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-compilertools</artifactId>
+      <version>0.5.32</version>
+    </dependency>
+    <dependency>    <!-- apache v2 license  2016 checked -->
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>3.2.2</version>
+    </dependency>
+    <!-- END: uimaj-v3migration-jcas -->
+
+    <!-- The distribution ships exactly ONE slf4j binding: slf4j-jdk14, i.e. java.util
+         logging. That is what bin/runUimaClass.sh configures - it passes
+         -Duima.use_jul_as_default_uima_logger and points
+         -Djava.util.logging.config.file at config/Logger.properties.
+
+         Do NOT add a second binding (e.g. log4j-slf4j2-impl) here: the launcher puts the
+         WHOLE lib/ directory on the classpath, so a second binding would make slf4j pick
+         one of them arbitrarily and silently disable the config/*.properties files.
+         log4j is deliberately <scope>provided</scope> in uimaj-core for the same reason -
+         applications embedding UIMA choose their own backend. -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+    <!-- These three are named explicitly by <include>s in bin.xml and DO end up in lib/,
+         but only ever arrived transitively (jVinci via uimaj-adapter-vinci, jackson-core
+         via uimaj-json, commons-lang3 via uimafit-core). Declared directly so that the
+         distribution's contents do not depend on another module's dependency graph: if
+         one of those modules drops its dependency, the bin.xml <include> would silently
+         match nothing and the jar would just be missing from the distribution. -->
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>jVinci</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <!-- not in dependencyManagement; uimaj-parent-internal defines the property -->
+      <version>${jackson-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jcl</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Fail fast when a cross-module distribution input is missing during a release
+           build, instead of silently producing an incomplete archive. An assembly
+           fileSet whose directory does not exist is NOT an error - the build succeeds
+           and the files are just absent from the zip. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check-distribution-inputs</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <sequential xmlns:if="ant:if" if:set="isApacheRelease">
+                  <!-- Generated by the ROOT module (parent-pom profile
+                       generate-release-notes, activated by the tracked marker file
+                       marker-file-enabling-release-notes, which exists only at the repo
+                       root). Because it only ever runs there, the report lands in the
+                       repo root's issuesFixed/ - hence the absolute path below rather
+                       than a path relative to this module.
+
+                       Do not read that as "the generator always writes to the reactor
+                       root": it does not resolve its output path consistently. The
+                       <mkdir dir="issuesFixed"/> resolves against Ant's basedir, which
+                       antrun sets to ${project.basedir}, while the Groovy script that
+                       actually writes the file uses new File('issuesFixed/...'), which
+                       resolves against the JVM working directory - one per reactor, the
+                       directory mvn was invoked from. Those two coincide only for a
+                       module whose basedir IS the invocation directory. Moving the
+                       generator off the root would therefore split the mkdir and the
+                       write into two different places. -->
+                  <available file="${maven.multiModuleProjectDirectory}/issuesFixed/github-report.md"
+                             property="issuesFixed.present" />
+                  <fail unless="issuesFixed.present">
+Release notes not found at ${maven.multiModuleProjectDirectory}/issuesFixed/github-report.md
+
+This file is generated by the ROOT module during prepare-package and is consumed by the
+binary distribution assembly in this module. It is .gitignore'd, so a fresh clone never
+has it. If you are building uimaj-dist on its own, build the root module first.
+                  </fail>
+
+                  <!-- produced by the ROOT aggregator's javadocs-distr execution -->
+                  <available file="${aggregatedJavadocBaseDirectory}/apidocs/index.html"
+                             property="apidocs.present" />
+                  <fail unless="apidocs.present">
+Aggregated Javadoc not found at ${aggregatedJavadocBaseDirectory}/apidocs
+
+It is produced by the ROOT aggregator (maven-javadoc-plugin aggregate-no-fork, execution
+javadocs-distr) - it cannot be produced in this leaf module. If you are building
+uimaj-dist on its own, build the root module first.
+                  </fail>
+
+                  <!-- produced by uimaj-documentation (asciidoctor, generate-resources) -->
+                  <available file="${maven.multiModuleProjectDirectory}/uimaj-documentation/target/site/d/ref.html"
+                             property="docs.present" />
+                  <fail unless="docs.present">
+Documentation not found at ${maven.multiModuleProjectDirectory}/uimaj-documentation/target/site
+
+It is produced by the uimaj-documentation module, which this module depends on for
+reactor ordering. If you are building uimaj-dist on its own, build that module first.
+                  </fail>
+                </sequential>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>uima-distr</id>
+            <configuration>
+              <descriptors>
+                <descriptor>${assemblyBinDescriptor}</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <inputExcludes combine.children="append">
+                  <!-- This markdown file cannot bear a license header -->
+                  <inputExclude>src/main/bin_distr_license_notices/NOTICE.md</inputExclude>
+                </inputExcludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <!-- REACTOR ORDERING for the Eclipse update site - not a real dependency.
+
+           The RC staging below copies uimaj-eclipse-update-site/target/repository, but
+           nothing else in this module's dependency graph reaches that module (the
+           uimaj-ep-* plugins are shared, the features and the update site are not), so
+           without this edge its position before this module is incidental - and under
+           -T the two may even run concurrently.
+
+           <type>pom</type> because the module has packaging eclipse-repository with
+           maven.install.skip and skipArchive, so there is no main artifact to resolve.
+           Within the reactor a pom-type dependency resolves to the module's pom.xml,
+           which always exists. The wildcard exclusion keeps the Eclipse features it
+           depends on out of this module's dependency set and hence out of lib/.
+
+           Release-only because only release builds stage the update site, and because
+           the module is never installed: outside a full reactor build this dependency
+           cannot be resolved, which would break building uimaj-dist on its own. -->
+      <id>apache-release</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.uima</groupId>
+          <artifactId>uimaj-eclipse-update-site</artifactId>
+          <version>${project.version}</version>
+          <type>pom</type>
+          <exclusions>
+            <exclusion>
+              <groupId>*</groupId>
+              <artifactId>*</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <!-- ALL RC staging happens in this module - it is the only one that carries
+           marker-file-enabling-auto-staging, which is what activates the parent-pom
+           profile apache-release-rc-auto-staging (buildnumber's generate-candidate-id
+           plus the maven-scm checkout / add / checkin of the staging directory).
+
+           Why here and not on the root, where the marker used to live: the binary
+           distribution archives are built HERE, and this module sorts LAST in the
+           reactor, so they do not exist yet when the root reaches its install phase. A
+           copy from the root would silently stage nothing.
+
+           Why the marker must be in exactly ONE module: ${staging-timestamp} and
+           ${candidate-id} are generated by buildnumber-maven-plugin at initialize, into
+           the properties of the project it runs on. Maven does NOT propagate plugin-set
+           properties between reactor modules, so a second marker elsewhere would give
+           that module its own, DIFFERENT timestamp, and the two would stage into two
+           unrelated RC folders. Generating and consuming them in one module is what
+           keeps mkdir, copy, scm:add and scm:checkin all pointed at the same directory.
+
+           Consequently the Eclipse update site is staged from here too (below), even
+           though it is built by uimaj-eclipse-update-site much earlier: only this module
+           has a checked-out staging directory to put it in.
+
+           Activation is kept identical to the parent-pom profile so that
+           -Ddisable-rc-auto-staging continues to switch everything off at once. -->
+      <id>apache-release-rc-auto-staging-config</id>
+      <activation>
+        <property>
+          <name>!disable-rc-auto-staging</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <!-- parent-pom builds the commit message from ${project.artifactId}, which
+               would read "Staging release artifacts for uimaj-dist-3.7.0-...". Restate
+               it in terms of ${staging-folder} so the message names the product and
+               matches the directory actually being committed. -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>commit-staging-files</id>
+                <configuration>
+                  <message>Staging release artifacts for ${staging-folder}</message>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>release-rc-auto-staging-dist</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <sequential xmlns:if="ant:if" if:set="isApacheRelease">
+                      <!-- Pre-flight check, BEFORE anything is copied. The reactor
+                           ordering is enforced by the pom-type dependency in the
+                           apache-release profile above; this is the backstop in case the
+                           update site was nevertheless not built (e.g. uimaj-dist built
+                           on its own, or the update site build was skipped).
+
+                           This runs first so a missing update site aborts the staging
+                           step cleanly, rather than after the archives have already been
+                           copied into a staging folder that would then be committed
+                           incomplete. -->
+                      <available file="${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository/artifacts.jar"
+                                 property="updatesite.present" />
+                      <fail unless="updatesite.present">
+Eclipse update site not found at
+  ${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository
+
+It is built by uimaj-eclipse-update-site, which the apache-release profile orders before
+this module in the reactor. If you are building uimaj-dist on its own, build that module
+first.
+                      </fail>
+
+                      <mkdir dir="${staging-local-root}/${staging-folder}" />
+                      <!-- The BINARY distribution, built by this module. The include
+                           patterns use uimaj-${project.version} rather than the module's
+                           own artifactId because assemblyFinalName pins the archive name
+                           to uimaj-<version> - see the property above. -->
+                      <copy todir="${staging-local-root}/${staging-folder}">
+                        <fileset dir="${project.build.directory}">
+                          <include name="uimaj-${project.version}-*.zip" />
+                          <include name="uimaj-${project.version}-*.zip.asc" />
+                          <include name="uimaj-${project.version}-*.zip.sha512" />
+                          <include name="uimaj-${project.version}-*.tar.gz" />
+                          <include name="uimaj-${project.version}-*.tar.gz.asc" />
+                          <include name="uimaj-${project.version}-*.tar.gz.sha512" />
+                        </fileset>
+                      </copy>
+
+                      <!-- The SOURCE release, built by the ROOT module (inherited
+                           source-release-assembly), so it lands in the ROOT's target/,
+                           not this module's.
+
+                           Before the distribution moved here this copy was a single
+                           fileSet over ${project.build.directory} on the root, which
+                           happened to catch BOTH archives because they shared that
+                           directory and both match uimaj-<version>-*.zip. Now they live
+                           in two different target/ directories and each needs its own
+                           fileSet. Omitting this one publishes an RC with the binary
+                           distribution but no sources - silently, because Ant <copy>
+                           treats a fileSet that matches nothing as success. -->
+                      <copy todir="${staging-local-root}/${staging-folder}">
+                        <fileset dir="${maven.multiModuleProjectDirectory}/target">
+                          <include name="uimaj-${project.version}-source-release.zip" />
+                          <include name="uimaj-${project.version}-source-release.zip.asc" />
+                          <include name="uimaj-${project.version}-source-release.zip.sha512" />
+                        </fileset>
+                      </copy>
+
+                      <!-- Both copies above are silent when they match nothing, and an
+                           RC missing either archive is not something to discover during
+                           the vote. Assert the two that must always be there. (The .asc
+                           files are deliberately not checked - they are absent whenever
+                           the build runs with -Dgpg.skip=true.) -->
+                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-bin.zip"
+                                 property="staged.bin.present" />
+                      <fail unless="staged.bin.present">
+Binary distribution missing from the RC staging folder:
+  ${staging-local-root}/${staging-folder}/uimaj-${project.version}-bin.zip
+                      </fail>
+                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-source-release.zip"
+                                 property="staged.src.present" />
+                      <fail unless="staged.src.present">
+Source release missing from the RC staging folder:
+  ${staging-local-root}/${staging-folder}/uimaj-${project.version}-source-release.zip
+
+It is built by the ROOT module into ${maven.multiModuleProjectDirectory}/target. If you
+are building uimaj-dist on its own, build the root module first.
+                      </fail>
+                      <!-- The ECLIPSE UPDATE SITE, asserted above. The path is absolute
+                           via maven.multiModuleProjectDirectory because antrun resolves
+                           relative paths against ${project.basedir} - which is
+                           uimaj-dist/, not the reactor root. -->
+                      <copy todir="${staging-local-root}/${staging-folder}/eclipse-update-site">
+                        <fileset dir="${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository">
+                          <include name="**/*" />
+                        </fileset>
+                      </copy>
+                    </sequential>
+                    <sequential xmlns:unless="ant:unless" unless:set="isApacheRelease">
+                      <echo level="info">Not preparing RC staging - this is not a release build</echo>
+                    </sequential>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
