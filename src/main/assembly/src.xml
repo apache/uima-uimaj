@@ -125,6 +125,10 @@ under the License.
     <fileSet>
       <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
       <outputDirectory></outputDirectory>
+      <excludes>
+        <!-- The dependencies are declared by uimaj-dist, so this would only be an empty header -->
+        <exclude>DEPENDENCIES</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>.</directory>
