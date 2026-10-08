@@ -50,7 +50,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent-internal</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.7.0</version>
     <relativePath>../uimaj-parent-internal/pom.xml</relativePath>
   </parent>
 
@@ -372,8 +372,7 @@
                        module whose basedir IS the invocation directory. Moving the
                        generator off the root would therefore split the mkdir and the
                        write into two different places. -->
-                  <available file="${maven.multiModuleProjectDirectory}/issuesFixed/github-report.md"
-                             property="issuesFixed.present" />
+                  <available file="${maven.multiModuleProjectDirectory}/issuesFixed/github-report.md" property="issuesFixed.present" />
                   <fail unless="issuesFixed.present">
 Release notes not found at ${maven.multiModuleProjectDirectory}/issuesFixed/github-report.md
 
@@ -383,8 +382,7 @@ has it. If you are building uimaj-dist on its own, build the root module first.
                   </fail>
 
                   <!-- produced by the ROOT aggregator's javadocs-distr execution -->
-                  <available file="${aggregatedJavadocBaseDirectory}/apidocs/index.html"
-                             property="apidocs.present" />
+                  <available file="${aggregatedJavadocBaseDirectory}/apidocs/index.html" property="apidocs.present" />
                   <fail unless="apidocs.present">
 Aggregated Javadoc not found at ${aggregatedJavadocBaseDirectory}/apidocs
 
@@ -394,8 +392,7 @@ uimaj-dist on its own, build the root module first.
                   </fail>
 
                   <!-- produced by uimaj-documentation (asciidoctor, generate-resources) -->
-                  <available file="${maven.multiModuleProjectDirectory}/uimaj-documentation/target/site/d/ref.html"
-                             property="docs.present" />
+                  <available file="${maven.multiModuleProjectDirectory}/uimaj-documentation/target/site/d/ref.html" property="docs.present" />
                   <fail unless="docs.present">
 Documentation not found at ${maven.multiModuleProjectDirectory}/uimaj-documentation/target/site
 
@@ -553,8 +550,7 @@ reactor ordering. If you are building uimaj-dist on its own, build that module f
                            step cleanly, rather than after the archives have already been
                            copied into a staging folder that would then be committed
                            incomplete. -->
-                      <available file="${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository/artifacts.jar"
-                                 property="updatesite.present" />
+                      <available file="${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository/artifacts.jar" property="updatesite.present" />
                       <fail unless="updatesite.present">
 Eclipse update site not found at
   ${maven.multiModuleProjectDirectory}/uimaj-eclipse-update-site/target/repository
@@ -605,14 +601,12 @@ first.
                            the vote. Assert the two that must always be there. (The .asc
                            files are deliberately not checked - they are absent whenever
                            the build runs with -Dgpg.skip=true.) -->
-                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-bin.zip"
-                                 property="staged.bin.present" />
+                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-bin.zip" property="staged.bin.present" />
                       <fail unless="staged.bin.present">
 Binary distribution missing from the RC staging folder:
   ${staging-local-root}/${staging-folder}/uimaj-${project.version}-bin.zip
                       </fail>
-                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-source-release.zip"
-                                 property="staged.src.present" />
+                      <available file="${staging-local-root}/${staging-folder}/uimaj-${project.version}-source-release.zip" property="staged.src.present" />
                       <fail unless="staged.src.present">
 Source release missing from the RC staging folder:
   ${staging-local-root}/${staging-folder}/uimaj-${project.version}-source-release.zip
