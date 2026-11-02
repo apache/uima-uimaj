@@ -19,7 +19,7 @@
 ***************************************************************
 -->
    
-# Apache UIMA (Unstructured Information Management Architecture) v3.6.1 Release Notes
+# Apache UIMA (Unstructured Information Management Architecture) v3.7.0 Release Notes
 
 ## Contents
 
@@ -64,12 +64,19 @@ This is a feature and bug fix release.
 
 ## What's Changed
 
-* 🦟 Issue #431: Issue using SPI-enabled type systems embedded into PEARs
-* 🦟 Issue #430: Resolving type system imports through SPI is slows things down too much
-* 🦟 Issue #435: Improve performance of import resolver
-* ⚙️ Issue #438: Upgrade dependencies (3.6.1)
+* ⭐️ Issue #254: CPE worker threads should inherit TCCL from control thread
+* ⭐️ Issue #444: Improve CasToComparableText
+* 🦟 Issue #234: Using builtin annotation classes before creating a CAS can break type system management
+* 🦟 Issue #367: Cannot load resource interface in OSGi context
+* 🦟 Issue #384: Selecting a class from a CAS can yield a classcast exception if the CAS contains subclasses of the type not locally known
+* 🦟 Issue #453: Flaky test for JCasHashMapTest
+* 🦟 Issue #459: Builds inheriting uimaj-parent fail under Maven 4 due to uninterpolated eclipseP2RepoId in repository id
+* 🦟 Issue #462: Aggregate JavaDoc not provisioned for release builds
+* ⚙️ Issue #449: Attach test jars again to the build
+* ⚙️ Issue #451: Drop no-jackson distro
+* ⚙️ Issue #464: Move building of the distribution archives into its own module
 
-**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.6.0...uimaj-3.6.1
+**Full Changelog**: https://github.com/apache/uima-uimaj/compare/rel/uimaj-3.6.1...uimaj-3.7.0
 
 
 ## <a id="get.involved">How to Get Involved</a>
