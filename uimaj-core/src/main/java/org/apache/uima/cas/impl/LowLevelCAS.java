@@ -46,7 +46,7 @@ import org.apache.uima.util.AutoCloseableNoException;
  * <p>
  * Please note that you really need to know what you're doing when using these APIs. Incorrect usage
  * of these APIs can and will cause completely unpredictable results; likely your application will
- * crash, and it will do so much later than where the incorrect usage occured. The low-level APIs
+ * crash, and it will do so much later than where the incorrect usage occurred. The low-level APIs
  * are very hard to debug. You should only use the low-level APIs if you have carefully profiled
  * your application and are sure that the high-level CAS APIs or the JCAS represent a performance
  * bottleneck.
