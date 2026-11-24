@@ -7,9 +7,9 @@ To make the process smooth for the project *committers* (those who review and ac
 
 ## Contribution Guidelines
 
-Please check out the [How to get involved](https://uima.apache.org/get-involved.html) to understand how contributions are made. 
+Please check out [How to get involved](https://uima.apache.org/get-involved.html#contributing) to understand how contributions are made. 
 A detailed list of coding standards can be found at [Apache UIMA Code Conventions](https://uima.apache.org/codeConventions.html) which also contains a list of coding guidelines that you should follow.
-For pull requests, there is a [check list](PULL_REQUEST_TEMPLATE.md) with criteria for acceptable contributions.
+For pull requests, there is a [check list](.github/PULL_REQUEST_TEMPLATE.md) with criteria for acceptable contributions.
 
 ## Preparing a Pull Request (PR)
 
@@ -22,13 +22,14 @@ This section briefly guides you through the best way of doing this:
 * Create a branch based on the branch to which you wish to contribute. Normally, you should create
   this branch from the **main** branch of the respective project. In the case you want to fix
   a bug in the latest released version, you should consider to branch off the latest maintenance
-  branch (e.g. **2.4.x**). If you are not sure, ask via the issue you have just created. Do **not**
-  make changes directly to the master or maintenance branches in your fork. The name of the branch
-  should be e.g. `feature/UIMA-[ISSUE-NUMBER]-[SHORT-ISSUE-DESCRIPTION]` or `bugfix/UIMA-[ISSUE-NUMBER]-[SHORT-ISSUE-DESCRIPTION]`.
+  branch (e.g. **release/3.6.x**). If you are not sure, ask via the issue you have just created. Do **not**
+  make changes directly to the main or maintenance branches in your fork. The name of the branch
+  should start with `feature/`, `bugfix/` or `refactoring/`, followed by the issue number and a short
+  description, e.g. `bugfix/123-Short-issue-description`.
 * Now you make changes to your branch. When committing to your branch, use the format shown below
   for your commit messages.
 ```
-[UIMA-<ISSUE-NUMBER>] <ISSUE TITLE>
+Issue #<ISSUE-NUMBER>: <ISSUE TITLE>
 <EMPTY LINE>
 - <CHANGE 1>
 - <CHANGE 2>
